@@ -15,20 +15,13 @@ import 'package:possystem/ui/analysis/widgets/chart_range_page.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 
 class AnalysisView extends StatefulWidget {
-  final int? tabIndex;
-
-  const AnalysisView({
-    super.key,
-    this.tabIndex,
-  });
+  const AnalysisView({super.key});
 
   @override
   State<AnalysisView> createState() => _AnalysisViewState();
 }
 
 class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClientMixin {
-  late final TutorialInTab? tab;
-
   /// Range of the data to show in charts, it can updated by the user
   late ValueNotifier<DateTimeRange> range;
 
@@ -36,69 +29,60 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   Widget build(BuildContext context) {
     super.build(context);
 
-    return TutorialWrapper(
-      tab: tab,
-      child: ListenableBuilder(
-        listenable: Analysis.instance,
-        builder: (context, child) {
-          return LayoutBuilder(builder: (context, constraints) {
-            final bp = Breakpoint.find(box: constraints);
-            return CustomScrollView(slivers: <Widget>[
-              child!,
-              _buildChartHeader(),
-              _buildCharts(Analysis.instance.itemList, bp),
-            ]);
-          });
-        },
-        child: SliverList.list(children: [
-          GoalsCardView(
-            action: RouteIconButton(
-              key: const Key('anal.history'),
-              route: Routes.history,
-              icon: const Icon(Icons.calendar_month_sharp),
-              tooltip: S.analysisHistoryBtn,
-            ),
+    return ListenableBuilder(
+      listenable: Analysis.instance,
+      builder: (context, child) {
+        return LayoutBuilder(builder: (context, constraints) {
+          final bp = Breakpoint.find(box: constraints);
+          return CustomScrollView(slivers: <Widget>[
+            child!,
+            SliverAppBar(primary: false, title: Text(S.analysisChartTitle), actions: const [
+              _MoreButton(),
+            ]),
+            _buildChartHeader(),
+            _buildCharts(Analysis.instance.itemList, bp),
+          ]);
+        });
+      },
+      child: SliverList.list(children: [
+        GoalsCardView(
+          action: RouteIconButton(
+            key: const Key('anal.history'),
+            route: Routes.history,
+            icon: const Icon(Icons.calendar_month_sharp),
+            tooltip: S.analysisHistoryBtn,
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 
   Widget _buildChartHeader() {
     return SliverAppBar(
+      primary: false,
       pinned: true,
-      // avoid drawer take precedence
-      leadingWidth: 0,
-      leading: const SizedBox.shrink(),
-      title: Text(S.analysisChartTitle),
-      toolbarHeight: kToolbarHeight - 8, // hide shadow of action when pinned
-      actions: const [_MoreButton()],
-      bottom: AppBar(
-        primary: false,
-        centerTitle: false,
-        titleSpacing: 0,
-        leading: const Icon(Icons.calendar_today_sharp, size: 16),
-        title: ListenableBuilder(
-          listenable: range,
-          builder: (context, child) => TextButton(
-            key: const Key('anal.chart_range'),
-            onPressed: _goToChartRange,
-            child: Text(range.value.format(S.localeName)),
-          ),
+      leading: const Icon(Icons.calendar_today_sharp, size: 16),
+      centerTitle: false,
+      title: ListenableBuilder(
+        listenable: range,
+        builder: (context, child) => TextButton(
+          key: const Key('anal.chart_range'),
+          onPressed: _goToChartRange,
+          child: Text(range.value.format(S.localeName)),
         ),
-        actions: [
-          IconButton(
-            onPressed: () => _updateRange(Duration(days: -interval)),
-            iconSize: 16,
-            icon: const Icon(Icons.arrow_back_ios_new_sharp),
-          ),
-          IconButton(
-            onPressed: () => _updateRange(Duration(days: interval)),
-            iconSize: 16,
-            icon: const Icon(Icons.arrow_forward_ios_sharp),
-          ),
-        ],
       ),
+      actions: [
+        IconButton(
+          onPressed: () => _updateRange(Duration(days: -interval)),
+          iconSize: 16,
+          icon: const Icon(Icons.arrow_back_ios_new_sharp),
+        ),
+        IconButton(
+          onPressed: () => _updateRange(Duration(days: interval)),
+          iconSize: 16,
+          icon: const Icon(Icons.arrow_forward_ios_sharp),
+        ),
+      ],
     );
   }
 
@@ -151,7 +135,6 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
 
   @override
   void initState() {
-    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
     range = ValueNotifier(Util.getDateRange(
       now: DateTime.now().subtract(const Duration(days: 7)),
       days: 7,

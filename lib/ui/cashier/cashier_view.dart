@@ -12,61 +12,34 @@ import 'package:possystem/translator.dart';
 
 import 'widgets/unit_list_tile.dart';
 
-class CashierView extends StatefulWidget {
-  final int? tabIndex;
-
-  const CashierView({
-    super.key,
-    this.tabIndex,
-  });
-
-  @override
-  State<CashierView> createState() => _CashierViewState();
-}
-
-class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClientMixin {
-  late final TutorialInTab? tab;
+class CashierView extends StatelessWidget {
+  const CashierView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
-    return TutorialWrapper(
-      tab: tab,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-          child: ListenableBuilder(
-            listenable: Cashier.instance,
-            builder: (context, _) {
-              var i = 0;
-              return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
-                _buildActions(),
-                const SizedBox(height: kInternalSpacing),
-                for (final item in Cashier.instance.currentUnits)
-                  UnitListTile(
-                    item: item,
-                    index: i++,
-                  ),
-              ]);
-            },
-          ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+        child: ListenableBuilder(
+          listenable: Cashier.instance,
+          builder: (context, _) {
+            var i = 0;
+            return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
+              _buildActions(context),
+              const SizedBox(height: kInternalSpacing),
+              for (final item in Cashier.instance.currentUnits)
+                UnitListTile(
+                  item: item,
+                  index: i++,
+                ),
+            ]);
+          },
         ),
       ),
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
-
-    super.initState();
-  }
-
-  Widget _buildActions() {
+  Widget _buildActions(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: kHorizontalSpacing),
       child: Row(children: [
@@ -80,7 +53,7 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
             key: const Key('cashier.defaulter'),
             tooltip: S.cashierToDefaultTitle,
             icon: Icon(Cashier.instance.defaultNotSet ? Icons.star_border : Icons.star),
-            onPressed: _handleSetDefault,
+            onPressed: () => _handleSetDefault(context),
           ),
         ),
         const Spacer(),
@@ -114,7 +87,7 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
                 key: const Key('cashier.surplus'),
                 icon: const Icon(Icons.coffee_sharp),
                 tooltip: S.cashierSurplusTitle,
-                onPressed: _handleSurplus,
+                onPressed: () => _handleSurplus(context),
               ),
             ),
           ]),
@@ -123,7 +96,7 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
     );
   }
 
-  void _handleSetDefault() async {
+  void _handleSetDefault(BuildContext context) async {
     if (!Cashier.instance.defaultNotSet) {
       final result = await ConfirmDialog.show(
         context,
@@ -138,19 +111,19 @@ class _CashierViewState extends State<CashierView> with AutomaticKeepAliveClient
 
     await Cashier.instance.setDefault();
 
-    if (mounted) {
+    if (context.mounted) {
       showSnackBar(context, S.actSuccess);
     }
   }
 
-  void _handleSurplus() async {
+  void _handleSurplus(BuildContext context) async {
     if (Cashier.instance.defaultNotSet) {
       return showSnackBar(context, S.cashierSurplusErrorEmptyDefault);
     }
 
     final result = await context.pushNamed(Routes.cashierSurplus);
     if (result == true) {
-      if (mounted) {
+      if (context.mounted) {
         showSnackBar(context, S.actSuccess);
       }
     }

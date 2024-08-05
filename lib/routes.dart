@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/dialog/dialog_page.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -20,7 +23,7 @@ import 'package:possystem/ui/cashier/surplus_page.dart';
 import 'package:possystem/ui/home/feature_request_page.dart';
 import 'package:possystem/ui/home/features_page.dart';
 import 'package:possystem/ui/home/home_page.dart';
-import 'package:possystem/ui/home/setting_view.dart';
+import 'package:possystem/ui/home/mobile_entry_view.dart';
 import 'package:possystem/ui/image_gallery_page.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:possystem/ui/menu/product_page.dart';
@@ -84,16 +87,53 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 class Routes {
   static const base = '/pos';
 
+  static final ValueNotifier<HomeMode> homeMode = ValueNotifier(HomeMode.bottomNavigationBar);
+
   static getRoute(String path) => 'https://evan361425.github.io$base/$path';
+
+  static FutureOr<String?> redirect(BuildContext ctx, GoRouterState state) =>
+      state.path?.startsWith(Routes.base) == false ? Routes.base : null;
+
+  static RoutingConfig getDesiredRoute(double width) {
+    switch (Breakpoint.find(width: width)) {
+      case Breakpoint.compact:
+      case Breakpoint.medium:
+        homeMode.value = HomeMode.bottomNavigationBar;
+        return Routes.bottomNav;
+      case Breakpoint.expanded:
+      case Breakpoint.large:
+        homeMode.value = HomeMode.drawer;
+        return Routes.drawer;
+      case Breakpoint.extraLarge:
+        homeMode.value = HomeMode.rail;
+        return Routes.rail;
+    }
+  }
 
   // Stateful navigation based on:
   // https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter/
-  static final List<RouteBase> routes = [
+  static final RoutingConfig bottomNav = RoutingConfig(redirect: Routes.redirect, routes: [
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return HomePage(shell: navigationShell);
-      },
-      // the order of this list should strongly follow the order of the tabs
+      builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
+      // the order of this list should follow the order of the tabs
+      branches: [
+        StatefulShellBranch(routes: [_analysisRoute]),
+        StatefulShellBranch(routes: [_stockRoute]),
+        StatefulShellBranch(routes: [_cashierRoute]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '$base/others',
+            builder: (ctx, state) => const MobileEntryView(),
+          )
+        ]),
+      ],
+    ),
+    ..._others,
+  ]);
+
+  static final RoutingConfig drawer = RoutingConfig(redirect: Routes.redirect, routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
       branches: [
         StatefulShellBranch(routes: [_analysisRoute]),
         StatefulShellBranch(routes: [_stockRoute]),
@@ -104,17 +144,12 @@ class Routes {
         StatefulShellBranch(routes: [_transitRoute]),
         StatefulShellBranch(routes: [_elfRoute]),
         StatefulShellBranch(routes: [_settingsRoute]),
-        // this branch is entrypoint for mobile screen
-        StatefulShellBranch(routes: [
-          GoRoute(
-            path: '$base/others',
-            builder: (ctx, state) => const SettingView(),
-          )
-        ]),
       ],
     ),
     ..._others,
-  ];
+  ]);
+
+  static final RoutingConfig rail = drawer;
 
   static final _others = [
     GoRoute(
@@ -271,6 +306,7 @@ class Routes {
       return MenuPage(
         catalog: catalog,
         productOnly: mode == 'products',
+        withScaffold: state.extra == 'withScaffold',
       );
     },
     routes: [
@@ -371,7 +407,7 @@ class Routes {
   static final _quantitiesRoute = GoRoute(
     name: quantity,
     path: '$base/quantities',
-    builder: (ctx, state) => const QuantityPage(),
+    builder: (ctx, state) => QuantityPage(withScaffold: state.extra == 'withScaffold'),
     routes: [
       GoRoute(
         name: quantityNew,
@@ -394,7 +430,7 @@ class Routes {
   static final _orderAttrRoute = GoRoute(
     name: orderAttr,
     path: '$base/oa',
-    builder: (ctx, state) => const OrderAttributePage(),
+    builder: (ctx, state) => OrderAttributePage(withScaffold: state.extra == 'withScaffold'),
     routes: [
       GoRoute(
         name: orderAttrNew,
@@ -450,7 +486,7 @@ class Routes {
   static final _transitRoute = GoRoute(
     name: transit,
     path: '$base/transit',
-    builder: (ctx, state) => const TransitPage(),
+    builder: (ctx, state) => TransitPage(withScaffold: state.extra == 'withScaffold'),
     routes: [
       GoRoute(
         name: transitStation,
@@ -481,13 +517,16 @@ class Routes {
   static final _elfRoute = GoRoute(
     name: elf,
     path: '$base/elf',
-    builder: (ctx, state) => const FeatureRequestPage(),
+    builder: (ctx, state) => FeatureRequestPage(withScaffold: state.extra == 'withScaffold'),
   );
 
   static final _settingsRoute = GoRoute(
     name: settings,
     path: '$base/settings',
-    builder: (ctx, state) => FeaturesPage(focus: state.uri.queryParameters['f']),
+    builder: (ctx, state) => FeaturesPage(
+      focus: state.uri.queryParameters['f'],
+      withScaffold: state.extra == 'withScaffold',
+    ),
     routes: [
       GoRoute(
         name: settingsChoices,

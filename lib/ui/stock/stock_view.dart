@@ -15,20 +15,13 @@ import 'package:possystem/ui/stock/widgets/stock_ingredient_list_tile.dart';
 import 'package:provider/provider.dart';
 
 class StockView extends StatefulWidget {
-  final int? tabIndex;
-
-  const StockView({
-    super.key,
-    this.tabIndex,
-  });
+  const StockView({super.key});
 
   @override
   State<StockView> createState() => _StockViewState();
 }
 
 class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixin {
-  late final TutorialInTab? tab;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -45,31 +38,28 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       );
     }
 
-    return TutorialWrapper(
-      tab: tab,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-          child: ListenableBuilder(
-            listenable: Stock.instance,
-            builder: (context, child) {
-              return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
-                Row(children: [
-                  Expanded(child: Center(child: _buildMeta())),
-                  _buildActions(),
-                  const SizedBox(width: kHorizontalSpacing),
-                ]),
-                const SizedBox(height: kInternalSpacing),
-                for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
-                ElevatedButton.icon(
-                  key: const Key('stock.add'),
-                  icon: const Icon(KIcons.add),
-                  label: Text(S.stockIngredientTitleCreate),
-                  onPressed: () => context.pushNamed(Routes.ingredientNew),
-                ),
-              ]);
-            },
-          ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+        child: ListenableBuilder(
+          listenable: Stock.instance,
+          builder: (context, child) {
+            return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
+              Row(children: [
+                Expanded(child: Center(child: _buildMeta())),
+                _buildActions(),
+                const SizedBox(width: kHorizontalSpacing),
+              ]),
+              const SizedBox(height: kInternalSpacing),
+              for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
+              ElevatedButton.icon(
+                key: const Key('stock.add'),
+                icon: const Icon(KIcons.add),
+                label: Text(S.stockIngredientTitleCreate),
+                onPressed: () => context.pushNamed(Routes.ingredientNew),
+              ),
+            ]);
+          },
         ),
       ),
     );
@@ -77,13 +67,6 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
 
   @override
   bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    tab = widget.tabIndex == null ? null : TutorialInTab(index: widget.tabIndex!, context: context);
-
-    super.initState();
-  }
 
   Widget _buildMeta() {
     DateTime? latest;
