@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/style/route_circular_button.dart';
+import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/breakpoint.dart';
@@ -53,9 +53,10 @@ class OrderAttributePage extends StatelessWidget {
           ),
           RouteIconButton(
             key: const Key('order_attributes.reorder'),
-            tooltip: S.orderAttributeTitleReorder,
+            label: S.orderAttributeTitleReorder,
             route: Routes.orderAttrReorder,
             icon: const Icon(KIcons.reorder),
+            hideLabel: true,
           ),
           const SizedBox(width: kHorizontalSpacing),
         ]),

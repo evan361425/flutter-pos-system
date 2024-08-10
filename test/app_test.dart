@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/app.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/my_app.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +24,7 @@ void main() {
         ChangeNotifierProvider.value(value: Menu()),
         ChangeNotifierProvider.value(value: OrderAttributes()),
       ],
-      builder: (_, __) => const MyApp(),
+      builder: (_, __) => const App(),
     );
 
     await tester.pumpWidget(app);

@@ -34,7 +34,8 @@ title:
   transit: Data Transfer
   orderAttribute: Customer Settings
   stockQuantity: Quantities
-  settingElf: Suggestions
+  elf: Suggestions
+  others: Others
 dialog:
   deletionTitle:
   - Delete Confirmation

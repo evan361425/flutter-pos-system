@@ -3,7 +3,7 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
-import 'package:possystem/components/style/route_circular_button.dart';
+import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/routes.dart';
@@ -31,9 +31,10 @@ class MenuCatalogList extends StatelessWidget {
       leading: leading,
       tailing: tailing,
       action: RouteIconButton(
-        tooltip: S.menuCatalogTitleReorder,
+        label: S.menuCatalogTitleReorder,
         icon: const Icon(KIcons.reorder),
         route: Routes.menuCatalogReorder,
+        hideLabel: true,
       ),
       delegate: SlidableItemDelegate(
         items: catalogs,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
-import 'package:possystem/components/style/route_circular_button.dart';
+import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -50,7 +50,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
             key: const Key('anal.history'),
             route: Routes.history,
             icon: const Icon(Icons.calendar_month_sharp),
-            tooltip: S.analysisHistoryBtn,
+            label: S.analysisHistoryBtn,
           ),
         ),
       ]),

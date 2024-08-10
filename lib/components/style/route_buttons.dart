@@ -49,36 +49,29 @@ class RouteElevatedIconButton extends StatelessWidget {
 }
 
 class RouteIconButton extends StatelessWidget {
-  final String tooltip;
+  final String label;
   final Icon icon;
   final String? route;
   final Map<String, String> pathParameters;
   final VoidCallback? onPressed;
   final bool popTrueShowSuccess;
+  final bool hideLabel;
 
   const RouteIconButton({
     super.key,
-    required this.tooltip,
+    required this.label,
     required this.icon,
     this.route,
     this.pathParameters = const {},
     this.onPressed,
     this.popTrueShowSuccess = false,
+    this.hideLabel = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
-    final iconWithLabel = bp <= Breakpoint.medium
-        ? icon
-        : Row(children: [
-            icon,
-            const SizedBox(width: 4),
-            Text(tooltip),
-          ]);
-
     return IconButton(
-      tooltip: tooltip,
+      tooltip: hideLabel ? label : null,
       onPressed: onPressed ??
           () async {
             final result = await context.pushNamed(route!, pathParameters: pathParameters);
@@ -88,7 +81,26 @@ class RouteIconButton extends StatelessWidget {
               }
             }
           },
-      icon: iconWithLabel,
+      icon: _buildIcon(context),
     );
+  }
+
+  Widget _buildIcon(BuildContext context) {
+    if (hideLabel) {
+      return icon;
+    }
+
+    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+    return bp <= Breakpoint.medium
+        ? Column(children: [
+            icon,
+            const SizedBox(height: 4),
+            Text(label),
+          ])
+        : Row(children: [
+            icon,
+            const SizedBox(width: 4),
+            Text(label),
+          ]);
   }
 }

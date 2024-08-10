@@ -19,9 +19,9 @@ class ResponsiveDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final fullscreen = size.width > Breakpoint.medium.max;
+    final dialog = size.width > Breakpoint.medium.max;
 
-    if (fullscreen) {
+    if (dialog) {
       return AlertDialog(
         title: title,
         contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/route_circular_button.dart';
+import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -97,7 +97,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
           icon: const Icon(Icons.shopping_basket_sharp),
           route: Routes.replenishment,
           popTrueShowSuccess: true,
-          tooltip: S.stockReplenishmentButton,
+          label: S.stockReplenishmentButton,
         ),
       ),
     );

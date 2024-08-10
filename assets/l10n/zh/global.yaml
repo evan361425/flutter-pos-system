@@ -17,7 +17,8 @@ title:
   transit: 資料轉移
   orderAttribute: 顧客設定
   stockQuantity: 份量
-  settingElf: 建議
+  elf: 建議
+  others: 其他
 dialog:
   deletionTitle: 刪除確認通知
   deletionContent: |-

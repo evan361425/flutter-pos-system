@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
@@ -54,23 +53,21 @@ class _MenuPageState extends State<MenuPage> {
       return PopScope(
         canPop: selected == null,
         onPopInvoked: _onPopInvoked,
-        child: TutorialWrapper(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(selected?.name ?? S.menuTitle),
-              leading: PopButton(onPressed: _handlePop),
-              actions: const [_SearchAction()],
-            ),
-            floatingActionButton: fab,
-            body: PageView(
-              controller: controller,
-              // disable scrolling, only control by program
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                firstView,
-                secondView,
-              ],
-            ),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(selected?.name ?? S.menuTitle),
+            leading: PopButton(onPressed: _handlePop),
+            actions: const [_SearchAction()],
+          ),
+          floatingActionButton: fab,
+          body: PageView(
+            controller: controller,
+            // disable scrolling, only control by program
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              firstView,
+              secondView,
+            ],
           ),
         ),
       );
@@ -173,7 +170,7 @@ class _MenuPageState extends State<MenuPage> {
 
   Future<void> _handleCatalogCreate() async {
     // only catalog modal will return ID
-    final catalog = await context.pushNamed(Routes.menuNew);
+    final catalog = await context.pushNamed(Routes.menuCatalogNew);
 
     if (catalog is Catalog) {
       _handleSelected(catalog);
@@ -182,7 +179,7 @@ class _MenuPageState extends State<MenuPage> {
 
   Future<void> _handleProductCreate() {
     return context.pushNamed(
-      Routes.menuNew,
+      Routes.menuCatalogNew,
       queryParameters: {'id': selected?.id},
     );
   }

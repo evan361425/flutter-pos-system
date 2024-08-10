@@ -12,6 +12,7 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
+import 'app.dart';
 import 'firebase_compatible_options.dart';
 import 'helpers/logger.dart';
 import 'models/repository/cashier.dart';
@@ -21,7 +22,6 @@ import 'models/repository/quantities.dart';
 import 'models/repository/replenisher.dart';
 import 'models/repository/seller.dart';
 import 'models/repository/stock.dart';
-import 'my_app.dart';
 import 'services/cache.dart';
 import 'services/database.dart';
 import 'services/storage.dart';
@@ -79,7 +79,7 @@ void main() async {
           ChangeNotifierProvider.value(value: Cashier.instance),
           ChangeNotifierProvider.value(value: Cart.instance),
         ],
-        child: const MyApp(),
+        child: const App(),
       ));
     },
     (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),

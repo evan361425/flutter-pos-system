@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/app.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/analysis/analysis.dart';
@@ -13,7 +14,6 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
-import 'package:possystem/my_app.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
@@ -62,7 +62,7 @@ void main() {
         ],
         child: MaterialApp.router(
           routerConfig: GoRouter(observers: [
-            MyApp.routeObserver
+            App.routeObserver
           ], routes: [
             GoRoute(
               path: '/',
@@ -132,7 +132,7 @@ void main() {
           ],
           child: MaterialApp.router(
             routerConfig: GoRouter(observers: [
-              MyApp.routeObserver
+              App.routeObserver
             ], routes: [
               GoRoute(
                 path: '/',

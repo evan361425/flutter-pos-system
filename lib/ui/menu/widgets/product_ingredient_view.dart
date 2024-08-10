@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/buttons.dart';
-import 'package:possystem/components/style/route_circular_button.dart';
+import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';

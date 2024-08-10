@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
-import 'package:possystem/components/style/route_circular_button.dart';
+import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
@@ -51,7 +51,7 @@ class CashierView extends StatelessWidget {
           message: S.cashierToDefaultTutorialContent,
           child: RouteIconButton(
             key: const Key('cashier.defaulter'),
-            tooltip: S.cashierToDefaultTitle,
+            label: S.cashierToDefaultTitle,
             icon: Icon(Cashier.instance.defaultNotSet ? Icons.star_border : Icons.star),
             onPressed: () => _handleSetDefault(context),
           ),
@@ -70,14 +70,11 @@ class CashierView extends StatelessWidget {
                 key: const Key('cashier.changer'),
                 route: Routes.cashierChanger,
                 icon: const Icon(Icons.sync_alt_sharp),
-                tooltip: S.cashierChangerTitle,
+                label: S.cashierChangerTitle,
                 popTrueShowSuccess: true,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 2.0),
-              child: VerticalDivider(width: 1, thickness: 1),
-            ),
+            const SizedBox(height: 28, child: VerticalDivider()),
             Tutorial(
               index: 0,
               id: 'cashier.surplus',
@@ -86,7 +83,7 @@ class CashierView extends StatelessWidget {
               child: RouteIconButton(
                 key: const Key('cashier.surplus'),
                 icon: const Icon(Icons.coffee_sharp),
-                tooltip: S.cashierSurplusTitle,
+                label: S.cashierSurplusTitle,
                 onPressed: () => _handleSurplus(context),
               ),
             ),

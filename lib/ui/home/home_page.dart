@@ -1,3 +1,5 @@
+import 'dart:math' show min;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/footer.dart';
@@ -5,6 +7,7 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 class HomePage extends StatelessWidget {
   final StatefulNavigationShell shell;
@@ -19,6 +22,7 @@ class HomePage extends StatelessWidget {
       child: ListenableBuilder(
         listenable: mode,
         builder: (context, _) {
+          SpotlightShow.of(context).reset();
           switch (mode.value) {
             case HomeMode.bottomNavigationBar:
               return _WithTab(shell: shell);
@@ -58,8 +62,9 @@ class _WithTab extends StatelessWidget {
         body: shell,
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: shell.currentIndex,
+        selectedIndex: min(shell.currentIndex, 3),
         onDestinationSelected: (index) {
+          SpotlightShow.of(context).reset();
           shell.goBranch(
             index,
             // A common pattern when using bottom navigation bars is to support
@@ -70,7 +75,7 @@ class _WithTab extends StatelessWidget {
           );
         },
         destinations: [
-          for (final HomeTab e in [HomeTab.analysis, HomeTab.stock, HomeTab.cashier, HomeTab.setting])
+          for (final HomeTab e in _bottomNavTabs)
             NavigationDestination(
               icon: e.icon,
               label: S.title(e.name),
@@ -98,7 +103,7 @@ class _WithDrawer extends StatelessWidget {
       return Scaffold(
         key: scaffold,
         floatingActionButton: _FAB(),
-        drawer: _buildDrawer(tab),
+        drawer: _buildDrawer(context, tab),
         body: _Nested(title: S.title(tab.name), body: shell),
       );
     }
@@ -110,19 +115,19 @@ class _WithDrawer extends StatelessWidget {
         flexibleSpace: const _FlexibleSpace(),
       ),
       floatingActionButton: _FAB(),
-      drawer: _buildDrawer(tab),
+      drawer: _buildDrawer(context, tab),
       body: shell,
     );
   }
 
-  Widget _buildDrawer(HomeTab tab) {
+  Widget _buildDrawer(BuildContext context, HomeTab tab) {
     return Drawer(
       child: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             const SizedBox(height: 48),
-            for (final e in HomeTab.values)
+            for (final e in _drawerTabs)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
                 child: ListTile(
@@ -133,7 +138,7 @@ class _WithDrawer extends StatelessWidget {
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
-                  onTap: () => _navTo(e),
+                  onTap: () => _navTo(context, e),
                 ),
               ),
             const Footer(),
@@ -143,8 +148,9 @@ class _WithDrawer extends StatelessWidget {
     );
   }
 
-  void _navTo(HomeTab tab) {
+  void _navTo(BuildContext context, HomeTab tab) {
     scaffold.currentState?.closeDrawer();
+    SpotlightShow.of(context).reset();
     shell.goBranch(tab.index, initialLocation: tab.index == shell.currentIndex);
   }
 }
@@ -184,10 +190,13 @@ class _WithRail extends StatelessWidget {
         listenable: railExpanded,
         builder: (context, child) => NavigationRail(
           extended: railExpanded.value,
-          onDestinationSelected: (int index) => shell.goBranch(index, initialLocation: index == shell.currentIndex),
+          onDestinationSelected: (int index) {
+            SpotlightShow.of(context).reset();
+            shell.goBranch(index, initialLocation: index == shell.currentIndex);
+          },
           labelType: NavigationRailLabelType.all,
           destinations: [
-            for (final e in HomeTab.values)
+            for (final e in _drawerTabs)
               if (railExpanded.value || e.important)
                 NavigationRailDestination(
                   icon: e.icon,
@@ -256,7 +265,25 @@ class _FlexibleSpace extends StatelessWidget {
   }
 }
 
-// The order is important for the drawer scaffold
+const _bottomNavTabs = [
+  HomeTab.analysis,
+  HomeTab.stock,
+  HomeTab.cashier,
+  HomeTab.others,
+];
+
+const _drawerTabs = [
+  HomeTab.analysis,
+  HomeTab.stock,
+  HomeTab.cashier,
+  HomeTab.orderAttribute,
+  HomeTab.menu,
+  HomeTab.stockQuantity,
+  HomeTab.transit,
+  HomeTab.elf,
+  HomeTab.setting,
+];
+
 enum HomeTab {
   analysis(
     icon: Icon(Icons.analytics_outlined),
@@ -264,8 +291,8 @@ enum HomeTab {
     important: true,
   ),
   stock(
-    icon: Icon(Icons.inventory_outlined),
-    selectedIcon: Icon(Icons.inventory),
+    icon: Icon(Icons.inventory_2_outlined),
+    selectedIcon: Icon(Icons.inventory_2),
     important: true,
   ),
   cashier(
@@ -281,7 +308,7 @@ enum HomeTab {
     icon: Icon(Icons.collections_outlined),
     selectedIcon: Icon(Icons.collections),
   ),
-  quantities(
+  stockQuantity(
     icon: Icon(Icons.exposure),
     selectedIcon: Icon(Icons.exposure_outlined),
   ),
