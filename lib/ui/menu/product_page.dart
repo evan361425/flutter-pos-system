@@ -93,7 +93,7 @@ class _ProductPageState extends State<ProductPage> {
           key: const Key('product.reorder'),
           label: S.menuIngredientTitleReorder,
           icon: const Icon(KIcons.reorder),
-          route: Routes.menuIngredientReorder,
+          route: Routes.menuProductReorderIngredient,
           pathParameters: {'id': widget.product.id},
           hideLabel: true,
         ),
@@ -143,7 +143,7 @@ class _ProductPageState extends State<ProductPage> {
         BottomSheetAction(
           title: Text(S.menuProductTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.menuProductModal,
+          route: Routes.menuProductUpdate,
           routePathParameters: {'id': widget.product.id},
         ),
         BottomSheetAction(
@@ -154,7 +154,7 @@ class _ProductPageState extends State<ProductPage> {
         BottomSheetAction(
           title: Text(S.menuIngredientTitleReorder),
           leading: const Icon(KIcons.reorder),
-          route: Routes.menuIngredientReorder,
+          route: Routes.menuProductReorderIngredient,
           routePathParameters: {'id': widget.product.id},
         ),
       ],
@@ -173,7 +173,7 @@ class _ProductPageState extends State<ProductPage> {
 
   void _handleCreateIng() {
     context.pushNamed(
-      Routes.menuProductDetails,
+      Routes.menuProductUpdateIngredient,
       pathParameters: {'id': widget.product.id},
     );
   }

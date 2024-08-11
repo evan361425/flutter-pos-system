@@ -50,13 +50,13 @@ class MenuProductList extends StatelessWidget {
       BottomSheetAction(
         title: Text(S.menuProductTitleUpdate),
         leading: const Icon(KIcons.modal),
-        route: Routes.menuProductModal,
+        route: Routes.menuProductUpdate,
         routePathParameters: {'id': product.id},
       ),
       BottomSheetAction(
         title: Text(S.menuIngredientTitleReorder),
         leading: const Icon(KIcons.reorder),
-        route: Routes.menuIngredientReorder,
+        route: Routes.menuProductReorderIngredient,
         routePathParameters: {'id': product.id},
       ),
     ];

@@ -9,7 +9,6 @@ import 'package:possystem/helpers/setup_example.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
@@ -29,23 +28,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
   Widget build(BuildContext context) {
     super.build(context);
 
-    var orderAttrIndex = OrderAttributes.instance.isEmpty ? (Menu.instance.isEmpty ? 1 : 0) : -1;
     return Scaffold(
-      floatingActionButton: (Cache.instance.get<bool>('tutorial.home.order') ?? false)
-          ? null
-          : Tutorial(
-              id: 'home.order',
-              index: orderAttrIndex + 1,
-              spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
-              title: S.orderTutorialTitle,
-              message: S.orderTutorialContent,
-              child: FloatingActionButton.extended(
-                heroTag: 'order.tutorial',
-                onPressed: null,
-                icon: const Icon(Icons.store_sharp),
-                label: Text(S.orderBtn),
-              ),
-            ),
       body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
         const _HeaderInfoList(),
         if (!isProd)
@@ -88,7 +71,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
         ),
         Tutorial(
           id: 'home.order_attr',
-          index: orderAttrIndex,
+          index: 1,
           title: S.orderAttributeTutorialTitle,
           message: S.orderAttributeTutorialContent,
           below: _TutorialCheckboxListTile(key: _tutorialOrderAttrs, title: S.orderAttributeTutorialCreateExample),
@@ -110,7 +93,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
         _buildRouteTile(
           id: 'quantity',
           icon: Icons.exposure_sharp,
-          route: Routes.quantity,
+          route: Routes.quantities,
           title: S.stockQuantityTitle,
           subtitle: S.stockQuantityDescription,
         ),
@@ -147,7 +130,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
       key: Key('setting.$id'),
       leading: Icon(icon),
       trailing: const Icon(Icons.navigate_next_outlined),
-      onTap: () => context.pushNamed(route, extra: 'withScaffold'),
+      onTap: () => context.pushNamed(route),
       title: Text(title),
       subtitle: Text(subtitle),
     );

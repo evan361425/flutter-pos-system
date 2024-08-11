@@ -200,7 +200,7 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
       showMoreInfoSnackBar(
         context,
         S.orderSnackbarCashierUsingSmallMoney,
-        Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('features/checkoutWarning'))),
+        Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('settings/checkoutWarning'))),
       );
       break;
     default:

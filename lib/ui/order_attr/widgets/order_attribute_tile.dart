@@ -67,7 +67,7 @@ class OrderAttributeTile extends StatelessWidget {
       Expanded(
         child: ElevatedButton.icon(
           onPressed: () => context.pushNamed(
-            Routes.orderAttrNew,
+            Routes.orderAttrCreate,
             queryParameters: {'id': attr.id},
           ),
           label: Text(S.orderAttributeOptionTitleCreate),
@@ -90,13 +90,13 @@ class OrderAttributeTile extends StatelessWidget {
         BottomSheetAction(
           title: Text(S.orderAttributeTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.orderAttrModal,
+          route: Routes.orderAttrUpdate,
           routePathParameters: {'id': attr.id},
         ),
         BottomSheetAction(
           title: Text(S.orderAttributeOptionTitleReorder),
           leading: const Icon(KIcons.reorder),
-          route: Routes.orderAttrOptionReorder,
+          route: Routes.orderAttrReorderOption,
           routePathParameters: {'id': attr.id},
         ),
       ],
@@ -129,7 +129,7 @@ class _OptionTile extends StatelessWidget {
           deleteCallback: _remove,
         ),
         onTap: () => context.pushNamed(
-          Routes.orderAttrModal,
+          Routes.orderAttrUpdate,
           pathParameters: {'id': option.attribute.id},
           queryParameters: {'oid': option.id},
         ),

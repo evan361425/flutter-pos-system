@@ -16,9 +16,6 @@ import 'widgets/menu_catalog_list.dart';
 import 'widgets/menu_product_list.dart';
 
 class MenuPage extends StatefulWidget {
-  // TODO: set for wide screen
-  final bool withScaffold;
-
   final Catalog? catalog;
 
   final bool productOnly;
@@ -27,7 +24,6 @@ class MenuPage extends StatefulWidget {
     super.key,
     this.catalog,
     this.productOnly = false,
-    this.withScaffold = true,
   });
 
   @override
@@ -37,16 +33,20 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   late Catalog? selected;
   late final PageController controller;
+  bool get isBottomNav => Routes.homeMode.value == HomeMode.bottomNavigationBar;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.withScaffold) {
+    if (isBottomNav) {
       final fab = widget.productOnly
           ? null
           : FloatingActionButton(
               key: const Key('menu.add'),
               onPressed: selected == null ? _handleCatalogCreate : _handleProductCreate,
               tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
+              // avoid hero since when using responsive this fab will be hidden
+              // in background page
+              heroTag: null,
               child: const Icon(KIcons.add),
             );
 
@@ -88,7 +88,7 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   void initState() {
-    selected = widget.catalog ?? (widget.withScaffold ? null : Menu.instance.itemList.firstOrNull);
+    selected = widget.catalog ?? (isBottomNav ? null : Menu.instance.itemList.firstOrNull);
     controller = PageController(
       // go to product if has selected catalog
       initialPage: widget.catalog == null ? 0 : 1,
@@ -118,7 +118,7 @@ class _MenuPageState extends State<MenuPage> {
 
     return MenuCatalogList(
       Menu.instance.itemList, // put it here to handle reload
-      leading: widget.withScaffold
+      leading: isBottomNav
           ? null
           : const Padding(
               padding: EdgeInsets.only(left: kHorizontalSpacing),
@@ -151,7 +151,7 @@ class _MenuPageState extends State<MenuPage> {
 
     return MenuProductList(
       catalog: selected,
-      tailing: widget.withScaffold
+      tailing: isBottomNav
           ? null
           : ElevatedButton.icon(
               onPressed: _handleProductCreate,
@@ -170,7 +170,7 @@ class _MenuPageState extends State<MenuPage> {
 
   Future<void> _handleCatalogCreate() async {
     // only catalog modal will return ID
-    final catalog = await context.pushNamed(Routes.menuCatalogNew);
+    final catalog = await context.pushNamed(Routes.menuCatalogCreate);
 
     if (catalog is Catalog) {
       _handleSelected(catalog);
@@ -179,7 +179,7 @@ class _MenuPageState extends State<MenuPage> {
 
   Future<void> _handleProductCreate() {
     return context.pushNamed(
-      Routes.menuCatalogNew,
+      Routes.menuCatalogCreate,
       queryParameters: {'id': selected?.id},
     );
   }
@@ -202,7 +202,7 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _pageSlideTo(int index) async {
-    if (widget.withScaffold) {
+    if (isBottomNav) {
       return controller.animateToPage(
         index,
         duration: const Duration(milliseconds: 300),

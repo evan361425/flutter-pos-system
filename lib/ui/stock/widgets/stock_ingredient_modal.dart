@@ -103,7 +103,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         key: Key('stock.ingredient.${product.id}'),
         title: Text('${product.catalog.name} - ${product.name}'),
         onTap: () => context.pushNamed(
-          Routes.menuProductModal,
+          Routes.menuProductUpdate,
           pathParameters: {'id': product.id},
         ),
       );

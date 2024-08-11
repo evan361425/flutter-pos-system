@@ -19,10 +19,10 @@ import 'package:possystem/ui/analysis/widgets/history_order_modal.dart';
 import 'package:possystem/ui/cashier/cashier_view.dart';
 import 'package:possystem/ui/cashier/changer_modal.dart';
 import 'package:possystem/ui/cashier/surplus_page.dart';
-import 'package:possystem/ui/home/feature_request_page.dart';
-import 'package:possystem/ui/home/features_page.dart';
+import 'package:possystem/ui/home/elf_page.dart';
 import 'package:possystem/ui/home/home_page.dart';
 import 'package:possystem/ui/home/mobile_entry_view.dart';
+import 'package:possystem/ui/home/settings_page.dart';
 import 'package:possystem/ui/image_gallery_page.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:possystem/ui/menu/product_page.dart';
@@ -40,7 +40,7 @@ import 'package:possystem/ui/order_attr/widgets/order_attribute_modal.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_option_modal.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_option_reorder.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_reorder.dart';
-import 'package:possystem/ui/stock/quantity_page.dart';
+import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
 import 'package:possystem/ui/stock/widgets/replenishment_apply.dart';
@@ -62,96 +62,96 @@ class Routes {
   /// https://github.com/evan361425/evan361425.github.io
   static const base = '/pos';
 
+  /// The mode of the home page, should change the layout of the home page
   static final ValueNotifier<HomeMode> homeMode = ValueNotifier(HomeMode.bottomNavigationBar);
 
+  /// Get the full path of the route
   static getRoute(String path) => 'https://evan361425.github.io$base/$path';
 
+  /// Get the initial location of the app.
+  ///
+  /// if the user is new, redirect to menu page
   static get initLocation =>
       homeMode.value == HomeMode.bottomNavigationBar && Cache.instance.get<bool>('tutorial.home.menu') != true
           ? '$base/others'
           : base;
 
-  static String? redirect(BuildContext _, GoRouterState state) {
-    return state.uri.path.startsWith('$base/') ? null : '$base/anal';
-  }
-
+  /// Get the desired route config based on the width
   static RoutingConfig getDesiredRoute(double width) {
     switch (Breakpoint.find(width: width)) {
       case Breakpoint.compact:
       case Breakpoint.medium:
         homeMode.value = HomeMode.bottomNavigationBar;
-        return Routes.bottomNav;
+        return Routes._bottomNavConfig;
       case Breakpoint.expanded:
       case Breakpoint.large:
         homeMode.value = HomeMode.drawer;
-        return Routes.drawer;
+        return Routes._drawerConfig;
       case Breakpoint.extraLarge:
         homeMode.value = HomeMode.rail;
-        return Routes.rail;
+        return Routes._drawerConfig;
     }
   }
 
   // Stateful navigation based on:
   // https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter/
-  static final RoutingConfig bottomNav = RoutingConfig(
-    routes: [
-      GoRoute(
-        path: base,
-        redirect: Routes.redirect,
-        routes: [
-          StatefulShellRoute.indexedStack(
-            builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
-            // the order of this list should follow the order of the tabs
-            branches: [
-              StatefulShellBranch(routes: [_analysisRoute]),
-              StatefulShellBranch(routes: [_stockRoute]),
-              StatefulShellBranch(routes: [_cashierRoute]),
-              StatefulShellBranch(routes: [
-                GoRoute(
-                  path: 'others',
-                  builder: (ctx, state) => const MobileEntryView(),
-                )
-              ]),
-            ],
-          ),
-          _orderAttrRoute,
-          _menuRoute,
-          _quantitiesRoute,
-          _transitRoute,
-          _elfRoute,
-          _settingsRoute,
-          _chartRoute,
-          ..._others,
-        ],
-      )
-    ],
-  );
+  static final RoutingConfig _bottomNavConfig = RoutingConfig(routes: [
+    GoRoute(
+      path: base,
+      redirect: (ctx, state) => state.uri.path.startsWith('$base/') ? null : '$base/anal',
+      routes: [
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
+          // the order of this list should follow the order of the tabs
+          branches: [
+            StatefulShellBranch(routes: [_analysisRoute]),
+            StatefulShellBranch(routes: [_stockRoute]),
+            StatefulShellBranch(routes: [_cashierRoute]),
+            StatefulShellBranch(routes: [
+              GoRoute(
+                path: 'others',
+                builder: (ctx, state) => const MobileEntryView(),
+              )
+            ]),
+          ],
+        ),
+        _menuRoute,
+        _quantitiesRoute,
+        _orderAttrsRoute,
+        _elfRoute,
+        _transitRoute,
+        _settingsRoute,
+        ..._routes,
+      ],
+    )
+  ]);
+  static final RoutingConfig _drawerConfig = RoutingConfig(routes: [
+    GoRoute(
+      path: base,
+      redirect: (_, state) {
+        return state.uri.path.startsWith('$base/') && state.uri.path != '$base/others' ? null : '$base/anal';
+      },
+      routes: [
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
+          branches: [
+            StatefulShellBranch(routes: [_analysisRoute]),
+            StatefulShellBranch(routes: [_stockRoute]),
+            StatefulShellBranch(routes: [_cashierRoute]),
+            StatefulShellBranch(routes: [_orderAttrsRoute]),
+            StatefulShellBranch(routes: [_menuRoute]),
+            StatefulShellBranch(routes: [_quantitiesRoute]),
+            StatefulShellBranch(routes: [_transitRoute]),
+            StatefulShellBranch(routes: [_elfRoute]),
+            StatefulShellBranch(routes: [_settingsRoute]),
+          ],
+        ),
+        ..._routes,
+      ],
+    ),
+  ]);
 
-  static final RoutingConfig drawer = RoutingConfig(
-    redirect: (_, state) {
-      final path = state.uri.path;
-      return path.startsWith(Routes.base) && path != 'others' ? null : Routes.base;
-    },
-    routes: [
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
-        branches: [
-          StatefulShellBranch(routes: [_analysisRoute]),
-          StatefulShellBranch(routes: [_stockRoute]),
-          StatefulShellBranch(routes: [_cashierRoute]),
-          StatefulShellBranch(routes: [_orderAttrRoute]),
-          StatefulShellBranch(routes: [_menuRoute]),
-          StatefulShellBranch(routes: [_quantitiesRoute]),
-          StatefulShellBranch(routes: [_transitRoute]),
-          StatefulShellBranch(routes: [_elfRoute]),
-          StatefulShellBranch(routes: [_settingsRoute]),
-        ],
-      ),
-      ..._others,
-    ],
-  );
-
-  static final RoutingConfig rail = drawer;
+  // ==================== Routes in main navigation ====================
 
   static final _analysisRoute = GoRoute(
     name: anal,
@@ -166,21 +166,12 @@ class Routes {
   static final _cashierRoute = GoRoute(
     name: cashier,
     path: 'cashier',
-    pageBuilder: (ctx, state) {
-      return const NoTransitionPage(child: CashierView());
-    },
-    routes: [
-      GoRoute(
-        name: cashierChanger,
-        path: 'changer',
-        pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChangerModal()),
-      ),
-      GoRoute(
-        name: cashierSurplus,
-        path: 'surplus',
-        builder: (ctx, state) => const CashierSurplus(),
-      )
-    ],
+    pageBuilder: (ctx, state) => const NoTransitionPage(child: CashierView()),
+  );
+  static final _orderAttrsRoute = GoRoute(
+    name: orderAttr,
+    path: 'oas',
+    builder: (ctx, state) => const OrderAttributePage(),
   );
   static final _menuRoute = GoRoute(
     name: menu,
@@ -192,63 +183,86 @@ class Routes {
       return MenuPage(catalog: catalog, productOnly: mode == 'products');
     },
   );
+  static final _quantitiesRoute = GoRoute(
+    name: quantities,
+    path: 'quantities',
+    builder: (ctx, state) => const QuantitiesPage(),
+  );
+  static final _transitRoute = GoRoute(
+    name: transit,
+    path: 'transit',
+    builder: (ctx, state) => const TransitPage(),
+  );
+  static final _elfRoute = GoRoute(
+    name: elf,
+    path: 'elf',
+    builder: (ctx, state) => const ElfPage(),
+  );
+  static final _settingsRoute = GoRoute(
+    name: settings,
+    path: 'settings',
+    builder: (ctx, state) => SettingsPage(focus: state.uri.queryParameters['f']),
+  );
 
-  static final _chartRoute = _createRoute('chart', [
-    GoRoute(
-      name: chartNew,
-      path: 'create',
-      pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChartModal()),
-    ),
-    GoRoute(
-      name: chartModal,
-      path: 'update/:id',
-      pageBuilder: (ctx, state) {
-        final id = state.pathParameters['id']!;
-        final chart = Analysis.instance.getItem(id);
-        return MaterialDialogPage(child: ChartModal(chart: chart));
-      },
-    ),
-    GoRoute(
-      name: chartReorder,
-      path: 'reorder',
-      builder: (ctx, state) => const ChartReorder(),
-    ),
-  ]);
+  // ==================== Other routes ====================
 
-  static final _ingredientRoute = _createRoute('ingredient', [
+  static final _routes = [
+    _createPrefixRoute('chart', 'anal', [
+      GoRoute(
+        name: chartCreate,
+        path: 'create',
+        pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChartModal()),
+      ),
+      GoRoute(
+        name: chartUpdate,
+        path: 'update/:id',
+        pageBuilder: (ctx, state) {
+          final id = state.pathParameters['id']!;
+          final chart = Analysis.instance.getItem(id);
+          return MaterialDialogPage(child: ChartModal(chart: chart));
+        },
+      ),
+      GoRoute(
+        name: chartReorder,
+        path: 'reorder',
+        builder: (ctx, state) => const ChartReorder(),
+      ),
+    ]),
+    _createPrefixRoute('ingredient', 'stock', [
+      GoRoute(
+        name: ingredientCreate,
+        path: 'create',
+        pageBuilder: (ctx, state) => const MaterialDialogPage(child: StockIngredientModal()),
+      ),
+      GoRoute(
+        name: ingredientUpdate,
+        path: 'update/:id',
+        pageBuilder: (ctx, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return MaterialDialogPage(child: StockIngredientModal(ingredient: Stock.instance.getItem(id)));
+        },
+      ),
+      GoRoute(
+        name: ingredientRestock,
+        path: 'restock/:id',
+        pageBuilder: (ctx, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return MaterialDialogPage(child: StockIngredientRestockModal(ingredient: Stock.instance.getItem(id)));
+        },
+      ),
+    ]),
     GoRoute(
-      name: ingredientNew,
-      path: 'create',
-      pageBuilder: (ctx, state) => const MaterialDialogPage(child: StockIngredientModal()),
-    ),
-    GoRoute(
-      name: ingredientModal,
-      path: 'update/:id',
-      pageBuilder: (ctx, state) {
-        final id = state.pathParameters['id'] ?? '';
-        return MaterialDialogPage(child: StockIngredientModal(ingredient: Stock.instance.getItem(id)));
-      },
-    ),
-    GoRoute(
-      name: ingredientRestockModal,
-      path: 'restock/:id',
-      pageBuilder: (ctx, state) {
-        final id = state.pathParameters['id'] ?? '';
-        return MaterialDialogPage(child: StockIngredientRestockModal(ingredient: Stock.instance.getItem(id)));
-      },
-    ),
-    GoRoute(
-      name: replenishment,
+      name: replenish,
       path: 'replenish',
       builder: (ctx, state) => const ReplenishmentPage(),
       routes: [
         GoRoute(
-          name: replenishmentNew,
+          name: replenishCreate,
           path: 'create',
           builder: (ctx, state) => const ReplenishmentModal(),
         ),
         GoRoute(
-          name: replenishmentModal,
+          name: replenishUpdate,
           path: 'update/:id',
           pageBuilder: (ctx, state) {
             final id = state.pathParameters['id'] ?? '';
@@ -258,12 +272,9 @@ class Routes {
           },
         ),
         GoRoute(
-          name: replenishmentApply,
+          name: replenishApply,
           path: 'apply/:id',
-          redirect: (context, state) {
-            final id = state.pathParameters['id'];
-            return id != null && Replenisher.instance.hasItem(id) ? null : '$base/stock';
-          },
+          redirect: _redirectIfMissed(path: '/stock', hasItem: (id) => Replenisher.instance.hasItem(id)),
           builder: (ctx, state) {
             final id = state.pathParameters['id']!;
             return ReplenishmentApply(Replenisher.instance.getItem(id)!);
@@ -271,62 +282,54 @@ class Routes {
         ),
       ],
     ),
-  ]);
+    _createPrefixRoute('menu/catalog', 'menu', [
+      GoRoute(
+        name: menuCatalogCreate,
+        path: 'create',
+        pageBuilder: (ctx, state) {
+          final id = state.uri.queryParameters['id'];
+          final c = id == null ? null : Menu.instance.getItem(id);
 
-  static final _menuCatalogRoute = _createRoute('menu/catalog', [
-    GoRoute(
-      name: menuCatalogNew,
-      path: 'create',
-      pageBuilder: (ctx, state) {
-        final id = state.uri.queryParameters['id'];
-        final c = id == null ? null : Menu.instance.getItem(id);
-
-        if (c == null) {
-          return const MaterialDialogPage(child: CatalogModal());
-        }
-        return MaterialDialogPage(child: ProductModal(catalog: c));
-      },
-    ),
-    GoRoute(
-      name: menuCatalogModal,
-      path: 'update/:id',
-      pageBuilder: (ctx, state) => MaterialDialogPage(
-        child: CatalogModal(
-          catalog: Menu.instance.getItem(state.pathParameters['id'] ?? ''),
+          if (c == null) {
+            return const MaterialDialogPage(child: CatalogModal());
+          }
+          return MaterialDialogPage(child: ProductModal(catalog: c));
+        },
+      ),
+      GoRoute(
+        name: menuCatalogUpdate,
+        path: 'update/:id',
+        pageBuilder: (ctx, state) => MaterialDialogPage(
+          child: CatalogModal(
+            catalog: Menu.instance.getItem(state.pathParameters['id'] ?? ''),
+          ),
         ),
       ),
-    ),
-    GoRoute(
-      name: menuCatalogReorder,
-      path: 'reorder',
-      builder: (ctx, state) => const CatalogReorder(),
-    ),
-  ]);
-  static final _menuProductRoute = _createRoute('menu/product', [
+      GoRoute(
+        name: menuCatalogReorder,
+        path: 'reorder',
+        builder: (ctx, state) => const CatalogReorder(),
+      ),
+    ]),
     GoRoute(
       name: menuProductReorder,
-      path: 'reorder/:id',
-      redirect: _redirectIfMissed(
-        path: '/menu',
-        hasItem: (id) => Menu.instance.hasItem(id),
-      ),
+      // avoid conflict with product/:id
+      path: 'menu/product_reorder/:id',
+      redirect: _redirectIfMissed(path: '/menu', hasItem: (id) => Menu.instance.hasItem(id)),
       builder: (ctx, state) => ProductReorder(
         Menu.instance.getItem(state.pathParameters['id']!)!,
       ),
     ),
     GoRoute(
       name: menuProduct,
-      path: 'detail/:id',
-      redirect: _redirectIfMissed(
-        path: '/menu',
-        hasItem: (id) => Menu.instance.getProduct(id) != null,
-      ),
+      path: 'menu/product/:id',
+      redirect: _redirectIfMissed(path: '/menu', hasItem: (id) => Menu.instance.getProduct(id) != null),
       builder: (ctx, state) => ProductPage(
         product: Menu.instance.getProduct(state.pathParameters['id']!)!,
       ),
       routes: [
         GoRoute(
-          name: menuProductModal,
+          name: menuProductUpdate,
           path: 'update',
           pageBuilder: (ctx, state) {
             // verified for parent
@@ -335,8 +338,8 @@ class Routes {
           },
         ),
         GoRoute(
-          name: menuProductDetails,
-          path: 'updateChild',
+          name: menuProductUpdateIngredient,
+          path: 'updateDetails',
           pageBuilder: (ctx, state) {
             // verified for parent
             final p = Menu.instance.getProduct(state.pathParameters['id']!)!;
@@ -355,33 +358,23 @@ class Routes {
           },
         ),
         GoRoute(
-          name: menuIngredientReorder,
+          name: menuProductReorderIngredient,
           path: 'reorder',
-          redirect: _redirectIfMissed(
-            path: '/menu',
-            hasItem: (id) => Menu.instance.getProduct(id) != null,
-          ),
           builder: (ctx, state) => ProductIngredientReorder(
             Menu.instance.getProduct(state.pathParameters['id']!)!,
           ),
         ),
       ],
     ),
-  ]);
-
-  static final _quantitiesRoute = GoRoute(
-    name: quantity,
-    path: 'quantities',
-    builder: (ctx, state) => QuantityPage(withScaffold: state.extra == 'withScaffold'),
-    routes: [
+    _createPrefixRoute('quantity', 'quantities', [
       GoRoute(
-        name: quantityNew,
-        path: 'new',
-        builder: (ctx, state) => const StockQuantityModal(),
+        name: quantityCreate,
+        path: 'create',
+        pageBuilder: (ctx, state) => const MaterialDialogPage(child: StockQuantityModal()),
       ),
       GoRoute(
-        name: quantityModal,
-        path: 'q/:id/modal',
+        name: quantityUpdate,
+        path: 'update/:id',
         pageBuilder: (ctx, state) {
           final id = state.pathParameters['id'] ?? '';
           return MaterialDialogPage(
@@ -389,17 +382,11 @@ class Routes {
           );
         },
       ),
-    ],
-  );
-
-  static final _orderAttrRoute = GoRoute(
-    name: orderAttr,
-    path: 'oa',
-    builder: (ctx, state) => OrderAttributePage(withScaffold: state.extra == 'withScaffold'),
-    routes: [
+    ]),
+    _createPrefixRoute('oa', 'oas', [
       GoRoute(
-        name: orderAttrNew,
-        path: 'new',
+        name: orderAttrCreate,
+        path: 'create',
         pageBuilder: (ctx, state) {
           final id = state.uri.queryParameters['id'];
           final oa = id == null ? null : OrderAttributes.instance.getItem(id);
@@ -411,8 +398,8 @@ class Routes {
         },
       ),
       GoRoute(
-        name: orderAttrModal,
-        path: 'a/:id/modal',
+        name: orderAttrUpdate,
+        path: 'update/:id',
         pageBuilder: (ctx, state) {
           final id = state.pathParameters['id'];
           final oid = state.uri.queryParameters['oid'];
@@ -426,12 +413,14 @@ class Routes {
         },
       ),
       GoRoute(
-        name: orderAttrOptionReorder,
-        path: 'a/:id/reorder',
-        redirect: _redirectIfMissed(
-          path: '/oa',
-          hasItem: (id) => OrderAttributes.instance.hasItem(id),
-        ),
+        name: orderAttrReorder,
+        path: 'reorder',
+        builder: (ctx, state) => const OrderAttributeReorder(),
+      ),
+      GoRoute(
+        name: orderAttrReorderOption,
+        path: 'reorder/:id',
+        redirect: _redirectIfMissed(path: '/oa', hasItem: (id) => OrderAttributes.instance.hasItem(id)),
         builder: (ctx, state) {
           return OrderAttributeOptionReorder(
             attribute: OrderAttributes.instance.getItem(
@@ -440,72 +429,49 @@ class Routes {
           );
         },
       ),
-      GoRoute(
-        name: orderAttrReorder,
-        path: 'reorder',
-        builder: (ctx, state) => const OrderAttributeReorder(),
-      ),
-    ],
-  );
-
-  static final _transitRoute = GoRoute(
-    name: transit,
-    path: 'transit',
-    builder: (ctx, state) => TransitPage(withScaffold: state.extra == 'withScaffold'),
-    routes: [
-      GoRoute(
-        name: transitStation,
-        path: 's/:method/:type',
-        builder: (ctx, state) {
-          final method = _findEnum(
-            TransitMethod.values,
-            state.pathParameters['method'],
-            TransitMethod.plainText,
-          );
-          final type = _findEnum(
-            TransitCatalog.values,
-            state.pathParameters['type'],
-            TransitCatalog.model,
-          );
-          final range = _parseRange(state.uri.queryParameters['range']);
-
-          return TransitStation(
-            method: method,
-            catalog: type,
-            range: range,
-          );
-        },
-      ),
-    ],
-  );
-
-  static final _elfRoute = GoRoute(
-    name: elf,
-    path: 'elf',
-    builder: (ctx, state) => FeatureRequestPage(withScaffold: state.extra == 'withScaffold'),
-  );
-
-  static final _settingsRoute = GoRoute(
-    name: settings,
-    path: 'settings',
-    builder: (ctx, state) => FeaturesPage(
-      focus: state.uri.queryParameters['f'],
-      withScaffold: state.extra == 'withScaffold',
+    ]),
+    GoRoute(
+      name: cashierChanger,
+      path: 'cashier/changer',
+      pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChangerModal()),
     ),
-    routes: [
-      GoRoute(
-        name: settingsChoices,
-        path: ':feature',
-        builder: (ctx, state) {
-          final f = state.pathParameters['feature'];
-          final feature = Feature.values.firstWhereOrNull((e) => e.name == f) ?? Feature.theme;
-          return ItemListScaffold(feature: feature);
-        },
-      ),
-    ],
-  );
+    GoRoute(
+      name: cashierSurplus,
+      path: 'cashier/surplus',
+      builder: (ctx, state) => const CashierSurplus(),
+    ),
+    GoRoute(
+      name: transitStation,
+      path: 'transit/:method/:type',
+      builder: (ctx, state) {
+        final method = _findEnum(
+          TransitMethod.values,
+          state.pathParameters['method'],
+          TransitMethod.plainText,
+        );
+        final type = _findEnum(
+          TransitCatalog.values,
+          state.pathParameters['type'],
+          TransitCatalog.model,
+        );
+        final range = _parseRange(state.uri.queryParameters['range']);
 
-  static final _others = [
+        return TransitStation(
+          method: method,
+          catalog: type,
+          range: range,
+        );
+      },
+    ),
+    GoRoute(
+      name: settingsFeature,
+      path: 'settings/:feature',
+      builder: (ctx, state) {
+        final f = state.pathParameters['feature'];
+        final feature = Feature.values.firstWhereOrNull((e) => e.name == f) ?? Feature.theme;
+        return ItemListScaffold(feature: feature);
+      },
+    ),
     GoRoute(
       name: order,
       path: 'order',
@@ -520,75 +486,70 @@ class Routes {
     ),
     GoRoute(
       name: history,
-      path: 'history/o',
+      path: 'history',
       builder: (ctx, state) => const HistoryPage(),
-    ),
-    GoRoute(
-      name: historyModal,
-      path: 'history/o/:id/modal',
-      pageBuilder: (ctx, state) => MaterialDialogPage(
-        child: HistoryOrderModal(int.tryParse(state.pathParameters['id'] ?? '0') ?? 0),
-      ),
+      routes: [
+        GoRoute(
+          name: historyOrder,
+          path: 'order/:id',
+          pageBuilder: (ctx, state) => MaterialDialogPage(
+            child: HistoryOrderModal(int.tryParse(state.pathParameters['id'] ?? '0') ?? 0),
+          ),
+        )
+      ],
     ),
     GoRoute(
       name: imageGallery,
-      path: 'image_gallery',
+      path: 'imageGallery',
       // TODO: use dialog
       builder: (ctx, state) => const ImageGalleryPage(),
     ),
   ];
 
-  static const menu = '/menu';
-  static const menuCatalogNew = '/menu/new';
-  static const menuSearch = '/menu/search';
-  static const menuCatalogModal = '/menu/catalog/modal';
-  static const menuCatalogReorder = '/menu/catalog/reorder';
-  static const menuProduct = '/menu/product';
-  static const menuProductModal = '/menu/product/modal';
-  static const menuProductReorder = '/menu/product/reorder';
-  static const menuProductDetails = '/menu/product/details';
-  static const menuIngredientReorder = '/menu/ingredient/reorder';
+  // ==================== Route names ====================
 
-  static const history = '/history/order';
-  static const historyModal = '/history/order/modal';
-
-  static const orderAttr = '/oa';
-  static const orderAttrNew = '/oa/new';
-  static const orderAttrModal = '/oa/modal';
-  static const orderAttrReorder = '/oa/reorder';
-  static const orderAttrOptionReorder = '/oa/option/reorder';
-
-  static const stock = '/stock';
-  static const ingredientNew = '/stock/new';
-  static const ingredientModal = '/stock/ingredient/modal';
-  static const ingredientRestockModal = '/stock/ingredient/restock/modal';
-  static const quantity = '/stock/quantities';
-  static const quantityNew = '/stock/quantity/new';
-  static const quantityModal = '/stock/quantity/modal';
-  static const replenishment = '/stock/repl';
-  static const replenishmentNew = '/stock/repl/new';
-  static const replenishmentModal = '/stock/repl/modal';
-  static const replenishmentApply = '/stock/repl/apply';
-
-  static const cashier = '/cashier';
-  static const cashierChanger = '/cashier/changer';
-  static const cashierSurplus = '/cashier/surplus';
-
-  static const order = '/order';
-  static const orderDetails = '/order/details';
-
-  static const anal = '/anal';
-  static const chartNew = '/chart/order/new';
-  static const chartModal = '/chart/order/modal';
-  static const chartReorder = '/chart/reorder';
-
-  static const transit = '/transit';
-  static const transitStation = '/transit/station';
-
-  static const elf = '/elf';
-  static const imageGallery = '/image_gallery';
-  static const settings = '/settings';
-  static const settingsChoices = '/settings/choices';
+  static const menu = 'menu';
+  static const menuCatalogCreate = 'menu.catalog.create';
+  static const menuCatalogUpdate = 'menu.catalog.update';
+  static const menuCatalogReorder = 'menu.catalog.reorder';
+  static const menuProduct = 'menu.product';
+  static const menuProductUpdate = 'menu.product.update';
+  static const menuProductReorder = 'menu.product.reorder';
+  static const menuProductUpdateIngredient = 'menu.product.update.ingredient';
+  static const menuProductReorderIngredient = 'menu.product.reorder.ingredient';
+  static const orderAttr = 'oa';
+  static const orderAttrCreate = 'oa.create';
+  static const orderAttrUpdate = 'oa.update';
+  static const orderAttrReorder = 'oa.reorder';
+  static const orderAttrReorderOption = 'oa.reorder.option';
+  static const stock = 'stock';
+  static const ingredientCreate = 'ingredient.create';
+  static const ingredientUpdate = 'ingredient.update';
+  static const ingredientRestock = 'ingredient.restock';
+  static const quantities = 'quantity';
+  static const quantityCreate = 'quantity.create';
+  static const quantityUpdate = 'quantity.update';
+  static const replenish = 'repl';
+  static const replenishCreate = 'repl.create';
+  static const replenishUpdate = 'repl.update';
+  static const replenishApply = 'repl.apply';
+  static const cashier = 'cashier';
+  static const cashierChanger = 'cashier.changer';
+  static const cashierSurplus = 'cashier.surplus';
+  static const order = 'order';
+  static const orderDetails = 'order.details';
+  static const history = 'history';
+  static const historyOrder = 'history.order';
+  static const anal = 'anal';
+  static const chartCreate = 'chart.create';
+  static const chartUpdate = 'chart.update';
+  static const chartReorder = 'chart.reorder';
+  static const transit = 'transit';
+  static const transitStation = 'transit.station';
+  static const elf = 'elf';
+  static const imageGallery = 'imageGallery';
+  static const settings = 'settings';
+  static const settingsFeature = 'settings.feature';
 }
 
 T _findEnum<T extends Enum>(Iterable<T> values, String? path, T other) {
@@ -618,11 +579,17 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
   };
 }
 
-GoRoute _createRoute(String path, List<RouteBase> routes) {
+GoRoute _createPrefixRoute(String path, String redirect, List<RouteBase> routes) {
   return GoRoute(
     name: '_$path',
     path: path,
-    redirect: (context, state) => state.name == '_$path' ? '${Routes.base}/anal' : null,
+    redirect: (context, state) => state.name == '_$path' ? '${Routes.base}/$redirect' : null,
     routes: routes,
   );
+}
+
+enum HomeMode {
+  bottomNavigationBar,
+  drawer,
+  rail,
 }

@@ -10,9 +10,7 @@ import 'package:possystem/translator.dart';
 import 'transit_station.dart';
 
 class TransitPage extends StatefulWidget {
-  final bool withScaffold;
-
-  const TransitPage({super.key, this.withScaffold = true});
+  const TransitPage({super.key});
 
   @override
   State<TransitPage> createState() => _TransitPageState();
@@ -67,7 +65,7 @@ class _TransitPageState extends State<TransitPage> {
       child: SizedBox(height: double.infinity, child: list),
     );
 
-    return widget.withScaffold
+    return Routes.homeMode.value == HomeMode.bottomNavigationBar
         ? Scaffold(
             appBar: AppBar(
               title: Text(S.transitTitle),

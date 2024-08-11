@@ -16,7 +16,7 @@ class ReplenishmentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void goToCreate() => context.pushNamed(Routes.replenishmentNew);
+    void goToCreate() => context.pushNamed(Routes.replenishCreate);
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +51,7 @@ class ReplenishmentPage extends StatelessWidget {
     void handler(Replenishment item, _Actions action) async {
       if (action == _Actions.apply) {
         final confirmed = await context.pushNamed<bool>(
-          Routes.replenishmentApply,
+          Routes.replenishApply,
           pathParameters: {'id': item.id},
         );
 
@@ -73,7 +73,7 @@ class ReplenishmentPage extends StatelessWidget {
           BottomSheetAction(
             title: Text(S.stockReplenishmentTitleUpdate),
             leading: const Icon(KIcons.edit),
-            route: Routes.replenishmentModal,
+            route: Routes.replenishUpdate,
             routePathParameters: {'id': item.id},
           ),
           BottomSheetAction(

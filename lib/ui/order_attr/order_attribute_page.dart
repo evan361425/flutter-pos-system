@@ -12,9 +12,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_tile.dart';
 
 class OrderAttributePage extends StatelessWidget {
-  final bool withScaffold;
-
-  const OrderAttributePage({super.key, this.withScaffold = true});
+  const OrderAttributePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,7 @@ class OrderAttributePage extends StatelessWidget {
       builder: (context, child) => Center(child: _buildBody()),
     );
 
-    if (withScaffold) {
+    if (Routes.homeMode.value == HomeMode.bottomNavigationBar) {
       return Scaffold(
         appBar: AppBar(
           title: Text(S.orderAttributeTitle),
@@ -40,7 +38,7 @@ class OrderAttributePage extends StatelessWidget {
     if (OrderAttributes.instance.isEmpty) {
       return EmptyBody(
         content: S.orderAttributeEmptyBody,
-        routeName: Routes.orderAttrNew,
+        routeName: Routes.orderAttrCreate,
       );
     }
 
@@ -66,7 +64,7 @@ class OrderAttributePage extends StatelessWidget {
           key: const Key('order_attributes.add'),
           icon: const Icon(KIcons.add),
           label: S.orderAttributeTitleCreate,
-          route: Routes.orderAttrNew,
+          route: Routes.orderAttrCreate,
         ),
       ]),
     );

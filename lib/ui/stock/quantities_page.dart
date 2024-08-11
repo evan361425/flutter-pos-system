@@ -9,10 +9,8 @@ import 'package:possystem/translator.dart';
 
 import 'widgets/stock_quantity_list.dart';
 
-class QuantityPage extends StatelessWidget {
-  final bool withScaffold;
-
-  const QuantityPage({super.key, this.withScaffold = true});
+class QuantitiesPage extends StatelessWidget {
+  const QuantitiesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class QuantityPage extends StatelessWidget {
       builder: (context, child) => Center(child: _buildBody(context)),
     );
 
-    return withScaffold
+    return Routes.homeMode.value == HomeMode.bottomNavigationBar
         ? Scaffold(
             appBar: AppBar(
               title: Text(S.stockQuantityTitle),
@@ -36,7 +34,7 @@ class QuantityPage extends StatelessWidget {
     if (Quantities.instance.isEmpty) {
       return EmptyBody(
         content: S.stockQuantityEmptyBody,
-        routeName: Routes.quantityNew,
+        routeName: Routes.quantityCreate,
       );
     }
 
@@ -44,7 +42,7 @@ class QuantityPage extends StatelessWidget {
       quantities: Quantities.instance.itemList,
       tailing: RouteElevatedIconButton(
         key: const Key('quantity.add'),
-        route: Routes.quantityNew,
+        route: Routes.quantityCreate,
         label: S.stockQuantityTitleCreate,
         icon: const Icon(KIcons.add),
       ),

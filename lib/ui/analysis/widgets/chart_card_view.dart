@@ -239,7 +239,7 @@ class _MoreButton extends StatelessWidget {
         BottomSheetAction(
           title: Text(S.analysisChartCardTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.chartModal,
+          route: Routes.chartUpdate,
           routePathParameters: {'id': chart.id},
         ),
       ],

@@ -33,7 +33,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       return Center(
         child: EmptyBody(
           content: S.stockIngredientEmptyBody,
-          routeName: Routes.ingredientNew,
+          routeName: Routes.ingredientCreate,
         ),
       );
     }
@@ -56,7 +56,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
                 key: const Key('stock.add'),
                 icon: const Icon(KIcons.add),
                 label: Text(S.stockIngredientTitleCreate),
-                onPressed: () => context.pushNamed(Routes.ingredientNew),
+                onPressed: () => context.pushNamed(Routes.ingredientCreate),
               ),
             ]);
           },
@@ -95,7 +95,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
         child: RouteIconButton(
           key: const Key('stock.replenisher'),
           icon: const Icon(Icons.shopping_basket_sharp),
-          route: Routes.replenishment,
+          route: Routes.replenish,
           popTrueShowSuccess: true,
           label: S.stockReplenishmentButton,
         ),

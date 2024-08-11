@@ -46,7 +46,7 @@ class MenuCatalogList extends StatelessWidget {
             title: Text(S.menuCatalogTitleUpdate),
             leading: const Icon(KIcons.modal),
             routePathParameters: {'id': catalog.id},
-            route: Routes.menuCatalogModal,
+            route: Routes.menuCatalogUpdate,
           ),
           BottomSheetAction(
             title: Text(S.menuProductTitleReorder),

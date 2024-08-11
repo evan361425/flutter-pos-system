@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
-class FeatureRequestPage extends StatelessWidget {
-  final bool withScaffold;
-
-  const FeatureRequestPage({super.key, this.withScaffold = true});
+class ElfPage extends StatelessWidget {
+  const ElfPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class FeatureRequestPage extends StatelessWidget {
       ),
     );
 
-    return withScaffold
+    return Routes.homeMode.value == HomeMode.bottomNavigationBar
         ? Scaffold(
             appBar: AppBar(leading: const PopButton()),
             body: child,

@@ -11,7 +11,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/stock/quantity_page.dart';
+import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
@@ -35,7 +35,7 @@ void main() {
             GoRoute(
               path: '/',
               routes: Routes.routes,
-              builder: (_, __) => const QuantityPage(),
+              builder: (_, __) => const QuantitiesPage(),
             )
           ]),
         ),
@@ -73,7 +73,7 @@ void main() {
             GoRoute(
               path: '/',
               routes: Routes.routes,
-              builder: (_, __) => const QuantityPage(),
+              builder: (_, __) => const QuantitiesPage(),
             )
           ]),
         ),
@@ -136,7 +136,7 @@ void main() {
             GoRoute(
               path: '/',
               routes: Routes.routes,
-              builder: (_, __) => const QuantityPage(),
+              builder: (_, __) => const QuantitiesPage(),
             )
           ]),
         ),

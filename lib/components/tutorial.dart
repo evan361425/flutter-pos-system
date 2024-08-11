@@ -100,12 +100,15 @@ class Tutorial extends StatelessWidget {
       ),
       content: SpotlightContent(
         fontSize: theme.textTheme.titleMedium!.fontSize,
-        child: Column(children: [
-          if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
-          const SizedBox(height: 16),
-          Linkify.fromString(message, id: id),
-          if (below != null) below!,
-        ]),
+        child: SizedBox(
+          width: 500,
+          child: Column(children: [
+            if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
+            const SizedBox(height: 16),
+            Linkify.fromString(message, id: id),
+            if (below != null) below!,
+          ]),
+        ),
       ),
       child: child,
     );

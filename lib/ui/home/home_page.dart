@@ -238,11 +238,18 @@ class _Nested extends StatelessWidget {
 class _FAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
-      key: const Key('home.order'),
-      onPressed: () => context.pushNamed(Routes.order),
-      icon: const Icon(Icons.store_sharp),
-      label: Text(S.orderBtn),
+    return Tutorial(
+      id: 'home.order',
+      index: 99,
+      spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
+      title: S.orderTutorialTitle,
+      message: S.orderTutorialContent,
+      child: FloatingActionButton.extended(
+        key: const Key('home.order'),
+        onPressed: () => context.pushNamed(Routes.order),
+        icon: const Icon(Icons.store_sharp),
+        label: Text(S.orderBtn),
+      ),
     );
   }
 }
@@ -340,10 +347,4 @@ enum HomeTab {
     required this.selectedIcon,
     this.important = false,
   });
-}
-
-enum HomeMode {
-  bottomNavigationBar,
-  drawer,
-  rail,
 }

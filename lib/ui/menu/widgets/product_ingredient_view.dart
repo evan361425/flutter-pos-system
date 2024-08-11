@@ -37,7 +37,7 @@ class ProductIngredientView extends StatelessWidget {
               key: Key('$key.add'),
               icon: const Icon(KIcons.add),
               label: S.menuQuantityTitleCreate,
-              route: Routes.menuProductDetails,
+              route: Routes.menuProductUpdateIngredient,
               pathParameters: {'id': ingredient.product.id},
               queryParameters: {'iid': ingredient.id, 'qid': ''},
             ),
@@ -61,7 +61,7 @@ class ProductIngredientView extends StatelessWidget {
         BottomSheetAction(
           title: Text(S.menuIngredientTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.menuProductDetails,
+          route: Routes.menuProductUpdateIngredient,
           routePathParameters: {'id': ingredient.product.id},
           routeQueryParameters: {'iid': ingredient.id},
         ),
@@ -98,7 +98,7 @@ class _QuantityTile extends StatelessWidget {
           deleteCallback: _remove,
         ),
         onTap: () => context.pushNamed(
-          Routes.menuProductDetails,
+          Routes.menuProductUpdateIngredient,
           pathParameters: {'id': quantity.ingredient.product.id},
           queryParameters: {
             'iid': quantity.ingredient.id,

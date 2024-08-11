@@ -109,7 +109,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
                   child: RouteElevatedIconButton(
                     key: const Key('anal.add_chart'),
                     icon: const Icon(KIcons.add),
-                    route: Routes.chartNew,
+                    route: Routes.chartCreate,
                     label: S.analysisChartTitleCreate,
                   ),
                 ),
@@ -183,7 +183,7 @@ class _MoreButton extends StatelessWidget {
           BottomSheetAction(
             title: Text(S.analysisChartTitleCreate),
             leading: const Icon(KIcons.add),
-            route: Routes.chartNew,
+            route: Routes.chartCreate,
           ),
         ],
       ),

@@ -42,7 +42,7 @@ class StockIngredientListTile extends StatelessWidget {
 
   void editIngredient(BuildContext context) {
     context.pushNamed(
-      Routes.ingredientModal,
+      Routes.ingredientUpdate,
       pathParameters: {'id': item.id},
     );
   }
@@ -66,7 +66,7 @@ class StockIngredientListTile extends StatelessWidget {
           key: const Key('btn.edit'),
           title: Text(S.stockIngredientTitleUpdate),
           leading: const Icon(KIcons.edit),
-          route: Routes.ingredientModal,
+          route: Routes.ingredientUpdate,
           routePathParameters: {'id': item.id},
         ),
       ],
@@ -167,7 +167,7 @@ class _RestockDialogState extends State<_RestockDialog> {
       return Center(
         child: EmptyBody(
           content: S.stockIngredientRestockDialogPriceEmptyBody,
-          routeName: Routes.ingredientRestockModal,
+          routeName: Routes.ingredientRestock,
           pathParameters: {'id': widget.ingredient.id},
         ),
       );
@@ -203,7 +203,7 @@ class _RestockDialogState extends State<_RestockDialog> {
         subtitle: Text(S.stockIngredientRestockDialogSubtitle),
         trailing: IconButton(
           icon: const Icon(KIcons.edit),
-          onPressed: () => context.pushNamed(Routes.ingredientRestockModal, pathParameters: {
+          onPressed: () => context.pushNamed(Routes.ingredientRestock, pathParameters: {
             'id': widget.ingredient.id,
           }),
         ),

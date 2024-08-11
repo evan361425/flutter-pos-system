@@ -219,7 +219,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
           // pop off search page
           Navigator.of(context).pop();
           context.pushNamed(
-            Routes.quantityModal,
+            Routes.quantityUpdate,
             pathParameters: {'id': quantity.id},
           );
         },

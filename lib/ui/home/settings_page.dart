@@ -13,19 +13,15 @@ import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/home/widgets/feature_slider.dart';
 import 'package:possystem/ui/home/widgets/feature_switch.dart';
 
-class FeaturesPage extends StatelessWidget {
-  final bool withScaffold;
+class SettingsPage extends StatelessWidget {
   final String? focus;
 
-  const FeaturesPage({
+  const SettingsPage({
     super.key,
-    this.withScaffold = true,
     this.focus,
   });
 
@@ -34,7 +30,7 @@ class FeaturesPage extends StatelessWidget {
     const flavor = String.fromEnvironment('appFlavor');
 
     void navigateTo(Feature feature) {
-      context.pushNamed(Routes.settingsChoices, pathParameters: {'feature': feature.name});
+      context.pushNamed(Routes.settingsFeature, pathParameters: {'feature': feature.name});
     }
 
     final body = ListView(children: <Widget>[
@@ -90,31 +86,12 @@ class FeaturesPage extends StatelessWidget {
       ),
       const Divider(),
       ListTile(
-        key: const Key('feature.order_outlook'),
-        leading: const Icon(Icons.library_books_outlined),
-        title: Text(S.settingOrderOutlookTitle),
-        subtitle: Text(S.settingOrderOutlookName(OrderOutlookSetting.instance.value.name)),
-        trailing: const Icon(Icons.arrow_forward_ios_sharp),
-        onTap: () => navigateTo(Feature.orderOutlook),
-      ),
-      ListTile(
         key: const Key('feature.checkout_warning'),
         leading: const Icon(Icons.store_mall_directory_outlined),
         title: Text(S.settingCheckoutWarningTitle),
         subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
         trailing: const Icon(Icons.arrow_forward_ios_sharp),
         onTap: () => navigateTo(Feature.checkoutWarning),
-      ),
-      // TODO: After using RWD, this feature is not necessary
-      FeatureSlider(
-        sliderKey: const Key('feature.order_product_count'),
-        title: S.settingOrderProductCountTitle,
-        value: OrderProductAxisCountSetting.instance.value,
-        max: 5,
-        autofocus: focus == 'orderProductCount',
-        minLabel: S.settingOrderProductCountMinLabel,
-        hintText: S.settingOrderProductCountHint,
-        onChanged: (value) => OrderProductAxisCountSetting.instance.update(value),
       ),
       ListTile(
         leading: const Icon(Icons.remove_red_eye_outlined),
@@ -141,7 +118,7 @@ class FeaturesPage extends StatelessWidget {
       ),
     ]);
 
-    return withScaffold
+    return Routes.homeMode.value == HomeMode.bottomNavigationBar
         ? Scaffold(
             appBar: AppBar(leading: const PopButton()),
             body: body,

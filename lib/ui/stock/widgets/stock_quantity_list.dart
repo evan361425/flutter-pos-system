@@ -35,7 +35,7 @@ class StockQuantityList extends StatelessWidget {
             key: const Key('btn.edit'),
             title: Text(S.menuQuantityTitleUpdate),
             leading: const Icon(KIcons.edit),
-            route: Routes.quantityModal,
+            route: Routes.quantityUpdate,
             routePathParameters: {'id': quantity.id},
           ),
         ],
@@ -72,7 +72,7 @@ class _Tile extends StatelessWidget {
       trailing: EntryMoreButton(onPressed: actor),
       onLongPress: actor,
       onTap: () => context.pushNamed(
-        Routes.quantityModal,
+        Routes.quantityUpdate,
         pathParameters: {'id': item.id},
       ),
     );
