@@ -46,7 +46,6 @@ class CashierView extends StatelessWidget {
         const SizedBox(width: kInternalSpacing),
         Tutorial(
           id: 'cashier.default',
-          index: 2,
           title: S.cashierToDefaultTutorialTitle,
           message: S.cashierToDefaultTutorialContent,
           child: RouteIconButton(
@@ -62,7 +61,6 @@ class CashierView extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(6.0)),
           child: Row(children: [
             Tutorial(
-              index: 1,
               id: 'cashier.change',
               title: S.cashierChangerTutorialTitle,
               message: S.cashierChangerTutorialContent,
@@ -76,7 +74,6 @@ class CashierView extends StatelessWidget {
             ),
             const SizedBox(height: 28, child: VerticalDivider()),
             Tutorial(
-              index: 0,
               id: 'cashier.surplus',
               title: S.cashierSurplusTutorialTitle,
               message: S.cashierSurplusTutorialContent,

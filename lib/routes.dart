@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/dialog/dialog_page.dart';
+import 'package:possystem/constants/constant.dart';
+import 'package:possystem/debug/debug_page.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -71,10 +73,11 @@ class Routes {
   /// Get the initial location of the app.
   ///
   /// if the user is new, redirect to menu page
-  static get initLocation =>
-      homeMode.value == HomeMode.bottomNavigationBar && Cache.instance.get<bool>('tutorial.home.menu') != true
+  static get initLocation => Cache.instance.get<bool>('tutorial.home.order') != true
+      ? homeMode.value == HomeMode.bottomNavigationBar
           ? '$base/others'
-          : base;
+          : '$base/menu'
+      : base;
 
   /// Get the desired route config based on the width
   static RoutingConfig getDesiredRoute(double width) {
@@ -115,6 +118,7 @@ class Routes {
             ]),
           ],
         ),
+        _debugRoute,
         _menuRoute,
         _quantitiesRoute,
         _orderAttrsRoute,
@@ -144,6 +148,7 @@ class Routes {
             StatefulShellBranch(routes: [_transitRoute]),
             StatefulShellBranch(routes: [_elfRoute]),
             StatefulShellBranch(routes: [_settingsRoute]),
+            if (!isProd) StatefulShellBranch(routes: [_debugRoute]),
           ],
         ),
         ..._routes,
@@ -202,6 +207,11 @@ class Routes {
     name: settings,
     path: 'settings',
     builder: (ctx, state) => SettingsPage(focus: state.uri.queryParameters['f']),
+  );
+  static final _debugRoute = GoRoute(
+    name: 'debug',
+    path: 'debug',
+    builder: (ctx, state) => const DebugPage(),
   );
 
   // ==================== Other routes ====================

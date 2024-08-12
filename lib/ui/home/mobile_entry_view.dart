@@ -4,14 +4,11 @@ import 'package:possystem/components/style/footer.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/debug/debug_page.dart';
-import 'package:possystem/helpers/setup_example.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
-import 'package:spotlight_ant/spotlight_ant.dart';
 
 class MobileEntryView extends StatefulWidget {
   const MobileEntryView({super.key});
@@ -21,9 +18,6 @@ class MobileEntryView extends StatefulWidget {
 }
 
 class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAliveClientMixin {
-  final GlobalKey<_TutorialCheckboxListTileState> _tutorialOrderAttrs = GlobalKey();
-  final GlobalKey<_TutorialCheckboxListTileState> _tutorialMenu = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -32,28 +26,14 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
       body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
         const _HeaderInfoList(),
         if (!isProd)
-          ListTile(
-            key: const Key('setting.debug'),
-            leading: const Icon(Icons.bug_report_sharp),
-            title: const Text('Debug'),
-            subtitle: const Text('For developer only'),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const DebugPage()),
-            ),
+          _buildRouteTile(
+            id: 'debug',
+            icon: Icons.bug_report_sharp,
+            route: 'debug',
+            title: 'Debug',
+            subtitle: 'For developer only',
           ),
-        Tutorial(
-          id: 'home.menu',
-          index: 0,
-          title: S.menuTutorialTitle,
-          message: S.menuTutorialContent,
-          below: _TutorialCheckboxListTile(key: _tutorialMenu, title: S.menuTutorialCreateExample),
-          spotlightBuilder: const SpotlightRectBuilder(),
-          disable: Menu.instance.isNotEmpty,
-          action: () async {
-            if (_tutorialMenu.currentState?.value == true) {
-              await setupExampleMenu();
-            }
-          },
+        MenuTutorial(
           child: _buildRouteTile(
             id: 'menu',
             icon: Icons.collections_sharp,
@@ -69,19 +49,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
           title: S.transitTitle,
           subtitle: S.transitDescription,
         ),
-        Tutorial(
-          id: 'home.order_attr',
-          index: 1,
-          title: S.orderAttributeTutorialTitle,
-          message: S.orderAttributeTutorialContent,
-          below: _TutorialCheckboxListTile(key: _tutorialOrderAttrs, title: S.orderAttributeTutorialCreateExample),
-          spotlightBuilder: const SpotlightRectBuilder(),
-          disable: OrderAttributes.instance.isNotEmpty,
-          action: () async {
-            if (_tutorialOrderAttrs.currentState?.value == true) {
-              await setupExampleOrderAttrs();
-            }
-          },
+        OrderAttrTutorial(
           child: _buildRouteTile(
             id: 'order_attrs',
             icon: Icons.assignment_ind_sharp,
@@ -220,32 +188,6 @@ class _HeaderInfoList extends StatelessWidget {
           Text(title.toString(), style: theme.textTheme.headlineMedium),
           Flexible(child: Text(subtitle, textAlign: TextAlign.center)),
         ]),
-      ),
-    );
-  }
-}
-
-class _TutorialCheckboxListTile extends StatefulWidget {
-  final String title;
-
-  const _TutorialCheckboxListTile({super.key, required this.title});
-
-  @override
-  State<_TutorialCheckboxListTile> createState() => _TutorialCheckboxListTileState();
-}
-
-class _TutorialCheckboxListTileState extends State<_TutorialCheckboxListTile> {
-  bool value = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: CheckboxListTile(
-        value: value,
-        onChanged: (v) => setState(() => value = v!),
-        tileColor: Theme.of(context).primaryColor,
-        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
       ),
     );
   }

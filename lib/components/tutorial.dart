@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/linkify.dart';
+import 'package:possystem/helpers/setup_example.dart';
+import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/translator.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
 class TutorialWrapper extends StatelessWidget {
   final Widget child;
 
-  final TutorialInTab? tab;
-
   const TutorialWrapper({
     super.key,
     required this.child,
-    this.tab,
   });
 
   @override
   Widget build(BuildContext context) {
     return SpotlightShow(
-      startWhenReady: tab == null, // start if no tab passed
-      child: Builder(
-        builder: (context) {
-          tab?.listenIndexChanging(context);
-          return child;
-        },
-      ),
+      child: child,
     );
   }
 }
@@ -98,6 +93,7 @@ class Tutorial extends StatelessWidget {
       action: const SpotlightActionConfig(
         enabled: [SpotlightAntAction.prev, SpotlightAntAction.next],
       ),
+      contentLayout: const SpotlightContentLayoutConfig(prefer: ContentPreferLayout.largerRatio),
       content: SpotlightContent(
         fontSize: theme.textTheme.titleMedium!.fontSize,
         child: SizedBox(
@@ -127,59 +123,96 @@ class Tutorial extends StatelessWidget {
   }
 }
 
-class TutorialInTab {
-  final TabController? controller;
-  final BuildContext? context;
-  final int index;
+class MenuTutorial extends StatelessWidget {
+  final GlobalKey<TutorialCheckboxListTileState> checkbox = GlobalKey();
 
-  bool hasRegistered = false;
-  bool isShowing = false;
+  final Widget child;
 
-  TutorialInTab({
-    this.controller,
-    this.context,
-    required this.index,
-  }) : assert(controller != null || context != null);
+  MenuTutorial({super.key, required this.child});
 
-  /// get the tab controller, if not provided, use the default one
-  TabController? get cont {
-    return controller ?? (context!.mounted ? DefaultTabController.of(context!) : null);
-  }
-
-  bool get shouldShow {
-    return index == cont?.index && !cont!.indexIsChanging;
-  }
-
-  void listenIndexChanging(BuildContext context) {
-    if (hasRegistered) {
-      return;
-    }
-
-    void handler() {
-      // when user quickly swipe the tab, the show will start but the page is changed
-      // monitoring performance will prevent this
-      if (isShowing) {
-        final show = SpotlightShow.maybeOf(context);
-        if (show?.isPerforming == true) {
-          // if performing but should not show, finish the show and start watching again
-          if (!shouldShow) {
-            isShowing = false;
-            show?.finish();
-          }
-        } else {
-          cont?.removeListener(handler);
-          isShowing = false;
+  @override
+  Widget build(BuildContext context) {
+    return Tutorial(
+      id: 'home.menu',
+      index: 0,
+      title: S.menuTutorialTitle,
+      message: S.menuTutorialContent,
+      below: TutorialCheckboxListTile(
+        key: checkbox,
+        title: S.menuTutorialCreateExample,
+        value: Menu.instance.isEmpty,
+      ),
+      spotlightBuilder: const SpotlightRectBuilder(),
+      action: () async {
+        if (checkbox.currentState?.value == true) {
+          await setupExampleMenu();
         }
-      } else if (shouldShow && context.mounted) {
-        SpotlightShow.maybeOf(context)?.start();
-        isShowing = true;
-      }
-    }
+      },
+      child: child,
+    );
+  }
+}
 
-    cont?.addListener(handler);
-    WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-      handler();
-    });
-    hasRegistered = true;
+class OrderAttrTutorial extends StatelessWidget {
+  final GlobalKey<TutorialCheckboxListTileState> checkbox = GlobalKey();
+
+  final Widget child;
+
+  OrderAttrTutorial({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tutorial(
+      id: 'home.order_attr',
+      index: 1,
+      title: S.orderAttributeTutorialTitle,
+      message: S.orderAttributeTutorialContent,
+      below: TutorialCheckboxListTile(
+        key: checkbox,
+        title: S.orderAttributeTutorialCreateExample,
+        value: OrderAttributes.instance.isEmpty,
+      ),
+      spotlightBuilder: const SpotlightRectBuilder(),
+      action: () async {
+        if (checkbox.currentState?.value == true) {
+          await setupExampleOrderAttrs();
+        }
+      },
+      child: child,
+    );
+  }
+}
+
+class TutorialCheckboxListTile extends StatefulWidget {
+  final String title;
+
+  final bool value;
+
+  const TutorialCheckboxListTile({super.key, required this.title, required this.value});
+
+  @override
+  State<TutorialCheckboxListTile> createState() => TutorialCheckboxListTileState();
+}
+
+class TutorialCheckboxListTileState extends State<TutorialCheckboxListTile> {
+  late bool value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: CheckboxListTile(
+        value: value,
+        onChanged: (v) => setState(() => value = v!),
+        tileColor: Theme.of(context).primaryColor,
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.value;
   }
 }
