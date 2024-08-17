@@ -112,9 +112,10 @@ class Routes {
             StatefulShellBranch(routes: [_cashierRoute]),
             StatefulShellBranch(routes: [
               GoRoute(
+                name: Routes.others,
                 path: 'others',
                 builder: (ctx, state) => const MobileEntryView(),
-              )
+              ),
             ]),
           ],
         ),
@@ -150,6 +151,11 @@ class Routes {
             StatefulShellBranch(routes: [_settingsRoute]),
             if (!isProd) StatefulShellBranch(routes: [_debugRoute]),
           ],
+        ),
+        GoRoute(
+          name: Routes.others,
+          path: 'others',
+          redirect: (context, state) => '$base/anal',
         ),
         ..._routes,
       ],
@@ -518,6 +524,7 @@ class Routes {
 
   // ==================== Route names ====================
 
+  static const others = 'others';
   static const menu = 'menu';
   static const menuCatalogCreate = 'menu.catalog.create';
   static const menuCatalogUpdate = 'menu.catalog.update';

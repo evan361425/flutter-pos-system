@@ -15,7 +15,11 @@ dependencies:
     sdk: flutter
 
   # core helper
-  go_router: ^14.1.2
+  go_router:
+    git:
+      url: https://github.com/evan361425/flutter-packages
+      path: packages/go_router
+      ref: main
   provider: ^6.1.2
   intl: ^0.19.0
   collection: ^1.18.0
