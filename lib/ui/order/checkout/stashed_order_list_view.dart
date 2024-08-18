@@ -86,12 +86,12 @@ class StashedOrderListView extends StatelessWidget {
       actions: [
         BottomSheetAction(
           title: Text(S.orderCheckoutStashActionCheckout),
-          leading: const Icon(Icons.price_check_sharp),
+          leading: const Icon(Icons.price_check_outlined),
           returnValue: _Action.checkout,
         ),
         BottomSheetAction(
           title: Text(S.orderCheckoutStashActionRestore),
-          leading: const Icon(Icons.file_upload),
+          leading: const Icon(Icons.file_upload_outlined),
           returnValue: _Action.restore,
         ),
       ],

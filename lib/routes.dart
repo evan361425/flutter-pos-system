@@ -496,7 +496,7 @@ class Routes {
         GoRoute(
           name: orderDetails,
           path: 'details',
-          builder: (ctx, state) => const OrderDetailsPage(),
+          builder: (ctx, state) => const OrderCheckoutPage(),
         ),
       ],
     ),

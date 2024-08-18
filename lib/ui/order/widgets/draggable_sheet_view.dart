@@ -115,25 +115,27 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
       1.0,
     ]);
 
-    Cart.instance.addListener(showStateSelectorIfStartOrder);
-    widget.resetNotifier?.addListener(() {
-      if (controller.isAttached) {
-        controller.reset();
-      }
-    });
+    Cart.instance.addListener(_showStateSelectorIfStartOrder);
+    widget.resetNotifier?.addListener(_reset);
   }
 
   @override
   void dispose() {
-    Cart.instance.removeListener(showStateSelectorIfStartOrder);
-    widget.resetNotifier?.dispose();
+    Cart.instance.removeListener(_showStateSelectorIfStartOrder);
+    widget.resetNotifier?.removeListener(_reset);
     super.dispose();
   }
 
-  void showStateSelectorIfStartOrder() {
+  void _showStateSelectorIfStartOrder() {
     // first order
     if (controller.isAttached && Cart.instance.products.length == 1 && controller.snapIndex.value == 0) {
       controller.jumpTo(controller.snapSizes[1]);
+    }
+  }
+
+  void _reset() {
+    if (controller.isAttached) {
+      controller.reset();
     }
   }
 }

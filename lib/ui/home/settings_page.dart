@@ -73,7 +73,7 @@ class SettingsPage extends StatelessWidget {
         leading: const Icon(Icons.palette_outlined),
         title: Text(S.settingThemeTitle),
         subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
-        trailing: const Icon(Icons.arrow_forward_ios_sharp),
+        trailing: const Icon(Icons.navigate_next_outlined),
         onTap: () => navigateTo(Feature.theme),
       ),
       ListTile(
@@ -81,7 +81,7 @@ class SettingsPage extends StatelessWidget {
         leading: const Icon(Icons.language_outlined),
         title: Text(S.settingLanguageTitle),
         subtitle: Text(LanguageSetting.instance.language.title),
-        trailing: const Icon(Icons.arrow_forward_ios_sharp),
+        trailing: const Icon(Icons.navigate_next_outlined),
         onTap: () => navigateTo(Feature.language),
       ),
       const Divider(),
@@ -90,7 +90,7 @@ class SettingsPage extends StatelessWidget {
         leading: const Icon(Icons.store_mall_directory_outlined),
         title: Text(S.settingCheckoutWarningTitle),
         subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
-        trailing: const Icon(Icons.arrow_forward_ios_sharp),
+        trailing: const Icon(Icons.navigate_next_outlined),
         onTap: () => navigateTo(Feature.checkoutWarning),
       ),
       ListTile(
@@ -149,7 +149,7 @@ class ItemListScaffold extends StatelessWidget {
         children: IterableZip([feature.itemTitles, feature.itemSubtitles])
             .mapIndexed((index, pair) => ListTile(
                   title: Text(pair[0]),
-                  trailing: selected == index ? const Icon(Icons.check_sharp) : null,
+                  trailing: selected == index ? const Icon(Icons.check_outlined) : null,
                   subtitle: Text(pair[1], style: hintStyle),
                   onTap: () async {
                     if (selected != index) {

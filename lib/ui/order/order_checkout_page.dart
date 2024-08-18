@@ -4,6 +4,7 @@ import 'package:possystem/components/scrollable_draggable_sheet.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
@@ -14,68 +15,114 @@ import 'package:possystem/ui/order/widgets/order_object_view.dart';
 
 import 'checkout/checkout_attribute_view.dart';
 
-class OrderDetailsPage extends StatefulWidget {
-  const OrderDetailsPage({super.key});
+class OrderCheckoutPage extends StatefulWidget {
+  const OrderCheckoutPage({super.key});
 
   @override
-  State<OrderDetailsPage> createState() => _OrderDetailsPageState();
+  State<OrderCheckoutPage> createState() => _OrderCheckoutPageState();
 }
 
-class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerProviderStateMixin {
-  static const double snapshotHeight = 64.0;
-  static const double calculatorHeight = 408.0;
-
+class _OrderCheckoutPageState extends State<OrderCheckoutPage> {
   late final ValueNotifier<num> paid;
 
   late final ValueNotifier<num> price;
 
-  late final TabController _controller;
-  ScrollableDraggableController? draggableController;
+  final ValueNotifier<int> viewIndex = ValueNotifier(0);
 
-  late final bool hasAttr;
-
-  late final List<Widget> tabs;
+  final bool hasAttr = OrderAttributes.instance.hasNotEmptyItems;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    return LayoutBuilder(builder: (context, constraint) {
+      return Breakpoint.find(width: constraint.maxWidth) <= Breakpoint.medium
+          ? _Mobile(
+              paid: paid,
+              price: price,
+              viewIndex: viewIndex,
+              hasAttr: hasAttr,
+            )
+          : _Desktop(
+              paid: paid,
+              price: price,
+              viewIndex: viewIndex,
+              hasAttr: hasAttr,
+            );
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    price = ValueNotifier(Cart.instance.price);
+    paid = ValueNotifier(price.value);
+    price.addListener(() => paid.value = price.value);
+  }
+
+  @override
+  void dispose() {
+    price.dispose();
+    paid.dispose();
+    super.dispose();
+  }
+}
+
+class _Mobile extends StatefulWidget {
+  final ValueNotifier<num> paid;
+
+  final ValueNotifier<num> price;
+
+  final ValueNotifier<int> viewIndex;
+
+  final bool hasAttr;
+
+  const _Mobile({
+    required this.paid,
+    required this.price,
+    required this.viewIndex,
+    required this.hasAttr,
+  });
+
+  @override
+  State<_Mobile> createState() => _MobileState();
+}
+
+class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
+  static const double snapshotHeight = 64.0;
+  static const double calculatorHeight = 408.0;
+
+  late final TabController _controller;
+
+  ScrollableDraggableController? draggableController;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
         actions: Cart.instance.isEmpty
-            ? const <Widget>[]
-            : [
-                TextButton(
-                  key: const Key('order.details.stash'),
-                  style: ButtonStyle(
-                    foregroundColor: WidgetStatePropertyAll(
-                      theme.textTheme.bodyMedium!.color,
-                    ),
-                  ),
-                  onPressed: _stash,
-                  child: Text(S.orderCheckoutActionStash),
-                ),
-                TextButton(
-                  key: const Key('order.details.confirm'),
-                  onPressed: _checkout,
-                  child: Text(S.orderCheckoutActionConfirm),
-                ),
+            ? null
+            : <Widget>[
+                const _StashButton(),
+                _ConfirmButton(price: widget.price, paid: widget.paid),
               ],
-        // disable shadow after scrolled
-        scrolledUnderElevation: 0,
         bottom: TabBar(
           controller: _controller,
-          tabs: tabs,
+          tabs: [
+            if (widget.hasAttr) Tab(key: const Key('order.details.attr'), text: S.orderCheckoutAttributeTab),
+            Tab(key: const Key('order.details.order'), text: S.orderCheckoutCashierTab),
+            Tab(key: const Key('order.details.stashed'), text: S.orderCheckoutStashTab),
+          ],
         ),
       ),
-      body: buildBody(context),
+      body: _buildBody(),
     );
   }
 
-  Widget buildBody(BuildContext context) {
+  Widget _buildBody() {
     if (Cart.instance.isEmpty) {
       return TabBarView(controller: _controller, children: [
-        if (hasAttr) CheckoutAttributeView(price: price),
+        if (widget.hasAttr) CheckoutAttributeView(price: widget.price),
         Center(child: HintText(S.orderCheckoutEmptyCart)),
         const StashedOrderListView(),
       ]);
@@ -86,9 +133,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
         child: GestureDetector(
           onTap: () => draggableController?.reset(),
           child: TabBarView(controller: _controller, children: [
-            if (hasAttr) CheckoutAttributeView(price: price),
+            if (widget.hasAttr) CheckoutAttributeView(price: widget.price),
             ValueListenableBuilder(
-              valueListenable: paid,
+              valueListenable: widget.paid,
               builder: (context, value, child) => OrderObjectView(
                 order: Cart.instance.toObject(paid: value),
               ),
@@ -109,7 +156,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
                 height: snapshotHeight,
                 baseline: -2 * snapshotHeight,
                 valueScalar: -1,
-                child: CheckoutCashierSnapshot(price: price, paid: paid),
+                child: CheckoutCashierSnapshot(price: widget.price, paid: widget.paid),
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -117,9 +164,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
                   child: SizedBox(
                     height: calculatorHeight,
                     child: CheckoutCashierCalculator(
-                      onSubmit: _checkout,
-                      price: price,
-                      paid: paid,
+                      onSubmit: () => _ConfirmButton.confirm(
+                        context,
+                        price: widget.price.value,
+                        paid: widget.paid.value,
+                      ),
+                      price: widget.price,
+                      paid: widget.paid,
                     ),
                   ),
                 ),
@@ -131,54 +182,164 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with SingleTickerPr
     ]);
   }
 
-  Future<void> _stash() async {
-    final ok = await Cart.instance.stash();
-    if (mounted && ok && context.canPop()) {
-      context.pop(CheckoutStatus.stash);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
 
-    price = ValueNotifier(Cart.instance.price);
-    paid = ValueNotifier(price.value);
-    price.addListener(() => paid.value = price.value);
-
-    hasAttr = OrderAttributes.instance.hasNotEmptyItems;
-
     _controller = TabController(
-      initialIndex: 0,
-      length: hasAttr ? 3 : 2,
+      initialIndex: widget.viewIndex.value,
+      length: widget.hasAttr ? 3 : 2,
       vsync: this,
     );
-
-    tabs = [
-      if (hasAttr) Tab(key: const Key('order.details.attr'), text: S.orderCheckoutAttributeTab),
-      Tab(key: const Key('order.details.order'), text: S.orderCheckoutCashierTab),
-      Tab(key: const Key('order.details.stashed'), text: S.orderCheckoutStashTab),
-    ];
+    _controller.addListener(() {
+      widget.viewIndex.value = _controller.index;
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    price.dispose();
-    paid.dispose();
     super.dispose();
   }
+}
 
-  void _checkout() async {
-    final status = await Cart.instance.checkout(price.value, paid.value);
+class _Desktop extends StatelessWidget {
+  final ValueNotifier<num> paid;
+
+  final ValueNotifier<num> price;
+
+  final ValueNotifier<int> viewIndex;
+
+  final bool hasAttr;
+
+  const _Desktop({
+    required this.paid,
+    required this.price,
+    required this.viewIndex,
+    required this.hasAttr,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: const PopButton(),
+        actions: Cart.instance.isEmpty
+            ? null
+            : [
+                const _StashButton(),
+                _ConfirmButton(price: price, paid: paid),
+              ],
+      ),
+      body: ListenableBuilder(
+        listenable: viewIndex,
+        builder: (context, _) {
+          return Row(
+            children: [
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Column(children: [
+                    _buildSwitcher(),
+                    _buildBody(context),
+                  ]),
+                ),
+              ),
+              if (!Cart.instance.isEmpty)
+                CheckoutCashierCalculator(
+                  onSubmit: () => _ConfirmButton.confirm(
+                    context,
+                    price: price.value,
+                    paid: paid.value,
+                  ),
+                  price: price,
+                  paid: paid,
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    switch (viewIndex.value) {
+      case 0:
+        return CheckoutAttributeView(price: price);
+      case 1:
+        if (Cart.instance.isEmpty) {
+          return Center(child: HintText(S.orderCheckoutEmptyCart));
+        }
+        return ValueListenableBuilder(
+          valueListenable: paid,
+          builder: (context, value, child) => OrderObjectView(
+            order: Cart.instance.toObject(paid: value),
+          ),
+        );
+      default:
+        return const StashedOrderListView();
+    }
+  }
+
+  Widget _buildSwitcher() {
+    return SegmentedButton<int>(
+      selected: {viewIndex.value},
+      onSelectionChanged: (value) => viewIndex.value = value.first,
+      segments: [
+        ButtonSegment(value: 0, label: Text(S.orderCheckoutAttributeTab)),
+        ButtonSegment(value: 1, label: Text(S.orderCheckoutCashierTab)),
+        ButtonSegment(value: 2, label: Text(S.orderCheckoutStashTab)),
+      ],
+    );
+  }
+}
+
+class _StashButton extends StatelessWidget {
+  const _StashButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      key: const Key('order.details.stash'),
+      onPressed: () async {
+        final ok = await Cart.instance.stash();
+        if (context.mounted && ok && context.canPop()) {
+          context.pop(CheckoutStatus.stash);
+        }
+      },
+      tooltip: S.orderCheckoutActionStash,
+      icon: const Icon(Icons.archive_outlined),
+    );
+  }
+}
+
+class _ConfirmButton extends StatelessWidget {
+  final ValueNotifier<num> paid;
+
+  final ValueNotifier<num> price;
+
+  const _ConfirmButton({required this.price, required this.paid});
+
+  static void confirm(BuildContext context, {required num price, required num paid}) async {
+    final status = await Cart.instance.checkout(price, paid);
 
     // send success message
-    if (mounted) {
+    if (context.mounted) {
       if (status == CheckoutStatus.paidNotEnough) {
         showSnackBar(context, S.orderCheckoutSnackbarPaidFailed);
       } else if (context.canPop()) {
         context.pop(status);
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      key: const Key('order.details.confirm'),
+      onPressed: () => confirm(context, price: price.value, paid: paid.value),
+      tooltip: S.orderCheckoutActionConfirm,
+      icon: const Icon(Icons.next_plan_outlined),
+    );
   }
 }

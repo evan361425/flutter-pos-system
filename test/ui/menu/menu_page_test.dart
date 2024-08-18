@@ -119,7 +119,7 @@ void main() {
 
       await tester.longPress(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.text_fields_sharp));
+      await tester.tap(find.byIcon(Icons.text_fields_outlined));
       await tester.pumpAndSettle();
 
       // edit image
@@ -165,7 +165,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
+      await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
 
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();

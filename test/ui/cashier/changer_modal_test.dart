@@ -106,7 +106,7 @@ void main() {
 
       expect(find.byKey(const Key('changer.favorite.0')), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.more_vert_sharp));
+      await tester.tap(find.byIcon(Icons.more_vert_outlined));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.delete));
       await tester.pumpAndSettle();
@@ -151,7 +151,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.add));
       await tester.pumpAndSettle();
       // remove 1 target, total targets: 4
-      await tester.tap(find.byIcon(Icons.remove_circle_sharp).first);
+      await tester.tap(find.byIcon(Icons.remove_circle_outlined).first);
       await tester.pumpAndSettle();
 
       expect(findByK('target.4.unit'), findsNothing);

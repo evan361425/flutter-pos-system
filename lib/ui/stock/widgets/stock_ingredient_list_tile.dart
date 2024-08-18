@@ -152,7 +152,7 @@ class _RestockDialogState extends State<_RestockDialog> {
           label: Text(replenishBy == ReplenishBy.quantity
               ? S.stockIngredientRestockDialogPriceBtn
               : S.stockIngredientRestockDialogQuantityBtn),
-          icon: const Icon(Icons.currency_exchange_sharp),
+          icon: const Icon(Icons.currency_exchange_outlined),
         ),
       ],
     );

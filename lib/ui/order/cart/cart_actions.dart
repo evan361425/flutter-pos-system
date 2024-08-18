@@ -97,25 +97,25 @@ class CartActions extends StatelessWidget {
       actions: <BottomSheetAction<CartActionTypes>>[
         BottomSheetAction(
           key: const Key('cart.action.discount'),
-          leading: const Icon(Icons.loyalty_sharp),
+          leading: const Icon(Icons.loyalty_outlined),
           title: Text(S.orderCartActionDiscount),
           returnValue: CartActionTypes.discount,
         ),
         BottomSheetAction(
           key: const Key('cart.action.price'),
-          leading: const Icon(Icons.attach_money_sharp),
+          leading: const Icon(Icons.attach_money_outlined),
           title: Text(S.orderCartActionChangePrice),
           returnValue: CartActionTypes.price,
         ),
         BottomSheetAction(
           key: const Key('cart.action.count'),
-          leading: const Icon(Icons.exposure_sharp),
+          leading: const Icon(Icons.exposure_outlined),
           title: Text(S.orderCartActionChangeCount),
           returnValue: CartActionTypes.count,
         ),
         BottomSheetAction(
           key: const Key('cart.action.free'),
-          leading: const Icon(Icons.free_breakfast_sharp),
+          leading: const Icon(Icons.free_breakfast_outlined),
           title: Text(S.orderCartActionFree),
           returnValue: CartActionTypes.free,
         ),

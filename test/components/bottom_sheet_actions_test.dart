@@ -11,10 +11,10 @@ void main() {
 
       await tester.tap(find.text('hi'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.cancel_sharp));
+      await tester.tap(find.byIcon(Icons.cancel_outlined));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.cancel_sharp), findsNothing);
+      expect(find.byIcon(Icons.cancel_outlined), findsNothing);
     });
 
     setUpAll(() {

@@ -13,8 +13,8 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:provider/provider.dart';
 
-import '../../test_helpers/file_mocker.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -122,7 +122,7 @@ void main() {
 
       await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.text_fields_sharp));
+      await tester.tap(find.byIcon(Icons.text_fields_outlined));
       await tester.pumpAndSettle();
 
       // save failed
@@ -179,7 +179,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
+      await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
 
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();

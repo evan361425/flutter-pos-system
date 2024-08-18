@@ -94,7 +94,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
         message: S.stockReplenishmentTutorialContent,
         child: RouteIconButton(
           key: const Key('stock.replenisher'),
-          icon: const Icon(Icons.shopping_basket_sharp),
+          icon: const Icon(Icons.shopping_basket_outlined),
           route: Routes.replenish,
           popTrueShowSuccess: true,
           label: S.stockReplenishmentButton,

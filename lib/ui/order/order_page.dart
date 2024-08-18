@@ -38,7 +38,7 @@ class _OrderPageState extends State<OrderPage> {
   late final ValueNotifier<int> _catalogIndexNotifier;
 
   /// Used to update the view of [OrderProductListView]
-  late final ValueNotifier<ProductListView> _viewNotifier;
+  late final ValueNotifier<ProductListView> _productViewNotifier;
 
   /// Reset panel to initial state, used by [DraggableSheetView]
   final _Notifier _resetNotifier = _Notifier();
@@ -50,18 +50,18 @@ class _OrderPageState extends State<OrderPage> {
     final orderCatalogListView = OrderCatalogListView(
       catalogs: catalogs,
       indexNotifier: _catalogIndexNotifier,
-      viewNotifier: _viewNotifier,
+      viewNotifier: _productViewNotifier,
       onSelected: (index) => _pageController.jumpToPage(index),
     );
     final orderProductListView = ListenableBuilder(
-      listenable: _viewNotifier,
+      listenable: _productViewNotifier,
       builder: (context, _) => PageView.builder(
         controller: _pageController,
         onPageChanged: (index) => _catalogIndexNotifier.value = index,
         itemCount: catalogs.length,
         itemBuilder: (context, index) => OrderProductListView(
           products: catalogs[index].itemList,
-          view: _viewNotifier.value,
+          view: _productViewNotifier.value,
         ),
       ),
     );
@@ -117,7 +117,7 @@ class _OrderPageState extends State<OrderPage> {
     Wakelock.disable();
     _pageController.dispose();
     _catalogIndexNotifier.dispose();
-    _viewNotifier.dispose();
+    _productViewNotifier.dispose();
     _resetNotifier.dispose();
     super.dispose();
   }
@@ -132,7 +132,7 @@ class _OrderPageState extends State<OrderPage> {
 
     _pageController = PageController();
     _catalogIndexNotifier = ValueNotifier<int>(0);
-    _viewNotifier = ValueNotifier<ProductListView>(ProductListView.grid);
+    _productViewNotifier = ValueNotifier<ProductListView>(ProductListView.grid);
     super.initState();
   }
 
@@ -151,19 +151,19 @@ class _OrderPageState extends State<OrderPage> {
         BottomSheetAction(
           key: const Key('order.action.exchange'),
           title: Text(S.orderActionExchange),
-          leading: const Icon(Icons.change_circle_sharp),
+          leading: const Icon(Icons.change_circle_outlined),
           returnValue: const _Action(route: Routes.cashierChanger),
         ),
         BottomSheetAction(
           key: const Key('order.action.stash'),
           title: Text(S.orderActionStash),
-          leading: const Icon(Icons.file_download_sharp),
+          leading: const Icon(Icons.archive_outlined),
           returnValue: _Action(action: () => _handleStash(context)),
         ),
         BottomSheetAction(
           key: const Key('order.action.history'),
           title: Text(S.orderActionReview),
-          leading: const Icon(Icons.history_sharp),
+          leading: const Icon(Icons.history_outlined),
           returnValue: const _Action(route: Routes.history),
         ),
       ],
@@ -230,8 +230,8 @@ class _Action {
 }
 
 enum ProductListView {
-  grid(Icons.grid_view_sharp),
-  list(Icons.view_list_sharp);
+  grid(Icons.grid_view_outlined),
+  list(Icons.view_list_outlined);
 
   final IconData icon;
 

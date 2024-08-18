@@ -16,17 +16,17 @@ class DebugPage extends StatelessWidget {
         children: [
           ListTile(
             title: const Text('Generate orders'),
-            trailing: const Icon(Icons.add_sharp),
+            trailing: const Icon(Icons.add_outlined),
             onTap: goGenerateRandomOrders(context),
           ),
           ListTile(
             title: const Text('Cache Reset'),
-            trailing: const Icon(Icons.clear_all_sharp),
+            trailing: const Icon(Icons.clear_all_outlined),
             onTap: Cache.instance.reset,
           ),
           const ListTile(
             title: Text('Migrate DB Again'),
-            trailing: Icon(Icons.refresh_sharp),
+            trailing: Icon(Icons.refresh_outlined),
             onTap: rerunMigration,
           )
         ],

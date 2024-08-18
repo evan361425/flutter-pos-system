@@ -82,7 +82,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
         textInputAction: TextInputAction.next,
         focusNode: _priceFocusNode,
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.loyalty_sharp),
+          prefixIcon: const Icon(Icons.loyalty_outlined),
           labelText: S.menuQuantityAdditionalPriceLabel,
           helperText: S.menuQuantityAdditionalPriceHelper,
           helperMaxLines: 10,
@@ -101,7 +101,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
         focusNode: _costFocusNode,
         onFieldSubmitted: handleFieldSubmit,
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.attach_money_sharp),
+          prefixIcon: const Icon(Icons.attach_money_outlined),
           labelText: S.menuQuantityAdditionalCostLabel,
           helperText: S.menuQuantityAdditionalCostHelper,
           helperMaxLines: 10,

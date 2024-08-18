@@ -114,12 +114,12 @@ void main() {
 
         // scroll down
         await tester.drag(
-          find.byIcon(Icons.remove_red_eye_sharp).first,
+          find.byIcon(Icons.remove_red_eye_outlined).first,
           const Offset(0, -1000),
         );
         await tester.pumpAndSettle();
 
-        final btn = find.byIcon(Icons.remove_red_eye_sharp);
+        final btn = find.byIcon(Icons.remove_red_eye_outlined);
         await tester.tap(btn.at(index));
         await tester.pumpAndSettle();
       }
@@ -238,7 +238,7 @@ void main() {
         ]);
         when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
 
-        final btn = find.byIcon(Icons.remove_red_eye_sharp);
+        final btn = find.byIcon(Icons.remove_red_eye_outlined);
         await tester.tap(btn.first);
         await tester.pumpAndSettle();
 

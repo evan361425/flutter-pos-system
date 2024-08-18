@@ -69,7 +69,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
           key: const Key('gs_export.import_all'),
           title: Text(S.transitGSSpreadsheetImportAllBtn),
           subtitle: Text(S.transitGSSpreadsheetImportAllHint),
-          trailing: const Icon(Icons.download_for_offline_sharp),
+          trailing: const Icon(Icons.download_for_offline_outlined),
           onTap: () async {
             final confirmed = await ConfirmDialog.show(
               context,

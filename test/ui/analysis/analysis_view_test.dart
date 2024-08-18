@@ -135,7 +135,7 @@ void main() {
       expect(chart.index, 0);
 
       // reorder
-      await tester.tap(find.byIcon(Icons.settings_sharp));
+      await tester.tap(find.byIcon(Icons.settings_outlined));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
@@ -149,7 +149,7 @@ void main() {
       );
       expect(find.text(range.format('en')), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.arrow_back_ios_new_sharp));
+      await tester.tap(find.byIcon(Icons.navigate_next_outlined));
       await tester.pump(const Duration(milliseconds: 50));
 
       range = Util.getDateRange(
@@ -158,7 +158,7 @@ void main() {
       );
       expect(find.text(range.format('en')), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.arrow_forward_ios_sharp));
+      await tester.tap(find.byIcon(Icons.navigate_next_outlined));
       await tester.pump(const Duration(milliseconds: 50));
 
       range = Util.getDateRange(

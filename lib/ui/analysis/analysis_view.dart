@@ -49,7 +49,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
           action: RouteIconButton(
             key: const Key('anal.history'),
             route: Routes.history,
-            icon: const Icon(Icons.calendar_month_sharp),
+            icon: const Icon(Icons.calendar_month_outlined),
             label: S.analysisHistoryBtn,
           ),
         ),
@@ -61,7 +61,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
     return SliverAppBar(
       primary: false,
       pinned: true,
-      leading: const Icon(Icons.calendar_today_sharp, size: 16),
+      leading: const Icon(Icons.calendar_today_outlined, size: 16),
       centerTitle: false,
       title: ListenableBuilder(
         listenable: range,
@@ -75,12 +75,12 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
         IconButton(
           onPressed: () => _updateRange(Duration(days: -interval)),
           iconSize: 16,
-          icon: const Icon(Icons.arrow_back_ios_new_sharp),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
         ),
         IconButton(
           onPressed: () => _updateRange(Duration(days: interval)),
           iconSize: 16,
-          icon: const Icon(Icons.arrow_forward_ios_sharp),
+          icon: const Icon(Icons.arrow_forward_ios_outlined),
         ),
       ],
     );
@@ -189,7 +189,7 @@ class _MoreButton extends StatelessWidget {
       ),
       enableFeedback: true,
       tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
-      icon: const Icon(Icons.settings_sharp),
+      icon: const Icon(Icons.settings_outlined),
     );
   }
 }

@@ -28,7 +28,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
         if (!isProd)
           _buildRouteTile(
             id: 'debug',
-            icon: Icons.bug_report_sharp,
+            icon: Icons.bug_report_outlined,
             route: 'debug',
             title: 'Debug',
             subtitle: 'For developer only',
@@ -36,7 +36,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
         MenuTutorial(
           child: _buildRouteTile(
             id: 'menu',
-            icon: Icons.collections_sharp,
+            icon: Icons.collections_outlined,
             route: Routes.menu,
             title: S.menuTitle,
             subtitle: S.menuSubtitle,
@@ -44,7 +44,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
         ),
         _buildRouteTile(
           id: 'transit',
-          icon: Icons.upload_file_sharp,
+          icon: Icons.upload_file_outlined,
           route: Routes.transit,
           title: S.transitTitle,
           subtitle: S.transitDescription,
@@ -52,7 +52,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
         OrderAttrTutorial(
           child: _buildRouteTile(
             id: 'order_attrs',
-            icon: Icons.assignment_ind_sharp,
+            icon: Icons.assignment_ind_outlined,
             route: Routes.orderAttr,
             title: S.orderAttributeTitle,
             subtitle: S.orderAttributeDescription,
@@ -60,21 +60,21 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
         ),
         _buildRouteTile(
           id: 'quantity',
-          icon: Icons.exposure_sharp,
+          icon: Icons.exposure_outlined,
           route: Routes.quantities,
           title: S.stockQuantityTitle,
           subtitle: S.stockQuantityDescription,
         ),
         _buildRouteTile(
           id: 'feature_request',
-          icon: Icons.lightbulb_sharp,
+          icon: Icons.lightbulb_outlined,
           route: Routes.elf,
           title: S.settingElfTitle,
           subtitle: S.settingElfDescription,
         ),
         _buildRouteTile(
           id: 'setting',
-          icon: Icons.settings_sharp,
+          icon: Icons.settings_outlined,
           route: Routes.settings,
           title: S.settingFeatureTitle,
           subtitle: S.settingFeatureDescription,

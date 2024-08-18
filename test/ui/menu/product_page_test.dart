@@ -79,7 +79,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
+      await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
 
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
@@ -113,7 +113,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('item_more_action')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.image_sharp));
+      await tester.tap(find.byIcon(Icons.image_outlined));
       await tester.pumpAndSettle();
       await tester.tap(find.text('tap me'));
       await tester.pumpAndSettle();
@@ -271,7 +271,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // go into modal and edit ingredient2 name
-        await tester.tap(find.byIcon(Icons.open_in_new_sharp));
+        await tester.tap(find.byIcon(Icons.open_in_new_outlined));
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key('stock.ingredient.name')), 'i-2-n');
         await tester.pumpAndSettle();
@@ -450,7 +450,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // go into modal and edit quantity2 name
-        await tester.tap(find.byIcon(Icons.open_in_new_sharp));
+        await tester.tap(find.byIcon(Icons.open_in_new_outlined));
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key('quantity.name')), 'q-2-n');
         await tester.pumpAndSettle();

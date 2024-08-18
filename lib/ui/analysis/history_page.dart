@@ -37,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
               child: PopupMenuButton<TransitMethod>(
                 key: const Key('history.export'),
-                icon: const Icon(Icons.upload_file_sharp),
+                icon: const Icon(Icons.upload_file_outlined),
                 tooltip: S.analysisHistoryExportBtn,
                 itemBuilder: (context) => TransitMethod.values
                     .map((TransitMethod value) => PopupMenuItem<TransitMethod>(

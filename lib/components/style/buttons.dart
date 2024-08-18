@@ -50,7 +50,7 @@ class NavToButton extends StatelessWidget {
     return IconButton(
       onPressed: onPressed,
       tooltip: S.btnNavTo,
-      icon: const Icon(Icons.open_in_new_sharp),
+      icon: const Icon(Icons.open_in_new_outlined),
     );
   }
 }

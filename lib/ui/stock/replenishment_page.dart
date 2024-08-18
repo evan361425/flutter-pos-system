@@ -79,7 +79,7 @@ class ReplenishmentPage extends StatelessWidget {
           BottomSheetAction(
             key: const Key('apply'),
             title: Text(S.stockReplenishmentApplyButton),
-            leading: const Icon(Icons.check_circle_outline_sharp),
+            leading: const Icon(Icons.check_circle_outline_outlined),
             returnValue: _Actions.apply,
           ),
         ],

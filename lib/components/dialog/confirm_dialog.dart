@@ -17,7 +17,7 @@ class ConfirmDialog extends StatelessWidget {
     String? content,
     Widget? body,
   }) async {
-    final result = await showDialog<bool?>(
+    final result = await showAdaptiveDialog<bool?>(
       context: context,
       builder: (_) => ConfirmDialog(
         title: title,
@@ -31,7 +31,7 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(title),
       content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[

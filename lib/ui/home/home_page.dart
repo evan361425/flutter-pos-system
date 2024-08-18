@@ -160,7 +160,7 @@ class _WithDrawerState extends State<_WithDrawer> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
               child: ListTile(
-                leading: const Icon(Icons.bug_report),
+                leading: const Icon(Icons.bug_report_outlined),
                 title: const Text('Debug'),
                 visualDensity: VisualDensity.compact,
                 shape: const RoundedRectangleBorder(
@@ -229,7 +229,7 @@ class _WithRailState extends State<_WithRail> {
             widget.shell.goBranch(index, initialLocation: index == widget.shell.currentIndex);
           },
           leading: IconButton(
-            icon: Icon(railExpanded.value ? Icons.close : Icons.menu),
+            icon: Icon(railExpanded.value ? Icons.close_outlined : Icons.menu_outlined),
             onPressed: () => railExpanded.value = !railExpanded.value,
           ),
           destinations: [
@@ -243,7 +243,7 @@ class _WithRailState extends State<_WithRail> {
                 ),
             if (!isProd)
               const NavigationRailDestination(
-                icon: Icon(Icons.bug_report),
+                icon: Icon(Icons.bug_report_outlined),
                 label: Text('Debug'),
               ),
           ],
@@ -296,7 +296,7 @@ class _FAB extends StatelessWidget {
       child: FloatingActionButton.extended(
         key: const Key('home.order'),
         onPressed: () => context.pushNamed(Routes.order),
-        icon: const Icon(Icons.store_sharp),
+        icon: const Icon(Icons.store_outlined),
         label: Text(S.orderBtn),
       ),
     );
