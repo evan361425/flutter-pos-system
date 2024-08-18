@@ -8,7 +8,7 @@ This POS system is an open-source project, built bit by bit by various contribut
 - [Report Bugs](#how-to-report-bugs)
 - [Propose New Features or Enhancements](#propose-new-features-or-enhancements)
 - [Design and Interface Improvements](#adjust-the-user-interface)
-- Respond to other people's [issues](https://evan361425.github.io/flutter-pos-system/issues)
+- Respond to other people's [issues](https://github.com/evan361425/flutter-pos-system/issues)
 - [Directly Write Code to Improve the POS System](#how-to-submit-code-changes)
 
 Following the guidelines below will accelerate the development process. We also provide assistance, such as verifying issues, confirming improvements, and helping finalize pull requests (PRs).
@@ -17,11 +17,13 @@ Following the guidelines below will accelerate the development process. We also 
 
 ## Need Any Help?
 
-If you encounter any issues not covered in this document, feel free to [email us](mailto:{{ site.social-network-links.email }}). Alternatively, you can [open an issue](https://evan361425.github.io/flutter-pos-system/issues/new) to ask your question. Others might have the same question, and we can solve it together 😬.
+If you encounter any issues not covered in this document, feel free to [email us](mailto:evanlu361425@gmail.com).
+Alternatively, you can [open an issue](https://github.com/evan361425/flutter-pos-system/issues/new) to ask your question. Others might have the same question, and we can solve it together 😬.
 
 ## Improve Documentation
 
-If you find the documentation unclear or awkward while reading it, it likely needs improvement. First, check if there are any [related issues](https://evan361425.github.io/flutter-pos-system/labels/document). If not, please [submit a related issue](https://evan361425.github.io/flutter-pos-system/issues/new?assignees=&labels=&template=document.md&title=).
+If you find the documentation unclear or awkward while reading it, it likely needs improvement. First, check if there are any [related issues](https://github.com/evan361425/flutter-pos-system/labels/document).
+If not, please [submit a related issue](https://github.com/evan361425/flutter-pos-system/issues/new?assignees=&labels=&template=document.md&title=).
 
 In addition, consider improving the documentation if you:
 
@@ -35,7 +37,7 @@ When making [code changes](#how-to-submit-code-changes), remember to switch the 
 
 ## How to Report Bugs
 
-Found a bug? First, check if it has [already been reported](https://evan361425.github.io/flutter-pos-system/labels/bug). If not, please [submit a related issue](https://evan361425.github.io/flutter-pos-system/issues/new?assignees=&labels=&template=bug_report.md&title=).
+Found a bug? First, check if it has [already been reported](https://github.com/evan361425/flutter-pos-system/labels/bug). If not, please [submit a related issue](https://github.com/evan361425/flutter-pos-system/issues/new?assignees=&labels=&template=bug_report.md&title=).
 
 Here are some tips for writing a good bug report:
 
@@ -54,11 +56,11 @@ If you have an idea for a feature that the POS system lacks, you're likely not a
 
 We welcome new feature proposals. Ensure the feature relates to the POS system and provide enough detail and feasibility. Explain the problem the feature aims to solve.
 
-Thank you for helping improve the product. Start [creating a related issue](https://evan361425.github.io/flutter-pos-system/issues/new?assignees=&labels=&template=feature_request.md&title=)!
+Thank you for helping improve the product. Start [creating a related issue](https://github.com/evan361425/flutter-pos-system/issues/new?assignees=&labels=&template=feature_request.md&title=)!
 
 ## Adjust the User Interface
 
-A good application needs a well-designed user interface, including both aesthetics and user experience. If you think a particular section needs a color change, let's try it! Please submit a [related issue](https://evan361425.github.io/flutter-pos-system/issues/new?assignees=&labels=&template=design.md&title=).
+A good application needs a well-designed user interface, including both aesthetics and user experience. If you think a particular section needs a color change, let's try it! Please submit a [related issue](https://github.com/evan361425/flutter-pos-system/issues/new?assignees=&labels=&template=design.md&title=).
 
 Consider the following:
 
@@ -68,7 +70,7 @@ Consider the following:
 
 ## First-Time Contribution
 
-We're delighted you want to contribute. If you're unsure where to start, check the [good first issue](https://evan361425.github.io/flutter-pos-system/issues?q=is%3Aissue+label%3A%22good+first+issue%22) label for suitable issues. Also, the [help wanted](https://evan361425.github.io/flutter-pos-system/issues?q=is%3Aissue+label%3A%22help+wanted%22) label is a good place to find tasks needing assistance.
+We're delighted you want to contribute. If you're unsure where to start, check the [good first issue](https://github.com/evan361425/flutter-pos-system/issues?q=is%3Aissue+label%3A%22good+first+issue%22) label for suitable issues. Also, the [help wanted](https://github.com/evan361425/flutter-pos-system/issues?q=is%3Aissue+label%3A%22help+wanted%22) label is a good place to find tasks needing assistance.
 
 - Good first issues usually involve minor code changes and a unit test.
 - Help wanted issues might require more skill and experience but are areas needing help.
@@ -88,7 +90,7 @@ Here are some guidelines for submitting code changes:
 
 Steps for code changes:
 
-- [Fork](https://evan361425.github.io/flutter-pos-system/fork) and clone the project.
+- [Fork](https://github.com/evan361425/flutter-pos-system/fork) and clone the project.
 - Install necessary dependencies: `flutter pub get`.
 - Install helper tools: `flutter run build_runner build`.
 - Ensure local tests pass: `flutter test`.
