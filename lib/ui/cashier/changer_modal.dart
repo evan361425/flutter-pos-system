@@ -22,8 +22,31 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
     return ResponsiveDialog(
-      title: Text(S.cashierChangerTitle),
+      title: Row(children: [
+        Text(S.cashierChangerTitle),
+        bp <= Breakpoint.medium
+            ? const Spacer()
+            : Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+                  child: ListenableBuilder(
+                    listenable: controller,
+                    builder: (context, child) {
+                      return SegmentedButton<int>(
+                        selected: {controller.index},
+                        onSelectionChanged: (value) => controller.index = value.first,
+                        segments: [
+                          ButtonSegment(value: 0, label: Text(S.cashierChangerFavoriteTab)),
+                          ButtonSegment(value: 1, label: Text(S.cashierChangerCustomTab)),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+      ]),
       actions: [
         TextButton(
           key: const Key('changer.apply'),
@@ -31,12 +54,11 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
           child: Text(S.cashierChangerButton),
         ),
       ],
-      content: _buildContent(),
+      content: _buildContent(bp),
     );
   }
 
-  Widget _buildContent() {
-    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+  Widget _buildContent(Breakpoint bp) {
     if (bp <= Breakpoint.medium) {
       return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         TabBar(
@@ -77,27 +99,16 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
         child: ListenableBuilder(
           listenable: controller,
           builder: (context, child) {
-            final isFavorite = controller.index == 0;
-            return Column(children: [
-              SegmentedButton<int>(
-                selected: {controller.index},
-                onSelectionChanged: (value) => controller.index = value.first,
-                segments: [
-                  ButtonSegment(value: 0, label: Text(S.cashierChangerFavoriteTab)),
-                  ButtonSegment(value: 1, label: Text(S.cashierChangerCustomTab)),
-                ],
-              ),
-              const SizedBox(height: kInternalSpacing),
-              isFavorite
-                  ? ChangerFavoriteView(
-                      key: favoriteState,
-                      emptyAction: _moveToCustom,
-                    )
-                  : ChangerCustomView(
-                      key: customState,
-                      afterFavoriteAdded: _moveToFavorite,
-                    ),
-            ]);
+            if (controller.index == 0) {
+              return ChangerFavoriteView(
+                key: favoriteState,
+                emptyAction: _moveToCustom,
+              );
+            }
+            return ChangerCustomView(
+              key: customState,
+              afterFavoriteAdded: _moveToFavorite,
+            );
           },
         ),
       ),

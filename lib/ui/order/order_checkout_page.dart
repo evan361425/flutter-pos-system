@@ -233,7 +233,7 @@ class _Desktop extends StatelessWidget {
       ),
       body: ListenableBuilder(
         listenable: viewIndex,
-        builder: (context, _) {
+        builder: (context, calculator) {
           return Row(
             children: [
               Expanded(
@@ -241,12 +241,19 @@ class _Desktop extends StatelessWidget {
                   constraints: const BoxConstraints(maxWidth: 800),
                   child: Column(children: [
                     _buildSwitcher(),
-                    _buildBody(context),
+                    Expanded(child: _buildBody(context)),
                   ]),
                 ),
               ),
-              if (!Cart.instance.isEmpty)
-                CheckoutCashierCalculator(
+              if (calculator != null) calculator,
+            ],
+          );
+        },
+        child: Cart.instance.isEmpty
+            ? null
+            : SizedBox(
+                width: 360,
+                child: CheckoutCashierCalculator(
                   onSubmit: () => _ConfirmButton.confirm(
                     context,
                     price: price.value,
@@ -255,9 +262,7 @@ class _Desktop extends StatelessWidget {
                   price: price,
                   paid: paid,
                 ),
-            ],
-          );
-        },
+              ),
       ),
     );
   }
@@ -339,7 +344,7 @@ class _ConfirmButton extends StatelessWidget {
       key: const Key('order.details.confirm'),
       onPressed: () => confirm(context, price: price.value, paid: paid.value),
       tooltip: S.orderCheckoutActionConfirm,
-      icon: const Icon(Icons.next_plan_outlined),
+      icon: const Icon(Icons.check_outlined),
     );
   }
 }

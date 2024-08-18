@@ -112,7 +112,7 @@ class _MenuPageState extends State<MenuPage> {
       );
     }
 
-    if (widget.productOnly) {
+    if (widget.productOnly && isBottomNav) {
       return const MenuProductList(catalog: null);
     }
 
@@ -186,7 +186,7 @@ class _MenuPageState extends State<MenuPage> {
 
   void _handlePop() {
     if (_onPopInvoked(selected == null)) {
-      PopButton.safePop(context, Routes.others);
+      PopButton.safePop(context, path: '${Routes.base}/others');
     }
   }
 

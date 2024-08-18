@@ -100,18 +100,19 @@ class BottomSheetAction<T> {
   }
 
   void onTap(BuildContext context) {
-    if (route == null) {
-      // pop off bottom sheet
-      Navigator.of(context).pop(returnValue);
-      return;
+    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+    // pop off bottom sheet
+    if (bp.lookup(compact: true, medium: false) && context.canPop()) {
+      context.pop(returnValue);
     }
 
-    Navigator.of(context).pop();
-    context.pushNamed(
-      route!,
-      pathParameters: routePathParameters,
-      queryParameters: routeQueryParameters,
-    );
+    if (route != null) {
+      context.pushNamed(
+        route!,
+        pathParameters: routePathParameters,
+        queryParameters: routeQueryParameters,
+      );
+    }
   }
 }
 

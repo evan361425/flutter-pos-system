@@ -137,7 +137,7 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _handleCheckout() async {
-    final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
+    final status = await context.pushNamed<CheckoutStatus>(Routes.orderCheckout);
     if (status != null && mounted) {
       handleCheckoutStatus(context, status);
       _resetNotifier.notify();

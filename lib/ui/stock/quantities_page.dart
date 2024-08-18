@@ -16,7 +16,7 @@ class QuantitiesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final body = ListenableBuilder(
       listenable: Quantities.instance,
-      builder: (context, child) => Center(child: _buildBody(context)),
+      builder: (context, child) => _buildBody(context),
     );
 
     return Routes.homeMode.value == HomeMode.bottomNavigationBar

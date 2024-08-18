@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-08-10T09:10:45.541474Z",
+  "@@last_modified": "2024-08-18T03:08:06.981783Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -177,7 +177,7 @@
   "@stockReplenishmentNever": {
     "description": "The stock page displays the last replenishment time; if never replenished, this text is set"
   },
-  "stockReplenishmentApplyButton": "Apply Purchase",
+  "stockReplenishmentApplyPreview": "Preview",
   "stockReplenishmentApplyConfirmButton": "Apply",
   "stockReplenishmentApplyConfirmTitle": "Apply Purchase?",
   "stockReplenishmentApplyConfirmColumn": "{value, select, name{Name} amount{Amount} other{UNKNOWN}}",

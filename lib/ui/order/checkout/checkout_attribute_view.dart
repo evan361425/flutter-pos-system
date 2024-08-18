@@ -15,11 +15,11 @@ class CheckoutAttributeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 428),
-      children: [
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kFABSpacing),
+      child: Column(children: [
         for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
-      ],
+      ]),
     );
   }
 }

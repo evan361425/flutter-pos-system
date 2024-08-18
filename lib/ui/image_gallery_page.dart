@@ -6,6 +6,7 @@ import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/image_dumper.dart';
@@ -101,10 +102,14 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       );
     }
 
-    const crossAxisCount = 3;
+    final crossAxisCount = Breakpoint.find(width: MediaQuery.sizeOf(context).width).lookup<int>(
+      compact: 2,
+      medium: 3,
+      large: 4,
+    );
     return GridView.builder(
       primary: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,

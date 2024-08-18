@@ -13,9 +13,9 @@ class PopButton extends StatelessWidget {
     this.onPressed,
   });
 
-  static safePop(BuildContext context, [path = Routes.base]) {
+  static safePop<T>(BuildContext context, {String path = Routes.base, T? value}) {
     if (context.mounted) {
-      context.canPop() ? context.pop() : context.go(path);
+      context.canPop() ? context.pop<T?>(value) : context.go(path);
     }
   }
 

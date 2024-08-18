@@ -24,9 +24,9 @@ class SlidableItemList<T, Action> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return SingleChildScrollView(
       padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
-      children: <Widget>[
+      child: Column(children: <Widget>[
         if (leading != null) leading!,
         Row(children: [
           Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
@@ -42,7 +42,7 @@ class SlidableItemList<T, Action> extends StatelessWidget {
         ))
           widget,
         if (tailing != null) tailing!,
-      ],
+      ]),
     );
   }
 }

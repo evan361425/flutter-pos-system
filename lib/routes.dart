@@ -241,7 +241,7 @@ class Routes {
       GoRoute(
         name: chartReorder,
         path: 'reorder',
-        builder: (ctx, state) => const ChartReorder(),
+        pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChartReorder()),
       ),
     ]),
     _createPrefixRoute('ingredient', 'stock', [
@@ -270,12 +270,12 @@ class Routes {
     GoRoute(
       name: replenish,
       path: 'replenish',
-      builder: (ctx, state) => const ReplenishmentPage(),
+      pageBuilder: (ctx, state) => const MaterialDialogPage(child: ReplenishmentPage()),
       routes: [
         GoRoute(
           name: replenishCreate,
           path: 'create',
-          builder: (ctx, state) => const ReplenishmentModal(),
+          pageBuilder: (ctx, state) => const MaterialDialogPage(child: ReplenishmentModal()),
         ),
         GoRoute(
           name: replenishUpdate,
@@ -288,12 +288,12 @@ class Routes {
           },
         ),
         GoRoute(
-          name: replenishApply,
-          path: 'apply/:id',
+          name: replenishPreview,
+          path: 'preview/:id',
           redirect: _redirectIfMissed(path: '/stock', hasItem: (id) => Replenisher.instance.hasItem(id)),
-          builder: (ctx, state) {
+          pageBuilder: (ctx, state) {
             final id = state.pathParameters['id']!;
-            return ReplenishmentApply(Replenisher.instance.getItem(id)!);
+            return MaterialDialogPage(child: ReplenishmentPreviewPage(Replenisher.instance.getItem(id)!));
           },
         ),
       ],
@@ -324,7 +324,7 @@ class Routes {
       GoRoute(
         name: menuCatalogReorder,
         path: 'reorder',
-        builder: (ctx, state) => const CatalogReorder(),
+        pageBuilder: (ctx, state) => const MaterialDialogPage(child: CatalogReorder()),
       ),
     ]),
     GoRoute(
@@ -332,8 +332,8 @@ class Routes {
       // avoid conflict with product/:id
       path: 'menu/product_reorder/:id',
       redirect: _redirectIfMissed(path: '/menu', hasItem: (id) => Menu.instance.hasItem(id)),
-      builder: (ctx, state) => ProductReorder(
-        Menu.instance.getItem(state.pathParameters['id']!)!,
+      pageBuilder: (ctx, state) => MaterialDialogPage(
+        child: ProductReorder(Menu.instance.getItem(state.pathParameters['id']!)!),
       ),
     ),
     GoRoute(
@@ -376,8 +376,8 @@ class Routes {
         GoRoute(
           name: menuProductReorderIngredient,
           path: 'reorder',
-          builder: (ctx, state) => ProductIngredientReorder(
-            Menu.instance.getProduct(state.pathParameters['id']!)!,
+          pageBuilder: (ctx, state) => MaterialDialogPage(
+            child: ProductIngredientReorder(Menu.instance.getProduct(state.pathParameters['id']!)!),
           ),
         ),
       ],
@@ -431,17 +431,17 @@ class Routes {
       GoRoute(
         name: orderAttrReorder,
         path: 'reorder',
-        builder: (ctx, state) => const OrderAttributeReorder(),
+        pageBuilder: (ctx, state) => const MaterialDialogPage(child: OrderAttributeReorder()),
       ),
       GoRoute(
         name: orderAttrReorderOption,
         path: 'reorder/:id',
         redirect: _redirectIfMissed(path: '/oa', hasItem: (id) => OrderAttributes.instance.hasItem(id)),
-        builder: (ctx, state) {
-          return OrderAttributeOptionReorder(
-            attribute: OrderAttributes.instance.getItem(
-              state.pathParameters['id']!,
-            )!,
+        pageBuilder: (ctx, state) {
+          return MaterialDialogPage(
+            child: OrderAttributeOptionReorder(
+              attribute: OrderAttributes.instance.getItem(state.pathParameters['id']!)!,
+            ),
           );
         },
       ),
@@ -454,7 +454,7 @@ class Routes {
     GoRoute(
       name: cashierSurplus,
       path: 'cashier/surplus',
-      builder: (ctx, state) => const CashierSurplus(),
+      pageBuilder: (ctx, state) => const MaterialDialogPage(child: CashierSurplus()),
     ),
     GoRoute(
       name: transitStation,
@@ -494,7 +494,7 @@ class Routes {
       builder: (ctx, state) => const OrderPage(),
       routes: [
         GoRoute(
-          name: orderDetails,
+          name: orderCheckout,
           path: 'details',
           builder: (ctx, state) => const OrderCheckoutPage(),
         ),
@@ -549,12 +549,12 @@ class Routes {
   static const replenish = 'repl';
   static const replenishCreate = 'repl.create';
   static const replenishUpdate = 'repl.update';
-  static const replenishApply = 'repl.apply';
+  static const replenishPreview = 'repl.preview';
   static const cashier = 'cashier';
   static const cashierChanger = 'cashier.changer';
   static const cashierSurplus = 'cashier.surplus';
   static const order = 'order';
-  static const orderDetails = 'order.details';
+  static const orderCheckout = 'order.checkout';
   static const history = 'history';
   static const historyOrder = 'history.order';
   static const anal = 'anal';
@@ -598,9 +598,10 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
 
 GoRoute _createPrefixRoute(String path, String redirect, List<RouteBase> routes) {
   return GoRoute(
-    name: '_$path',
     path: path,
-    redirect: (context, state) => state.name == '_$path' ? '${Routes.base}/$redirect' : null,
+    redirect: (context, state) {
+      return state.uri.path == '${Routes.base}/$path' ? '${Routes.base}/$redirect' : null;
+    },
     routes: routes,
   );
 }

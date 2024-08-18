@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/info_popup.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -33,53 +35,43 @@ class CashierSurplus extends StatelessWidget {
         ]),
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: const CloseButton(key: Key('pop')),
-        title: Text(S.cashierSurplusButton),
-        actions: [
-          TextButton(
-            key: const Key('cashier_surplus.confirm'),
-            onPressed: () async {
-              await Cashier.instance.surplus();
-              if (context.mounted && context.canPop()) {
-                context.pop(true);
-              }
-            },
-            child: Text(MaterialLocalizations.of(context).okButtonLabel),
-          ),
-        ],
-      ),
-      body: Column(children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          _DataWithLabel(
-            data: cashier.currentTotal.toCurrency(),
-            label: S.cashierSurplusCurrentTotalLabel,
-            helper: S.cashierSurplusCurrentTotalHelper,
-          ),
-          _DataWithLabel(
-            data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
-            label: S.cashierSurplusDiffTotalLabel,
-            helper: S.cashierSurplusDiffTotalHelper,
+    return ResponsiveDialog(
+      title: Text(S.cashierSurplusButton),
+      actions: [
+        TextButton(
+          key: const Key('cashier_surplus.confirm'),
+          onPressed: () async {
+            await Cashier.instance.surplus();
+            if (context.mounted && context.canPop()) {
+              context.pop(true);
+            }
+          },
+          child: Text(MaterialLocalizations.of(context).okButtonLabel),
+        ),
+      ],
+      content: SingleChildScrollView(
+        child: Column(children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            _DataWithLabel(
+              data: cashier.currentTotal.toCurrency(),
+              label: S.cashierSurplusCurrentTotalLabel,
+              helper: S.cashierSurplusCurrentTotalHelper,
+            ),
+            _DataWithLabel(
+              data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
+              label: S.cashierSurplusDiffTotalLabel,
+              helper: S.cashierSurplusDiffTotalHelper,
+            ),
+          ]),
+          const Divider(),
+          HintText(S.cashierSurplusTableHint, textAlign: TextAlign.center),
+          const SizedBox(height: kInternalSpacing),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(columns: columns, rows: rows),
           ),
         ]),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: HintText(S.cashierSurplusTableHint, textAlign: TextAlign.center),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(columns: columns, rows: rows),
-              ),
-            ),
-          ),
-        ),
-      ]),
+      ),
     );
   }
 

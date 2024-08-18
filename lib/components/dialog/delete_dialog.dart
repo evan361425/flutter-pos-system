@@ -12,7 +12,7 @@ class DeleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(S.dialogDeletionTitle),
       content: SingleChildScrollView(child: content),
       actions: <Widget>[
@@ -57,11 +57,9 @@ class DeleteDialog extends StatelessWidget {
       return startDelete();
     }
 
-    final isConfirmed = await showDialog<bool>(
+    final isConfirmed = await showAdaptiveDialog<bool>(
       context: context,
-      builder: (BuildContext context) => DeleteDialog(
-        content: warningContent,
-      ),
+      builder: (BuildContext context) => DeleteDialog(content: warningContent),
     );
 
     if (isConfirmed == true) {

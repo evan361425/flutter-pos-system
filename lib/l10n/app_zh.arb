@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-08-10T09:10:45.594305Z",
+  "@@last_modified": "2024-08-18T03:08:07.208842Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -177,7 +177,7 @@
   "@stockReplenishmentNever": {
     "description": "The stock page displays the last replenishment time; if never replenished, this text is set"
   },
-  "stockReplenishmentApplyButton": "套用採購",
+  "stockReplenishmentApplyPreview": "預覽",
   "stockReplenishmentApplyConfirmButton": "套用",
   "stockReplenishmentApplyConfirmTitle": "套用採購？",
   "stockReplenishmentApplyConfirmColumn": "{value, select, name{名稱} amount{數量} other{UNKNOWN}}",

@@ -122,7 +122,7 @@ void main() {
               builder: (_, __) => const OrderPage(),
               routes: [
                 GoRoute(
-                    name: Routes.orderDetails,
+                    name: Routes.orderCheckout,
                     path: 'test',
                     builder: (context, __) {
                       return Scaffold(

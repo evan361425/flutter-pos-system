@@ -88,7 +88,7 @@ replenishment:
   - Never Purchased
   - The stock page displays the last replenishment time; if never replenished, this text is set
   apply:
-    button: Apply Purchase
+    preview: Preview
     confirm:
       button: Apply
       title: Apply Purchase?
