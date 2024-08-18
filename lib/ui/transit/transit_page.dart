@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/choice_chip_with_help.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
@@ -53,6 +54,7 @@ class _TransitPageState extends State<TransitPage> {
         subtitle: Text(S.transitPTDescription),
         onTap: () => _goToStation(context, TransitMethod.plainText),
       ),
+      const SizedBox(height: kFABSpacing),
     ]);
     // allow scroll as TabView
     final body = GestureDetector(

@@ -9,31 +9,32 @@ import 'package:possystem/settings/language_setting.dart';
 Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange range) async {
   // TODO: using fullscreen and dialog
   final result = await showDateRangePicker(
-      context: context,
-      initialDateRange: DateTimeRange(
-        start: range.start,
-        end: range.end.subtract(const Duration(days: 1)),
-      ),
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      firstDate: DateTime(2021, 1),
-      lastDate: DateTime.now(),
-      locale: LanguageSetting.instance.language.locale,
+    context: context,
+    initialDateRange: DateTimeRange(
+      start: range.start,
+      end: range.end.subtract(const Duration(days: 1)),
+    ),
+    initialEntryMode: DatePickerEntryMode.calendarOnly,
+    firstDate: DateTime(2021, 1),
+    lastDate: DateTime.now(),
+    locale: LanguageSetting.instance.language.locale,
 
-      /// TODO: should fix this bug
-      /// Wrapping the design, because the background will use a slightly
-      /// transparent primary color when selecting a date, which will reduce
-      /// the expected contrast, making it difficult to see, so adjust the color
-      /// of onPrimary.
-      builder: (context, dialog) {
-        final theme = Theme.of(context);
-        final colorScheme = theme.colorScheme.copyWith(
-          onPrimary: theme.textTheme.bodyMedium?.color,
-        );
-        return Theme(
-          data: theme.copyWith(colorScheme: colorScheme),
-          child: dialog ?? const SizedBox.shrink(),
-        );
-      });
+    /// TODO: should fix this bug
+    /// Wrapping the design, because the background will use a slightly
+    /// transparent primary color when selecting a date, which will reduce
+    /// the expected contrast, making it difficult to see, so adjust the color
+    /// of onPrimary.
+    builder: (context, dialog) {
+      final theme = Theme.of(context);
+      final colorScheme = theme.colorScheme.copyWith(
+        onPrimary: theme.textTheme.bodyMedium?.color,
+      );
+      return Theme(
+        data: theme.copyWith(colorScheme: colorScheme),
+        child: dialog ?? const SizedBox.shrink(),
+      );
+    },
+  );
 
   if (result != null) {
     return DateTimeRange(

@@ -14,6 +14,8 @@ class OrderLoader extends StatefulWidget {
 
   final Widget Function(BuildContext, OrderMetrics)? trailingBuilder;
 
+  final Widget? leading;
+
   final bool countingAll;
 
   const OrderLoader({
@@ -22,6 +24,7 @@ class OrderLoader extends StatefulWidget {
     required this.builder,
     this.trailingBuilder,
     this.countingAll = false,
+    this.leading,
   });
 
   @override
@@ -32,6 +35,7 @@ class _OrderLoaderState extends State<OrderLoader> {
   @override
   Widget build(BuildContext context) {
     return ItemLoader<OrderObject, OrderMetrics>(
+      leading: widget.leading,
       prototypeItem: widget.builder(
         context,
         OrderObject(createdAt: DateTime.now()),
