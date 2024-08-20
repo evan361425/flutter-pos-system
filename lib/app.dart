@@ -31,6 +31,7 @@ class App extends StatelessWidget {
     router ??= GoRouter.routingConfig(
       initialLocation: Routes.initLocation,
       routingConfig: routingConfig!,
+      navigatorKey: Routes.rootNavigatorKey,
       // By default, go_router comes with default error screens for both
       // MaterialApp and CupertinoApp as well as a default error screen in
       // the case that none is used.

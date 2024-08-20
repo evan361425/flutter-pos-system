@@ -23,7 +23,7 @@ class ReplenishmentPage extends StatelessWidget {
       content: ListenableBuilder(
         listenable: Replenisher.instance,
         builder: (context, title) {
-          handleCreate() => context.pushNamed(Routes.replenishCreate);
+          handleCreate() => context.pushNamed(Routes.stockReplCreate);
           if (Replenisher.instance.isEmpty) {
             return Center(
               child: EmptyBody(
@@ -61,7 +61,7 @@ class ReplenishmentPage extends StatelessWidget {
           BottomSheetAction(
             title: Text(S.stockReplenishmentTitleUpdate),
             leading: const Icon(KIcons.edit),
-            route: Routes.replenishUpdate,
+            route: Routes.stockReplUpdate,
             routePathParameters: {'id': item.id},
           ),
           BottomSheetAction(
@@ -83,7 +83,7 @@ class ReplenishmentPage extends StatelessWidget {
   void handleActions(BuildContext context, Replenishment item, ReplenishActions action) async {
     if (action == ReplenishActions.preview) {
       final confirmed = await context.pushNamed<bool>(
-        Routes.replenishPreview,
+        Routes.stockReplPreview,
         pathParameters: {'id': item.id},
       );
 

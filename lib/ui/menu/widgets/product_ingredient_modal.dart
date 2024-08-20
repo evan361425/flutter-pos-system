@@ -173,7 +173,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
           // pop off search page
           Navigator.of(context).pop();
           context.pushNamed(
-            Routes.ingredientUpdate,
+            Routes.stockIngrUpdate,
             pathParameters: {'id': ingredient.id},
           );
         },
