@@ -186,7 +186,7 @@ class _MenuPageState extends State<MenuPage> {
 
   void _handlePop() {
     if (_onPopInvoked(selected == null)) {
-      PopButton.safePop(context, path: '${Routes.base}/others');
+      PopButton.safePop(context, path: '${Routes.base}/_');
     }
   }
 

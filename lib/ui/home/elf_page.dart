@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
@@ -28,7 +29,7 @@ class ElfPage extends StatelessWidget {
             S.settingElfContent,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32.0),
+          const SizedBox(height: kFABSpacing),
         ]),
       ),
     );

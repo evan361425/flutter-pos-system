@@ -33,9 +33,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     return PopScope(
       canPop: !isSelecting,
       onPopInvoked: onPopInvoked,
-      child: SafeArea(
-        child: isSelecting ? buildSelectingScaffold() : buildScaffold(),
-      ),
+      child: isSelecting ? buildSelectingScaffold() : buildScaffold(),
     );
   }
 

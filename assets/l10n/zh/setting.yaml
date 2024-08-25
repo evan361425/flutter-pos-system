@@ -21,14 +21,6 @@ theme:
     system: 跟隨系統
 language:
   title: 語言
-orderOutlook:
-  title: 點餐的外觀
-  name:
-  - slidingPanel: 酷炫面板
-    singleView: 經典模式
-  tip:
-  - slidingPanel: 點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機
-    singleView: 所有資訊顯示在單一螢幕中，適合大螢幕的平板
 checkoutWarning:
   title: 收銀機提示
   name:
@@ -41,10 +33,6 @@ checkoutWarning:
       例如 5 塊錢不夠了，開始用 5 個 1 塊去找錢
     onlyNotEnough: 當零錢不夠找的時候，顯示提示。
     hideAll: 當點餐時，收銀機不會顯示任何提示
-orderProductCount:
-  title: 點餐時每行顯示幾個產品
-  hint: 設定「零」則點餐時僅會以文字顯示
-  minLabel: 純文字顯示
 orderAwakening:
   title: 點餐時不關閉螢幕
   description: 若取消，則會根據系統設定時間關閉螢幕

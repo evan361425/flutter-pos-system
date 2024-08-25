@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
@@ -59,76 +60,79 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
       Expanded(
         child: Center(
           child: SingleChildScrollView(
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: _execPostfix, text: '1'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '4'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '7'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '00'),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kFABSpacing),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Column(mainAxisSize: MainAxisSize.min, children: [
+                  _CalculatorPostfixAction(action: _execPostfix, text: '1'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '4'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '7'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '00'),
+                ]),
+                Column(mainAxisSize: MainAxisSize.min, children: [
+                  _CalculatorPostfixAction(action: _execPostfix, text: '2'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '5'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '8'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '0'),
+                ]),
+                Column(mainAxisSize: MainAxisSize.min, children: [
+                  _CalculatorPostfixAction(action: _execPostfix, text: '3'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '6'),
+                  _CalculatorPostfixAction(action: _execPostfix, text: '9'),
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.dot'),
+                    action: _execDot,
+                    child: const Text('.'),
+                  ),
+                ]),
+                Column(mainAxisSize: MainAxisSize.min, children: [
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.plus'),
+                    action: () => _addOperator('+'),
+                    color: theme.colorScheme.secondary,
+                    child: const Icon(Icons.add_outlined, size: 24),
+                  ),
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.minus'),
+                    action: () => _addOperator('-'),
+                    color: theme.colorScheme.secondary,
+                    child: const Icon(Icons.remove_outlined, size: 24),
+                  ),
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.times'),
+                    action: () => _addOperator('x'),
+                    color: theme.colorScheme.secondary,
+                    child: const Icon(Icons.clear_outlined, size: 24),
+                  ),
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.ceil'),
+                    action: _execCeil,
+                    color: theme.colorScheme.secondary,
+                    child: const Icon(Icons.merge_type_rounded, size: 24),
+                  ),
+                ]),
+                Column(mainAxisSize: MainAxisSize.min, children: [
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.back'),
+                    action: _execBack,
+                    color: theme.colorScheme.error,
+                    child: const Icon(Icons.arrow_back_rounded, size: 24),
+                  ),
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.clear'),
+                    action: _execClear,
+                    color: theme.colorScheme.error,
+                    child: const Icon(Icons.refresh_outlined, size: 24),
+                  ),
+                  _CalculatorAction(
+                    key: const Key('cashier.calculator.submit'),
+                    action: _execSubmit,
+                    height: 124,
+                    child: isOperating ? const Text('=') : const Icon(Icons.check_outlined, size: 24),
+                  ),
+                ]),
               ]),
-              Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: _execPostfix, text: '2'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '5'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '8'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '0'),
-              ]),
-              Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorPostfixAction(action: _execPostfix, text: '3'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '6'),
-                _CalculatorPostfixAction(action: _execPostfix, text: '9'),
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.dot'),
-                  action: _execDot,
-                  child: const Text('.'),
-                ),
-              ]),
-              Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.plus'),
-                  action: () => _addOperator('+'),
-                  color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.add_outlined, size: 24),
-                ),
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.minus'),
-                  action: () => _addOperator('-'),
-                  color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.remove_outlined, size: 24),
-                ),
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.times'),
-                  action: () => _addOperator('x'),
-                  color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.clear_outlined, size: 24),
-                ),
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.ceil'),
-                  action: _execCeil,
-                  color: theme.colorScheme.secondary,
-                  child: const Icon(Icons.merge_type_rounded, size: 24),
-                ),
-              ]),
-              Column(mainAxisSize: MainAxisSize.min, children: [
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.back'),
-                  action: _execBack,
-                  color: theme.colorScheme.error,
-                  child: const Icon(Icons.arrow_back_rounded, size: 24),
-                ),
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.clear'),
-                  action: _execClear,
-                  color: theme.colorScheme.error,
-                  child: const Icon(Icons.refresh_outlined, size: 24),
-                ),
-                _CalculatorAction(
-                  key: const Key('cashier.calculator.submit'),
-                  action: _execSubmit,
-                  height: 124,
-                  child: isOperating ? const Text('=') : const Icon(Icons.check_outlined, size: 24),
-                ),
-              ]),
-            ]),
+            ),
           ),
         ),
       ),

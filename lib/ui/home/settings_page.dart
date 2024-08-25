@@ -6,13 +6,13 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/home/widgets/feature_switch.dart';
@@ -116,6 +116,7 @@ class SettingsPage extends StatelessWidget {
           onChanged: (value) => CollectEventsSetting.instance.update(value),
         ),
       ),
+      const SizedBox(height: kFABSpacing),
     ]);
 
     return Routes.homeMode.value == HomeMode.bottomNavigationBar
@@ -166,7 +167,6 @@ class ItemListScaffold extends StatelessWidget {
 enum Feature {
   theme(),
   language(),
-  orderOutlook(),
   checkoutWarning();
 
   const Feature();
@@ -177,8 +177,6 @@ enum Feature {
         return ThemeMode.values.map((e) => S.settingThemeName(e.name));
       case Feature.language:
         return Language.values.map((e) => e.title);
-      case Feature.orderOutlook:
-        return OrderOutlookTypes.values.map((e) => S.settingOrderOutlookName(e.name));
       case Feature.checkoutWarning:
         return CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name));
     }
@@ -190,8 +188,6 @@ enum Feature {
         return ThemeMode.values.map((e) => '');
       case Feature.language:
         return Language.values.map((e) => '');
-      case Feature.orderOutlook:
-        return OrderOutlookTypes.values.map((e) => S.settingOrderOutlookTip(e.name));
       case Feature.checkoutWarning:
         return CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name));
     }
@@ -203,8 +199,6 @@ enum Feature {
         return S.settingThemeTitle;
       case Feature.language:
         return S.settingLanguageTitle;
-      case Feature.orderOutlook:
-        return S.settingOrderOutlookTitle;
       case Feature.checkoutWarning:
         return S.settingCheckoutWarningTitle;
     }
@@ -216,8 +210,6 @@ enum Feature {
         return ThemeSetting.instance.value.index;
       case Feature.language:
         return LanguageSetting.instance.language.index;
-      case Feature.orderOutlook:
-        return OrderOutlookSetting.instance.value.index;
       case Feature.checkoutWarning:
         return CheckoutWarningSetting.instance.value.index;
     }
@@ -229,8 +221,6 @@ enum Feature {
         return ThemeSetting.instance.update(ThemeMode.values[index]);
       case Feature.language:
         return LanguageSetting.instance.update(Language.values[index]);
-      case Feature.orderOutlook:
-        return OrderOutlookSetting.instance.update(OrderOutlookTypes.values[index]);
       case Feature.checkoutWarning:
         return CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]);
     }

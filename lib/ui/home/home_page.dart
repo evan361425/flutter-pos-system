@@ -295,6 +295,7 @@ class _FAB extends StatelessWidget {
       message: S.orderTutorialContent,
       child: FloatingActionButton.extended(
         key: const Key('home.order'),
+        heroTag: null,
         onPressed: () => context.pushNamed(Routes.order),
         icon: const Icon(Icons.store_outlined),
         label: Text(S.orderBtn),

@@ -29,17 +29,6 @@ theme:
   - name:
 language:
   title: Language
-orderOutlook:
-  title: Ordering Outlook
-  name:
-  - slidingPanel: Sliding Panel
-    singleView: Classic Mode
-  - Appearance during ordering
-  - name:
-  tip:
-  - slidingPanel: Panel slides up during ordering, suitable for small-screen phones
-    singleView: All info displayed on a single screen, suitable for large-screen tablets
-  - name:
 checkoutWarning:
   title: Cash Registry Warnings
   name:
@@ -55,10 +44,6 @@ checkoutWarning:
     onlyNotEnough: Show warning when cash registry not enough money.
     hideAll: Won't display any warnings during ordering.
   - name:
-orderProductCount:
-  title: Products per Row during Ordering
-  hint: Set to "0" to display only text during ordering
-  minLabel: Text Only
 orderAwakening:
   title:
   - Keep Screen On During Ordering

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-08-18T03:08:06.981783Z",
+  "@@last_modified": "2024-08-25T09:00:37.933702Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -38,24 +38,6 @@
     }
   },
   "settingLanguageTitle": "Language",
-  "settingOrderOutlookTitle": "Ordering Outlook",
-  "settingOrderOutlookName": "{name, select, slidingPanel{Sliding Panel} singleView{Classic Mode} other{UNKNOWN}}",
-  "@settingOrderOutlookName": {
-    "description": "Appearance during ordering",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "settingOrderOutlookTip": "{name, select, slidingPanel{Panel slides up during ordering, suitable for small-screen phones} singleView{All info displayed on a single screen, suitable for large-screen tablets} other{UNKNOWN}}",
-  "@settingOrderOutlookTip": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "settingCheckoutWarningTitle": "Cash Registry Warnings",
   "settingCheckoutWarningName": "{name, select, showAll{Show All} onlyNotEnough{Show Only When Not Enough} hideAll{Hide All} other{UNKNOWN}}",
   "@settingCheckoutWarningName": {
@@ -74,9 +56,6 @@
       }
     }
   },
-  "settingOrderProductCountTitle": "Products per Row during Ordering",
-  "settingOrderProductCountHint": "Set to \"0\" to display only text during ordering",
-  "settingOrderProductCountMinLabel": "Text Only",
   "settingOrderAwakeningTitle": "Keep Screen On During Ordering",
   "@settingOrderAwakeningTitle": {
     "description": "Keep the screen on during ordering, even when idle"
@@ -159,27 +138,27 @@
   "@stockIngredientRestockDialogPriceOldAmount": {
     "description": "The original amount before the restock"
   },
-  "stockReplenishmentButton": "Purchase",
+  "stockReplenishmentButton": "Replenish",
   "stockReplenishmentEmptyBody": "Purchasing helps you quickly adjust ingredient inventory",
-  "stockReplenishmentTitleList": "Purchase List",
-  "stockReplenishmentTitleCreate": "Add Purchase",
-  "stockReplenishmentTitleUpdate": "Edit Purchase",
+  "stockReplenishmentTitleList": "Replenishment",
+  "stockReplenishmentTitleCreate": "Add Replenishment",
+  "stockReplenishmentTitleUpdate": "Edit Replenishment",
   "stockReplenishmentMetaAffect": "Affects {count} Ingredients",
   "@stockReplenishmentMetaAffect": {
-    "description": "Indicates in the purchase list how many ingredients are affected",
+    "description": "Indicates in the replenishment list how many ingredients are affected",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "stockReplenishmentNever": "Never Purchased",
+  "stockReplenishmentNever": "Never Replenished",
   "@stockReplenishmentNever": {
     "description": "The stock page displays the last replenishment time; if never replenished, this text is set"
   },
   "stockReplenishmentApplyPreview": "Preview",
   "stockReplenishmentApplyConfirmButton": "Apply",
-  "stockReplenishmentApplyConfirmTitle": "Apply Purchase?",
+  "stockReplenishmentApplyConfirmTitle": "Apply Replenishment?",
   "stockReplenishmentApplyConfirmColumn": "{value, select, name{Name} amount{Amount} other{UNKNOWN}}",
   "@stockReplenishmentApplyConfirmColumn": {
     "placeholders": {
@@ -189,11 +168,11 @@
     }
   },
   "stockReplenishmentApplyConfirmHint": "After apply, following ingredients will be adjusted",
-  "stockReplenishmentTutorialTitle": "Ingredient Purchases",
-  "stockReplenishmentTutorialContent": "Through purchases, you no longer need to set the inventory of each ingredient one by one.\nSet up purchases now and adjust multiple ingredients at once!",
-  "stockReplenishmentNameLabel": "Purchase Name",
-  "stockReplenishmentNameHint": "e.g., Costco Purchase",
-  "stockReplenishmentNameErrorRepeat": "Purchase name already exists",
+  "stockReplenishmentTutorialTitle": "Replenishment",
+  "stockReplenishmentTutorialContent": "Through Replenishment, you no longer need to set the inventory of each ingredient one by one.\nSet up Replenishment now and adjust multiple ingredients at once!",
+  "stockReplenishmentNameLabel": "Replenishment Name",
+  "stockReplenishmentNameHint": "e.g., Costco Shopping",
+  "stockReplenishmentNameErrorRepeat": "Replenishment name already exists",
   "stockReplenishmentIngredientsDivider": "Ingredients",
   "stockReplenishmentIngredientsHelper": "Click to set the quantity of different ingredients to be purchased",
   "stockReplenishmentIngredientAmountHint": "Set the amount to increase/decrease",

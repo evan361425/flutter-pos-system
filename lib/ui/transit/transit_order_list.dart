@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -37,6 +39,11 @@ class TransitOrderList extends StatelessWidget {
       leading: leading,
       ranger: notifier,
       countingAll: true,
+      emptyChild: Column(children: [
+        leading,
+        const SizedBox(height: kInternalSpacing),
+        HintText(S.orderLoaderEmpty),
+      ]),
       trailingBuilder: _buildMemoryInfo,
       builder: _buildOrder,
     );

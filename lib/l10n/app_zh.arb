@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-08-18T03:08:07.208842Z",
+  "@@last_modified": "2024-08-25T09:00:37.957030Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -38,24 +38,6 @@
     }
   },
   "settingLanguageTitle": "語言",
-  "settingOrderOutlookTitle": "點餐的外觀",
-  "settingOrderOutlookName": "{name, select, slidingPanel{酷炫面板} singleView{經典模式} other{UNKNOWN}}",
-  "@settingOrderOutlookName": {
-    "description": "Appearance during ordering",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "settingOrderOutlookTip": "{name, select, slidingPanel{點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機} singleView{所有資訊顯示在單一螢幕中，適合大螢幕的平板} other{UNKNOWN}}",
-  "@settingOrderOutlookTip": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "settingCheckoutWarningTitle": "收銀機提示",
   "settingCheckoutWarningName": "{name, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
   "@settingCheckoutWarningName": {
@@ -74,9 +56,6 @@
       }
     }
   },
-  "settingOrderProductCountTitle": "點餐時每行顯示幾個產品",
-  "settingOrderProductCountHint": "設定「零」則點餐時僅會以文字顯示",
-  "settingOrderProductCountMinLabel": "純文字顯示",
   "settingOrderAwakeningTitle": "點餐時不關閉螢幕",
   "@settingOrderAwakeningTitle": {
     "description": "Keep the screen on during ordering, even when idle"
@@ -166,7 +145,7 @@
   "stockReplenishmentTitleUpdate": "編輯採購",
   "stockReplenishmentMetaAffect": "會影響 {count} 項成分",
   "@stockReplenishmentMetaAffect": {
-    "description": "Indicates in the purchase list how many ingredients are affected",
+    "description": "Indicates in the replenishment list how many ingredients are affected",
     "placeholders": {
       "count": {
         "type": "int"

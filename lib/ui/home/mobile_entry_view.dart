@@ -98,7 +98,7 @@ class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAli
       key: Key('setting.$id'),
       leading: Icon(icon),
       trailing: const Icon(Icons.navigate_next_outlined),
-      onTap: () => context.pushNamed(route),
+      onTap: () => context.goNamed(route),
       title: Text(title),
       subtitle: Text(subtitle),
     );
@@ -171,7 +171,7 @@ class _HeaderInfoList extends StatelessWidget {
           side: BorderSide(color: Colors.transparent),
         )),
       ),
-      onPressed: () => context.pushNamed(route, queryParameters: query),
+      onPressed: () => context.goNamed(route, queryParameters: query),
       child: Ink(
         width: 128,
         height: 128,

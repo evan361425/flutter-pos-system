@@ -16,6 +16,8 @@ class OrderLoader extends StatefulWidget {
 
   final Widget? leading;
 
+  final Widget? emptyChild;
+
   final bool countingAll;
 
   const OrderLoader({
@@ -25,6 +27,7 @@ class OrderLoader extends StatefulWidget {
     this.trailingBuilder,
     this.countingAll = false,
     this.leading,
+    this.emptyChild,
   });
 
   @override
@@ -55,7 +58,7 @@ class _OrderLoaderState extends State<OrderLoader> {
           if (widget.trailingBuilder != null) buildTrailing(metrics),
         ]);
       },
-      emptyChild: HintText(S.orderLoaderEmpty),
+      emptyChild: widget.emptyChild ?? HintText(S.orderLoaderEmpty),
     );
   }
 
