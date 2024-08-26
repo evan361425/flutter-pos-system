@@ -37,41 +37,37 @@ class CashierSurplus extends StatelessWidget {
 
     return ResponsiveDialog(
       title: Text(S.cashierSurplusButton),
-      actions: [
-        TextButton(
-          key: const Key('cashier_surplus.confirm'),
-          onPressed: () async {
-            await Cashier.instance.surplus();
-            if (context.mounted && context.canPop()) {
-              context.pop(true);
-            }
-          },
-          child: Text(MaterialLocalizations.of(context).okButtonLabel),
-        ),
-      ],
-      content: SingleChildScrollView(
-        child: Column(children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            _DataWithLabel(
-              data: cashier.currentTotal.toCurrency(),
-              label: S.cashierSurplusCurrentTotalLabel,
-              helper: S.cashierSurplusCurrentTotalHelper,
-            ),
-            _DataWithLabel(
-              data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
-              label: S.cashierSurplusDiffTotalLabel,
-              helper: S.cashierSurplusDiffTotalHelper,
-            ),
-          ]),
-          const Divider(),
-          HintText(S.cashierSurplusTableHint, textAlign: TextAlign.center),
-          const SizedBox(height: kInternalSpacing),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(columns: columns, rows: rows),
+      action: TextButton(
+        key: const Key('cashier_surplus.confirm'),
+        onPressed: () async {
+          await Cashier.instance.surplus();
+          if (context.mounted && context.canPop()) {
+            context.pop(true);
+          }
+        },
+        child: Text(MaterialLocalizations.of(context).okButtonLabel),
+      ),
+      content: Column(children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          _DataWithLabel(
+            data: cashier.currentTotal.toCurrency(),
+            label: S.cashierSurplusCurrentTotalLabel,
+            helper: S.cashierSurplusCurrentTotalHelper,
+          ),
+          _DataWithLabel(
+            data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
+            label: S.cashierSurplusDiffTotalLabel,
+            helper: S.cashierSurplusDiffTotalHelper,
           ),
         ]),
-      ),
+        const Divider(),
+        HintText(S.cashierSurplusTableHint, textAlign: TextAlign.center),
+        const SizedBox(height: kInternalSpacing),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(columns: columns, rows: rows),
+        ),
+      ]),
     );
   }
 

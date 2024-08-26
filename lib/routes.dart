@@ -428,9 +428,9 @@ class Routes {
             path: 'product/:id',
             parentNavigatorKey: rootNavigatorKey,
             redirect: _redirectIfMissed(path: 'menu', hasItem: (id) => Menu.instance.getProduct(id) != null),
-            builder: (ctx, state) {
+            pageBuilder: (ctx, state) {
               final product = Menu.instance.getProduct(state.pathParameters['id']!)!;
-              return ProductPage(product: product);
+              return MaterialDialogPage(child: ProductPage(product: product));
             },
             routes: [
               GoRoute(
@@ -597,8 +597,7 @@ class Routes {
     GoRoute(
       name: imageGallery,
       path: 'imageGallery',
-      // TODO: use dialog
-      builder: (ctx, state) => const ImageGalleryPage(),
+      pageBuilder: (ctx, state) => const MaterialDialogPage(child: ImageGalleryPage()),
     ),
   ];
 

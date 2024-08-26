@@ -7,13 +7,15 @@ import 'package:possystem/helpers/breakpoint.dart';
 class ResponsiveDialog extends StatelessWidget {
   final Widget title;
   final Widget content;
-  final List<Widget> actions;
+  final Widget? action;
+  final bool scrollable;
 
   const ResponsiveDialog({
     super.key,
     required this.title,
     required this.content,
-    required this.actions,
+    this.action,
+    this.scrollable = true,
   });
 
   @override
@@ -22,17 +24,19 @@ class ResponsiveDialog extends StatelessWidget {
     final dialog = size.width > Breakpoint.medium.max;
 
     if (dialog) {
+      final body = ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: Breakpoint.compact.max,
+        ),
+        child: content,
+      );
       return AlertDialog(
         title: title,
         contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+        scrollable: scrollable,
         content: Stack(
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: Breakpoint.compact.max,
-              ),
-              child: content,
-            ),
+            body,
             const Positioned(
               bottom: 0,
               left: 0,
@@ -45,24 +49,25 @@ class ResponsiveDialog extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
-          ...actions,
-        ],
+        actions: action == null
+            ? null
+            : [
+                PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+                action!,
+              ],
       );
     }
 
     return Dialog.fullscreen(
       child: Scaffold(
-        // resizeToAvoidBottomInset: false,
         primary: false,
         appBar: AppBar(
           primary: false,
           title: title,
           leading: const CloseButton(),
-          actions: actions,
+          actions: action == null ? [] : [action!],
         ),
-        body: content,
+        body: scrollable ? SingleChildScrollView(child: content) : content,
       ),
     );
   }

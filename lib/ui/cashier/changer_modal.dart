@@ -24,6 +24,7 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
   Widget build(BuildContext context) {
     final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
     return ResponsiveDialog(
+      scrollable: !(bp <= Breakpoint.medium),
       title: Row(children: [
         Text(S.cashierChangerTitle),
         bp <= Breakpoint.medium
@@ -47,13 +48,11 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
                 ),
               ),
       ]),
-      actions: [
-        TextButton(
-          key: const Key('changer.apply'),
-          onPressed: handleApply,
-          child: Text(S.cashierChangerButton),
-        ),
-      ],
+      action: TextButton(
+        key: const Key('changer.apply'),
+        onPressed: handleApply,
+        child: Text(S.cashierChangerButton),
+      ),
       content: _buildContent(bp),
     );
   }
@@ -93,24 +92,22 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
       ]);
     }
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(top: kTopSpacing, bottom: kDialogBottomSpacing),
-        child: ListenableBuilder(
-          listenable: controller,
-          builder: (context, child) {
-            if (controller.index == 0) {
-              return ChangerFavoriteView(
-                key: favoriteState,
-                emptyAction: _moveToCustom,
-              );
-            }
-            return ChangerCustomView(
-              key: customState,
-              afterFavoriteAdded: _moveToFavorite,
+    return Padding(
+      padding: const EdgeInsets.only(top: kTopSpacing, bottom: kDialogBottomSpacing),
+      child: ListenableBuilder(
+        listenable: controller,
+        builder: (context, child) {
+          if (controller.index == 0) {
+            return ChangerFavoriteView(
+              key: favoriteState,
+              emptyAction: _moveToCustom,
             );
-          },
-        ),
+          }
+          return ChangerCustomView(
+            key: customState,
+            afterFavoriteAdded: _moveToFavorite,
+          );
+        },
       ),
     );
   }

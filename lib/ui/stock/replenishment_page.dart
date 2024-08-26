@@ -19,7 +19,7 @@ class ReplenishmentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveDialog(
       title: Text(S.stockReplenishmentTitleList),
-      actions: const [],
+      scrollable: false,
       content: ListenableBuilder(
         listenable: Replenisher.instance,
         builder: (context, title) {

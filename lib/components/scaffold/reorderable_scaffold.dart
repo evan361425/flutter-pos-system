@@ -65,18 +65,17 @@ class _ReorderableScaffoldState<T extends ModelOrderable> extends State<Reordera
     }
     return ResponsiveDialog(
       title: Text(widget.title),
-      actions: [
-        TextButton(
-          key: const Key('reorder.save'),
-          onPressed: () async {
-            await widget.handleSubmit(widget.items);
-            if (context.mounted) {
-              Navigator.of(context).pop();
-            }
-          },
-          child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-        ),
-      ],
+      scrollable: false,
+      action: TextButton(
+        key: const Key('reorder.save'),
+        onPressed: () async {
+          await widget.handleSubmit(widget.items);
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+      ),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,

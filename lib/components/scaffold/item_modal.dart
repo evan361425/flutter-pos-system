@@ -13,23 +13,18 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     return ResponsiveDialog(
       title: Text(title),
-      actions: [
-        TextButton(
-          key: const Key('modal.save'),
-          onPressed: () => handleSubmit(),
-          child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-        ),
-      ],
-      // SingleChildScrollView is required for Dialog
-      content: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              ...buildFormFields(),
-              const SizedBox(height: kDialogBottomSpacing),
-            ],
-          ),
+      action: TextButton(
+        key: const Key('modal.save'),
+        onPressed: () => handleSubmit(),
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+      ),
+      content: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            ...buildFormFields(),
+            const SizedBox(height: kDialogBottomSpacing),
+          ],
         ),
       ),
     );

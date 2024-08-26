@@ -6,6 +6,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -28,16 +29,12 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
   Widget build(BuildContext context) {
     return ResponsiveDialog(
       title: Text(S.analysisHistoryOrderTitle),
-      actions: [
-        MoreButton(
-          key: const Key('order_modal.more'),
-          onPressed: _showActions,
-        ),
-      ],
+      scrollable: false,
       content: FutureBuilder<OrderObject?>(
         future: Seller.instance.getOrder(widget.orderId),
         builder: Util.handleSnapshot((context, order) {
           if (order == null) {
+            createdAt = null;
             return Center(child: Text(S.analysisHistoryOrderNotFound));
           }
 
@@ -46,8 +43,16 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
               DateFormat.Hms(S.localeName).format(order.createdAt);
           return Column(children: [
             Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: HintText(createdAt!),
+              padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
+              child: Row(
+                children: [
+                  Expanded(child: Center(child: HintText(createdAt!))),
+                  MoreButton(
+                    key: const Key('order_modal.more'),
+                    onPressed: _showActions,
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: OrderObjectView(order: order),
@@ -59,19 +64,19 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
   }
 
   void _showActions(BuildContext context) async {
-    if (createdAt == null) return;
-
-    await BottomSheetActions.withDelete<_Action>(
-      context,
-      deleteValue: _Action.delete,
-      popAfterDeleted: true,
-      deleteCallback: () => showSnackbarWhenFailed(
-        Seller.instance.delete(widget.orderId),
+    if (createdAt != null) {
+      await BottomSheetActions.withDelete<_Action>(
         context,
-        'analysis_delete_error',
-      ),
-      warningContent: Text(S.analysisHistoryOrderDeleteDialog(createdAt!)),
-    );
+        deleteValue: _Action.delete,
+        popAfterDeleted: true,
+        deleteCallback: () => showSnackbarWhenFailed(
+          Seller.instance.delete(widget.orderId),
+          context,
+          'analysis_delete_error',
+        ),
+        warningContent: Text(S.analysisHistoryOrderDeleteDialog(createdAt!)),
+      );
+    }
   }
 }
 

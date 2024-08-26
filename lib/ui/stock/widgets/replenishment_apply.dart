@@ -14,33 +14,29 @@ class ReplenishmentPreviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveDialog(
       title: Text(item.name),
-      actions: [
-        TextButton(
-          key: const Key('repl.apply'),
-          onPressed: () async {
-            await item.apply();
-            if (context.mounted && context.canPop()) {
-              context.pop(true);
-            }
-          },
-          child: Text(S.stockReplenishmentApplyConfirmButton),
-        ),
-      ],
-      content: SingleChildScrollView(
-        child: Column(children: [
-          CardInfoText(child: Text(S.stockReplenishmentApplyConfirmHint)),
-          DataTable(columns: [
-            DataColumn(label: Text(S.stockReplenishmentApplyConfirmColumn('name'))),
-            DataColumn(numeric: true, label: Text(S.stockReplenishmentApplyConfirmColumn('amount')))
-          ], rows: <DataRow>[
-            for (final entry in item.ingredientData.entries)
-              DataRow(cells: [
-                DataCell(Text(entry.key.name)),
-                DataCell(Text(entry.value.toString())),
-              ]),
-          ]),
-        ]),
+      action: TextButton(
+        key: const Key('repl.apply'),
+        onPressed: () async {
+          await item.apply();
+          if (context.mounted && context.canPop()) {
+            context.pop(true);
+          }
+        },
+        child: Text(S.stockReplenishmentApplyConfirmButton),
       ),
+      content: Column(children: [
+        CardInfoText(child: Text(S.stockReplenishmentApplyConfirmHint)),
+        DataTable(columns: [
+          DataColumn(label: Text(S.stockReplenishmentApplyConfirmColumn('name'))),
+          DataColumn(numeric: true, label: Text(S.stockReplenishmentApplyConfirmColumn('amount')))
+        ], rows: <DataRow>[
+          for (final entry in item.ingredientData.entries)
+            DataRow(cells: [
+              DataCell(Text(entry.key.name)),
+              DataCell(Text(entry.value.toString())),
+            ]),
+        ]),
+      ]),
     );
   }
 }
