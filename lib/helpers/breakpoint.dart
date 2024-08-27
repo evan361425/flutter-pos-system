@@ -84,7 +84,7 @@ enum Breakpoint {
         }
       default:
     }
-    return compact!;
+    return compact;
   }
 
   bool operator <=(Breakpoint other) {

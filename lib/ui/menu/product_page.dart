@@ -82,6 +82,7 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildDialog() {
     final metadataTile = Row(children: [
+      // change the image opacity with animation
       AnimatedContainer(
         constraints: const BoxConstraints(
           minHeight: 100,

@@ -35,7 +35,7 @@ title:
   orderAttribute: Customer Settings
   stockQuantity: Quantities
   elf: Suggestions
-  others: Others
+  more: More
 dialog:
   deletionTitle:
   - Delete Confirmation

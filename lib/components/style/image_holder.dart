@@ -18,10 +18,13 @@ class ImageHolder extends StatelessWidget {
 
   final EdgeInsets padding;
 
+  final double size;
+
   const ImageHolder({
     super.key,
     required this.image,
     required this.title,
+    this.size = 256,
     this.onPressed,
     this.onImageError,
     this.focusNode,
@@ -36,7 +39,6 @@ class ImageHolder extends StatelessWidget {
 
     Widget body = Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxHeight: 512, maxWidth: 512),
       decoration: const BoxDecoration(border: Border()),
       child: Align(
         alignment: Alignment.bottomCenter,
@@ -69,7 +71,7 @@ class ImageHolder extends StatelessWidget {
     }
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 256, maxWidth: 256),
+      constraints: BoxConstraints(maxHeight: size, maxWidth: size),
       child: AspectRatio(
         aspectRatio: 1,
         child: Material(
@@ -93,14 +95,17 @@ class ImageHolder extends StatelessWidget {
 
 class EditImageHolder extends StatelessWidget {
   final String? path;
-
-  final void Function(String) onSelected;
+  final void Function(String)? onSelected;
+  final void Function()? onPressed;
+  final double size;
 
   const EditImageHolder({
     super.key,
     this.path,
-    required this.onSelected,
-  });
+    this.onSelected,
+    this.onPressed,
+    this.size = 256,
+  }) : assert(onSelected != null || onPressed != null);
 
   @override
   Widget build(BuildContext context) {
@@ -111,10 +116,12 @@ class EditImageHolder extends StatelessWidget {
       key: const Key('image_holder.edit'),
       image: image,
       title: path == null ? S.imageHolderCreate : S.imageHolderUpdate,
-      onPressed: () async {
-        final file = await context.pushNamed(Routes.imageGallery);
-        if (file != null && file is String) onSelected(file);
-      },
+      size: size,
+      onPressed: onPressed ??
+          () async {
+            final file = await context.pushNamed(Routes.imageGallery);
+            if (file != null && file is String) onSelected!(file);
+          },
     );
   }
 }

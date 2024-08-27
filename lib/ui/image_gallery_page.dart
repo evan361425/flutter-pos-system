@@ -31,16 +31,17 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final dialog = size.width > Breakpoint.medium.max;
+    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+    final fullScreen = bp <= Breakpoint.medium;
 
-    final PreferredSizeWidget appBar = selecting
+    final PreferredSizeWidget? appBar = selecting
         ? AppBar(
             title: Text(S.imageGallerySelectionTitle),
             primary: false,
-            leading: CloseButton(
+            leading: IconButton(
               key: const Key('image_gallery.cancel'),
               onPressed: () => onPopInvoked(false),
+              icon: const Icon(Icons.cancel),
             ),
             actions: [
               TextButton(
@@ -56,46 +57,38 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
               ),
             ],
           )
-        : dialog
+        : fullScreen
             ? AppBar(
                 title: Text(S.imageGalleryTitle),
                 primary: false,
-                automaticallyImplyLeading: false,
-              )
-            : AppBar(
-                title: Text(S.imageGalleryTitle),
-                primary: false,
                 leading: const CloseButton(key: Key('image_gallery.close')),
-              );
+              )
+            : null;
 
     final body = Scaffold(
       primary: false,
       appBar: appBar,
-      extendBody: false,
-      extendBodyBehindAppBar: true,
-      body: _buildBody(),
+      body: Padding(
+        padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
+        child: _buildBody(bp),
+      ),
     );
 
     return PopScope(
       canPop: !selecting,
       onPopInvoked: onPopInvoked,
-      child: dialog
-          ? AlertDialog(
+      child: fullScreen
+          ? Dialog.fullscreen(child: body)
+          : AlertDialog(
               contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
               scrollable: false,
+              title: appBar == null ? Text(S.imageGalleryTitle) : null,
               content: Center(child: SizedBox(width: 600, child: body)),
-            )
-          : Dialog.fullscreen(child: body),
+            ),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    prepareImages();
-  }
-
-  Widget _buildBody() {
+  Widget _buildBody(Breakpoint bp) {
     if (images == null) {
       return const SingleChildScrollView(
         child: Center(child: CircularProgressIndicator()),
@@ -113,12 +106,13 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       );
     }
 
+    final spacing = bp.lookup(compact: 4.0, expanded: 12.0);
     return GridView.builder(
       primary: false,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: bp.lookup(compact: 3, expanded: 4, large: 5),
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
       ),
       // add 1 for add button, add crossAxisCount for spacing
       itemCount: images!.length + (selecting ? 0 : 1) + 3,
@@ -127,11 +121,13 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
         if (!selecting && index == images!.length) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton.icon(
+            child: ElevatedButton(
               key: const Key('image_gallery.add'),
               onPressed: createImage,
-              label: Text(S.imageGalleryActionCreate),
-              icon: const Icon(KIcons.add),
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                const Icon(KIcons.add),
+                Text(S.imageGalleryActionCreate, textAlign: TextAlign.center),
+              ]),
             ),
           );
         }
@@ -166,6 +162,10 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
           child: Material(
             key: Key('image_gallery.$index'),
             type: MaterialType.transparency,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.grey.shade400),
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: inkwell,
           ),
         );
@@ -174,7 +174,13 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     );
   }
 
-  void prepareImages() async {
+  @override
+  void initState() {
+    super.initState();
+    _prepareImages();
+  }
+
+  void _prepareImages() async {
     if (context.mounted) {
       final dir = await XFile.getRootPath();
       baseDir = XFile(XFile.fs.path.join(dir, 'menu_image')).dir;
@@ -237,7 +243,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       }
       Log.out(e.toString(), 'delete_image_error');
     } finally {
-      prepareImages();
+      _prepareImages();
     }
   }
 

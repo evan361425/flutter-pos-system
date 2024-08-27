@@ -18,7 +18,7 @@ title:
   orderAttribute: 顧客設定
   stockQuantity: 份量
   elf: 建議
-  others: 其他
+  more: 更多
 dialog:
   deletionTitle: 刪除確認通知
   deletionContent: |-

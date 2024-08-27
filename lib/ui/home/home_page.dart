@@ -326,7 +326,7 @@ const _bottomNavTabs = [
   HomeTab.analysis,
   HomeTab.stock,
   HomeTab.cashier,
-  HomeTab.others,
+  HomeTab.more,
 ];
 
 const _drawerTabs = [
@@ -383,9 +383,9 @@ enum HomeTab {
   ),
 
   /// entrypoint for mobile screen
-  others(
-    icon: Icon(Icons.settings_outlined),
-    selectedIcon: Icon(Icons.settings),
+  more(
+    icon: Icon(Icons.dehaze_outlined),
+    selectedIcon: Icon(Icons.dehaze),
   );
 
   final Icon icon;
