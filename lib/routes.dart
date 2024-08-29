@@ -78,7 +78,7 @@ class Routes {
   static get initLocation => Cache.instance.get<bool>('tutorial.home.order') != true
       ? homeMode.value == HomeMode.bottomNavigationBar
           ? '$base/_'
-          : '$base/menu'
+          : '$base/_/menu'
       : base;
 
   /// Base redirect function

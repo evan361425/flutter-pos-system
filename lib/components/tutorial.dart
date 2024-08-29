@@ -54,6 +54,8 @@ class Tutorial extends StatelessWidget {
   /// action to be executed after the tutorial is dismissed
   final Future<void> Function()? action;
 
+  final bool preferVertical;
+
   static bool debug = false;
 
   const Tutorial({
@@ -68,6 +70,7 @@ class Tutorial extends StatelessWidget {
     this.disable = false,
     this.monitorVisibility = false,
     this.action,
+    this.preferVertical = false,
     required this.child,
   });
 
@@ -93,7 +96,9 @@ class Tutorial extends StatelessWidget {
       action: const SpotlightActionConfig(
         enabled: [SpotlightAntAction.prev, SpotlightAntAction.next],
       ),
-      contentLayout: const SpotlightContentLayoutConfig(prefer: ContentPreferLayout.largerRatio),
+      contentLayout: preferVertical
+          ? const SpotlightContentLayoutConfig(prefer: ContentPreferLayout.vertical)
+          : const SpotlightContentLayoutConfig(prefer: ContentPreferLayout.largerRatio),
       content: SpotlightContent(
         fontSize: theme.textTheme.titleMedium!.fontSize,
         child: SizedBox(
@@ -158,7 +163,9 @@ class OrderAttrTutorial extends StatelessWidget {
 
   final Widget child;
 
-  OrderAttrTutorial({super.key, required this.child});
+  final void Function()? onDismissed;
+
+  OrderAttrTutorial({super.key, required this.child, this.onDismissed});
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +184,7 @@ class OrderAttrTutorial extends StatelessWidget {
         if (checkbox.currentState?.value == true) {
           await setupExampleOrderAttrs();
         }
+        onDismissed?.call();
       },
       child: child,
     );

@@ -48,6 +48,7 @@ class CashierView extends StatelessWidget {
           id: 'cashier.default',
           title: S.cashierToDefaultTutorialTitle,
           message: S.cashierToDefaultTutorialContent,
+          preferVertical: true,
           child: RouteIconButton(
             key: const Key('cashier.defaulter'),
             label: S.cashierToDefaultTitle,
@@ -64,6 +65,7 @@ class CashierView extends StatelessWidget {
               id: 'cashier.change',
               title: S.cashierChangerTutorialTitle,
               message: S.cashierChangerTutorialContent,
+              preferVertical: true,
               child: RouteIconButton(
                 key: const Key('cashier.changer'),
                 route: Routes.cashierChanger,
@@ -77,6 +79,7 @@ class CashierView extends StatelessWidget {
               id: 'cashier.surplus',
               title: S.cashierSurplusTutorialTitle,
               message: S.cashierSurplusTutorialContent,
+              preferVertical: true,
               child: RouteIconButton(
                 key: const Key('cashier.surplus'),
                 icon: const Icon(Icons.coffee_outlined),

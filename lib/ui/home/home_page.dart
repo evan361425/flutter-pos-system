@@ -146,16 +146,18 @@ class _WithDrawerState extends State<_WithDrawer> {
             for (final e in _drawerTabs)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
-                child: e.wrap(ListTile(
-                  leading: tab == e ? e.selectedIcon : e.icon,
-                  title: Text(S.title(e.name)),
-                  selected: tab == e,
-                  visualDensity: VisualDensity.compact,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  onTap: () => _navTo(e.index),
-                )),
+                child: e.wrap(
+                    ListTile(
+                      leading: tab == e ? e.selectedIcon : e.icon,
+                      title: Text(S.title(e.name)),
+                      selected: tab == e,
+                      visualDensity: VisualDensity.compact,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      onTap: () => _navTo(e.index),
+                    ),
+                    scaffold.currentState?.closeDrawer),
               ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
@@ -239,7 +241,7 @@ class _WithRailState extends State<_WithRail> {
                 NavigationRailDestination(
                   icon: e.icon,
                   selectedIcon: e.selectedIcon,
-                  label: Text(S.title(e.name)),
+                  label: e.wrap(Text(S.title(e.name))),
                 ),
             if (!isProd)
               const NavigationRailDestination(
@@ -398,7 +400,7 @@ enum HomeTab {
     this.important = false,
   });
 
-  Widget wrap(Widget child) {
+  Widget wrap(Widget child, [void Function()? action]) {
     switch (this) {
       case HomeTab.menu:
         return MenuTutorial(
@@ -406,6 +408,7 @@ enum HomeTab {
         );
       case HomeTab.orderAttribute:
         return OrderAttrTutorial(
+          onDismissed: action,
           child: child,
         );
       default:

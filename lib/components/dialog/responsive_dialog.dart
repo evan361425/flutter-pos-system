@@ -9,6 +9,7 @@ class ResponsiveDialog extends StatelessWidget {
   final Widget content;
   final Widget? action;
   final bool scrollable;
+  final bool wrapWithScaffold;
 
   const ResponsiveDialog({
     super.key,
@@ -16,6 +17,7 @@ class ResponsiveDialog extends StatelessWidget {
     required this.content,
     this.action,
     this.scrollable = true,
+    this.wrapWithScaffold = false,
   });
 
   @override
@@ -24,19 +26,16 @@ class ResponsiveDialog extends StatelessWidget {
     final dialog = size.width > Breakpoint.medium.max;
 
     if (dialog) {
-      final body = ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: Breakpoint.compact.max,
-        ),
-        child: content,
-      );
-      return AlertDialog(
+      final dialog = AlertDialog(
         title: title,
         contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
         scrollable: scrollable,
         content: Stack(
           children: [
-            body,
+            ConstrainedBox(
+              constraints: BoxConstraints(minWidth: Breakpoint.compact.max),
+              child: wrapWithScaffold ? Scaffold(body: content) : content,
+            ),
             const Positioned(
               bottom: 0,
               left: 0,
@@ -56,18 +55,22 @@ class ResponsiveDialog extends StatelessWidget {
                 action!,
               ],
       );
+
+      return ScaffoldMessenger(child: dialog);
     }
 
     return Dialog.fullscreen(
-      child: Scaffold(
-        primary: false,
-        appBar: AppBar(
+      child: ScaffoldMessenger(
+        child: Scaffold(
           primary: false,
-          title: title,
-          leading: const CloseButton(),
-          actions: action == null ? [] : [action!],
+          appBar: AppBar(
+            primary: false,
+            title: title,
+            leading: const CloseButton(),
+            actions: action == null ? [] : [action!],
+          ),
+          body: scrollable ? SingleChildScrollView(child: content) : content,
         ),
-        body: scrollable ? SingleChildScrollView(child: content) : content,
       ),
     );
   }
