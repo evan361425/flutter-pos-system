@@ -28,17 +28,15 @@ void main() {
       return ChangeNotifierProvider.value(
         value: Seller.instance,
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (_, __) {
-                  return const Scaffold(body: AnalysisView());
-                },
-                routes: Routes.routes,
-              ),
-            ],
-          ),
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) {
+                return const Scaffold(body: AnalysisView());
+              },
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ]),
         ),
       );
     }
@@ -107,6 +105,9 @@ void main() {
 
       await tester.pumpWidget(buildApp());
 
+      await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
+      await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('anal.add_chart')));
       await tester.pumpAndSettle();
 
@@ -135,7 +136,10 @@ void main() {
       expect(chart.index, 0);
 
       // reorder
-      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.dragFrom(const Offset(500, 0), const Offset(0, 500));
+      await tester.dragFrom(const Offset(500, 0), const Offset(0, 500));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('anal.more')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
@@ -149,7 +153,7 @@ void main() {
       );
       expect(find.text(range.format('en')), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.navigate_next_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_back_ios_new_outlined));
       await tester.pump(const Duration(milliseconds: 50));
 
       range = Util.getDateRange(
@@ -158,7 +162,7 @@ void main() {
       );
       expect(find.text(range.format('en')), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.navigate_next_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_forward_ios_outlined));
       await tester.pump(const Duration(milliseconds: 50));
 
       range = Util.getDateRange(

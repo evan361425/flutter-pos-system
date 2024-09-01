@@ -75,7 +75,7 @@ class ResponsiveDialog extends StatelessWidget {
           appBar: AppBar(
             primary: false,
             title: title,
-            leading: const CloseButton(),
+            leading: const CloseButton(key: Key('pop')),
             actions: action == null ? [] : [action!],
           ),
           body: scrollable ? SingleChildScrollView(child: content) : content,

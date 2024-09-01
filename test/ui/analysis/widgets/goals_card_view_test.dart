@@ -33,7 +33,7 @@ void main() {
       when(mockQuery(fortyDaysAgo, tomorrow)).thenAnswer((_) async => [
             for (var i = 20; i >= 0; i--)
               {
-                'day': i,
+                'day': 21 + i,
                 'count': i,
                 'revenue': i * 1.1,
                 'profit': i * 1.2,
@@ -64,9 +64,9 @@ void main() {
       // notify the seller to update the view
       when(mockQuery(today, tomorrow)).thenAnswer((_) => Future.value([
             {
-              'day': 0,
+              'day': 1,
               'count': 2,
-              'price': 2.1,
+              'profit': 2.1,
               'revenue': 2.2,
               'cost': 2.3,
             }

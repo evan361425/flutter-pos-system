@@ -30,17 +30,15 @@ void main() {
           themeMode: themeMode,
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          routerConfig: GoRouter(
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (_, __) {
-                  return const HistoryPage();
-                },
-                routes: Routes.routes,
-              ),
-            ],
-          ),
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) {
+                return const HistoryPage();
+              },
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ]),
         ),
       );
     }
@@ -121,6 +119,7 @@ void main() {
 
       // setup landscape env
       tester.view.physicalSize = const Size(2000, 1000);
+      tester.view.devicePixelRatio = 1.0;
 
       // resets the screen to its original size after the test end
       addTearDown(tester.view.resetPhysicalSize);

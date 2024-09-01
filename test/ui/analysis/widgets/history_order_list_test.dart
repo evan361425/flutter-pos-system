@@ -29,19 +29,17 @@ void main() {
         argThat(predicate((String e) => e.startsWith('tutorial.'))),
       )).thenReturn(true);
       return MaterialApp.router(
-        routerConfig: GoRouter(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) {
-                return Material(
-                  child: HistoryOrderList(notifier: notifier),
-                );
-              },
-              routes: Routes.routes,
-            ),
-          ],
-        ),
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, __) {
+              return Material(
+                child: HistoryOrderList(notifier: notifier),
+              );
+            },
+          ),
+          ...Routes.getDesiredRoute(0).routes,
+        ]),
       );
     }
 

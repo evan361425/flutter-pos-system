@@ -57,11 +57,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
           ],
         ),
-        body: LayoutBuilder(
-          builder: (context, box) {
-            return Breakpoint.find(box: box) <= Breakpoint.medium ? _buildSingleColumn() : _buildTwoColumns();
-          },
-        ),
+        body: MediaQuery.sizeOf(context).width <= Breakpoint.medium.max ? _buildSingleColumn() : _buildTwoColumns(),
       ),
     );
   }

@@ -172,6 +172,7 @@ class _MoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      key: const Key('anal.more'),
       onPressed: () => showCircularBottomSheet<int>(
         context,
         actions: <BottomSheetAction<int>>[

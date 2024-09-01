@@ -185,33 +185,39 @@ class _GoalItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = <Widget>[
-      Row(children: [
-        Text(name, style: style),
-        if (desc != null) InfoPopup(desc!),
-      ]),
-      RichText(
-        text: TextSpan(
-          text: current.toCurrency(),
-          style: style?.copyWith(fontSize: 24),
-          children: goal != 0
-              ? [
-                  TextSpan(
-                    text: '／${goal.toCurrency()}',
-                    style: const TextStyle(color: Colors.grey, fontSize: 24),
-                  ),
-                ]
-              : null,
-        ),
+    final label = Row(children: [
+      Text(name, style: style, overflow: TextOverflow.ellipsis),
+      if (desc != null) InfoPopup(desc!),
+    ]);
+    final value = RichText(
+      text: TextSpan(
+        text: current.toCurrency(),
+        style: style?.copyWith(fontSize: 24),
+        children: goal != 0
+            ? [
+                TextSpan(
+                  text: '／${goal.toCurrency()}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 24),
+                ),
+              ]
+            : null,
       ),
-      if (compact) const SizedBox(height: 4),
-    ];
+    );
 
-    return compact
-        ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)
-        : ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 320),
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: children),
-          );
+    if (compact) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        label,
+        value,
+        const SizedBox(height: 4),
+      ]);
+    }
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        label,
+        Expanded(child: value),
+      ]),
+    );
   }
 }

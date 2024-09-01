@@ -173,7 +173,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
       }
     });
     widget.notifiers?.forEach((e) {
-      e.addListener(changeListener);
+      e.addListener(handleUpdate);
     });
   }
 
@@ -181,7 +181,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   void dispose() {
     super.dispose();
     widget.notifiers?.forEach((e) {
-      e.removeListener(changeListener);
+      e.removeListener(handleUpdate);
     });
   }
 
@@ -201,12 +201,15 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
       final inline = await load();
 
       setState(() {
+        // TODO: avoid run conflict with handleUpdate
+        reloadable = false;
+        lastBuiltTarget = null;
         data = inline;
       });
     }
   }
 
-  void changeListener() {
+  void handleUpdate() {
     if (!reloadable) {
       setState(() {
         reloadable = true;
