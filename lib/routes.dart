@@ -23,7 +23,7 @@ import 'package:possystem/ui/cashier/changer_modal.dart';
 import 'package:possystem/ui/cashier/surplus_page.dart';
 import 'package:possystem/ui/home/elf_page.dart';
 import 'package:possystem/ui/home/home_page.dart';
-import 'package:possystem/ui/home/mobile_entry_view.dart';
+import 'package:possystem/ui/home/mobile_more_view.dart';
 import 'package:possystem/ui/home/settings_page.dart';
 import 'package:possystem/ui/image_gallery_page.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
@@ -123,7 +123,7 @@ class Routes {
               GoRoute(
                 name: Routes.others,
                 path: '_',
-                builder: (ctx, state) => const MobileEntryView(),
+                builder: (ctx, state) => const MobileMoreView(),
                 routes: [
                   if (!isProd) _debugRoute(inShell: false),
                   _menuRoute(inShell: false),
@@ -160,7 +160,7 @@ class Routes {
             StatefulShellBranch(routes: [_settingsRoute(inShell: true)]),
             if (!isProd) StatefulShellBranch(routes: [_debugRoute(inShell: true)]),
             StatefulShellBranch(routes: [
-              // This is fallback route for `_` which is the mobile entry view
+              // This is fallback route for `_` which is the mobile more view
               GoRoute(name: '_anal', path: '_', pageBuilder: _analBuilder),
             ]),
           ],

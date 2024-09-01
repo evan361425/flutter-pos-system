@@ -12,10 +12,9 @@ import 'test_helpers/translator.dart';
 void main() {
   Widget createApp(void Function(String?) cb) {
     return MaterialApp.router(
-      routerConfig: GoRouter(routes: [
+      routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
         GoRoute(
           path: '/',
-          routes: Routes.routes,
           builder: (ctx, state) {
             return Scaffold(body: Builder(builder: (context) {
               return TextButton(
@@ -27,7 +26,8 @@ void main() {
               );
             }));
           },
-        )
+        ),
+        ...Routes.getDesiredRoute(0).routes,
       ]),
     );
   }
@@ -54,13 +54,13 @@ void main() {
       // cancel crop
       mockImagePick(tester);
       mockImageCropper(canceled: true);
-      await tester.tap(find.byKey(const Key('image_gallery.add')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
       // select successfully
       mockImagePick(tester);
       mockImageCropper();
-      await tester.tap(find.byKey(const Key('image_gallery.add')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
       final pattern = RegExp('menu_image/g[0-9]{8}T[0-9]{12}');
@@ -85,10 +85,9 @@ void main() {
       await tester.tap(find.byKey(const Key('image_gallery.cancel')));
       await tester.pumpAndSettle();
       expect(find.text(S.imageGallerySelectionTitle), findsNothing);
-      expect(find.text('go'), findsNothing);
 
       // leave
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.tap(find.byKey(const Key('image_gallery.close')));
       await tester.pumpAndSettle();
       expect(find.text('go'), findsOneWidget);
       expect(result, isNull);

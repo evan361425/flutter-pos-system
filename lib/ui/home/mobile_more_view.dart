@@ -10,14 +10,14 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
-class MobileEntryView extends StatefulWidget {
-  const MobileEntryView({super.key});
+class MobileMoreView extends StatefulWidget {
+  const MobileMoreView({super.key});
 
   @override
-  State<MobileEntryView> createState() => _MobileEntryViewState();
+  State<MobileMoreView> createState() => _MobileMoreViewState();
 }
 
-class _MobileEntryViewState extends State<MobileEntryView> with AutomaticKeepAliveClientMixin {
+class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);

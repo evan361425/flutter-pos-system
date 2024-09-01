@@ -45,6 +45,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
             ),
             actions: [
               TextButton(
+                key: const Key('image_gallery.delete'),
                 onPressed: () {
                   DeleteDialog.show(
                     context,

@@ -62,7 +62,7 @@ class ResponsiveDialog extends StatelessWidget {
         child: Stack(children: [
           dialog,
           const IgnorePointer(
-            child: Scaffold(backgroundColor: Colors.transparent),
+            child: Scaffold(primary: false, backgroundColor: Colors.transparent),
           ),
         ]),
       );
