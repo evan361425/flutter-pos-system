@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-08-25T09:00:37.933702Z",
+  "@@last_modified": "2024-09-01T08:25:33.606863Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -993,7 +993,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} setting{Settings} menu{Menu} transit{Data Transfer} orderAttribute{Customer Settings} stockQuantity{Quantities} elf{Suggestions} others{Others} other{UNKNOWN}}",
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} setting{Settings} menu{Menu} transit{Data Transfer} orderAttribute{Customer Settings} stockQuantity{Quantities} elf{Suggestions} more{More} other{UNKNOWN}}",
   "dialogDeletionTitle": "Delete Confirmation",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."

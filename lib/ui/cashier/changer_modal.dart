@@ -25,7 +25,6 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
     final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
     return ResponsiveDialog(
       scrollable: bp.max > Breakpoint.medium.max,
-      wrapWithScaffold: false,
       title: Row(children: [
         Text(S.cashierChangerTitle),
         bp <= Breakpoint.medium

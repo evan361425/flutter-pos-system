@@ -1,5 +1,3 @@
-import 'dart:math' show min;
-
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/translator.dart';
@@ -16,7 +14,7 @@ void showSnackBar(
     // make floating button below
     behavior: SnackBarBehavior.floating,
     content: Text(message),
-    width: min(MediaQuery.sizeOf(context).width, 600),
+    width: MediaQuery.sizeOf(context).width > 700 ? 600 : null,
     action: action,
   ));
 }

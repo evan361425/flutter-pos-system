@@ -103,8 +103,8 @@ class _WithDrawerState extends State<_WithDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final tab = HomeTab.values[widget.shell.currentIndex];
-    final needNested = tab.index == HomeTab.analysis.index;
+    final tab = HomeTab.values.elementAtOrNull(widget.shell.currentIndex) ?? HomeTab.analysis;
+    final needNested = tab == HomeTab.analysis;
 
     // Which means body have [CustomScrollView]
     if (needNested) {
@@ -199,8 +199,8 @@ class _WithRailState extends State<_WithRail> {
 
   @override
   Widget build(BuildContext context) {
-    final tab = HomeTab.values[widget.shell.currentIndex];
-    final needNested = tab.index == HomeTab.analysis.index;
+    final tab = HomeTab.values.elementAtOrNull(widget.shell.currentIndex) ?? HomeTab.analysis;
+    final needNested = tab == HomeTab.analysis;
 
     // Which means body have [CustomScrollView]
     if (needNested) {

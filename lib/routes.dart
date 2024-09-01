@@ -84,7 +84,7 @@ class Routes {
   /// Base redirect function
   ///
   /// redirect to the analysis page if the path is not started with the base path
-  static String? redirect(BuildContext ctx, GoRouterState state) {
+  static String? _redirect(BuildContext ctx, GoRouterState state) {
     return state.uri.path.startsWith('$base/') ? null : '$base/anal';
   }
 
@@ -110,7 +110,7 @@ class Routes {
   static final RoutingConfig _bottomNavConfig = RoutingConfig(routes: [
     GoRoute(
       path: base,
-      redirect: redirect,
+      redirect: _redirect,
       routes: [
         StatefulShellRoute.indexedStack(
           builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
@@ -144,7 +144,7 @@ class Routes {
   static final RoutingConfig _drawerConfig = RoutingConfig(routes: [
     GoRoute(
       path: base,
-      redirect: redirect,
+      redirect: _redirect,
       routes: [
         StatefulShellRoute.indexedStack(
           builder: (context, state, shell) => HomePage(shell: shell, mode: homeMode),
@@ -159,6 +159,10 @@ class Routes {
             StatefulShellBranch(routes: [_elfRoute(inShell: true)]),
             StatefulShellBranch(routes: [_settingsRoute(inShell: true)]),
             if (!isProd) StatefulShellBranch(routes: [_debugRoute(inShell: true)]),
+            StatefulShellBranch(routes: [
+              // This is fallback route for `_` which is the mobile entry view
+              GoRoute(name: '_anal', path: '_', pageBuilder: _analBuilder),
+            ]),
           ],
         ),
         ..._routes,
@@ -168,10 +172,12 @@ class Routes {
 
   // ==================== Routes in main navigation ====================
 
+  static Page<dynamic> _analBuilder(BuildContext ctx, GoRouterState state) =>
+      const NoTransitionPage(child: AnalysisView());
   static final _analysisRoute = GoRoute(
     name: anal,
     path: 'anal',
-    pageBuilder: (ctx, state) => const NoTransitionPage(child: AnalysisView()),
+    pageBuilder: _analBuilder,
     routes: [
       _createPrefixRoute(path: 'chart', prefix: 'anal', routes: [
         GoRoute(

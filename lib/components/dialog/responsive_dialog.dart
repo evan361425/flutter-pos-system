@@ -9,7 +9,6 @@ class ResponsiveDialog extends StatelessWidget {
   final Widget content;
   final Widget? action;
   final bool scrollable;
-  final bool wrapWithScaffold;
 
   const ResponsiveDialog({
     super.key,
@@ -17,7 +16,6 @@ class ResponsiveDialog extends StatelessWidget {
     required this.content,
     this.action,
     this.scrollable = true,
-    this.wrapWithScaffold = false,
   });
 
   @override
@@ -34,7 +32,7 @@ class ResponsiveDialog extends StatelessWidget {
           children: [
             ConstrainedBox(
               constraints: BoxConstraints(minWidth: Breakpoint.compact.max),
-              child: wrapWithScaffold ? Scaffold(body: content) : content,
+              child: content,
             ),
             const Positioned(
               bottom: 0,
@@ -56,7 +54,18 @@ class ResponsiveDialog extends StatelessWidget {
               ],
       );
 
-      return ScaffoldMessenger(child: dialog);
+      // TODO: use another package for showing snackbar in dialog.
+      // This is a workaround for showing snackbar in dialog. [IgnorePointer] is
+      // used to pass the touch event to the dialog behind the scaffold. But
+      // this will also block the action (i.e. close SnackBar) in snackbar.
+      return ScaffoldMessenger(
+        child: Stack(children: [
+          dialog,
+          const IgnorePointer(
+            child: Scaffold(backgroundColor: Colors.transparent),
+          ),
+        ]),
+      );
     }
 
     return Dialog.fullscreen(
