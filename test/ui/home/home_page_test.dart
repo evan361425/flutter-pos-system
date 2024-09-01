@@ -18,7 +18,6 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/home/home_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_auth.dart';
@@ -48,6 +47,8 @@ void main() {
       )).thenAnswer((_) => Future.value([]));
       final stock = Stock()..replaceItems({'i1': Ingredient(id: 'i1')});
 
+      tester.view.physicalSize = const Size(800, 1400);
+      tester.view.devicePixelRatio = 1.0;
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: SettingsProvider.instance),
@@ -61,15 +62,12 @@ void main() {
           ChangeNotifierProvider.value(value: Cashier()),
         ],
         child: MaterialApp.router(
-          routerConfig: GoRouter(observers: [
-            App.routeObserver
-          ], routes: [
-            GoRoute(
-              path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const HomePage(tab: HomeTab.setting),
-            )
-          ]),
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            observers: [App.routeObserver],
+            initialLocation: '${Routes.base}/_',
+            routes: Routes.getDesiredRoute(0).routes,
+          ),
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
         ),
@@ -96,16 +94,16 @@ void main() {
 
       await navAndPop('setting_header.menu1', 'menu.search');
       await navAndPop('setting_header.menu2', 'menu.search');
-      await navAndPop('setting_header.order_attrs', 'order_attributes.reorder');
+      await navAndPop('setting_header.order_attrs', 'order_attributes_page');
 
       // rest
       await navAndPop('setting.debug', 'debug.list');
       await navAndPop('setting.menu', 'menu.search');
       await navAndPop('setting.transit', 'transit.google_sheet');
-      await navAndPop('setting.quantity', 'quantity.add');
-      await navAndPop('setting.order_attrs', 'order_attributes.reorder');
+      await navAndPop('setting.quantity', 'quantities_page');
+      await navAndPop('setting.order_attrs', 'order_attributes_page');
       await dragDown();
-      await navAndPop('setting.feature_request', 'feature_request_please');
+      await navAndPop('setting.feature_request', 'elf_page');
       await dragDown();
       await navAndPop('setting.setting', 'feature.theme');
       await navAndPop('home.order', 'order.more');
@@ -131,15 +129,12 @@ void main() {
             ChangeNotifierProvider.value(value: OrderAttributes()),
           ],
           child: MaterialApp.router(
-            routerConfig: GoRouter(observers: [
-              App.routeObserver
-            ], routes: [
-              GoRoute(
-                path: '/',
-                routes: Routes.routes,
-                builder: (_, __) => const HomePage(tab: HomeTab.setting),
-              )
-            ]),
+            routerConfig: GoRouter(
+              navigatorKey: Routes.rootNavigatorKey,
+              observers: [App.routeObserver],
+              initialLocation: '${Routes.base}/_',
+              routes: Routes.getDesiredRoute(0).routes,
+            ),
             theme: AppThemes.lightTheme,
             darkTheme: AppThemes.darkTheme,
           ),

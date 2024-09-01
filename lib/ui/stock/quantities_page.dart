@@ -15,6 +15,7 @@ class QuantitiesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final body = ListenableBuilder(
+      key: const Key('quantities_page'),
       listenable: Quantities.instance,
       builder: (context, child) => _buildBody(context),
     );

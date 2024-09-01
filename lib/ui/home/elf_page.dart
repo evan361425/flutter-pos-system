@@ -21,7 +21,7 @@ class ElfPage extends StatelessWidget {
             ),
             child: Image.asset(
               'assets/feature_request_please.gif',
-              key: const Key('feature_request_please'),
+              key: const Key('elf_page'),
             ),
           ),
           const SizedBox(height: 14.0),

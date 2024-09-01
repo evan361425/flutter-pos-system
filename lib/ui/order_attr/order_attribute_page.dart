@@ -17,6 +17,7 @@ class OrderAttributePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final body = ListenableBuilder(
+      key: const Key('order_attributes_page'),
       listenable: OrderAttributes.instance,
       builder: (context, child) => Center(child: _buildBody()),
     );

@@ -79,6 +79,7 @@ class _WithTab extends StatelessWidget {
         destinations: [
           for (final HomeTab e in _bottomNavTabs)
             NavigationDestination(
+              key: Key('home.${e.name}'),
               icon: e.icon,
               label: S.title(e.name),
               selectedIcon: e.selectedIcon,

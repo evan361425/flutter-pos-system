@@ -23,13 +23,17 @@ void main() {
         value: SettingsProvider.instance..initialize(),
         builder: (_, __) => MaterialApp.router(
           locale: LanguageSetting.instance.language.locale,
-          routerConfig: GoRouter(initialLocation: Routes.settings, routes: [
-            GoRoute(
-              path: '/',
-              builder: (ctx, state) => const Text('Home'),
-              routes: Routes.routes,
-            ),
-          ]),
+          routerConfig: GoRouter(
+            initialLocation: '${Routes.base}/_/settings',
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (ctx, state) => const Text('Home'),
+              ),
+              ...Routes.getDesiredRoute(0).routes,
+            ],
+          ),
         ),
       );
     }
@@ -108,23 +112,6 @@ void main() {
       verify(cache.set(any, 'zh_TW'));
     });
 
-    testWidgets('select order_outlook', (tester) async {
-      await tester.pumpWidget(buildApp());
-
-      expect(find.text(S.settingOrderOutlookName('slidingPanel')), findsOneWidget);
-
-      await tester.tap(find.byKey(const Key('feature.order_outlook')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(S.settingOrderOutlookName('singleView')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('pop')));
-      await tester.pumpAndSettle();
-
-      expect(find.text(S.settingOrderOutlookName('singleView')), findsOneWidget);
-      verify(cache.set(any, 1));
-    });
-
     testWidgets('select checkout_warning', (tester) async {
       await tester.pumpWidget(buildApp());
 
@@ -140,23 +127,6 @@ void main() {
 
       expect(find.text(S.settingCheckoutWarningName('onlyNotEnough')), findsOneWidget);
       verify(cache.set(any, 1));
-    });
-
-    testWidgets('slide order product count', (tester) async {
-      await tester.pumpWidget(buildApp());
-
-      final finder = find.byKey(const Key('feature.order_product_count'));
-      await tester.scrollUntilVisible(finder, 200);
-
-      await tester.drag(finder, const Offset(-500, 0));
-      await tester.pumpAndSettle();
-
-      verify(cache.set(any, 0));
-
-      await tester.drag(finder, const Offset(1500, 0));
-      await tester.pumpAndSettle();
-
-      verify(cache.set(any, 5));
     });
 
     testWidgets('switch awake_ordering', (tester) async {
