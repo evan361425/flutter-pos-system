@@ -44,7 +44,7 @@ void main() {
         ],
         builder: (_, __) => withRoutes
             ? MaterialApp.router(
-                routerConfig: GoRouter(routes: [
+                routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
                   GoRoute(
                     path: '/',
                     builder: (context, __) {
@@ -53,8 +53,8 @@ void main() {
                         child: const Text('go to changer'),
                       );
                     },
-                    routes: Routes.routes,
                   ),
+                  ...Routes.getDesiredRoute(0).routes,
                 ]),
               )
             : const MaterialApp(home: ChangerModal()),
@@ -89,7 +89,7 @@ void main() {
       await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.text('go to changer'), findsNothing);
+      expect(find.text(S.cashierChangerErrorNotEnough('10')), findsOneWidget);
     });
 
     testWidgets('delete favorite item', (tester) async {
@@ -177,14 +177,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // should setup current data
-      expect(find.text('go to changer'), findsNothing);
+      expect(find.text(S.cashierChangerErrorNotEnough('10')), findsOneWidget);
 
       await Cashier.instance.setUnitCount(10, 10);
 
       await tester.tap(find.byKey(const Key('changer.apply')));
       await tester.pumpAndSettle();
 
-      expect(find.text('go to changer'), findsOneWidget);
+      expect(find.byKey(const Key('changer.apply')), findsNothing);
       expect(Cashier.instance.at(2).count, equals(6));
       expect(Cashier.instance.at(1).count, equals(7));
       expect(Cashier.instance.at(0).count, equals(5));
