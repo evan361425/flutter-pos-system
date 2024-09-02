@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/image_holder.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/model.dart';
 
 class SliverImageAppBar extends StatelessWidget {
@@ -26,7 +25,7 @@ class SliverImageAppBar extends StatelessWidget {
     return SliverAppBar(
       expandedHeight: 250.0,
       pinned: true,
-      leading: const PopButton(),
+      leading: const CloseButton(),
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
           model.name,

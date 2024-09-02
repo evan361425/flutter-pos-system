@@ -49,7 +49,7 @@ Future<T?> showCircularBottomSheet<T>(
     items: <PopupMenuEntry<T>>[
       for (final action in actions)
         PopupMenuItem(
-          key: action.key!,
+          key: action.key,
           value: action.returnValue,
           onTap: () => action.onTap(context),
           child: Row(children: [

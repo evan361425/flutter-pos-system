@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -25,11 +24,10 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    context.watch<Stock>();
 
-    // after pop from AddPage, this page will rebuild by TabView
-    // so we don't need to watch Stock.instance
-    if (Stock.instance.isEmpty) {
+    // when stock is not empty, we use [ListenableBuilder] to listen to the
+    // stock changes.
+    if (context.select<Stock, bool>((Stock stock) => stock.isEmpty)) {
       return Center(
         child: EmptyBody(
           content: S.stockIngredientEmptyBody,
@@ -52,11 +50,11 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
               ]),
               const SizedBox(height: kInternalSpacing),
               for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
-              ElevatedButton.icon(
+              RouteElevatedIconButton(
                 key: const Key('stock.add'),
                 icon: const Icon(KIcons.add),
-                label: Text(S.stockIngredientTitleCreate),
-                onPressed: () => context.pushNamed(Routes.stockIngrCreate),
+                label: S.stockIngredientTitleCreate,
+                route: Routes.stockIngrCreate,
               ),
             ]);
           },

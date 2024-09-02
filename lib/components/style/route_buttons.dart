@@ -38,10 +38,8 @@ class RouteElevatedIconButton extends StatelessWidget {
           pathParameters: pathParameters,
           queryParameters: queryParameters,
         );
-        if (result == true && popTrueShowSuccess) {
-          if (context.mounted) {
-            showSnackBar(context, S.actSuccess);
-          }
+        if (result == true && popTrueShowSuccess && context.mounted) {
+          showSnackBar(context, S.actSuccess);
         }
       },
     );

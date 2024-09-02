@@ -38,18 +38,6 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     if (isBottomNav) {
-      final fab = widget.productOnly
-          ? null
-          : FloatingActionButton(
-              key: const Key('menu.add'),
-              onPressed: selected == null ? _handleCatalogCreate : _handleProductCreate,
-              tooltip: selected == null ? S.menuCatalogTitleCreate : S.menuProductTitleCreate,
-              // avoid hero since when using responsive this fab will be hidden
-              // in background page
-              heroTag: null,
-              child: const Icon(KIcons.add),
-            );
-
       return PopScope(
         canPop: selected == null,
         onPopInvoked: _onPopInvoked,
@@ -59,7 +47,6 @@ class _MenuPageState extends State<MenuPage> {
             leading: PopButton(onPressed: _handlePop),
             actions: const [_SearchAction()],
           ),
-          floatingActionButton: fab,
           body: PageView(
             controller: controller,
             // disable scrolling, only control by program
@@ -126,6 +113,7 @@ class _MenuPageState extends State<MenuPage> {
             ),
       onSelected: _handleSelected,
       tailing: ElevatedButton.icon(
+        key: const Key('menu.add_catalog'),
         onPressed: _handleCatalogCreate,
         label: Text(S.menuCatalogTitleCreate),
         icon: const Icon(KIcons.add),
@@ -151,13 +139,12 @@ class _MenuPageState extends State<MenuPage> {
 
     return MenuProductList(
       catalog: selected,
-      tailing: isBottomNav
-          ? null
-          : ElevatedButton.icon(
-              onPressed: _handleProductCreate,
-              label: Text(S.menuProductTitleCreate),
-              icon: const Icon(KIcons.add),
-            ),
+      tailing: ElevatedButton.icon(
+        key: const Key('menu.add_product'),
+        onPressed: _handleProductCreate,
+        label: Text(S.menuProductTitleCreate),
+        icon: const Icon(KIcons.add),
+      ),
     );
   }
 

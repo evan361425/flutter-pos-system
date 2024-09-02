@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/order_setter.dart';
 import '../../test_helpers/translator.dart';
 
@@ -117,12 +118,7 @@ void main() {
         {'day': nowS - now.day - 7, 'count': 60},
       ]);
 
-      // setup landscape env
-      tester.view.physicalSize = const Size(2000, 1000);
-      tester.view.devicePixelRatio = 1.0;
-
-      // resets the screen to its original size after the test end
-      addTearDown(tester.view.resetPhysicalSize);
+      deviceAs(Device.landscape, tester);
 
       await tester.pumpWidget(buildApp(themeMode: ThemeMode.dark));
       await tester.pumpAndSettle();
