@@ -159,16 +159,15 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   }
 
   void editSheets() async {
-    final other = await Navigator.of(context).push<OrderSpreadsheetProperties>(
-      MaterialPageRoute(
-        builder: (_) => OrderSettingPage(
-          properties: properties,
-          sheets: selector.currentState?.spreadsheet?.sheets,
-        ),
+    final other = await showAdaptiveDialog<OrderSpreadsheetProperties>(
+      context: context,
+      builder: (context) => OrderSettingPage(
+        properties: properties,
+        sheets: selector.currentState?.spreadsheet?.sheets,
       ),
     );
 
-    if (other != null) {
+    if (other != null && mounted) {
       setState(() {
         properties = other;
       });

@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/google_sheet/order_formatter.dart';
@@ -26,15 +28,20 @@ void main() {
     const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
-      return MaterialApp(
-        home: TransitStation(
-          catalog: TransitCatalog.order,
-          method: TransitMethod.googleSheet,
-          exporter: GoogleSheetExporter(
-            sheetsApi: sheetsApi,
-            scopes: gsExporterScopes,
+      return MaterialApp.router(
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => TransitStation(
+              catalog: TransitCatalog.order,
+              method: TransitMethod.googleSheet,
+              exporter: GoogleSheetExporter(
+                sheetsApi: sheetsApi,
+                scopes: gsExporterScopes,
+              ),
+            ),
           ),
-        ),
+        ]),
       );
     }
 

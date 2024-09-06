@@ -261,19 +261,15 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     List<List<Object?>> source,
   ) async {
     const formatter = GoogleSheetFormatter();
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => SheetPreviewPage(
-          source: SheetPreviewerDataTableSource(source),
-          header: formatter.getHeader(able),
-          title: S.transitModelName(able.name),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(S.transitImportPreviewBtn),
-            ),
-          ],
+    final result = await showAdaptiveDialog(
+      context: context,
+      builder: (context) => SheetPreviewPage(
+        source: SheetPreviewerDataTableSource(source),
+        header: formatter.getHeader(able),
+        title: S.transitModelName(able.name),
+        action: TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(S.transitImportPreviewBtn),
         ),
       ),
     );

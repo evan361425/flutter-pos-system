@@ -13,6 +13,7 @@ void main() {
       final yesterday = DateTime.now().subtract(const Duration(days: 1));
       final range = DateTimeRange(start: yesterday, end: DateTime.now());
       final widget = TransitOrderList(
+        leading: const Text(''),
         notifier: ValueNotifier(range),
         formatOrder: (o) => const Text('hi'),
         memoryPredictor: (m) => m.revenue.toInt(),

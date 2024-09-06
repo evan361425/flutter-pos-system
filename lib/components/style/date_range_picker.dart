@@ -7,16 +7,19 @@ import 'package:possystem/settings/language_setting.dart';
 /// Machine usually think 5/1~5/2 is one day (5/1 0:0 ~ 5/2 0:0).
 /// So we need to convert between human and machine by adding a day to the end.
 Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange range) async {
+  final end = range.end.subtract(const Duration(days: 1));
+  final now = DateTime.now();
   // TODO: using fullscreen and dialog
   final result = await showDateRangePicker(
     context: context,
     initialDateRange: DateTimeRange(
       start: range.start,
-      end: range.end.subtract(const Duration(days: 1)),
+      // must be greater than [lastDate]
+      end: end.microsecondsSinceEpoch > now.microsecondsSinceEpoch ? now : end,
     ),
     initialEntryMode: DatePickerEntryMode.calendarOnly,
     firstDate: DateTime(2021, 1),
-    lastDate: DateTime.now(),
+    lastDate: now,
     locale: LanguageSetting.instance.language.locale,
 
     /// TODO: should fix this bug

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/model.dart';
@@ -23,56 +24,47 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     Formattable able,
     List<FormattedItem> items,
   ) {
-    return Navigator.of(context).push<bool?>(
-      MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) {
-          switch (able) {
-            case Formattable.menu:
-              return ProductPreviewPage(items: items);
-            case Formattable.orderAttr:
-              return OrderAttributePreviewPage(items: items);
-            case Formattable.quantities:
-              return QuantityPreviewPage(items: items);
-            case Formattable.stock:
-              return IngredientPreviewPage(items: items);
-            case Formattable.replenisher:
-              return ReplenishmentPreviewPage(items: items);
-          }
-        },
-      ),
+    return showAdaptiveDialog<bool?>(
+      context: context,
+      builder: (context) {
+        switch (able) {
+          case Formattable.menu:
+            return ProductPreviewPage(items: items);
+          case Formattable.orderAttr:
+            return OrderAttributePreviewPage(items: items);
+          case Formattable.quantities:
+            return QuantityPreviewPage(items: items);
+          case Formattable.stock:
+            return IngredientPreviewPage(items: items);
+          case Formattable.replenisher:
+            return ReplenishmentPreviewPage(items: items);
+        }
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.transitImportPreviewTitle),
-        leading: const CloseButton(),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(items.isNotEmpty);
-            },
-            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-          ),
-        ],
+    return ResponsiveDialog(
+      title: Text(S.transitImportPreviewTitle),
+      action: TextButton(
+        onPressed: () {
+          Navigator.of(context).pop(items.isNotEmpty);
+        },
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
       ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: getHeader(context),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(child: HintText(S.totalCount(items.length))),
-          ),
-          ...getDetails(context, items),
-        ]),
-      ),
+      content: Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: getHeader(context),
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(child: HintText(S.totalCount(items.length))),
+        ),
+        ...getDetails(context, items),
+      ]),
     );
   }
 

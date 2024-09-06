@@ -84,8 +84,10 @@ class BottomSheetAction<T> {
       leading: leading,
       title: title,
       onTap: () async {
-        context.pop(returnValue);
-        await onTap(context);
+        if (context.mounted) {
+          Navigator.of(context).pop(returnValue);
+        }
+        onTap(context);
       },
     );
   }
@@ -106,7 +108,7 @@ class BottomSheetAction<T> {
     );
   }
 
-  Future<T?> onTap(BuildContext context) async {
+  void onTap(BuildContext context) async {
     if (route != null && context.mounted) {
       await context.pushNamed(
         route!,
@@ -114,8 +116,6 @@ class BottomSheetAction<T> {
         queryParameters: routeQueryParameters,
       );
     }
-
-    return returnValue;
   }
 }
 

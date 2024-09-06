@@ -164,11 +164,14 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
-  Future<void> _handleProductCreate() {
-    return context.pushNamed(
+  Future<void> _handleProductCreate() async {
+    final id = await context.pushNamed(
       Routes.menuCatalogCreate,
       queryParameters: {'id': selected?.id},
     );
+    if (id is String && mounted) {
+      context.pushNamed(Routes.menuProduct, pathParameters: {'id': id});
+    }
   }
 
   void _handlePop() {

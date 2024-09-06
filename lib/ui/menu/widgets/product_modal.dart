@@ -7,7 +7,6 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class ProductModal extends StatefulWidget {
@@ -154,12 +153,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
     final product = await getProduct();
 
     if (mounted) {
-      // go to product screen
-      widget.isNew
-          ? context.replaceNamed(Routes.menuProduct, pathParameters: {
-              'id': product.id,
-            })
-          : context.pop();
+      context.pop(product.id);
     }
   }
 

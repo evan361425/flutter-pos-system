@@ -144,13 +144,9 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   }
 
   void _goToChartRange() async {
-    final val = await Navigator.of(context).push<DateTimeRange>(
-      MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => ChartRangePage(
-          range: range.value,
-        ),
-      ),
+    final val = await showAdaptiveDialog(
+      context: context,
+      builder: (context) => ChartRangePage(range: range.value),
     );
 
     if (val != null) {

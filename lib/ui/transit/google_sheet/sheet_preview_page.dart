@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/info_popup.dart';
-import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 
 class SheetPreviewPage extends StatelessWidget {
@@ -10,42 +11,44 @@ class SheetPreviewPage extends StatelessWidget {
 
   final List<GoogleSheetCellData> header;
 
-  final List<Widget>? actions;
+  final Widget? action;
 
   const SheetPreviewPage({
     super.key,
     required this.source,
     required this.title,
     required this.header,
-    this.actions,
+    this.action,
   });
 
   @override
   Widget build(BuildContext context) {
     const style = TextStyle(fontWeight: FontWeight.bold);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        leading: const PopButton(),
-        actions: actions,
-      ),
-      body: SingleChildScrollView(
-        child: PaginatedDataTable(
-          columns: [
-            for (final cell in header)
-              DataColumn(
-                label: cell.note == null
-                    ? Text(cell.toString(), style: style)
-                    : Row(children: [
-                        Text(cell.toString(), style: style),
-                        const SizedBox(width: 4),
-                        InfoPopup(cell.note!),
-                      ]),
-              ),
-          ],
-          source: source,
-          showCheckboxColumn: false,
-        ),
+    return ResponsiveDialog(
+      title: Text(title),
+      action: action,
+      fixedSizeOnDialog: const Size(800, 0),
+      scrollable: false,
+      content: SingleChildScrollView(
+        child: Column(children: [
+          PaginatedDataTable(
+            columns: [
+              for (final cell in header)
+                DataColumn(
+                  label: cell.note == null
+                      ? Text(cell.toString(), style: style)
+                      : Row(children: [
+                          Text(cell.toString(), style: style),
+                          const SizedBox(width: 4),
+                          InfoPopup(cell.note!),
+                        ]),
+                ),
+            ],
+            source: source,
+            showCheckboxColumn: false,
+          ),
+          const SizedBox(height: kFABSpacing),
+        ]),
       ),
     );
   }
