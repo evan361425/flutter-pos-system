@@ -66,6 +66,7 @@ class OrderAttributeTile extends StatelessWidget {
     return Row(children: [
       Expanded(
         child: ElevatedButton.icon(
+          key: Key('order_attributes.${attr.id}.add'),
           onPressed: () => context.pushNamed(
             Routes.orderAttrCreate,
             queryParameters: {'id': attr.id},
@@ -76,7 +77,7 @@ class OrderAttributeTile extends StatelessWidget {
       ),
       const SizedBox(width: kInternalSpacing),
       EntryMoreButton(
-        key: Key('$key.more'),
+        key: Key('order_attributes.${attr.id}.more'),
         onPressed: _showActions,
       ),
     ]);

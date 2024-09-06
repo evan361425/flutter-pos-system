@@ -45,7 +45,7 @@ class EmptyBody extends StatelessWidget {
             ),
           TextButton(
             key: const Key('empty_body'),
-            onPressed: onPressed ?? () => context.goNamed(routeName!, pathParameters: pathParameters),
+            onPressed: onPressed ?? () => context.pushNamed(routeName!, pathParameters: pathParameters),
             child: Text(S.emptyBodyAction),
           ),
         ],
