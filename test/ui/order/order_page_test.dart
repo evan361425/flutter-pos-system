@@ -23,14 +23,13 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
-import 'package:possystem/settings/order_product_axis_count_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -110,30 +109,36 @@ void main() {
     }
 
     Widget buildApp<T>({T Function()? popResult}) {
+      final baseRoute = Routes.getDesiredRoute(0).routes[0] as GoRoute;
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Cart.instance),
         ],
         child: MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
               builder: (_, __) => const OrderPage(),
               routes: [
                 GoRoute(
-                    name: Routes.orderCheckout,
-                    path: 'test',
-                    builder: (context, __) {
-                      return Scaffold(
-                        body: TextButton(
-                          onPressed: () => context.pop(popResult?.call()),
-                          child: const Text('hi', key: Key('test')),
-                        ),
-                      );
-                    }),
-                ...Routes.routes.where((e) => e.name != Routes.order),
+                  name: Routes.orderCheckout,
+                  path: 'test',
+                  builder: (context, __) {
+                    return Scaffold(
+                      body: TextButton(
+                        onPressed: () => context.pop(popResult?.call()),
+                        child: const Text('hi', key: Key('test')),
+                      ),
+                    );
+                  },
+                ),
               ],
+            ),
+            GoRoute(
+              path: baseRoute.path,
+              redirect: baseRoute.redirect,
+              routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.order).toList(),
             ),
           ]),
         ),
@@ -328,17 +333,26 @@ void main() {
     group('All in one page', () {
       testWidgets('scroll to bottom', (tester) async {
         OrderAwakeningSetting.instance.value = false;
-        OrderOutlookSetting.instance.value = OrderOutlookTypes.singleView;
-        OrderProductAxisCountSetting.instance.value = 0;
+        deviceAs(Device.landscape, tester);
 
         try {
           prepareData();
 
           await tester.pumpWidget(buildApp());
 
+          await tester.tap(find.byIcon(Icons.grid_view_outlined));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(Icons.view_list_outlined));
+          await tester.pumpAndSettle();
           await tester.tap(find.byKey(const Key('order.product.p-1')));
           await tester.tap(find.byKey(const Key('order.catalog.c-2')));
           await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
+          await tester.tap(find.byKey(const Key('order.product.p-2')));
           await tester.tap(find.byKey(const Key('order.product.p-2')));
           await tester.tap(find.byKey(const Key('order.product.p-2')));
           await tester.tap(find.byKey(const Key('order.product.p-2')));
@@ -351,24 +365,20 @@ void main() {
           final scrollController = tester.widget<ListView>(find.byKey(const Key('cart.product_list'))).controller!;
           // scroll to bottom
           expect(scrollController.position.maxScrollExtent, isNonZero);
-          // TODO:
-          // expect(find.byKey(const Key('order.orientation.landscape')), findsOneWidget);
 
           // setup portrait env
-          tester.view.physicalSize = const Size(1000, 2000);
-          addTearDown(tester.view.resetPhysicalSize);
+          deviceAs(Device.mobile, tester);
 
+          // change the view should not happen any error
           await tester.pumpAndSettle();
-          expect(find.byKey(const Key('order.orientation.portrait')), findsOneWidget);
         } finally {
           OrderAwakeningSetting.instance.value = OrderAwakeningSetting.defaultValue;
-          OrderOutlookSetting.instance.value = OrderOutlookSetting.defaultValue;
-          OrderProductAxisCountSetting.instance.value = OrderProductAxisCountSetting.defaultValue;
         }
       });
     });
 
     testWidgets('Cart actions', (tester) async {
+      deviceAs(Device.mobile, tester);
       Cart.instance.replaceAll(products: [
         CartProduct(Menu.instance.getProduct('p-1')!, count: 1),
         CartProduct(Menu.instance.getProduct('p-1')!, count: 8),
@@ -379,7 +389,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.drag(
         find.byKey(const Key('order.ds')),
-        const Offset(0, -400),
+        const Offset(0, -800),
       );
       await tester.pumpAndSettle();
 
@@ -463,6 +473,7 @@ void main() {
     });
 
     testWidgets('Ingredient should selected by product', (tester) async {
+      deviceAs(Device.mobile, tester);
       await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.product.p-1')));
@@ -470,10 +481,9 @@ void main() {
       await tester.tap(find.byKey(const Key('order.product.p-3')));
       await tester.pumpAndSettle();
 
-      await tester.drag(
-        find.byKey(const Key('order.ds')),
-        const Offset(0, -400),
-      );
+      await tester.drag(find.byKey(const Key('order.ds')), const Offset(0, -1200));
+      await tester.pumpAndSettle();
+      await tester.dragFrom(const Offset(0, 400), const Offset(0, -300));
       await tester.pumpAndSettle();
 
       final chip = tester.widget<ChoiceChip>(find.byKey(const Key('order.ingredient.pi-3')));

@@ -180,12 +180,12 @@ void main() {
         value: Cart.instance,
         child: MaterialApp.router(
           scaffoldMessengerKey: messenger,
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
               builder: (_, __) => const OrderPage(),
-              routes: Routes.routes,
             ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       );

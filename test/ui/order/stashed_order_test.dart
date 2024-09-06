@@ -195,7 +195,7 @@ void main() {
       await tester.longPress(find.byKey(const Key('stashed_order.0')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.file_upload));
+      await tester.tap(find.byIcon(Icons.file_upload_outlined));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));

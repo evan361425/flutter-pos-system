@@ -134,7 +134,7 @@ class _ProductListView extends StatelessWidget {
         childFocusNode: focusNode,
         menuChildren: ProductListView.values.map((e) {
           return MenuItemButton(
-            leadingIcon: Icon(e.icon),
+            leadingIcon: e.icon,
             onPressed: () => viewNotifier.value = e,
             child: Text(S.orderProductListViewHelper(e.name)),
           );
@@ -153,7 +153,7 @@ class _ProductListView extends StatelessWidget {
                   controller.open();
                 }
               },
-              icon: Icon(viewNotifier.value.icon),
+              icon: viewNotifier.value.icon,
             );
           },
         ),

@@ -230,10 +230,10 @@ class _Action {
 }
 
 enum ProductListView {
-  grid(Icons.grid_view_outlined),
-  list(Icons.view_list_outlined);
+  grid(Icon(Icons.grid_view_outlined)),
+  list(Icon(Icons.view_list_outlined));
 
-  final IconData icon;
+  final Icon icon;
 
   const ProductListView(this.icon);
 }
