@@ -66,14 +66,12 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
               )
             : null;
 
-    final body = ScaffoldMessenger(
-      child: Scaffold(
-        primary: false,
-        appBar: appBar,
-        body: Padding(
-          padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
-          child: _buildBody(bp),
-        ),
+    final body = Scaffold(
+      primary: false,
+      appBar: appBar,
+      body: Padding(
+        padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
+        child: _buildBody(bp),
       ),
     );
 
@@ -86,7 +84,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
               contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
               scrollable: false,
               title: appBar == null ? Text(S.imageGalleryTitle) : null,
-              content: Center(child: SizedBox(width: 600, child: body)),
+              content: Center(child: SizedBox(width: 800, child: body)),
             ),
     );
   }
@@ -113,7 +111,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     return GridView.builder(
       primary: false,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: bp.lookup(compact: 3, expanded: 4, large: 5),
+        crossAxisCount: bp.lookup(compact: 3, expanded: 4),
         crossAxisSpacing: spacing,
         mainAxisSpacing: spacing,
       ),

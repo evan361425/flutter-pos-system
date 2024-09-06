@@ -117,7 +117,7 @@ void main() {
       await createImageAt('g20230102030405333');
 
       await tester.pumpWidget(MaterialApp(
-        home: ImageGalleryPage(key: gallery),
+        home: ScaffoldMessenger(child: ImageGalleryPage(key: gallery)),
       ));
       await tester.pumpAndSettle();
 

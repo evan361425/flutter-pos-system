@@ -57,7 +57,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
     return ListView.builder(
       padding: widget.padding,
       key: const Key('item_loader'),
-      prototypeItem: widget.prototypeItem,
+      prototypeItem: widget.leading == null ? widget.prototypeItem : null,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Padding(

@@ -173,7 +173,7 @@ void main() {
 
       // select date range
       await tester.tap(find.byKey(const Key('anal.chart_range')));
-      await tester.pumpAndSettle();
+      await tester.pump();
       await tester.tap(find.text('OK'));
       await tester.pump(const Duration(milliseconds: 50));
       expect(find.text(range.format('en')), findsAtLeastNWidgets(1));

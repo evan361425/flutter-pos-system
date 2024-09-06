@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/chart_range_page.dart';
 
@@ -19,20 +21,27 @@ void main() {
 
       DateTimeRange? selected;
       await tester.pumpWidget(
-        MaterialApp(home: Scaffold(
-          body: Builder(builder: (context) {
-            return TextButton(
-              child: const Text('go'),
-              onPressed: () async {
-                selected = await Navigator.of(context).push<DateTimeRange>(
-                  MaterialPageRoute(
-                    builder: (context) => ChartRangePage(range: range),
-                  ),
-                );
-              },
-            );
-          }),
-        )),
+        MaterialApp.router(
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => Scaffold(
+                body: Builder(builder: (context) {
+                  return TextButton(
+                    child: const Text('go'),
+                    onPressed: () async {
+                      selected = await Navigator.of(context).push<DateTimeRange>(
+                        MaterialPageRoute(
+                          builder: (context) => ChartRangePage(range: range),
+                        ),
+                      );
+                    },
+                  );
+                }),
+              ),
+            ),
+          ]),
+        ),
       );
       await tester.tap(find.text('go'));
       await tester.pumpAndSettle();

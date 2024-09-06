@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
@@ -12,6 +13,7 @@ import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
@@ -29,15 +31,20 @@ void main() {
     const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
-      return MaterialApp(
-        home: TransitStation(
-          catalog: TransitCatalog.model,
-          method: TransitMethod.googleSheet,
-          exporter: GoogleSheetExporter(
-            sheetsApi: sheetsApi,
-            scopes: gsExporterScopes,
+      return MaterialApp.router(
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => TransitStation(
+              catalog: TransitCatalog.model,
+              method: TransitMethod.googleSheet,
+              exporter: GoogleSheetExporter(
+                sheetsApi: sheetsApi,
+                scopes: gsExporterScopes,
+              ),
+            ),
           ),
-        ),
+        ]),
       );
     }
 
@@ -121,7 +128,7 @@ void main() {
 
         final btn = find.byIcon(Icons.remove_red_eye_outlined);
         await tester.tap(btn.at(index));
-        await tester.pumpAndSettle();
+        await tester.pump();
       }
 
       void mockSheetData(
@@ -200,7 +207,7 @@ void main() {
         expect(find.text(ing), findsOneWidget);
         expect(notifier.value, equals(S.transitGSProgressStatusVerifyUser));
 
-        await tester.tap(find.byKey(const Key('pop')));
+        await tester.tap(find.byKey(const Key('pop')).last);
         await tester.pumpAndSettle();
 
         expect(notifier.value, equals('_finish'));
@@ -240,12 +247,12 @@ void main() {
 
         final btn = find.byIcon(Icons.remove_red_eye_outlined);
         await tester.tap(btn.first);
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         verify(cache.set(iCacheKey + '.menu', 'new-sheet 2'));
 
         await tester.tap(find.text(S.transitImportPreviewBtn));
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         for (var e in ['p1', 'p2', 'p3', 'c1', 'c2']) {
           findText(e, 'staged');
@@ -253,7 +260,7 @@ void main() {
         expect(find.text(S.transitImportErrorDuplicate), findsOneWidget);
 
         await tester.tap(find.byType(ExpansionTile).first);
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         findText('i1', 'stagedIng');
         findText('q1', 'stagedQua');
@@ -287,7 +294,7 @@ void main() {
         await tester.pumpWidget(buildApp(sheetsApi));
         await tapBtn(tester, index);
         await tester.tap(find.text(S.transitImportPreviewBtn));
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         if (names == null) {
           for (var item in data) {
