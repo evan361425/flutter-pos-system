@@ -23,12 +23,12 @@ void main() {
           ChangeNotifierProvider<Replenisher>.value(value: replenisher),
         ],
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              routes: Routes.routes,
               builder: (_, __) => const ReplenishmentPage(),
-            )
+            ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       );
@@ -86,7 +86,7 @@ void main() {
 
       await tester.pumpWidget(buildApp(stock, replenisher));
 
-      await tester.tap(find.byKey(const Key('replenisher.add')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('replenishment.name')), 'r-1');
