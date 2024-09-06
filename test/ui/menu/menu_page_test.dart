@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/repository/menu.dart';
+import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -25,12 +27,14 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Menu Page', () {
     Widget buildApp([String? popImage]) {
+      final baseRoute = Routes.getDesiredRoute(0).routes[0] as GoRoute;
       return MaterialApp.router(
         darkTheme: ThemeData.dark(),
         themeMode: ThemeMode.dark,
-        routerConfig: GoRouter(routes: [
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
+            builder: (_, __) => const MenuPage(),
             routes: [
               GoRoute(
                 name: Routes.imageGallery,
@@ -40,10 +44,13 @@ void main() {
                   child: const Text('tap me'),
                 ),
               ),
-              ...Routes.routes.where((e) => e.name != Routes.imageGallery),
             ],
-            builder: (_, __) => const MenuPage(),
-          )
+          ),
+          GoRoute(
+            path: baseRoute.path,
+            redirect: baseRoute.redirect,
+            routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
+          ),
         ]),
       );
     }
@@ -302,27 +309,28 @@ void main() {
 
     testWidgets('Pop back to catalog list', (WidgetTester tester) async {
       Menu().replaceItems({'c-1': Catalog(id: 'c-1', name: 'c-1')});
+      OrderAttributes();
 
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+          ChangeNotifierProvider<OrderAttributes>.value(value: OrderAttributes.instance),
         ],
         child: MaterialApp.router(
-          routerConfig: GoRouter(
-            routes: [
-              GoRoute(
-                path: '/',
-                routes: Routes.routes,
-                builder: (context, __) => TextButton(
-                  onPressed: () => context.goNamed(
-                    Routes.menu,
-                    queryParameters: {'id': 'c-1'},
-                  ),
-                  child: const Text('go'),
+          theme: AppThemes.lightTheme,
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, __) => TextButton(
+                onPressed: () => context.goNamed(
+                  Routes.menu,
+                  queryParameters: {'id': 'c-1'},
                 ),
+                child: const Text('go'),
               ),
-            ],
-          ),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ]),
         ),
       ));
       await tester.pumpAndSettle();

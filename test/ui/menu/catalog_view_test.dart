@@ -106,7 +106,7 @@ void main() {
       await tester.tap(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('product.add')), findsOneWidget);
+      expect(find.byKey(const Key('menu.add_product')), findsOneWidget);
     });
 
     testWidgets('Edit product', (WidgetTester tester) async {

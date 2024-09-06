@@ -24,6 +24,7 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   Widget buildApp(Product product, {String? popImage, WidgetBuilder? home}) {
+    final baseRoute = Routes.getDesiredRoute(0).routes[0] as GoRoute;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<Stock>.value(value: Stock.instance),
@@ -32,9 +33,10 @@ void main() {
       child: MaterialApp.router(
         darkTheme: ThemeData.dark(),
         themeMode: ThemeMode.dark,
-        routerConfig: GoRouter(routes: [
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
+            builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
             routes: [
               GoRoute(
                 name: Routes.imageGallery,
@@ -44,10 +46,13 @@ void main() {
                   child: const Text('tap me'),
                 ),
               ),
-              ...Routes.routes.where((e) => e.name != Routes.imageGallery),
             ],
-            builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
-          )
+          ),
+          GoRoute(
+            path: baseRoute.path,
+            redirect: baseRoute.redirect,
+            routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
+          ),
         ]),
       ),
     );
@@ -76,7 +81,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('item_more_action')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.reorder));
+      await tester.tap(find.byIcon(KIcons.reorder).last);
       await tester.pumpAndSettle();
 
       await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
@@ -275,13 +280,13 @@ void main() {
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key('stock.ingredient.name')), 'i-2-n');
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('modal.save')));
+        await tester.tap(find.byKey(const Key('modal.save')).last);
         await tester.pumpAndSettle();
 
         // select new name
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('i-2-n'));
+        await tester.tap(find.text('i-2-n').last);
         await tester.pumpAndSettle();
 
         // enter amount
@@ -333,6 +338,7 @@ void main() {
 
       testWidgets('Delete', (WidgetTester tester) async {
         prepareData();
+        Quantities();
         final product = Menu.instance.items.first.items.first;
         final ingredient = product.items.first;
 
@@ -454,13 +460,13 @@ void main() {
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key('quantity.name')), 'q-2-n');
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('modal.save')));
+        await tester.tap(find.byKey(const Key('modal.save')).last);
         await tester.pumpAndSettle();
 
         // select new name
         await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('q-2-n'));
+        await tester.tap(find.text('q-2-n').last);
         await tester.pumpAndSettle();
 
         // edit properties

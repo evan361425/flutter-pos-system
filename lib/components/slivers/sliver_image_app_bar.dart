@@ -33,7 +33,7 @@ class SliverImageAppBar extends StatelessWidget {
             color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
-        background: model.useDefaultImage ? background : Hero(tag: model, child: background),
+        background: background,
       ),
       actions: actions,
     );

@@ -78,7 +78,7 @@ class _Tile extends StatelessWidget {
     final actor = actorBuilder(context);
     return ListTile(
       key: Key('product.${product.id}'),
-      leading: product.useDefaultImage ? product.avator : Hero(tag: product, child: product.avator),
+      leading: product.avator,
       title: Text(product.name),
       trailing: EntryMoreButton(onPressed: actor),
       subtitle: MetaBlock.withString(

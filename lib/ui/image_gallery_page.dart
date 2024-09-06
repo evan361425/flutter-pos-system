@@ -66,12 +66,14 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
               )
             : null;
 
-    final body = Scaffold(
-      primary: false,
-      appBar: appBar,
-      body: Padding(
-        padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
-        child: _buildBody(bp),
+    final body = ScaffoldMessenger(
+      child: Scaffold(
+        primary: false,
+        appBar: appBar,
+        body: Padding(
+          padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
+          child: _buildBody(bp),
+        ),
       ),
     );
 

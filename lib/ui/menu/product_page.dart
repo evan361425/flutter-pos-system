@@ -45,14 +45,6 @@ class _ProductPageState extends State<ProductPage> {
     final items = widget.product.itemList;
     return Dialog.fullscreen(
       child: Scaffold(
-        primary: false,
-        floatingActionButton: FloatingActionButton(
-          key: const Key('product.add'),
-          heroTag: null,
-          onPressed: _handleCreateIng,
-          tooltip: S.menuIngredientTitleCreate,
-          child: const Icon(KIcons.add),
-        ),
         body: CustomScrollView(slivers: [
           SliverImageAppBar(
             model: widget.product,
@@ -70,8 +62,18 @@ class _ProductPageState extends State<ProductPage> {
               padding: const EdgeInsets.only(bottom: kFABSpacing),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (_, int index) => ProductIngredientView(items[index]),
-                  childCount: items.length,
+                  (_, int index) {
+                    if (index == items.length) {
+                      return ElevatedButton.icon(
+                        key: const Key('product.add'),
+                        icon: const Icon(KIcons.add),
+                        label: Text(S.menuProductTitleCreate),
+                        onPressed: _handleCreateIng,
+                      );
+                    }
+                    return ProductIngredientView(items[index]);
+                  },
+                  childCount: items.length + 1,
                 ),
               ),
             ),
@@ -111,7 +113,7 @@ class _ProductPageState extends State<ProductPage> {
       _buildActionButton(),
     ]);
 
-    return AlertDialog(
+    final dialog = AlertDialog(
       contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
       scrollable: true,
       content: ConstrainedBox(
@@ -121,9 +123,25 @@ class _ProductPageState extends State<ProductPage> {
           _buildIngredientTitle(),
           if (widget.product.isNotEmpty)
             for (final item in widget.product.itemList) ProductIngredientView(item),
+          if (widget.product.isNotEmpty)
+            ElevatedButton.icon(
+              key: const Key('product.add'),
+              icon: const Icon(KIcons.add),
+              label: Text(S.menuProductTitleCreate),
+              onPressed: _handleCreateIng,
+            ),
           const SizedBox(height: kFABSpacing),
         ]),
       ),
+    );
+
+    return ScaffoldMessenger(
+      child: Stack(children: [
+        dialog,
+        const IgnorePointer(
+          child: Scaffold(primary: false, backgroundColor: Colors.transparent),
+        ),
+      ]),
     );
   }
 

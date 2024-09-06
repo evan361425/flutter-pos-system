@@ -7,14 +7,14 @@ import 'dialog/delete_dialog.dart';
 
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {
-  required List<BottomSheetAction> actions,
+  required List<BottomSheetAction<T>> actions,
   bool useRootNavigator = true,
 }) {
   Feedback.forLongPress(context);
   final size = MediaQuery.sizeOf(context);
   final bp = Breakpoint.find(width: size.width);
 
-  if (bp <= Breakpoint.compact) {
+  if (bp <= Breakpoint.medium) {
     return showModalBottomSheet<T>(
       context: context,
       useRootNavigator: useRootNavigator,
@@ -46,21 +46,8 @@ Future<T?> showCircularBottomSheet<T>(
     position: position,
     useRootNavigator: useRootNavigator,
     clipBehavior: Clip.hardEdge,
-    items: <PopupMenuEntry<T>>[
-      for (final action in actions)
-        PopupMenuItem(
-          key: action.key,
-          value: action.returnValue,
-          onTap: () => action.onTap(context),
-          child: Row(children: [
-            if (action.leading != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: action.leading!,
-              ),
-            action.title,
-          ]),
-        ),
+    items: [
+      for (final action in actions) action.toPopupMenuItem(context),
     ],
   );
 }
@@ -90,30 +77,45 @@ class BottomSheetAction<T> {
     this.routeQueryParameters = const <String, dynamic>{},
   }) : assert(returnValue != null || route != null);
 
-  Widget toWidget(BuildContext context) {
+  Widget toListTile(BuildContext context) {
     return ListTile(
       key: key,
       enableFeedback: true,
       leading: leading,
       title: title,
-      onTap: () => onTap(context),
+      onTap: () async {
+        context.pop(returnValue);
+        await onTap(context);
+      },
     );
   }
 
-  void onTap(BuildContext context) {
-    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
-    // pop off bottom sheet
-    if (bp.lookup(compact: true, medium: false) && context.canPop()) {
-      context.pop(returnValue);
-    }
+  PopupMenuItem<T> toPopupMenuItem(BuildContext context) {
+    return PopupMenuItem<T>(
+      key: key,
+      value: returnValue,
+      onTap: () => onTap(context),
+      child: Row(children: [
+        if (leading != null)
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: leading!,
+          ),
+        title,
+      ]),
+    );
+  }
 
-    if (route != null) {
-      context.pushNamed(
+  Future<T?> onTap(BuildContext context) async {
+    if (route != null && context.mounted) {
+      await context.pushNamed(
         route!,
         pathParameters: routePathParameters,
         queryParameters: routeQueryParameters,
       );
     }
+
+    return returnValue;
   }
 }
 
@@ -126,7 +128,7 @@ class BottomSheetActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
       _buildHeading(context),
-      ...[for (final action in actions) action.toWidget(context)],
+      ...[for (final action in actions) action.toListTile(context)],
       _buildCancelAction(context),
     ]);
   }
@@ -160,7 +162,7 @@ class BottomSheetActions extends StatelessWidget {
   /// [popAfterDeleted] - Whether `Navigator.of(context).pop` after deleted
   static Future<T?> withDelete<T>(
     BuildContext context, {
-    List<BottomSheetAction> actions = const [],
+    List<BottomSheetAction<T>> actions = const [],
     required T deleteValue,
     Widget? warningContent,
     required Future<void> Function() deleteCallback,
