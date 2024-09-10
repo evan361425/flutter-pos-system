@@ -295,7 +295,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // change sheet name
-        await tester.tap(find.byKey(const Key('sheet_namer.stock.more')));
+        await tester.longPress(find.byKey(const Key('sheet_namer.stock')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('btn.edit')));
         await tester.pumpAndSettle();

@@ -34,7 +34,6 @@ void main() {
       );
     }
 
-    // TODO: find which causing overflows
     testWidgets('Edit replenishment', (tester) async {
       final replenishment = Replenishment(id: 'r-1', name: 'r-1', data: {
         'i-1': 1,

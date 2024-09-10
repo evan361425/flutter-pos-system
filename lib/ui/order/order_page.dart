@@ -158,7 +158,7 @@ class _OrderPageState extends State<OrderPage> {
           key: const Key('order.action.stash'),
           title: Text(S.orderActionStash),
           leading: const Icon(Icons.archive_outlined),
-          returnValue: _Action(action: () => _handleStash(context)),
+          returnValue: _Action(action: _handleStash),
         ),
         BottomSheetAction(
           key: const Key('order.action.history'),
@@ -178,7 +178,7 @@ class _OrderPageState extends State<OrderPage> {
     }
   }
 
-  Future<bool?> _handleStash(BuildContext context) {
+  Future<bool?> _handleStash() {
     DraggableScrollableActuator.reset(context);
     return Cart.instance.stash();
   }

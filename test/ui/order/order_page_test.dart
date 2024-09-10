@@ -340,6 +340,14 @@ void main() {
 
           await tester.pumpWidget(buildApp());
 
+          // check open and close is all ok
+          await tester.tap(find.byIcon(Icons.grid_view_outlined));
+          await tester.pumpAndSettle();
+          expect(find.byIcon(Icons.view_list_outlined), findsOneWidget);
+          await tester.tap(find.byIcon(Icons.grid_view_outlined).first);
+          await tester.pumpAndSettle();
+          expect(find.byIcon(Icons.view_list_outlined), findsNothing);
+          // change the view
           await tester.tap(find.byIcon(Icons.grid_view_outlined));
           await tester.pumpAndSettle();
           await tester.tap(find.byIcon(Icons.view_list_outlined));

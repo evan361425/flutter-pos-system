@@ -4,6 +4,7 @@ import 'package:possystem/components/scrollable_draggable_sheet.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -221,6 +222,40 @@ class _Desktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget? child;
+    if (!Cart.instance.isEmpty) {
+      child = SizedBox(
+        width: 360,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                kHorizontalSpacing,
+                kTopSpacing,
+                kHorizontalSpacing,
+                kInternalSpacing,
+              ),
+              child: SizedBox(
+                height: 36,
+                child: CheckoutCashierSnapshot(price: price, paid: paid, showChange: false),
+              ),
+            ),
+            Expanded(
+              child: CheckoutCashierCalculator(
+                onSubmit: () => _ConfirmButton.confirm(
+                  context,
+                  price: price.value,
+                  paid: paid.value,
+                ),
+                price: price,
+                paid: paid,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
@@ -237,41 +272,32 @@ class _Desktop extends StatelessWidget {
           return Row(
             children: [
               Expanded(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 800),
-                  child: Column(children: [
-                    _buildSwitcher(),
-                    Expanded(child: _buildBody(context)),
-                  ]),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Column(children: [
+                      _buildSwitcher(),
+                      Expanded(child: _buildBody(context)),
+                    ]),
+                  ),
                 ),
               ),
+              const VerticalDivider(width: 1),
               if (calculator != null) calculator,
             ],
           );
         },
-        child: Cart.instance.isEmpty
-            ? null
-            : SizedBox(
-                width: 360,
-                child: CheckoutCashierCalculator(
-                  onSubmit: () => _ConfirmButton.confirm(
-                    context,
-                    price: price.value,
-                    paid: paid.value,
-                  ),
-                  price: price,
-                  paid: paid,
-                ),
-              ),
+        child: child,
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
-    switch (viewIndex.value) {
-      case 0:
+    final idx = viewIndex.value - (hasAttr ? 1 : 0);
+    switch (idx) {
+      case -1: // has attribute and viewIndex is 0
         return CheckoutAttributeView(price: price);
-      case 1:
+      case 0:
         if (Cart.instance.isEmpty) {
           return Center(child: HintText(S.orderCheckoutEmptyCart));
         }
@@ -287,13 +313,14 @@ class _Desktop extends StatelessWidget {
   }
 
   Widget _buildSwitcher() {
+    int idx = 0;
     return SegmentedButton<int>(
       selected: {viewIndex.value},
       onSelectionChanged: (value) => viewIndex.value = value.first,
       segments: [
-        ButtonSegment(value: 0, label: Text(S.orderCheckoutAttributeTab)),
-        ButtonSegment(value: 1, label: Text(S.orderCheckoutCashierTab)),
-        ButtonSegment(value: 2, label: Text(S.orderCheckoutStashTab)),
+        if (hasAttr) ButtonSegment(value: idx++, label: Text(S.orderCheckoutAttributeTab)),
+        ButtonSegment(value: idx++, label: Text(S.orderCheckoutCashierTab)),
+        ButtonSegment(value: idx++, label: Text(S.orderCheckoutStashTab)),
       ],
     );
   }
