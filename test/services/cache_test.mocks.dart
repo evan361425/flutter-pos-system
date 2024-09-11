@@ -78,8 +78,7 @@ class MockSharedPreferences extends _i1.Mock implements _i2.SharedPreferences {
       ) as bool);
 
   @override
-  List<String>? getStringList(String? key) =>
-      (super.noSuchMethod(Invocation.method(
+  List<String>? getStringList(String? key) => (super.noSuchMethod(Invocation.method(
         #getStringList,
         [key],
       )) as List<String>?);
