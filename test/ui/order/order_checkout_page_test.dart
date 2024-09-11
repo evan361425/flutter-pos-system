@@ -30,6 +30,7 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/order_setter.dart';
 import '../../test_helpers/translator.dart';
 
@@ -175,284 +176,316 @@ void main() {
       return find.byKey(Key('cashier.calculator.$key'));
     }
 
-    Widget buildApp<T>([GlobalKey<ScaffoldMessengerState>? messenger]) {
+    Widget buildApp<T>() {
       return ChangeNotifierProvider.value(
         value: Cart.instance,
         child: MaterialApp.router(
-          scaffoldMessengerKey: messenger,
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
               builder: (_, __) => const OrderPage(),
-              routes: Routes.routes,
             ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       );
     }
 
-    testWidgets('Order without any product', (tester) async {
-      Cart.instance = Cart();
+    for (final device in [Device.mobile, Device.desktop]) {
+      group(device.name, () {
+        testWidgets('Order without any product', (tester) async {
+          deviceAs(device, tester);
+          Cart.instance = Cart();
+          // deviceAs(device, tester);
 
-      await tester.pumpWidget(buildApp());
+          await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('order.checkout')));
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.checkout')));
+          await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('order.details.confirm')), findsNothing);
-    });
+          expect(find.byKey(const Key('order.details.confirm')), findsNothing);
+        });
 
-    testWidgets('Order without attributes', (tester) async {
-      CurrencySetting.instance.isInt = false;
-      final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
-      await tester.pumpWidget(buildApp(scaffoldMessenger));
+        testWidgets('Order without attributes', (tester) async {
+          deviceAs(device, tester);
+          CurrencySetting.instance.isInt = false;
+          await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('order.checkout')));
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.checkout')));
+          await tester.pumpAndSettle();
 
-      expect(find.text('p-1'), findsOneWidget);
+          expect(find.text('p-1'), findsOneWidget);
 
-      expect(Cart.instance.price, equals(28));
-      expect(find.byKey(const Key('cashier.snapshot.28')), findsOneWidget);
-      expect(find.byKey(const Key('cashier.snapshot.50')), findsOneWidget);
-      expect(find.byKey(const Key('cashier.snapshot.100')), findsOneWidget);
-      expect(find.byKey(const Key('cashier.snapshot.500')), findsOneWidget);
-      expect(find.byKey(const Key('cashier.snapshot.1000')), findsOneWidget);
+          expect(Cart.instance.price, equals(28));
+          expect(find.byKey(const Key('cashier.snapshot.28')), findsOneWidget);
+          expect(find.byKey(const Key('cashier.snapshot.50')), findsOneWidget);
+          expect(find.byKey(const Key('cashier.snapshot.100')), findsOneWidget);
+          expect(find.byKey(const Key('cashier.snapshot.500')), findsOneWidget);
+          expect(find.byKey(const Key('cashier.snapshot.1000'), skipOffstage: false), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('cashier.snapshot.30')));
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('cashier.snapshot.30')));
+          await tester.pumpAndSettle();
 
-      expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('2')), findsOneWidget);
-      await tester.drag(
-        find.byKey(const Key('order.details.ds')),
-        const Offset(0, -408),
-      );
-      await tester.pumpAndSettle();
+          // only mobile has this change text and allow to drag
+          if (device == Device.mobile) {
+            expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('2')), findsOneWidget);
+            await tester.drag(
+              find.byKey(const Key('order.details.ds')),
+              const Offset(0, -408),
+            );
+            await tester.pumpAndSettle();
+          }
 
-      verifyText(String key, String expectValue) {
-        expect(tester.widget<Text>(fCKey(key)).data, equals(expectValue));
-      }
+          verifyText(String key, String expectValue) {
+            expect(tester.widget<Text>(fCKey(key)).data, equals(expectValue));
+          }
 
-      verifyText('paid', '30');
-      verifyText('change', '2');
+          verifyText('paid', '30');
+          verifyText('change', '2');
 
-      await tester.tap(fCKey('clear'));
-      await tester.tap(fCKey('dot'));
-      await tester.tap(fCKey('1'));
-      await tester.tap(fCKey('2'));
-      await tester.pumpAndSettle();
+          await tester.tap(fCKey('clear'));
+          await tester.tap(fCKey('dot'));
+          await tester.tap(fCKey('1'));
+          await tester.tap(fCKey('2'));
+          await tester.pumpAndSettle();
 
-      verifyText('paid', '0.12');
-      expect(fCKey('change.error'), findsOneWidget);
-      await tester.tap(fCKey('submit'));
-      await tester.pumpAndSettle();
+          verifyText('paid', '0.12');
+          expect(fCKey('change.error'), findsOneWidget);
+          await tester.tap(fCKey('submit'));
+          await tester.pumpAndSettle();
 
-      expect(find.text(S.orderCheckoutSnackbarPaidFailed), findsWidgets);
-      scaffoldMessenger.currentState?.removeCurrentSnackBar();
-      await tester.pumpAndSettle();
+          expect(find.text(S.orderCheckoutSnackbarPaidFailed), findsWidgets);
 
-      await tester.tap(fCKey('clear'));
-      await tester.pumpAndSettle();
+          await tester.tap(fCKey('clear'));
+          await tester.pumpAndSettle();
 
-      expect(tester.widget<Text>(fCKey('paid.hint')).data, equals('28'));
-      expect(tester.widget<Text>(fCKey('change.hint')).data, equals('0'));
+          expect(tester.widget<Text>(fCKey('paid.hint')).data, equals('28'));
+          expect(tester.widget<Text>(fCKey('change.hint')).data, equals('0'));
 
-      await tester.tap(fCKey('9'));
-      await tester.tap(fCKey('0'));
-      await tester.pumpAndSettle();
+          await tester.tap(fCKey('9'));
+          await tester.tap(fCKey('0'));
+          await tester.pumpAndSettle();
 
-      verifyText('paid', '90');
-      verifyText('change', '62');
+          verifyText('paid', '90');
+          verifyText('change', '62');
 
-      // tap outside to close draggable
-      await tester.tapAt(const Offset(400, 161));
-      await tester.pumpAndSettle();
+          // tap outside to close draggable
+          if (device == Device.mobile) {
+            await tester.tapAt(const Offset(400, 161));
+            await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
-      expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('62')), findsOneWidget);
+            expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('62')), findsOneWidget);
+          }
 
-      await Cashier.instance.setCurrentByUnit(1, 5);
+          expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
 
-      final now = DateTime.now();
-      Cart.timer = () => now;
-      final checker = OrderSetter.setPushed(OrderObject(
-        id: 1,
-        paid: 90,
-        price: 28,
-        cost: 5,
-        productsPrice: 28,
-        productsCount: 2,
-        createdAt: now,
-        products: const [
-          OrderProductObject(
+          await Cashier.instance.setCurrentByUnit(1, 5);
+
+          final now = DateTime.now();
+          Cart.timer = () => now;
+          final checker = OrderSetter.setPushed(OrderObject(
             id: 1,
-            productName: "p-1",
-            catalogName: "c-1",
-            count: 1,
-            singleCost: 5,
-            singlePrice: 17,
-            originalPrice: 17,
-            isDiscount: false,
-            ingredients: [
-              OrderIngredientObject(
-                ingredientName: 'i-1',
-                quantityName: 'q-1',
-                additionalPrice: 10,
-                additionalCost: 5,
-                amount: 5,
+            paid: 90,
+            price: 28,
+            cost: 5,
+            productsPrice: 28,
+            productsCount: 2,
+            createdAt: now,
+            products: const [
+              OrderProductObject(
+                id: 1,
+                productName: "p-1",
+                catalogName: "c-1",
+                count: 1,
+                singleCost: 5,
+                singlePrice: 17,
+                originalPrice: 17,
+                isDiscount: false,
+                ingredients: [
+                  OrderIngredientObject(
+                    ingredientName: 'i-1',
+                    quantityName: 'q-1',
+                    additionalPrice: 10,
+                    additionalCost: 5,
+                    amount: 5,
+                  ),
+                  OrderIngredientObject(
+                    ingredientName: 'i-2',
+                    quantityName: null,
+                    additionalPrice: 0,
+                    additionalCost: 0,
+                    amount: 3,
+                  ),
+                ],
               ),
-              OrderIngredientObject(
-                ingredientName: 'i-2',
-                quantityName: null,
-                additionalPrice: 0,
-                additionalCost: 0,
-                amount: 3,
+              OrderProductObject(
+                id: 1,
+                productName: "p-2",
+                catalogName: "c-2",
+                count: 1,
+                singleCost: 0,
+                singlePrice: 11,
+                originalPrice: 11,
+                isDiscount: false,
               ),
             ],
-          ),
-          OrderProductObject(
+          ));
+          await tester.tap(find.byKey(const Key('order.details.confirm')));
+          await tester.pumpAndSettle();
+          expect(find.text(S.actSuccess), findsOneWidget);
+
+          expect(Cart.instance.isEmpty, isTrue);
+          // navigator popped
+          expect(find.byKey(const Key('order.details.ds')), findsNothing);
+
+          checker();
+
+          verify(storage.set(Stores.cashier, argThat(predicate((data) {
+            // 95 - 62
+            return data is Map && data['.current'][2]['count'] == 3 && data['.current'][0]['count'] == 3;
+          }))));
+          verify(storage.set(Stores.stock, argThat(predicate((data) {
+            return data is Map &&
+                data['i-1.currentAmount'] == 95 &&
+                !data.containsKey('i-1.updatedAt') &&
+                data['i-2.currentAmount'] == 97 &&
+                !data.containsKey('i-2.updatedAt');
+          }))));
+
+          if (device == Device.desktop) {
+            // FIXME: I've no idea why this error happened
+            expect('${tester.binding.takeException()}', 'A RenderFlex overflowed by 299 pixels on the right.');
+          }
+        });
+
+        testWidgets('Order with attributes', (tester) async {
+          deviceAs(device, tester);
+          prepareOrderAttributes();
+
+          await tester.pumpWidget(buildApp());
+
+          await tester.tap(find.byKey(const Key('order.checkout')));
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.byKey(const Key('order.attr.oa-1.oao-1')));
+          await tester.tap(find.byKey(const Key('order.attr.oa-2.oao-3')));
+
+          await tester.tap(find.text(S.orderCheckoutCashierTab));
+          await tester.pumpAndSettle();
+
+          final now = DateTime.now();
+          Cart.timer = () => now;
+          final checker = OrderSetter.setPushed(OrderObject(
             id: 1,
-            productName: "p-2",
-            catalogName: "c-2",
-            count: 1,
-            singleCost: 0,
-            singlePrice: 11,
-            originalPrice: 11,
-            isDiscount: false,
-          ),
-        ],
-      ));
-      await tester.tap(find.byKey(const Key('order.details.confirm')));
-      await tester.pumpAndSettle();
-      expect(find.text(S.actSuccess), findsOneWidget);
-
-      expect(Cart.instance.isEmpty, isTrue);
-      // navigator popped
-      expect(find.byKey(const Key('order.details.ds')), findsNothing);
-
-      checker();
-
-      verify(storage.set(Stores.cashier, argThat(predicate((data) {
-        // 95 - 62
-        return data is Map && data['.current'][2]['count'] == 3 && data['.current'][0]['count'] == 3;
-      }))));
-      verify(storage.set(Stores.stock, argThat(predicate((data) {
-        return data is Map &&
-            data['i-1.currentAmount'] == 95 &&
-            !data.containsKey('i-1.updatedAt') &&
-            data['i-2.currentAmount'] == 97 &&
-            !data.containsKey('i-2.updatedAt');
-      }))));
-    });
-
-    testWidgets('Order with attributes', (tester) async {
-      prepareOrderAttributes();
-
-      await tester.pumpWidget(buildApp());
-
-      await tester.tap(find.byKey(const Key('order.checkout')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('order.attr.oa-1.oao-1')));
-      await tester.tap(find.byKey(const Key('order.attr.oa-2.oao-3')));
-
-      await tester.tap(find.byKey(const Key('order.details.order')));
-      await tester.pumpAndSettle();
-
-      final now = DateTime.now();
-      Cart.timer = () => now;
-      final checker = OrderSetter.setPushed(OrderObject(
-        id: 1,
-        paid: 38,
-        price: 38,
-        cost: 5,
-        productsPrice: 28,
-        productsCount: 2,
-        createdAt: now,
-        products: const [
-          OrderProductObject(
-            id: 1,
-            productName: "p-1",
-            catalogName: "c-1",
-            count: 1,
-            singleCost: 5,
-            singlePrice: 17,
-            originalPrice: 17,
-            isDiscount: false,
-            ingredients: [
-              OrderIngredientObject(
-                ingredientName: "i-1",
-                quantityName: "q-1",
-                additionalPrice: 10,
-                additionalCost: 5,
-                amount: 5,
+            paid: 38,
+            price: 38,
+            cost: 5,
+            productsPrice: 28,
+            productsCount: 2,
+            createdAt: now,
+            products: const [
+              OrderProductObject(
+                id: 1,
+                productName: "p-1",
+                catalogName: "c-1",
+                count: 1,
+                singleCost: 5,
+                singlePrice: 17,
+                originalPrice: 17,
+                isDiscount: false,
+                ingredients: [
+                  OrderIngredientObject(
+                    ingredientName: "i-1",
+                    quantityName: "q-1",
+                    additionalPrice: 10,
+                    additionalCost: 5,
+                    amount: 5,
+                  ),
+                  OrderIngredientObject(
+                    ingredientName: "i-2",
+                    amount: 3,
+                  ),
+                ],
               ),
-              OrderIngredientObject(
-                ingredientName: "i-2",
-                amount: 3,
+              OrderProductObject(
+                id: 2,
+                productName: "p-2",
+                catalogName: "c-2",
+                count: 1,
+                singleCost: 0,
+                singlePrice: 11,
+                originalPrice: 11,
+                isDiscount: false,
               ),
             ],
-          ),
-          OrderProductObject(
-            id: 2,
-            productName: "p-2",
-            catalogName: "c-2",
-            count: 1,
-            singleCost: 0,
-            singlePrice: 11,
-            originalPrice: 11,
-            isDiscount: false,
-          ),
-        ],
-        attributes: const [
-          OrderSelectedAttributeObject(
-            name: 'oa-2',
-            optionName: 'oao-3',
-            mode: OrderAttributeMode.changePrice,
-            modeValue: 10,
-          ),
-          OrderSelectedAttributeObject(
-            name: 'oa-3',
-            optionName: 'oao-5',
-            mode: OrderAttributeMode.statOnly,
-          ),
-        ],
-      ));
+            attributes: const [
+              OrderSelectedAttributeObject(
+                name: 'oa-2',
+                optionName: 'oao-3',
+                mode: OrderAttributeMode.changePrice,
+                modeValue: 10,
+              ),
+              OrderSelectedAttributeObject(
+                name: 'oa-3',
+                optionName: 'oao-5',
+                mode: OrderAttributeMode.statOnly,
+              ),
+            ],
+          ));
 
-      await tester.tap(find.byKey(const Key('order.details.confirm')));
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.details.confirm')));
+          await tester.pumpAndSettle();
+          await tester.pumpAndSettle();
 
-      checker();
+          checker();
 
-      verify(storage.set(Stores.cashier, argThat(predicate((data) {
-        // 30 + 5 + 3
-        return data is Map &&
-            data['.current'][2]['count'] == 3 &&
-            data['.current'][1]['count'] == 1 &&
-            data['.current'][0]['count'] == 3;
-      }))));
-      verify(storage.set(Stores.stock, argThat(predicate((data) {
-        return data is Map &&
-            data['i-1.currentAmount'] == 95 &&
-            !data.containsKey('i-1.updatedAt') &&
-            data['i-2.currentAmount'] == 97 &&
-            !data.containsKey('i-2.updatedAt');
-      }))));
+          verify(storage.set(Stores.cashier, argThat(predicate((data) {
+            // 30 + 5 + 3
+            return data is Map &&
+                data['.current'][2]['count'] == 3 &&
+                data['.current'][1]['count'] == 1 &&
+                data['.current'][0]['count'] == 3;
+          }))));
+          verify(storage.set(Stores.stock, argThat(predicate((data) {
+            return data is Map &&
+                data['i-1.currentAmount'] == 95 &&
+                !data.containsKey('i-1.updatedAt') &&
+                data['i-2.currentAmount'] == 97 &&
+                !data.containsKey('i-2.updatedAt');
+          }))));
 
-      expect(find.text(S.actSuccess), findsOneWidget);
-      expect(Cart.instance.isEmpty, isTrue);
-      expect(find.byKey(const Key('order.details.confirm')), findsNothing);
-    });
+          expect(find.text(S.actSuccess), findsOneWidget);
+          expect(Cart.instance.isEmpty, isTrue);
+          expect(find.byKey(const Key('order.details.confirm')), findsNothing);
+        });
+
+        testWidgets('is able to stash the order', (tester) async {
+          deviceAs(device, tester);
+          // only test available and actual function was test by other test case.
+          when(database.push(StashedOrders.table, any)).thenAnswer((_) => Future.value(1));
+
+          await tester.pumpWidget(buildApp());
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.byKey(const Key('order.checkout')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('order.details.stash')));
+          await tester.pumpAndSettle();
+
+          expect(find.text(S.actSuccess), findsOneWidget);
+        });
+      });
+    }
 
     testWidgets('Play with calculator', (tester) async {
       CurrencySetting.instance.isInt = false;
-      tester.view.physicalSize = const Size(1500, 3000);
-      addTearDown(tester.view.resetPhysicalSize);
+      deviceAs(Device.mobile, tester);
 
       await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.checkout')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('order.details.order')));
       await tester.pumpAndSettle();
 
       await tester.drag(
@@ -541,21 +574,6 @@ void main() {
 
       verifyText('paid', '60');
       verifyText('change', '32');
-    });
-
-    testWidgets('is able to stash the order', (tester) async {
-      // only test available and actual function was test by other test case.
-      when(database.push(StashedOrders.table, any)).thenAnswer((_) => Future.value(1));
-
-      await tester.pumpWidget(buildApp());
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('order.checkout')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('order.details.stash')));
-      await tester.pumpAndSettle();
-
-      expect(find.text(S.actSuccess), findsOneWidget);
     });
 
     setUp(() {

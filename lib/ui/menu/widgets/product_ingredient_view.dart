@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/buttons.dart';
+import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
@@ -28,20 +30,24 @@ class ProductIngredientView extends StatelessWidget {
       subtitle: Text(S.menuIngredientMetaAmount(ingredient.amount)),
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ListTile(
-          key: Key('$key.add'),
-          leading: const CircleAvatar(child: Icon(KIcons.add)),
-          title: Text(S.menuQuantityTitleCreate),
-          onTap: () => context.pushNamed(
-            Routes.menuProductDetails,
-            pathParameters: {'id': ingredient.product.id},
-            queryParameters: {'iid': ingredient.id, 'qid': ''},
+        Row(children: [
+          const SizedBox(width: kHorizontalSpacing),
+          Expanded(
+            child: RouteElevatedIconButton(
+              key: Key('$key.add'),
+              icon: const Icon(KIcons.add),
+              label: S.menuQuantityTitleCreate,
+              route: Routes.menuProductUpdateIngredient,
+              pathParameters: {'id': ingredient.product.id},
+              queryParameters: {'iid': ingredient.id, 'qid': ''},
+            ),
           ),
-          trailing: EntryMoreButton(
+          EntryMoreButton(
             key: Key('$key.more'),
-            onPressed: () => showActions(context),
+            onPressed: showActions,
           ),
-        ),
+          const SizedBox(width: kHorizontalSpacing),
+        ]),
         for (final item in ingredient.items) _QuantityTile(item),
       ],
     );
@@ -55,7 +61,7 @@ class ProductIngredientView extends StatelessWidget {
         BottomSheetAction(
           title: Text(S.menuIngredientTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.menuProductDetails,
+          route: Routes.menuProductUpdateIngredient,
           routePathParameters: {'id': ingredient.product.id},
           routeQueryParameters: {'iid': ingredient.id},
         ),
@@ -92,7 +98,7 @@ class _QuantityTile extends StatelessWidget {
           deleteCallback: _remove,
         ),
         onTap: () => context.pushNamed(
-          Routes.menuProductDetails,
+          Routes.menuProductUpdateIngredient,
           pathParameters: {'id': quantity.ingredient.product.id},
           queryParameters: {
             'iid': quantity.ingredient.id,

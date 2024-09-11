@@ -5,8 +5,6 @@ import 'package:possystem/settings/collect_events_setting.dart';
 import 'currency_setting.dart';
 import 'language_setting.dart';
 import 'order_awakening_setting.dart';
-import 'order_outlook_setting.dart';
-import 'order_product_axis_count_setting.dart';
 import 'setting.dart';
 import 'theme_setting.dart';
 
@@ -18,8 +16,6 @@ class SettingsProvider extends ChangeNotifier {
     ThemeSetting.instance,
     CurrencySetting.instance,
     OrderAwakeningSetting.instance,
-    OrderOutlookSetting.instance,
-    OrderProductAxisCountSetting.instance,
     CheckoutWarningSetting.instance,
     CollectEventsSetting.instance,
   ], growable: false);

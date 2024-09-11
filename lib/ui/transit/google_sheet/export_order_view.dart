@@ -3,6 +3,7 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/snackbar_actions.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -44,57 +45,55 @@ class _ExportOrderViewState extends State<ExportOrderView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SignInButton(
-            signedInWidget: SpreadsheetSelector(
-              key: selector,
-              notifier: widget.statusNotifier,
-              exporter: widget.exporter,
-              cacheKey: _cacheKey,
-              existLabel: S.transitGSSpreadsheetExportExistLabel,
-              existHint: S.transitGSSpreadsheetExportExistHint,
-              emptyLabel: S.transitGSSpreadsheetExportEmptyLabel,
-              emptyHint: S.transitGSSpreadsheetExportEmptyHint(S.transitGSSpreadsheetOrderDefaultName),
-              fallbackCacheKey: 'exporter_google_sheet',
-              defaultName: S.transitGSSpreadsheetOrderDefaultName,
-              requiredSheetTitles: requiredSheetTitles,
-              onPrepared: exportData,
+    return TransitOrderList(
+      notifier: widget.rangeNotifier,
+      formatOrder: (order) => OrderTable(order: order),
+      memoryPredictor: memoryPredictor,
+      warning: S.transitGSOrderMetaMemoryWarning,
+      leading: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
+            child: SignInButton(
+              signedInWidget: SpreadsheetSelector(
+                key: selector,
+                notifier: widget.statusNotifier,
+                exporter: widget.exporter,
+                cacheKey: _cacheKey,
+                existLabel: S.transitGSSpreadsheetExportExistLabel,
+                existHint: S.transitGSSpreadsheetExportExistHint,
+                emptyLabel: S.transitGSSpreadsheetExportEmptyLabel,
+                emptyHint: S.transitGSSpreadsheetExportEmptyHint(S.transitGSSpreadsheetOrderDefaultName),
+                fallbackCacheKey: 'exporter_google_sheet',
+                defaultName: S.transitGSSpreadsheetOrderDefaultName,
+                requiredSheetTitles: requiredSheetTitles,
+                onPrepared: exportData,
+              ),
             ),
           ),
-        ),
-        TransitOrderRange(notifier: widget.rangeNotifier),
-        ListTile(
-          key: const Key('edit_sheets'),
-          title: Text(S.transitGSOrderSettingTitle),
-          subtitle: MetaBlock.withString(
-            context,
-            [
-              S.transitGSOrderMetaOverwrite(properties.isOverwrite.toString()),
-              S.transitGSOrderMetaTitlePrefix(properties.withPrefix.toString()),
-              // This message may break the two lines limit, so put it at the end.
-              properties.requiredSheets.map((e) => e.name).join('、'),
-            ],
-            maxLines: 2,
+          TransitOrderRange(notifier: widget.rangeNotifier),
+          ListTile(
+            key: const Key('edit_sheets'),
+            title: Text(S.transitGSOrderSettingTitle),
+            subtitle: MetaBlock.withString(
+              context,
+              [
+                S.transitGSOrderMetaOverwrite(properties.isOverwrite.toString()),
+                S.transitGSOrderMetaTitlePrefix(properties.withPrefix.toString()),
+                // This message may break the two lines limit, so put it at the end.
+                properties.requiredSheets.map((e) => e.name).join('、'),
+              ],
+              maxLines: 2,
+            ),
+            isThreeLine: true,
+            trailing: const SizedBox(
+              height: double.infinity,
+              child: Icon(KIcons.edit),
+            ),
+            onTap: editSheets,
           ),
-          isThreeLine: true,
-          trailing: const SizedBox(
-            height: double.infinity,
-            child: Icon(KIcons.edit),
-          ),
-          onTap: editSheets,
-        ),
-        Expanded(
-          child: TransitOrderList(
-            notifier: widget.rangeNotifier,
-            formatOrder: (order) => OrderTable(order: order),
-            memoryPredictor: memoryPredictor,
-            warning: S.transitGSOrderMetaMemoryWarning,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -160,16 +159,15 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   }
 
   void editSheets() async {
-    final other = await Navigator.of(context).push<OrderSpreadsheetProperties>(
-      MaterialPageRoute(
-        builder: (_) => OrderSettingPage(
-          properties: properties,
-          sheets: selector.currentState?.spreadsheet?.sheets,
-        ),
+    final other = await showAdaptiveDialog<OrderSpreadsheetProperties>(
+      context: context,
+      builder: (context) => OrderSettingPage(
+        properties: properties,
+        sheets: selector.currentState?.spreadsheet?.sheets,
       ),
     );
 
-    if (other != null) {
+    if (other != null && mounted) {
       setState(() {
         properties = other;
       });

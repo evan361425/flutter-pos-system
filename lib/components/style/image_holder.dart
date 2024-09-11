@@ -8,7 +8,7 @@ import 'package:possystem/translator.dart';
 class ImageHolder extends StatelessWidget {
   final ImageProvider image;
 
-  final String title;
+  final String? title;
 
   final void Function()? onPressed;
 
@@ -18,10 +18,13 @@ class ImageHolder extends StatelessWidget {
 
   final EdgeInsets padding;
 
+  final double size;
+
   const ImageHolder({
     super.key,
     required this.image,
-    required this.title,
+    this.title,
+    this.size = 256,
     this.onPressed,
     this.onImageError,
     this.focusNode,
@@ -34,31 +37,32 @@ class ImageHolder extends StatelessWidget {
     final style = Theme.of(context).textTheme.bodyMedium;
     final colors = [color, color.withAlpha(180), color.withAlpha(10)];
 
-    Widget body = Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(maxHeight: 512, maxWidth: 512),
-      decoration: const BoxDecoration(border: Border()),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          width: double.infinity,
-          padding: padding,
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: colors[0])),
-            gradient: LinearGradient(
-              colors: colors,
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
+    Widget body = title == null
+        ? const SizedBox.expand()
+        : Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(border: Border()),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: double.infinity,
+                padding: padding,
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: colors[0])),
+                  gradient: LinearGradient(
+                    colors: colors,
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
+                ),
+                child: Text(
+                  title!,
+                  textAlign: TextAlign.center,
+                  style: style?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
-          ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: style?.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    );
+          );
 
     if (onPressed != null) {
       body = InkWell(
@@ -68,20 +72,23 @@ class ImageHolder extends StatelessWidget {
       );
     }
 
-    return AspectRatio(
-      aspectRatio: 1,
-      child: Material(
-        type: MaterialType.transparency,
-        textStyle: TextStyle(color: style?.color),
-        child: Ink.image(
-          padding: EdgeInsets.zero,
-          image: image,
-          fit: BoxFit.cover,
-          onImageError: (error, stack) {
-            Log.err(error, 'image_holder_error', stack);
-            onImageError?.call();
-          },
-          child: body,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: size, maxWidth: size),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Material(
+          type: MaterialType.transparency,
+          textStyle: TextStyle(color: style?.color),
+          child: Ink.image(
+            padding: EdgeInsets.zero,
+            image: image,
+            fit: BoxFit.cover,
+            onImageError: (error, stack) {
+              Log.err(error, 'image_error', stack);
+              onImageError?.call();
+            },
+            child: body,
+          ),
         ),
       ),
     );
@@ -90,14 +97,17 @@ class ImageHolder extends StatelessWidget {
 
 class EditImageHolder extends StatelessWidget {
   final String? path;
-
-  final void Function(String) onSelected;
+  final void Function(String)? onSelected;
+  final void Function()? onPressed;
+  final double size;
 
   const EditImageHolder({
     super.key,
     this.path,
-    required this.onSelected,
-  });
+    this.onSelected,
+    this.onPressed,
+    this.size = 256,
+  }) : assert(onSelected != null || onPressed != null);
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +118,12 @@ class EditImageHolder extends StatelessWidget {
       key: const Key('image_holder.edit'),
       image: image,
       title: path == null ? S.imageHolderCreate : S.imageHolderUpdate,
-      onPressed: () async {
-        final file = await context.pushNamed(Routes.imageGallery);
-        if (file != null && file is String) onSelected(file);
-      },
+      size: size,
+      onPressed: onPressed ??
+          () async {
+            final file = await context.pushNamed(Routes.imageGallery);
+            if (file != null && file is String) onSelected!(file);
+          },
     );
   }
 }

@@ -26,7 +26,7 @@ class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal
   String? _image;
 
   @override
-  String get title => widget.catalog?.name ?? S.menuCatalogTitleCreate;
+  String get title => widget.isNew ? S.menuCatalogTitleCreate : S.menuCatalogTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -43,7 +43,7 @@ class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           labelText: S.menuCatalogNameLabel,
-          hintText: S.menuCatalogNameHint,
+          hintText: widget.catalog?.name ?? S.menuCatalogNameHint,
           filled: false,
         ),
         onFieldSubmitted: handleFieldSubmit,

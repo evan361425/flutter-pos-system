@@ -21,6 +21,8 @@ class ItemLoader<T, U> extends StatefulWidget {
 
   final EdgeInsets? padding;
 
+  final Widget? leading;
+
   const ItemLoader({
     super.key,
     required this.builder,
@@ -31,6 +33,7 @@ class ItemLoader<T, U> extends StatefulWidget {
     required this.metricsBuilder,
     this.notifier,
     this.emptyChild = const SizedBox.shrink(),
+    this.leading,
     this.padding,
   });
 
@@ -51,34 +54,39 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
       return isFinish ? widget.emptyChild : const CircularLoading();
     }
 
-    return Column(children: [
-      const SizedBox(height: 4.0),
-      widget.metricsBuilder(metrics as U),
-      const SizedBox(height: 4.0),
-      Expanded(
-        child: ListView.builder(
-          padding: widget.padding,
-          key: const Key('item_loader'),
-          prototypeItem: widget.prototypeItem,
-          itemBuilder: (context, index) {
-            // loading over the size
-            if (items.length == index) {
-              if (isFinish) {
-                return null;
-              }
-              // fetch more!
-              loadData();
-              return const CircularLoading();
-            } else if (items.length < index) {
-              // wait for fetching, this condition is only allowed when we are fetching more
-              return null;
-            }
+    return ListView.builder(
+      padding: widget.padding,
+      key: const Key('item_loader'),
+      prototypeItem: widget.leading == null ? widget.prototypeItem : null,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: widget.metricsBuilder(metrics as U),
+          );
+        }
 
-            return widget.builder(context, items[index]);
-          },
-        ),
-      ),
-    ]);
+        if (widget.leading != null && index == 1) {
+          return widget.leading!;
+        }
+
+        index = widget.leading == null ? index - 1 : index - 2;
+        // loading over the size
+        if (items.length == index) {
+          if (isFinish) {
+            return null;
+          }
+          // fetch more!
+          loadData();
+          return const CircularLoading();
+        } else if (items.length < index) {
+          // wait for fetching, this condition is only allowed when we are fetching more
+          return null;
+        }
+
+        return widget.builder(context, items[index]);
+      },
+    );
   }
 
   @override

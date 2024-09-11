@@ -14,6 +14,7 @@ void showSnackBar(
     // make floating button below
     behavior: SnackBarBehavior.floating,
     content: Text(message),
+    width: MediaQuery.sizeOf(context).width > 700 ? 600 : null,
     action: action,
   ));
 }

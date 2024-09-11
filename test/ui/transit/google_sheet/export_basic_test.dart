@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
@@ -20,6 +21,7 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 
@@ -36,15 +38,20 @@ void main() {
     const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
-      return MaterialApp(
-        home: TransitStation(
-          catalog: TransitCatalog.model,
-          method: TransitMethod.googleSheet,
-          exporter: GoogleSheetExporter(
-            sheetsApi: sheetsApi,
-            scopes: gsExporterScopes,
+      return MaterialApp.router(
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => TransitStation(
+              catalog: TransitCatalog.model,
+              method: TransitMethod.googleSheet,
+              exporter: GoogleSheetExporter(
+                sheetsApi: sheetsApi,
+                scopes: gsExporterScopes,
+              ),
+            ),
           ),
-        ),
+        ]),
       );
     }
 
@@ -106,7 +113,7 @@ void main() {
         for (var value in values) {
           expect(find.text(value), findsOneWidget);
         }
-        await tester.tap(find.byKey(const Key('pop')));
+        await tester.tap(find.byKey(const Key('pop')).last);
         await tester.pumpAndSettle();
       }
 
@@ -288,7 +295,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // change sheet name
-        await tester.tap(find.byKey(const Key('sheet_namer.stock.more')));
+        await tester.longPress(find.byKey(const Key('sheet_namer.stock')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('btn.edit')));
         await tester.pumpAndSettle();

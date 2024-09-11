@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/constants/constant.dart';
 
 mixin ItemModal<T extends StatefulWidget> on State<T> {
@@ -11,28 +11,20 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const PopButton(),
-        title: Text(title),
-        actions: [
-          TextButton(
-            key: const Key('modal.save'),
-            onPressed: () => handleSubmit(),
-            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-          ),
-        ],
+    return ResponsiveDialog(
+      title: Text(title),
+      action: TextButton(
+        key: const Key('modal.save'),
+        onPressed: () => handleSubmit(),
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
       ),
-      body: buildForm(),
-    );
-  }
-
-  Widget buildForm() {
-    return SingleChildScrollView(
-      child: Form(
+      content: Form(
         key: formKey,
         child: Column(
-          children: buildFormFields()..add(const SizedBox(height: 76)),
+          children: [
+            ...buildFormFields(),
+            const SizedBox(height: kDialogBottomSpacing),
+          ],
         ),
       ),
     );
@@ -71,7 +63,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   /// Padding widget
   Widget p(Widget child) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kSpacing3),
+      padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
       child: child,
     );
   }

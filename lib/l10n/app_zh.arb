@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-07-08T13:16:38.559010Z",
+  "@@last_modified": "2024-09-11T07:30:16.362623Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -38,24 +38,6 @@
     }
   },
   "settingLanguageTitle": "語言",
-  "settingOrderOutlookTitle": "點餐的外觀",
-  "settingOrderOutlookName": "{name, select, slidingPanel{酷炫面板} singleView{經典模式} other{UNKNOWN}}",
-  "@settingOrderOutlookName": {
-    "description": "Appearance during ordering",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "settingOrderOutlookTip": "{name, select, slidingPanel{點餐時下方會有可拉動的面板，內含點餐中的資訊，適合小螢幕的手機} singleView{所有資訊顯示在單一螢幕中，適合大螢幕的平板} other{UNKNOWN}}",
-  "@settingOrderOutlookTip": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "settingCheckoutWarningTitle": "收銀機提示",
   "settingCheckoutWarningName": "{name, select, showAll{全部顯示} onlyNotEnough{僅不夠時顯示} hideAll{全部隱藏} other{UNKNOWN}}",
   "@settingCheckoutWarningName": {
@@ -74,9 +56,6 @@
       }
     }
   },
-  "settingOrderProductCountTitle": "點餐時每行顯示幾個產品",
-  "settingOrderProductCountHint": "設定「零」則點餐時僅會以文字顯示",
-  "settingOrderProductCountMinLabel": "純文字顯示",
   "settingOrderAwakeningTitle": "點餐時不關閉螢幕",
   "@settingOrderAwakeningTitle": {
     "description": "Keep the screen on during ordering, even when idle"
@@ -125,7 +104,7 @@
   "stockIngredientAmountLabel": "現有庫存",
   "stockIngredientAmountMaxLabel": "最大庫存",
   "stockIngredientAmountMaxHelper": "設定這個值可以幫助你一眼看出用了多少成分。\n填空或不填寫則每次增加庫存，都會自動設定這值，",
-  "stockIngredientRestockTitle": "每次補貨可以補貨多少成分。\n例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。\n這可以幫助你透過價錢快速補貨。",
+  "stockIngredientRestockTitle": "每次補貨可以補貨多少成分。\n例如，每 30 份起司要價 100 元，「補貨單位」就填寫 30，「補貨單價」就填寫 100。\n\n這可以幫助你透過價錢快速補貨。",
   "stockIngredientRestockPriceLabel": "補貨單價",
   "stockIngredientRestockQuantityLabel": "補貨單位",
   "stockIngredientRestockDialogTitle": "目前每{quantity}個要價{price}元",
@@ -166,7 +145,7 @@
   "stockReplenishmentTitleUpdate": "編輯採購",
   "stockReplenishmentMetaAffect": "會影響 {count} 項成分",
   "@stockReplenishmentMetaAffect": {
-    "description": "Indicates in the purchase list how many ingredients are affected",
+    "description": "Indicates in the replenishment list how many ingredients are affected",
     "placeholders": {
       "count": {
         "type": "int"
@@ -177,7 +156,7 @@
   "@stockReplenishmentNever": {
     "description": "The stock page displays the last replenishment time; if never replenished, this text is set"
   },
-  "stockReplenishmentApplyButton": "套用採購",
+  "stockReplenishmentApplyPreview": "預覽",
   "stockReplenishmentApplyConfirmButton": "套用",
   "stockReplenishmentApplyConfirmTitle": "套用採購？",
   "stockReplenishmentApplyConfirmColumn": "{value, select, name{名稱} amount{數量} other{UNKNOWN}}",
@@ -1014,6 +993,7 @@
       }
     }
   },
+  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
   "dialogDeletionTitle": "刪除確認通知",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1169,7 +1149,7 @@
   "@orderAttributeHeaderInfo": {
     "description": "Displayed on the upper rectangle in homepage"
   },
-  "orderAttributeTutorialTitle": "顧客設定",
+  "orderAttributeTutorialTitle": "建立屬於你的顧客設定",
   "orderAttributeTutorialContent": "這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。\n這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。",
   "orderAttributeTutorialCreateExample": "幫助建立一份範例以供測試。",
   "orderAttributeExampleAge": "年齡",
@@ -1217,19 +1197,19 @@
   "orderAttributeNameHint": "例如：顧客年齡",
   "orderAttributeNameErrorRepeat": "名稱不能重複",
   "orderAttributeOptionTitleCreate": "新增選項",
-  "orderAttributeOptionTitleCreateWith": "新增{name}的選項",
-  "@orderAttributeOptionTitleCreateWith": {
+  "orderAttributeOptionTitleUpdate": "編輯選項",
+  "orderAttributeOptionTitleReorder": "排序選項",
+  "orderAttributeOptionMetaDefault": "預設",
+  "orderAttributeOptionMetaOptionOf": "{name}的選項",
+  "@orderAttributeOptionMetaOptionOf": {
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "orderAttributeOptionTitleUpdate": "編輯選項",
-  "orderAttributeOptionTitleReorder": "排序選項",
-  "orderAttributeOptionMetaDefault": "預設",
   "orderAttributeOptionNameLabel": "選項名稱",
-  "orderAttributeOptionNameHelper": "以年齡為例，可能的選項有：\n- 20 歲以下\n- 20 到 30 歲",
+  "orderAttributeOptionNameHelper": "以年齡為例，可能的選項有：\n- ⇣ 20\n- 20 ⇢ 30",
   "orderAttributeOptionNameErrorRepeat": "名稱不能重複",
   "orderAttributeOptionModeTitle": "選項模式",
   "orderAttributeOptionModeHelper": "{name, select, statOnly{因為本設定為「一般」故無須設定「折價」或「變價」} changePrice{訂單時選擇此項會套用此變價} changeDiscount{訂單時選擇此項會套用此折價} other{UNKNOWN}}",
@@ -1359,6 +1339,10 @@
     "description": "Displayed on the upper rectangle in homepage"
   },
   "menuProductEmptyBody": "「產品」是菜單裡的基本單位，例如：\n「起司漢堡」、「可樂」",
+  "menuProductNotSelected": "請先選擇產品種類",
+  "@menuProductNotSelected": {
+    "description": "When not selecting a category, the product list will not be displayed. This message will be displayed in the product list"
+  },
   "menuProductTitleCreate": "新增產品",
   "menuProductTitleUpdate": "編輯產品",
   "menuProductTitleReorder": "排序產品",
@@ -1429,7 +1413,7 @@
   "menuIngredientAmountLabel": "使用量",
   "menuIngredientAmountHelper": "預設的使用量，若餐點可以調整該成分的使用量，請於成分的「份量」中設定。",
   "menuQuantityTitleCreate": "新增份量",
-  "menuQuantityTitleUpdate": "編輯份量",
+  "menuQuantityTitleUpdate": "編輯",
   "menuQuantityMetaAmount": "使用量：{amount}",
   "@menuQuantityMetaAmount": {
     "placeholders": {
@@ -1558,7 +1542,7 @@
   "cashierChangerCustomCountLabel": "數量",
   "cashierChangerCustomUnitLabel": "幣值",
   "cashierChangerCustomUnitAddBtn": "新增幣種",
-  "cashierChangerCustomDividerFrom": "從收銀機中拿出",
+  "cashierChangerCustomDividerFrom": "拿",
   "cashierChangerCustomDividerTo": "換",
   "cashierSurplusTitle": "結餘",
   "cashierSurplusButton": "結餘",
@@ -1635,15 +1619,11 @@
   },
   "orderLoaderEmpty": "查無點餐紀錄",
   "orderCatalogListEmpty": "尚未設定產品種類",
-  "orderProductListTutorialTitle": "開始點餐！",
-  "orderProductListTutorialContent": "透過圖片點餐更方便！\n可以至「設定」>「[每行顯示幾個產品]({link})」調整\n讓這裡僅使用文字點餐。",
-  "@orderProductListTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
+  "orderProductListViewHelper": "{name, select, grid{圖片} list{列表} other{UNKNOWN}}",
+  "@orderProductListViewHelper": {
+    "description": "Product list display mode"
   },
+  "orderProductListNoIngredient": "無設定成分",
   "orderCartActionBulkify": "批量操作",
   "orderCartActionToggle": "反選",
   "orderCartActionSelectAll": "全選",
@@ -1663,15 +1643,6 @@
   "orderCartActionChangeCountSuffix": "個",
   "orderCartActionFree": "招待",
   "orderCartActionDelete": "刪除",
-  "orderCartSnapshotTutorialTitle": "購物車",
-  "orderCartSnapshotTutorialContent": "為了讓點選產品可以更方便，\n我們把點餐後的產品設定至於此面板。\n如果需要一次顯示所有訊息的排版（適合大螢幕），\n可以至「設定」>「[點餐的外觀]({link})」調整。",
-  "@orderCartSnapshotTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
-  },
   "orderCartSnapshotEmpty": "尚未點餐",
   "orderCartMetaTotalPrice": "總價：{price}",
   "@orderCartMetaTotalPrice": {
@@ -1878,6 +1849,7 @@
   },
   "analysisChartTitle": "圖表分析",
   "analysisChartTitleCreate": "新增圖表",
+  "analysisChartTitleUpdate": "編輯圖表",
   "analysisChartTitleReorder": "排序圖表",
   "analysisChartTutorialTitle": "圖表分析",
   "analysisChartTutorialContent": "透過圖表，你可以更直觀地看到數據變化。\n現在就開始設計圖表追蹤你的銷售狀況吧！。",

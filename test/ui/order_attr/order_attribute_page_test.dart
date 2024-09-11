@@ -25,12 +25,12 @@ void main() {
       await tester.pumpWidget(ChangeNotifierProvider.value(
         value: attrs,
         child: MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              routes: Routes.routes,
               builder: (_, __) => const OrderAttributePage(),
-            )
+            ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       ));
@@ -94,12 +94,12 @@ void main() {
           ChangeNotifierProvider.value(value: attrs),
         ],
         child: MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              routes: Routes.routes,
               builder: (_, __) => const OrderAttributePage(),
-            )
+            ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
           darkTheme: ThemeData.dark(),
           themeMode: ThemeMode.dark,
@@ -115,7 +115,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.text_fields_sharp));
+      await tester.tap(find.byIcon(Icons.text_fields_outlined));
       await tester.pumpAndSettle();
 
       // repeat name
@@ -178,7 +178,7 @@ void main() {
       final rect = tester.getRect(find.byKey(const Key('reorder.0')));
 
       await tester.drag(
-        find.byIcon(Icons.reorder_sharp).first,
+        find.byIcon(Icons.reorder_outlined).first,
         Offset(0, rect.height + rect.top),
       );
       await tester.tap(find.byKey(const Key('reorder.save')));
@@ -209,7 +209,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.widget<TextFormField>(find.byKey(const Key('order_attribute_option.modeValue'))).controller?.text,
           equals('-10'));
-      await tester.tap(find.byKey(const Key('pop')));
+      await tester.tap(find.byKey(const Key('pop')).last);
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.add')));
       await tester.pumpAndSettle();
@@ -262,7 +262,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.3.add')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('pop')));
+      await tester.tap(find.byKey(const Key('pop')).last);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('order_attributes.2')));
@@ -333,7 +333,7 @@ void main() {
       await tester.tap(find.text(S.orderAttributeOptionTitleReorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 200));
+      await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 200));
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
 

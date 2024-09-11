@@ -9,9 +9,9 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/translator.dart';
 
 class StockIngredientRestockModal extends StatefulWidget {
-  final Ingredient? ingredient;
+  final Ingredient ingredient;
 
-  const StockIngredientRestockModal({super.key, this.ingredient});
+  const StockIngredientRestockModal({super.key, required this.ingredient});
 
   @override
   State<StockIngredientRestockModal> createState() => _ModalState();
@@ -24,7 +24,7 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
   final quantityFocusNode = FocusNode();
 
   @override
-  String get title => widget.ingredient?.name ?? '';
+  String get title => widget.ingredient.name;
 
   @override
   List<Widget> buildFormFields() => <Widget>[
@@ -70,8 +70,8 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
   void initState() {
     super.initState();
 
-    final rp = widget.ingredient?.restockPrice?.toAmountString() ?? '';
-    final rq = widget.ingredient?.restockQuantity.toAmountString() ?? '';
+    final rp = widget.ingredient.restockPrice?.toAmountString();
+    final rq = widget.ingredient.restockQuantity.toAmountString();
 
     priceController = TextEditingController(text: rp);
     quantityController = TextEditingController(text: rq);
@@ -90,7 +90,7 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
   Future<void> updateItem() async {
     final object = parseObject();
 
-    await widget.ingredient?.update(object);
+    await widget.ingredient.update(object);
 
     if (mounted && context.canPop()) {
       context.pop();

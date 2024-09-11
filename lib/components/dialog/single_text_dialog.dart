@@ -58,15 +58,14 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
 
     return AlertDialog(
       title: widget.title,
-      content: SingleChildScrollView(
-        child: Column(children: [
-          if (widget.header != null) widget.header!,
-          Form(
-            key: form,
-            child: textField,
-          )
-        ]),
-      ),
+      scrollable: true,
+      content: Column(children: [
+        if (widget.header != null) widget.header!,
+        Form(
+          key: form,
+          child: textField,
+        )
+      ]),
       actions: [
         PopButton(
           key: const Key('text_dialog.cancel'),

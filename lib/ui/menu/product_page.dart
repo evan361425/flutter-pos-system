@@ -6,7 +6,11 @@ import 'package:possystem/components/slivers/sliver_image_app_bar.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/image_holder.dart';
+import 'package:possystem/components/style/route_buttons.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -31,68 +35,140 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        key: const Key('product.add'),
-        onPressed: _handleCreateIng,
-        tooltip: S.menuIngredientTitleCreate,
-        child: const Icon(KIcons.add),
-      ),
-      body: CustomScrollView(slivers: [
-        SliverImageAppBar(
-          model: widget.product,
-          actions: [
-            MoreButton(
-              key: const Key('item_more_action'),
-              onPressed: _showActions,
+    final size = MediaQuery.sizeOf(context);
+    final asPage = size.width <= Breakpoint.medium.max;
+
+    return asPage ? _buildPage() : _buildDialog();
+  }
+
+  Widget _buildPage() {
+    // get the ordered items
+    final items = widget.product.itemList;
+    return Dialog.fullscreen(
+      child: Scaffold(
+        body: CustomScrollView(slivers: [
+          SliverImageAppBar(
+            model: widget.product,
+            actions: [_buildActionButton()],
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
+              child: _buildMetadata(),
             ),
-          ],
+          ),
+          SliverToBoxAdapter(child: _buildIngredientTitle()),
+          if (items.isNotEmpty)
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: kFABSpacing),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (_, int index) {
+                    if (index == items.length) {
+                      return ElevatedButton.icon(
+                        key: const Key('product.add'),
+                        icon: const Icon(KIcons.add),
+                        label: Text(S.menuProductTitleCreate),
+                        onPressed: _handleCreateIng,
+                      );
+                    }
+                    return ProductIngredientView(items[index]);
+                  },
+                  childCount: items.length + 1,
+                ),
+              ),
+            ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildDialog() {
+    final metadataTile = Row(children: [
+      ImageHolder(
+        size: 140,
+        image: widget.product.image,
+        onImageError: () => widget.product.saveImage(null),
+      ),
+      const SizedBox(width: kInternalLargeSpacing),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(widget.product.name, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: kInternalSpacing),
+          _buildMetadata(),
+        ]),
+      ),
+      _buildActionButton(),
+    ]);
+
+    final dialog = AlertDialog(
+      contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
+      scrollable: true,
+      content: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: Breakpoint.compact.max),
+        child: Column(children: [
+          metadataTile,
+          _buildIngredientTitle(),
+          if (widget.product.isNotEmpty)
+            for (final item in widget.product.itemList) ProductIngredientView(item),
+          if (widget.product.isNotEmpty)
+            ElevatedButton.icon(
+              key: const Key('product.add'),
+              icon: const Icon(KIcons.add),
+              label: Text(S.menuProductTitleCreate),
+              onPressed: _handleCreateIng,
+            ),
+          const SizedBox(height: kFABSpacing),
+        ]),
+      ),
+    );
+
+    return ScaffoldMessenger(
+      child: Stack(children: [
+        dialog,
+        const IgnorePointer(
+          child: Scaffold(primary: false, backgroundColor: Colors.transparent),
         ),
-        metadata,
-        ...ingredientView,
       ]),
     );
   }
 
-  Widget get metadata {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: MetaBlock.withString(context, <String>[
-          S.menuProductMetaTitle,
-          S.menuProductMetaPrice(widget.product.price),
-          S.menuProductMetaCost(widget.product.cost),
-        ])!,
-      ),
-    );
+  Widget _buildMetadata() {
+    return MetaBlock.withString(context, <String>[
+      S.menuProductMetaTitle,
+      S.menuProductMetaPrice(widget.product.price),
+      S.menuProductMetaCost(widget.product.cost),
+    ])!;
   }
 
-  Iterable<Widget> get ingredientView {
+  Widget _buildIngredientTitle() {
     if (widget.product.isEmpty) {
-      return [
-        SliverToBoxAdapter(
-          child: EmptyBody(
-            content: S.menuIngredientEmptyBody,
-            onPressed: _handleCreateIng,
-          ),
-        )
-      ];
+      return EmptyBody(
+        content: S.menuIngredientEmptyBody,
+        onPressed: _handleCreateIng,
+      );
     }
 
-    // get the ordered items
-    final items = widget.product.itemList;
-    return [
-      SliverToBoxAdapter(
-        child: Center(child: HintText(S.totalCount(items.length))),
+    return Row(children: [
+      Expanded(
+        child: Center(child: HintText(S.totalCount(widget.product.length))),
       ),
-      SliverList(
-        delegate: SliverChildBuilderDelegate(
-          // Floating action button offset
-          (_, int index) => index == items.length ? const SizedBox(height: 72.0) : ProductIngredientView(items[index]),
-          childCount: items.length + 1,
-        ),
+      RouteIconButton(
+        key: const Key('product.reorder'),
+        label: S.menuIngredientTitleReorder,
+        icon: const Icon(KIcons.reorder),
+        route: Routes.menuProductReorderIngredient,
+        pathParameters: {'id': widget.product.id},
+        hideLabel: true,
       ),
-    ];
+    ]);
+  }
+
+  Widget _buildActionButton() {
+    return MoreButton(
+      key: const Key('product.more'),
+      onPressed: _showActions,
+    );
   }
 
   @override
@@ -116,7 +192,7 @@ class _ProductPageState extends State<ProductPage> {
     super.dispose();
   }
 
-  void _showActions() async {
+  void _showActions(BuildContext context) async {
     final result = await BottomSheetActions.withDelete<_Action>(
       context,
       deleteCallback: widget.product.remove,
@@ -127,7 +203,7 @@ class _ProductPageState extends State<ProductPage> {
         BottomSheetAction(
           title: Text(S.menuProductTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.menuProductModal,
+          route: Routes.menuProductUpdate,
           routePathParameters: {'id': widget.product.id},
         ),
         BottomSheetAction(
@@ -136,16 +212,15 @@ class _ProductPageState extends State<ProductPage> {
           returnValue: _Action.changeImage,
         ),
         BottomSheetAction(
-          title: Text(S.menuProductTitleUpdateImage),
+          title: Text(S.menuIngredientTitleReorder),
           leading: const Icon(KIcons.reorder),
-          returnValue: _Action.reorder,
-          route: Routes.menuProductReorder,
+          route: Routes.menuProductReorderIngredient,
           routePathParameters: {'id': widget.product.id},
         ),
       ],
     );
 
-    if (result == _Action.changeImage && mounted) {
+    if (result == _Action.changeImage && context.mounted) {
       await widget.product.pickImage(context);
     }
   }
@@ -158,7 +233,7 @@ class _ProductPageState extends State<ProductPage> {
 
   void _handleCreateIng() {
     context.pushNamed(
-      Routes.menuProductDetails,
+      Routes.menuProductUpdateIngredient,
       pathParameters: {'id': widget.product.id},
     );
   }
@@ -167,5 +242,4 @@ class _ProductPageState extends State<ProductPage> {
 enum _Action {
   delete,
   changeImage,
-  reorder,
 }

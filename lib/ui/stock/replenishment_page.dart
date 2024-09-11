@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
@@ -16,55 +17,45 @@ class ReplenishmentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void goToCreate() => context.pushNamed(Routes.replenishmentNew);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.stockReplenishmentTitleList),
-        leading: const PopButton(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        key: const Key('replenisher.add'),
-        onPressed: goToCreate,
-        tooltip: S.stockReplenishmentTitleCreate,
-        child: const Icon(KIcons.add),
-      ),
-      body: ListenableBuilder(
+    return ResponsiveDialog(
+      title: Text(S.stockReplenishmentTitleList),
+      scrollable: false,
+      content: ListenableBuilder(
         listenable: Replenisher.instance,
-        builder: (_, __) {
+        builder: (context, title) {
+          handleCreate() => context.pushNamed(Routes.stockReplCreate);
           if (Replenisher.instance.isEmpty) {
             return Center(
               child: EmptyBody(
-                onPressed: goToCreate,
+                onPressed: handleCreate,
                 content: S.stockReplenishmentEmptyBody,
               ),
             );
           }
 
-          return buildList(context);
+          return buildList(
+            (Replenishment a, ReplenishActions b) => handleActions(context, a, b),
+            ElevatedButton.icon(
+              key: const Key('replenisher.add'),
+              onPressed: handleCreate,
+              label: Text(S.stockReplenishmentTitleCreate),
+              icon: const Icon(KIcons.add),
+            ),
+          );
         },
       ),
     );
   }
 
-  Widget buildList(BuildContext context) {
-    void handler(Replenishment item, _Actions action) async {
-      if (action == _Actions.apply) {
-        final confirmed = await context.pushNamed<bool>(
-          Routes.replenishmentApply,
-          pathParameters: {'id': item.id},
-        );
-
-        if (confirmed == true && context.mounted && context.canPop()) {
-          context.pop(true);
-        }
-      }
-    }
-
-    return SlidableItemList<Replenishment, _Actions>(
+  Widget buildList(
+    void Function(Replenishment a, ReplenishActions b) actionHandler,
+    Widget trailing,
+  ) {
+    return SlidableItemList<Replenishment, ReplenishActions>(
+      tailing: trailing,
       delegate: SlidableItemDelegate(
         handleDelete: (item) => item.remove(),
-        deleteValue: _Actions.delete,
+        deleteValue: ReplenishActions.delete,
         warningContentBuilder: (_, item) {
           return Text(S.dialogDeletionContent(item.name, ''));
         },
@@ -73,33 +64,65 @@ class ReplenishmentPage extends StatelessWidget {
           BottomSheetAction(
             title: Text(S.stockReplenishmentTitleUpdate),
             leading: const Icon(KIcons.edit),
-            route: Routes.replenishmentModal,
+            route: Routes.stockReplUpdate,
             routePathParameters: {'id': item.id},
           ),
           BottomSheetAction(
-            key: const Key('apply'),
-            title: Text(S.stockReplenishmentApplyButton),
-            leading: const Icon(Icons.check_circle_outline_sharp),
-            returnValue: _Actions.apply,
+            title: Text(S.stockReplenishmentApplyPreview),
+            leading: const Icon(Icons.check_outlined),
+            returnValue: ReplenishActions.preview,
           ),
         ],
-        handleAction: handler,
-        tileBuilder: (context, item, index, showActions) {
-          return ListTile(
-            key: Key('replenisher.${item.id}'),
-            title: Text(item.name),
-            subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
-            onTap: () => handler(item, _Actions.apply),
-            onLongPress: showActions,
-            trailing: EntryMoreButton(onPressed: showActions),
-          );
-        },
+        handleAction: actionHandler,
+        tileBuilder: (item, index, actorBuilder) => _Tile(
+          item: item,
+          actorBuilder: actorBuilder,
+          onTap: () => actionHandler(item, ReplenishActions.preview),
+        ),
       ),
+    );
+  }
+
+  void handleActions(BuildContext context, Replenishment item, ReplenishActions action) async {
+    if (action == ReplenishActions.preview) {
+      final confirmed = await context.pushNamed<bool>(
+        Routes.stockReplPreview,
+        pathParameters: {'id': item.id},
+      );
+
+      if (confirmed == true && context.mounted) {
+        PopButton.safePop(context, value: true);
+      }
+    }
+  }
+}
+
+class _Tile extends StatelessWidget {
+  final Replenishment item;
+  final ActorBuilder actorBuilder;
+  final VoidCallback onTap;
+
+  const _Tile({
+    required this.item,
+    required this.actorBuilder,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final actor = actorBuilder(context);
+    return ListTile(
+      key: Key('replenisher.${item.id}'),
+      title: Text(item.name),
+      subtitle: Text(S.stockReplenishmentMetaAffect(item.data.length)),
+      onTap: onTap,
+      onLongPress: actor,
+      trailing: EntryMoreButton(onPressed: actor),
     );
   }
 }
 
-enum _Actions {
+enum ReplenishActions {
   delete,
-  apply,
+  preview,
 }

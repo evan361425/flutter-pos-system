@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/image_holder.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/model.dart';
 
 class SliverImageAppBar extends StatelessWidget {
@@ -19,6 +18,7 @@ class SliverImageAppBar extends StatelessWidget {
     final background = ImageHolder(
       image: model.image,
       padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
+      // required for the gradient
       title: '',
       onImageError: () => model.saveImage(null),
     );
@@ -26,7 +26,7 @@ class SliverImageAppBar extends StatelessWidget {
     return SliverAppBar(
       expandedHeight: 250.0,
       pinned: true,
-      leading: const PopButton(),
+      leading: const CloseButton(),
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
           model.name,
@@ -34,8 +34,7 @@ class SliverImageAppBar extends StatelessWidget {
             color: Theme.of(context).textTheme.bodyMedium!.color,
           ),
         ),
-        titlePadding: const EdgeInsets.fromLTRB(48, 0, 48, 6),
-        background: model.useDefaultImage ? background : Hero(tag: model, child: background),
+        background: background,
       ),
       actions: actions,
     );

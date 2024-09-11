@@ -3,8 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/helpers/validator.dart';
-import 'package:possystem/models/menu/product.dart';
-import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -32,42 +30,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
   final _totalAmountFocusNode = FocusNode();
 
   @override
-  String get title => widget.ingredient?.name ?? S.stockIngredientTitleCreate;
-
-  @override
-  Widget buildForm() {
-    final ingredients =
-        widget.isNew ? const <ProductIngredient>[] : Menu.instance.getIngredients(widget.ingredient!.id);
-    // +2: 1 for form, 2 for text-divider
-    final length = widget.isNew ? 1 : ingredients.length + 2;
-
-    return ListView.builder(
-        itemCount: length,
-        itemBuilder: (context, index) {
-          switch (index) {
-            case 0:
-              return Form(
-                key: formKey,
-                child: Column(
-                  children: buildFormFields(),
-                ),
-              );
-            case 1:
-              return TextDivider(
-                label: S.stockIngredientProductsCount(length - 2),
-              );
-            default:
-              final product = ingredients[index - 2].product;
-              return ListTile(
-                key: Key('stock.ingredient.${product.id}'),
-                title: Text(
-                  '${product.catalog.name} - ${product.name}',
-                ),
-                onTap: () => handleProductTap(product),
-              );
-          }
-        });
-  }
+  String get title => widget.isNew ? S.stockIngredientTitleCreate : S.stockIngredientTitleUpdate;
 
   @override
   List<Widget> buildFormFields() => <Widget>[
@@ -79,7 +42,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             labelText: S.stockIngredientNameLabel,
-            hintText: S.stockIngredientNameHint,
+            hintText: widget.ingredient?.name ?? S.stockIngredientNameHint,
             filled: false,
           ),
           maxLength: 30,
@@ -128,7 +91,24 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
             focusNode: _totalAmountFocusNode,
           ),
         )),
+        if (!widget.isNew) ..._buildProducts(),
       ];
+
+  Iterable<Widget> _buildProducts() sync* {
+    final pi = Menu.instance.getIngredients(widget.ingredient!.id);
+    yield TextDivider(label: S.stockIngredientProductsCount(pi.length));
+    for (final ingredient in pi) {
+      final product = ingredient.product;
+      yield ListTile(
+        key: Key('stock.ingredient.${product.id}'),
+        title: Text('${product.catalog.name} - ${product.name}'),
+        onTap: () => context.pushNamed(
+          Routes.menuProductUpdate,
+          pathParameters: {'id': product.id},
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -170,13 +150,6 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
     if (mounted && context.canPop()) {
       context.pop();
     }
-  }
-
-  void handleProductTap(Product product) {
-    context.pushNamed(
-      Routes.menuProductModal,
-      pathParameters: {'id': product.id},
-    );
   }
 
   IngredientObject parseObject() {

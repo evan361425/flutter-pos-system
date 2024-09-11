@@ -73,47 +73,47 @@ ingredient:
       - Origin
       - The original amount before the restock
 replenishment:
-  button: Purchase
+  button: Replenish
   emptyBody: Purchasing helps you quickly adjust ingredient inventory
   title:
-    list: Purchase List
-    create: Add Purchase
-    update: Edit Purchase
+    list: Replenishment
+    create: Add Replenishment
+    update: Edit Replenishment
   meta:
     affect:
     - Affects {count} Ingredients
-    - Indicates in the purchase list how many ingredients are affected
+    - Indicates in the replenishment list how many ingredients are affected
     - count: {type: int}
   never:
-  - Never Purchased
+  - Never Replenished
   - The stock page displays the last replenishment time; if never replenished, this text is set
   apply:
-    button: Apply Purchase
+    preview: Preview
     confirm:
       button: Apply
-      title: Apply Purchase?
+      title: Apply Replenishment?
       column:
       - name: Name
         amount: Amount
       - value:
       hint: After apply, following ingredients will be adjusted
   tutorial:
-    title: Ingredient Purchases
+    title: Replenishment
     content: |-
-      Through purchases, you no longer need to set the inventory of each ingredient one by one.
-      Set up purchases now and adjust multiple ingredients at once!
+      Through Replenishment, you no longer need to set the inventory of each ingredient one by one.
+      Set up Replenishment now and adjust multiple ingredients at once!
   name:
-    label: Purchase Name
-    hint: e.g., Costco Purchase
+    label: Replenishment Name
+    hint: e.g., Costco Shopping
     error:
-      repeat: Purchase name already exists
+      repeat: Replenishment name already exists
   ingredients:
     divider: Ingredients
     helper: Click to set the quantity of different ingredients to be purchased
   ingredientAmount:
     hint: Set the amount to increase/decrease
 quantity:
-  title: Quantity
+  title: Quantities
   description: Half Sugar, Low Sugar, etc.
   _title:
     $prefix: title

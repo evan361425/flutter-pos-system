@@ -33,7 +33,9 @@ class CartSnapshot extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   cart.toggleAll(false, except: product);
-                  controller.jumpTo(controller.snapSizes[1]);
+                  if (controller.isAttached) {
+                    controller.jumpTo(controller.snapSizes[1]);
+                  }
                 },
                 child: OutlinedText(
                   product.name,

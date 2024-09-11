@@ -18,37 +18,35 @@ class ExportOrderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 16.0),
-        Card(
-          key: const Key('export_btn'),
-          margin: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: ListTile(
-            title: Text(S.transitPTCopyBtn),
-            subtitle: Text(S.transitPTCopyWarning),
-            trailing: const Icon(Icons.copy_outlined),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+    return TransitOrderList(
+      notifier: notifier,
+      formatOrder: (order) => Text(formatOrder(order)),
+      memoryPredictor: memoryPredictor,
+      leading: Column(
+        children: [
+          const SizedBox(height: 16.0),
+          Card(
+            key: const Key('export_btn'),
+            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ListTile(
+              title: Text(S.transitPTCopyBtn),
+              subtitle: Text(S.transitPTCopyWarning),
+              trailing: const Icon(Icons.copy_outlined),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              ),
+              onTap: () {
+                showSnackbarWhenFailed(
+                  export(),
+                  context,
+                  'pt_export_failed',
+                ).then((value) => showSnackBar(context, S.transitPTCopySuccess));
+              },
             ),
-            onTap: () {
-              showSnackbarWhenFailed(
-                export(),
-                context,
-                'pt_export_failed',
-              ).then((value) => showSnackBar(context, S.transitPTCopySuccess));
-            },
           ),
-        ),
-        TransitOrderRange(notifier: notifier),
-        Expanded(
-          child: TransitOrderList(
-            notifier: notifier,
-            formatOrder: (order) => Text(formatOrder(order)),
-            memoryPredictor: memoryPredictor,
-          ),
-        ),
-      ],
+          TransitOrderRange(notifier: notifier),
+        ],
+      ),
     );
   }
 

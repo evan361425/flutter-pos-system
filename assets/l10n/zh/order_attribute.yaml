@@ -11,7 +11,7 @@ emptyBody: |-
   20-30歲、外帶、上班族。
 headerInfo: 顧客設定
 tutorial:
-  title: 顧客設定
+  title: 建立屬於你的顧客設定
   content: |-
     這裡是用來設定顧客的資訊，例如：內用、外帶、上班族等。
     這些資訊可以幫助我們統計哪些人來消費，進而做出更好的經營策略。
@@ -59,17 +59,17 @@ name:
 option:
   title:
     create: 新增選項
-    createWith: 新增{name}的選項
     update: 編輯選項
     reorder: 排序選項
   meta:
     default: 預設
+    optionOf: '{name}的選項'
   name:
     label: 選項名稱
     helper: |-
       以年齡為例，可能的選項有：
-      - 20 歲以下
-      - 20 到 30 歲
+      - ⇣ 20
+      - 20 ⇢ 30
     error:
       repeat: 名稱不能重複
   mode:

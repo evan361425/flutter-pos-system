@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
@@ -14,54 +12,56 @@ import 'settings/settings_provider.dart';
 import 'settings/theme_setting.dart';
 import 'translator.dart';
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
-  // singleton be avoid recreate after hot reload.
-  static final router = GoRouter(
-    initialLocation: Routes.base,
-    redirect: (context, state) {
-      return state.path?.startsWith(Routes.base) == false ? Routes.base : null;
-    },
-    routes: [Routes.home],
-    // By default, go_router comes with default error screens for both
-    // MaterialApp and CupertinoApp as well as a default error screen in
-    // the case that none is used.
-    // onException: (context, state, route) => context.go('/pos'),
-    debugLogDiagnostics: kDebugMode,
-    observers: [
-      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-      routeObserver,
-    ],
-  );
+  static ValueNotifier<RoutingConfig>? routingConfig;
 
-  const MyApp({super.key});
+  // singleton be avoid recreate after hot reload.
+  static RouterConfig<Object>? router;
+
+  const App({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final routes = Routes.getDesiredRoute(MediaQuery.sizeOf(context).width);
+    routingConfig ??= ValueNotifier(routes);
+    routingConfig!.value = routes;
+    router ??= GoRouter.routingConfig(
+      initialLocation: Routes.initLocation,
+      routingConfig: routingConfig!,
+      navigatorKey: Routes.rootNavigatorKey,
+      // By default, go_router comes with default error screens for both
+      // MaterialApp and CupertinoApp as well as a default error screen in
+      // the case that none is used.
+      // onException: (context, state, route) => context.go('/pos'),
+      debugLogDiagnostics: kDebugMode,
+      observers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+        routeObserver,
+      ],
+    );
+
     // Glue the SettingsController to the MaterialApp.
     //
     // The AnimatedBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     return AnimatedBuilder(
       animation: SettingsProvider.instance,
-      builder: (_, __) {
+      builder: (context, child) {
         return MaterialApp.router(
-          routerConfig: router,
+          routerConfig: router!,
           onGenerateTitle: (context) {
             // According to document, it should followed when system changed language.
             // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter
             final localizations = AppLocalizations.of(context)!;
 
-            S = localizations;
-            Intl.systemLocale = S.localeName;
-            Intl.defaultLocale = S.localeName;
+            setAppLocalizations(localizations);
             // if no setup language, it will use system language. We try to
             // catch system language here. Only first time calling will take
             // effect.
             LanguageSetting.instance.systemLanguage = S.localeName;
-            initializeDateFormatting(S.localeName);
 
             FlutterNativeSplash.remove();
 

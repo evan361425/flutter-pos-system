@@ -11,7 +11,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/ui/stock/quantity_page.dart';
+import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
@@ -31,12 +31,12 @@ void main() {
       await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
         value: quantities,
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const QuantityPage(),
-            )
+              builder: (_, __) => const QuantitiesPage(),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       ));
@@ -69,17 +69,17 @@ void main() {
       await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
         value: quantities,
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const QuantityPage(),
-            )
+              builder: (_, __) => const QuantitiesPage(),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       ));
 
-      await tester.tap(find.byKey(const Key('quantity.add')));
+      await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byKey(const Key('quantity.name')), 'q-1');
@@ -132,12 +132,12 @@ void main() {
           ChangeNotifierProvider<Quantities>.value(value: quantities),
         ],
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              routes: Routes.routes,
-              builder: (_, __) => const QuantityPage(),
-            )
+              builder: (_, __) => const QuantitiesPage(),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       ));

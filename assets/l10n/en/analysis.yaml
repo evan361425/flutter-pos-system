@@ -68,7 +68,7 @@ goals:
     title: Cost
   achievedRate:
   - |-
-    Profit Achievement
+    Profit Goal
     {rate}
   - rate:
 chart:
@@ -76,6 +76,7 @@ chart:
   _title:
     $prefix: title
     create: Create Chart
+    update: Edit Chart
     reorder: Reorder Charts
   tutorial:
     title: Chart Analysis

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/components/style/info_popup.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/cache.dart';
@@ -12,9 +15,12 @@ class GoalsCardView extends StatefulWidget {
   /// Help to calculate the EMA of the last 20 days.
   final EMACalculator calculator;
 
+  final Widget? action;
+
   const GoalsCardView({
     super.key,
     this.calculator = const EMACalculator(20),
+    this.action,
   });
 
   @override
@@ -32,6 +38,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
       id: 'goals',
       title: S.analysisGoalsTitle,
       notifiers: [Seller.instance],
+      action: widget.action,
       builder: _builder,
       loader: _loader,
     );
@@ -50,53 +57,48 @@ class _GoalsCardViewState extends State<GoalsCardView> {
   }
 
   Widget _builder(BuildContext context, OrderSummary metric) {
-    final style = Theme.of(context).textTheme.bodyLarge?.copyWith(
-          overflow: TextOverflow.ellipsis,
-        );
-    final goals = <Widget>[
-      _GoalItem(
-        type: OrderMetricType.count,
-        current: metric.count,
-        goal: goal!.count,
-        style: style,
-        name: S.analysisGoalsCountTitle,
-        desc: S.analysisGoalsCountDescription,
-      ),
-      _GoalItem(
-        type: OrderMetricType.revenue,
-        current: metric.revenue,
-        goal: goal!.revenue,
-        style: style,
-        name: S.analysisGoalsRevenueTitle,
-        desc: S.analysisGoalsRevenueDescription,
-      ),
-      _GoalItem(
-        type: OrderMetricType.profit,
-        current: metric.profit,
-        goal: goal!.profit,
-        style: style,
-        name: S.analysisGoalsProfitTitle,
-        desc: S.analysisGoalsProfitDescription,
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(S.analysisGoalsCostTitle, style: style),
-          Text(metric.cost.toCurrency(), style: style),
-        ],
-      ),
-    ];
+    final style = Theme.of(context).textTheme.bodyLarge?.copyWith(overflow: TextOverflow.ellipsis);
 
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: goals,
+    return LayoutBuilder(builder: (context, constraint) {
+      final compact = constraint.maxWidth < Breakpoint.compact.max;
+      final align = goal!.profit == 0 ? MainAxisAlignment.start : MainAxisAlignment.spaceAround;
+      return Row(mainAxisAlignment: align, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+          _GoalItem(
+            current: metric.count,
+            goal: goal!.count,
+            style: style,
+            name: S.analysisGoalsCountTitle,
+            desc: S.analysisGoalsCountDescription,
+            compact: compact,
           ),
-        ),
+          _GoalItem(
+            current: metric.revenue,
+            goal: goal!.revenue,
+            style: style,
+            name: S.analysisGoalsRevenueTitle,
+            desc: S.analysisGoalsRevenueDescription,
+            compact: compact,
+          ),
+          _GoalItem(
+            current: metric.profit,
+            goal: goal!.profit,
+            style: style,
+            name: S.analysisGoalsProfitTitle,
+            desc: S.analysisGoalsProfitDescription,
+            compact: compact,
+          ),
+          _GoalItem(
+            current: metric.cost,
+            goal: 0,
+            style: style,
+            name: S.analysisGoalsCostTitle,
+            compact: compact,
+          ),
+        ]),
         if (goal!.profit != 0)
-          Expanded(
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 240),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Stack(children: [
@@ -114,14 +116,15 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                     child: Text(
                       S.analysisGoalsAchievedRate(formatter.format(metric.profit / goal!.profit)),
                       style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
               ]),
             ),
           ),
-      ],
-    );
+      ]);
+    });
   }
 
   Future<OrderSummary> _loader() async {
@@ -136,34 +139,34 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         OrderMetricType.profit,
         OrderMetricType.cost,
       ],
-      ignoreEmpty: true,
-      limit: widget.calculator.length + 1,
+      ignoreEmpty: true, // this will ignore today, so later we need to add it back.
+      limit: goal == null ? widget.calculator.length + 1 : 1,
       orderDirection: "desc",
     );
 
-    // Remove the first data, which is the today's data.
-    final todayData = result.isEmpty ? OrderSummary(at: range.start) : result.removeAt(0);
+    // Remove the first data, which is the latest data.
+    final todayData = result.firstOrNull?.at == range.end ? result.removeAt(0) : OrderSummary(at: range.start);
 
-    final reversed = result.reversed;
-    goal ??= OrderSummary(
-      at: DateTime(0), // this is dummy data, we don't need the date.
-      values: {
-        'count': widget.calculator.calculate(reversed.map((e) => e.count)),
-        'revenue': widget.calculator.calculate(reversed.map((e) => e.revenue)),
-        'profit': widget.calculator.calculate(reversed.map((e) => e.profit)),
-      },
-    );
+    if (goal == null) {
+      final reversed = result.take(20).toList().reversed;
+      goal = OrderSummary(
+        at: DateTime(0), // this is dummy data, we don't need the date.
+        values: {
+          'count': widget.calculator.calculate(reversed.map((e) => e.count)),
+          'revenue': widget.calculator.calculate(reversed.map((e) => e.revenue)),
+          'profit': widget.calculator.calculate(reversed.map((e) => e.profit)),
+        },
+      );
+    }
 
     return todayData;
   }
 }
 
 class _GoalItem extends StatelessWidget {
-  final OrderMetricType type;
-
   final String name;
 
-  final String desc;
+  final String? desc;
 
   final num current;
 
@@ -171,38 +174,53 @@ class _GoalItem extends StatelessWidget {
 
   final TextStyle? style;
 
+  final bool compact;
+
   const _GoalItem({
-    required this.type,
     required this.name,
-    required this.desc,
+    this.desc,
     required this.current,
     required this.goal,
     this.style,
+    required this.compact,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(name, style: style),
-        // TODO: tap to show the description
-        // InfoPopup(desc),
-        RichText(
-          text: TextSpan(
-            text: current.toCurrency(),
-            style: style,
-            children: [
-              if (goal != 0)
+    final label = Row(children: [
+      Text(name, style: style, overflow: TextOverflow.ellipsis),
+      if (desc != null) InfoPopup(desc!),
+    ]);
+    final value = RichText(
+      text: TextSpan(
+        text: current.toCurrency(),
+        style: style?.copyWith(fontSize: 24),
+        children: goal != 0
+            ? [
                 TextSpan(
                   text: '／${goal.toCurrency()}',
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey, fontSize: 24),
                 ),
-            ],
-          ),
-        ),
+              ]
+            : null,
+      ),
+    );
+
+    if (compact) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        label,
+        value,
         const SizedBox(height: 4),
-      ],
+      ]);
+    }
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        label,
+        const SizedBox(width: kInternalLargeSpacing),
+        Expanded(child: Align(alignment: Alignment.centerRight, child: value)),
+      ]),
     );
   }
 }

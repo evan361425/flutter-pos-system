@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
@@ -7,10 +8,13 @@ class CheckoutCashierSnapshot extends StatefulWidget {
 
   final ValueNotifier<num> paid;
 
+  final bool showChange;
+
   const CheckoutCashierSnapshot({
     super.key,
     required this.price,
     required this.paid,
+    this.showChange = true,
   });
 
   @override
@@ -24,37 +28,36 @@ class _CheckoutCashierSnapshotState extends State<CheckoutCashierSnapshot> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: <Widget>[
-      Expanded(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          scrollDirection: Axis.horizontal,
-          children: [
-            for (final option in paidOptionWithCustom)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: ChoiceChip(
-                  key: Key('cashier.snapshot.$option'),
-                  selected: widget.paid.value == option,
-                  onSelected: (selected) {
-                    if (selected) {
-                      _changePaid(option);
-                    }
-                  },
-                  label: Text(option.toCurrency()),
-                ),
-              ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 0, 8.0, 0),
-        child: SizedBox(
-          height: double.infinity,
-          child: Center(
-            child: Text(S.orderCheckoutCashierSnapshotLabelChange(change.toCurrency())),
+    final chips = ListView(
+      padding: EdgeInsets.zero,
+      scrollDirection: Axis.horizontal,
+      children: [
+        for (final option in paidOptionWithCustom)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: ChoiceChip(
+              key: Key('cashier.snapshot.$option'),
+              selected: widget.paid.value == option,
+              onSelected: (selected) {
+                if (selected) {
+                  _changePaid(option);
+                }
+              },
+              label: Text(option.toCurrency()),
+            ),
           ),
-        ),
+      ],
+    );
+
+    if (!widget.showChange) {
+      return chips;
+    }
+
+    return Row(children: <Widget>[
+      Expanded(child: chips),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(kInternalLargeSpacing, 0, kHorizontalSpacing, 0),
+        child: Text(S.orderCheckoutCashierSnapshotLabelChange(change.toCurrency())),
       ),
     ]);
   }

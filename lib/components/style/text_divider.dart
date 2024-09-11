@@ -12,19 +12,19 @@ class TextDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: kSpacing1),
+      padding: const EdgeInsets.symmetric(vertical: kHorizontalSpacing),
       child: Row(children: <Widget>[
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.only(left: kSpacing1, right: kSpacing2),
-            child: const Divider(),
+        const Expanded(
+          child: Divider(
+            indent: kInternalSpacing,
+            endIndent: kInternalSpacing,
           ),
         ),
         Text(label),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.only(left: kSpacing2, right: kSpacing1),
-            child: const Divider(),
+        const Expanded(
+          child: Divider(
+            indent: kInternalSpacing,
+            endIndent: kInternalSpacing,
           ),
         ),
       ]),

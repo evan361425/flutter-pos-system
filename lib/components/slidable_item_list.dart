@@ -3,48 +3,56 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 
 class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
-
   final String? hintText;
+  final Widget? leading;
+  final Widget? tailing;
+  final Widget? action;
 
   const SlidableItemList({
     super.key,
     required this.delegate,
     this.hintText,
+    this.leading,
+    this.tailing,
+    this.action,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.only(bottom: 76),
-      children: <Widget>[
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: HintText(hintText ?? S.totalCount(delegate.items.length)),
-          ),
-        ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
+      child: Column(children: <Widget>[
+        if (leading != null) leading!,
+        Row(children: [
+          Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
+          if (action != null)
+            Padding(
+              padding: const EdgeInsets.only(right: kHorizontalSpacing),
+              child: action,
+            ),
+        ]),
+        const SizedBox(height: kInternalSpacing),
         for (final widget in delegate.items.mapIndexed(
-          (index, item) => delegate.build(context, item, index),
+          (index, item) => delegate.build(item, index),
         ))
           widget,
-      ],
+        if (tailing != null) tailing!,
+      ]),
     );
   }
 }
 
+typedef ActorBuilder = void Function([BuildContext?]) Function(BuildContext context);
+
 class SlidableItemDelegate<T, U> {
   final List<T> items;
 
-  final Widget Function(
-    BuildContext context,
-    T item,
-    int index,
-    VoidCallback showActions,
-  ) tileBuilder;
+  final Widget Function(T item, int index, ActorBuilder actorBuilder) tileBuilder;
 
   final Future<void> Function(T item) handleDelete;
 
@@ -70,20 +78,15 @@ class SlidableItemDelegate<T, U> {
     this.handleAction,
   });
 
-  Widget build(
-    BuildContext context,
-    T item,
-    int index,
-  ) {
+  Widget build(T item, int index) {
     return SlideToDelete(
       item: item,
       deleteCallback: () => handleDelete(item),
       warningContentBuilder: (ctx) => warningContentBuilder?.call(ctx, item),
       child: tileBuilder(
-        context,
         item,
         index,
-        () => showActions(context, item),
+        (BuildContext context) => ([BuildContext? ctx]) => showActions(ctx ?? context, item),
       ),
     );
   }
@@ -91,7 +94,7 @@ class SlidableItemDelegate<T, U> {
   Future<void> showActions(BuildContext context, T item) async {
     assert(deleteValue != null, "deleteValue should be set when using actions");
 
-    final customActions = actionBuilder == null ? const <BottomSheetAction>[] : actionBuilder!(item).toList();
+    final customActions = actionBuilder == null ? <BottomSheetAction<U?>>[] : actionBuilder!(item).toList();
 
     final result = await BottomSheetActions.withDelete<U?>(
       context,
@@ -101,8 +104,8 @@ class SlidableItemDelegate<T, U> {
       deleteCallback: () => handleDelete(item),
     );
 
-    if (result != null) {
-      handleAction?.call(item, result);
+    if (result != null && handleAction != null) {
+      handleAction!(item, result);
     }
   }
 }

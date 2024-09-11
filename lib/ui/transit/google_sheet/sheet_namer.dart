@@ -65,8 +65,9 @@ class SheetNamerState extends State<SheetNamer> {
     );
   }
 
-  void showActions() async {
-    final result = await showCircularBottomSheet<int>(context, actions: [
+  void showActions([BuildContext? ctx]) async {
+    ctx ??= context;
+    final result = await showCircularBottomSheet<int>(ctx, actions: [
       BottomSheetAction(
         key: const Key('btn.edit'),
         title: Text(S.transitGSSheetNameUpdate),

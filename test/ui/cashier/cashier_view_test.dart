@@ -26,12 +26,12 @@ void main() {
       return ChangeNotifierProvider.value(
         value: Cashier.instance,
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
               builder: (_, __) => const Scaffold(body: CashierView()),
-              routes: Routes.routes,
             ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       );

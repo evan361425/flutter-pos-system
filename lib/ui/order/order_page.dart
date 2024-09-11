@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/linkify.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
-import 'package:possystem/settings/order_outlook_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_metadata_view.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
@@ -18,7 +20,6 @@ import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_state_selector.dart';
 import 'widgets/draggable_sheet_view.dart';
-import 'widgets/order_actions.dart';
 import 'widgets/order_catalog_list_view.dart';
 import 'widgets/order_product_list_view.dart';
 import 'widgets/orientated_view.dart';
@@ -32,8 +33,15 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
   late final PageController _pageController;
+
+  /// Change the catalog index and pass to [OrderProductListView] and [OrderCatalogListView]
   late final ValueNotifier<int> _catalogIndexNotifier;
-  final _Notifier resetNotifier = _Notifier();
+
+  /// Used to update the view of [OrderProductListView]
+  late final ValueNotifier<ProductListView> _productViewNotifier;
+
+  /// Reset panel to initial state, used by [DraggableSheetView]
+  final _Notifier _resetNotifier = _Notifier();
 
   @override
   Widget build(BuildContext context) {
@@ -42,18 +50,45 @@ class _OrderPageState extends State<OrderPage> {
     final orderCatalogListView = OrderCatalogListView(
       catalogs: catalogs,
       indexNotifier: _catalogIndexNotifier,
+      viewNotifier: _productViewNotifier,
       onSelected: (index) => _pageController.jumpToPage(index),
     );
-    final orderProductListView = PageView.builder(
-      controller: _pageController,
-      onPageChanged: (index) => _catalogIndexNotifier.value = index,
-      itemCount: catalogs.length,
-      itemBuilder: (context, index) {
-        return OrderProductListView(products: catalogs[index].itemList);
-      },
+    final orderProductListView = ListenableBuilder(
+      listenable: _productViewNotifier,
+      builder: (context, _) => PageView.builder(
+        controller: _pageController,
+        onPageChanged: (index) => _catalogIndexNotifier.value = index,
+        itemCount: catalogs.length,
+        itemBuilder: (context, index) => OrderProductListView(
+          products: catalogs[index].itemList,
+          view: _productViewNotifier.value,
+        ),
+      ),
     );
 
-    final outlook = OrderOutlookSetting.instance.value;
+    final body = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= Breakpoint.medium
+        ? DraggableSheetView(
+            row1: orderCatalogListView,
+            row2: orderProductListView,
+            row3_1: const CartProductSelector(),
+            row3_2Builder: (scroll, scrollable) => Expanded(
+              child: CartProductList(
+                scrollController: scroll,
+                scrollable: scrollable,
+              ),
+            ),
+            row3_3: const CartMetadataView(),
+            row4: const CartProductStateSelector(),
+            resetNotifier: _resetNotifier,
+          )
+        : OrientatedView(
+            row1: orderCatalogListView,
+            row2: orderProductListView,
+            row3_1: const CartProductSelector(),
+            row3_2: const Expanded(child: CartProductList()),
+            row3_3: const CartMetadataView(),
+            row4: const CartProductStateSelector(),
+          );
 
     return TutorialWrapper(
       child: Scaffold(
@@ -62,7 +97,7 @@ class _OrderPageState extends State<OrderPage> {
         appBar: AppBar(
           leading: const PopButton(),
           actions: [
-            const OrderActions(key: Key('order.more')),
+            MoreButton(key: const Key('order.more'), onPressed: _showActions),
             TextButton(
               key: const Key('order.checkout'),
               onPressed: () => _handleCheckout(),
@@ -70,29 +105,7 @@ class _OrderPageState extends State<OrderPage> {
             ),
           ],
         ),
-        body: outlook == OrderOutlookTypes.slidingPanel
-            ? DraggableSheetView(
-                row1: orderCatalogListView,
-                row2: orderProductListView,
-                row3_1: const CartProductSelector(),
-                row3_2Builder: (scroll, scrollable) => Expanded(
-                  child: CartProductList(
-                    scrollController: scroll,
-                    scrollable: scrollable,
-                  ),
-                ),
-                row3_3: const CartMetadataView(),
-                row4: const CartProductStateSelector(),
-                resetNotifier: resetNotifier,
-              )
-            : OrientatedView(
-                row1: orderCatalogListView,
-                row2: orderProductListView,
-                row3_1: const CartProductSelector(),
-                row3_2: const Expanded(child: CartProductList()),
-                row3_3: const CartMetadataView(),
-                row4: const CartProductStateSelector(),
-              ),
+        body: body,
       ),
     );
   }
@@ -102,6 +115,8 @@ class _OrderPageState extends State<OrderPage> {
     Wakelock.disable();
     _pageController.dispose();
     _catalogIndexNotifier.dispose();
+    _productViewNotifier.dispose();
+    _resetNotifier.dispose();
     super.dispose();
   }
 
@@ -115,15 +130,55 @@ class _OrderPageState extends State<OrderPage> {
 
     _pageController = PageController();
     _catalogIndexNotifier = ValueNotifier<int>(0);
+    _productViewNotifier = ValueNotifier<ProductListView>(ProductListView.grid);
     super.initState();
   }
 
   void _handleCheckout() async {
-    final status = await context.pushNamed<CheckoutStatus>(Routes.orderDetails);
+    final status = await context.pushNamed<CheckoutStatus>(Routes.orderCheckout);
     if (status != null && mounted) {
       handleCheckoutStatus(context, status);
-      resetNotifier.notify();
+      _resetNotifier.notify();
     }
+  }
+
+  void _showActions(BuildContext context) async {
+    final result = await showCircularBottomSheet<_Action>(
+      context,
+      actions: [
+        BottomSheetAction(
+          key: const Key('order.action.exchange'),
+          title: Text(S.orderActionExchange),
+          leading: const Icon(Icons.change_circle_outlined),
+          returnValue: const _Action(route: Routes.cashierChanger),
+        ),
+        BottomSheetAction(
+          key: const Key('order.action.stash'),
+          title: Text(S.orderActionStash),
+          leading: const Icon(Icons.archive_outlined),
+          returnValue: _Action(action: _handleStash),
+        ),
+        BottomSheetAction(
+          key: const Key('order.action.history'),
+          title: Text(S.orderActionReview),
+          leading: const Icon(Icons.history_outlined),
+          returnValue: const _Action(route: Routes.history),
+        ),
+      ],
+    );
+
+    if (context.mounted && result != null) {
+      final success = await result.exec(context);
+
+      if (success == true && context.mounted) {
+        showSnackBar(context, S.actSuccess);
+      }
+    }
+  }
+
+  Future<bool?> _handleStash() {
+    DraggableScrollableActuator.reset(context);
+    return Cart.instance.stash();
   }
 }
 
@@ -143,7 +198,7 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
       showMoreInfoSnackBar(
         context,
         S.orderSnackbarCashierUsingSmallMoney,
-        Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('features/checkoutWarning'))),
+        Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('settings/checkoutWarning'))),
       );
       break;
     default:
@@ -158,4 +213,25 @@ class _Notifier extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
+}
+
+class _Action {
+  final Future<bool?> Function()? action;
+
+  final String? route;
+
+  const _Action({this.action, this.route});
+
+  Future<bool?> exec(BuildContext context) {
+    return route == null ? action!() : context.pushNamed(route!);
+  }
+}
+
+enum ProductListView {
+  grid(Icon(Icons.grid_view_outlined)),
+  list(Icon(Icons.view_list_outlined));
+
+  final Icon icon;
+
+  const ProductListView(this.icon);
 }

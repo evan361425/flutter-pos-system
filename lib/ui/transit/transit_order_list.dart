@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
+import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
@@ -19,19 +22,28 @@ class TransitOrderList extends StatelessWidget {
 
   final String? warning;
 
+  final Widget leading;
+
   const TransitOrderList({
     super.key,
     required this.notifier,
     required this.formatOrder,
     required this.memoryPredictor,
+    required this.leading,
     this.warning,
   });
 
   @override
   Widget build(BuildContext context) {
     return OrderLoader(
+      leading: leading,
       ranger: notifier,
       countingAll: true,
+      emptyChild: Column(children: [
+        leading,
+        const SizedBox(height: kInternalSpacing),
+        HintText(S.orderLoaderEmpty),
+      ]),
       trailingBuilder: _buildMemoryInfo,
       builder: _buildOrder,
     );
@@ -46,7 +58,7 @@ class TransitOrderList extends StatelessWidget {
         : size < 1000000 // 1MB
             ? 1
             : 2;
-    showMemoryInfo() => showDialog(
+    showMemoryInfo() => showAdaptiveDialog(
           context: context,
           builder: (context) {
             return _buildWarningDialog(context, size, level);
@@ -124,45 +136,51 @@ class TransitOrderList extends StatelessWidget {
 
   Widget _buildWarningDialog(BuildContext context, int size, int level) {
     const style = TextStyle(fontWeight: FontWeight.bold);
-    return SimpleDialog(children: [
-      Column(children: [
-        Text(S.transitOrderCapacityTitle(getMemoryWithUnit(size))),
-        const SizedBox(height: 8.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Icon(
-              Icons.check_outlined,
-              weight: level == 0 ? 24.0 : null,
-            ),
-            Icon(
-              Icons.warning_amber_outlined,
-              weight: level == 0 ? 24.0 : null,
-            ),
-            Icon(
-              Icons.dangerous_outlined,
-              weight: level == 0 ? 24.0 : null,
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text('<500KB', style: level == 0 ? style : null),
-            Text('<1MB', style: level == 1 ? style : null),
-            Text('≥1MB', style: level == 2 ? style : null),
-          ],
-        ),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Linkify.fromString([
-            S.transitOrderCapacityContent,
-            if (warning != null) '\n$warning',
-          ].join()),
-        )
-      ]),
-    ]);
+    return AlertDialog(
+      actions: [
+        PopButton(title: MaterialLocalizations.of(context).okButtonLabel),
+      ],
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: Column(children: [
+          Text(S.transitOrderCapacityTitle(getMemoryWithUnit(size))),
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                Icons.check_outlined,
+                weight: level == 0 ? 24.0 : null,
+              ),
+              Icon(
+                Icons.warning_amber_outlined,
+                weight: level == 0 ? 24.0 : null,
+              ),
+              Icon(
+                Icons.dangerous_outlined,
+                weight: level == 0 ? 24.0 : null,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('<500KB', style: level == 0 ? style : null),
+              Text('<1MB', style: level == 1 ? style : null),
+              Text('≥1MB', style: level == 2 ? style : null),
+            ],
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Linkify.fromString([
+              S.transitOrderCapacityContent,
+              if (warning != null) '\n$warning',
+            ].join('')),
+          )
+        ]),
+      ),
+    );
   }
 
   static String getMemoryWithUnit(int size) {

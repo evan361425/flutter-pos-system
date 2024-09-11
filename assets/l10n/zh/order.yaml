@@ -33,14 +33,11 @@ loader:
 catalogList:
   empty: 尚未設定產品種類
 productList:
-  tutorial:
-    title: 開始點餐！
-    content:
-    - |-
-      透過圖片點餐更方便！
-      可以至「設定」>「[每行顯示幾個產品]({link})」調整
-      讓這裡僅使用文字點餐。
-    - link:
+  view:
+    helper:
+    - grid: 圖片
+      list: 列表
+  noIngredient: 無設定成分
 cart:
   action:
     bulkify: 批量操作
@@ -69,13 +66,6 @@ cart:
     free: 招待
     delete: 刪除
   snapshot:
-    tutorial:
-      title: 購物車
-      content: |-
-        為了讓點選產品可以更方便，
-        我們把點餐後的產品設定至於此面板。
-        如果需要一次顯示所有訊息的排版（適合大螢幕），
-        可以至「設定」>「[點餐的外觀]({link})」調整。
     empty: 尚未點餐
   meta:
     totalPrice: 總價：{price}

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/choice_chip_with_help.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
@@ -21,7 +22,7 @@ class _TransitPageState extends State<TransitPage> {
 
   @override
   Widget build(BuildContext context) {
-    final body = ListView(children: [
+    final list = ListView(children: [
       ChoiceChipWithHelp<TransitCatalog>(
         key: selector,
         values: TransitCatalog.values,
@@ -53,23 +54,28 @@ class _TransitPageState extends State<TransitPage> {
         subtitle: Text(S.transitPTDescription),
         onTap: () => _goToStation(context, TransitMethod.plainText),
       ),
+      const SizedBox(height: kFABSpacing),
     ]);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.transitTitle),
-        leading: const PopButton(),
-      ),
-      body: GestureDetector(
-        onHorizontalDragEnd: (details) {
-          selector.currentState?.updateSelectedIndex(
-            details.velocity.pixelsPerSecond.dx,
-          );
-        },
-        // fill the screen to allow drag from white space
-        child: SizedBox(height: double.infinity, child: body),
-      ),
+    // allow scroll as TabView
+    final body = GestureDetector(
+      onHorizontalDragEnd: (details) {
+        selector.currentState?.updateSelectedIndex(
+          details.velocity.pixelsPerSecond.dx,
+        );
+      },
+      // fill the screen to allow drag from white space
+      child: SizedBox(height: double.infinity, child: list),
     );
+
+    return Routes.homeMode.value == HomeMode.bottomNavigationBar
+        ? Scaffold(
+            appBar: AppBar(
+              title: Text(S.transitTitle),
+              leading: const PopButton(),
+            ),
+            body: body,
+          )
+        : body;
   }
 
   void _goToStation(BuildContext context, TransitMethod method) {

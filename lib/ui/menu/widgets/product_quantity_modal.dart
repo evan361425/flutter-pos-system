@@ -41,7 +41,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
   String quantityId = '';
 
   @override
-  String get title => widget.quantity?.name ?? S.menuQuantityTitleCreate;
+  String get title => widget.isNew ? S.menuQuantityTitleCreate : S.menuQuantityTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -52,7 +52,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
         key: const Key('product_quantity.search'),
         text: quantityName,
         labelText: S.menuQuantitySearchLabel,
-        hintText: S.menuQuantitySearchHint,
+        hintText: widget.quantity?.name ?? S.menuQuantitySearchHint,
         validator: Validator.textLimit(S.menuQuantitySearchLabel, 30),
         formValidator: _validateQuantity,
         initData: Quantities.instance.itemList,
@@ -82,7 +82,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
         textInputAction: TextInputAction.next,
         focusNode: _priceFocusNode,
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.loyalty_sharp),
+          prefixIcon: const Icon(Icons.loyalty_outlined),
           labelText: S.menuQuantityAdditionalPriceLabel,
           helperText: S.menuQuantityAdditionalPriceHelper,
           helperMaxLines: 10,
@@ -101,7 +101,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
         focusNode: _costFocusNode,
         onFieldSubmitted: handleFieldSubmit,
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.attach_money_sharp),
+          prefixIcon: const Icon(Icons.attach_money_outlined),
           labelText: S.menuQuantityAdditionalCostLabel,
           helperText: S.menuQuantityAdditionalCostHelper,
           helperMaxLines: 10,
@@ -219,7 +219,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
           // pop off search page
           Navigator.of(context).pop();
           context.pushNamed(
-            Routes.quantityModal,
+            Routes.quantityUpdate,
             pathParameters: {'id': quantity.id},
           );
         },

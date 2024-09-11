@@ -6,16 +6,16 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/image_gallery_page.dart';
 
+import 'test_helpers/breakpoint_mocker.dart';
 import 'test_helpers/file_mocker.dart';
 import 'test_helpers/translator.dart';
 
 void main() {
   Widget createApp(void Function(String?) cb) {
     return MaterialApp.router(
-      routerConfig: GoRouter(routes: [
+      routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
         GoRoute(
           path: '/',
-          routes: Routes.routes,
           builder: (ctx, state) {
             return Scaffold(body: Builder(builder: (context) {
               return TextButton(
@@ -27,7 +27,8 @@ void main() {
               );
             }));
           },
-        )
+        ),
+        ...Routes.getDesiredRoute(0).routes,
       ]),
     );
   }
@@ -37,156 +38,165 @@ void main() {
       return createImage(name, parent: 'menu_image');
     }
 
-    testWidgets('create', (tester) async {
-      String? imagePath;
-      await tester.pumpWidget(createApp((v) => imagePath = v));
+    for (final device in [Device.desktop, Device.mobile]) {
+      group(device.name, () {
+        testWidgets('create', (tester) async {
+          deviceAs(device, tester);
+          String? imagePath;
+          await tester.pumpWidget(createApp((v) => imagePath = v));
 
-      await tester.tap(find.text('go'));
-      await tester.pumpAndSettle();
+          await tester.tap(find.text('go'));
+          await tester.pumpAndSettle();
 
-      // cancel pick
-      mockImagePick(tester, canceled: true);
-      await tester.tap(find.byKey(const Key('empty_body')));
-      await tester.pumpAndSettle();
+          // cancel pick
+          mockImagePick(tester, canceled: true);
+          await tester.tap(find.byKey(const Key('empty_body')));
+          await tester.pumpAndSettle();
 
-      expect(imagePath, isNull);
+          expect(imagePath, isNull);
 
-      // cancel crop
-      mockImagePick(tester);
-      mockImageCropper(canceled: true);
-      await tester.tap(find.byKey(const Key('image_gallery.add')));
-      await tester.pumpAndSettle();
+          // cancel crop
+          mockImagePick(tester);
+          mockImageCropper(canceled: true);
+          await tester.tap(find.byKey(const Key('empty_body')));
+          await tester.pumpAndSettle();
 
-      // select successfully
-      mockImagePick(tester);
-      mockImageCropper();
-      await tester.tap(find.byKey(const Key('image_gallery.add')));
-      await tester.pumpAndSettle();
+          // select successfully
+          mockImagePick(tester);
+          mockImageCropper();
+          await tester.tap(find.byKey(const Key('empty_body')));
+          await tester.pumpAndSettle();
 
-      final pattern = RegExp('menu_image/g[0-9]{8}T[0-9]{12}');
-      expect(pattern.hasMatch(imagePath!), isTrue);
-      expect(XFile('$imagePath-avator').file.existsSync(), isTrue);
-    });
+          final pattern = RegExp('menu_image/g[0-9]{8}T[0-9]{12}');
+          expect(pattern.hasMatch(imagePath!), isTrue);
+          expect(XFile('$imagePath-avator').file.existsSync(), isTrue);
+        });
 
-    testWidgets('pop back', (tester) async {
-      String? result;
-      await createImageAt('0');
+        testWidgets('pop back', (tester) async {
+          deviceAs(device, tester);
+          String? result;
+          await createImageAt('0');
 
-      await tester.pumpWidget(createApp((v) => result = v));
+          await tester.pumpWidget(createApp((v) => result = v));
 
-      await tester.tap(find.text('go'));
-      await tester.pumpAndSettle();
+          await tester.tap(find.text('go'));
+          await tester.pumpAndSettle();
 
-      await tester.longPress(find.byKey(const Key('image_gallery.0')));
-      await tester.pumpAndSettle();
-      expect(find.text(S.imageGallerySelectionTitle), findsOneWidget);
+          await tester.longPress(find.byKey(const Key('image_gallery.0')));
+          await tester.pumpAndSettle();
+          expect(find.text(S.imageGallerySelectionTitle), findsOneWidget);
 
-      // disable selecting
-      await tester.tap(find.byKey(const Key('image_gallery.cancel')));
-      await tester.pumpAndSettle();
-      expect(find.text(S.imageGallerySelectionTitle), findsNothing);
-      expect(find.text('go'), findsNothing);
+          // disable selecting
+          await tester.tap(find.byKey(const Key('image_gallery.cancel')));
+          await tester.pumpAndSettle();
+          expect(find.text(S.imageGallerySelectionTitle), findsNothing);
 
-      // leave
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
-      expect(find.text('go'), findsOneWidget);
-      expect(result, isNull);
-    });
+          // leave
+          await (device == Device.mobile
+              ? tester.tap(find.byKey(const Key('image_gallery.close')))
+              : tester.tapAt(Offset.zero));
+          await tester.pumpAndSettle();
+          expect(find.text('go'), findsOneWidget);
+          expect(result, isNull);
+        });
 
-    testWidgets('select image', (tester) async {
-      String? result;
-      final newImage = await createImageAt('0');
+        testWidgets('select image', (tester) async {
+          deviceAs(device, tester);
+          String? result;
+          final newImage = await createImageAt('0');
 
-      await tester.pumpWidget(createApp((v) => result = v));
+          await tester.pumpWidget(createApp((v) => result = v));
 
-      await tester.tap(find.text('go'));
-      await tester.pumpAndSettle();
+          await tester.tap(find.text('go'));
+          await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('image_gallery.0')));
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('image_gallery.0')));
+          await tester.pumpAndSettle();
 
-      expect(find.text('go'), findsOneWidget);
-      expect(result, equals(newImage));
-    });
+          expect(find.text('go'), findsOneWidget);
+          expect(result, equals(newImage));
+        });
 
-    testWidgets('delete selected', (tester) async {
-      final gallery = GlobalKey<ImageGalleryPageState>();
-      await createImageAt('g20230102030405111');
-      await createImageAt('g20230102030405222');
-      await createImageAt('g20230102030405222-avator');
-      await createImageAt('g20230102030405333');
+        testWidgets('delete selected', (tester) async {
+          deviceAs(device, tester);
+          final gallery = GlobalKey<ImageGalleryPageState>();
+          await createImageAt('g20230102030405111');
+          await createImageAt('g20230102030405222');
+          await createImageAt('g20230102030405222-avator');
+          await createImageAt('g20230102030405333');
 
-      await tester.pumpWidget(MaterialApp(
-        home: ImageGalleryPage(key: gallery),
-      ));
-      await tester.pumpAndSettle();
+          await tester.pumpWidget(MaterialApp(
+            home: ScaffoldMessenger(child: ImageGalleryPage(key: gallery)),
+          ));
+          await tester.pumpAndSettle();
 
-      final selected = gallery.currentState!.selectedImages;
+          final selected = gallery.currentState!.selectedImages;
 
-      await tester.longPress(find.byKey(const Key('image_gallery.0')));
-      await tester.pumpAndSettle();
+          await tester.longPress(find.byKey(const Key('image_gallery.0')));
+          await tester.pumpAndSettle();
 
-      // check selected first
-      expect(find.byKey(const Key('image_gallery.delete')), findsOneWidget);
-      expect(selected.length, equals(1));
-      expect(selected.first, equals(0));
+          // check selected first
+          expect(find.byKey(const Key('image_gallery.delete')), findsOneWidget);
+          expect(selected.length, equals(1));
+          expect(selected.first, equals(0));
 
-      // select second
-      await tester.tap(find.byKey(const Key('image_gallery.1')));
-      await tester.pumpAndSettle();
-      expect(selected.length, equals(2));
-      expect(selected.contains(0), isTrue);
-      expect(selected.contains(1), isTrue);
+          // select second
+          await tester.tap(find.byKey(const Key('image_gallery.1')));
+          await tester.pumpAndSettle();
+          expect(selected.length, equals(2));
+          expect(selected.contains(0), isTrue);
+          expect(selected.contains(1), isTrue);
 
-      // unselect second
-      await tester.tap(find.byKey(const Key('image_gallery.1')));
-      await tester.pumpAndSettle();
-      expect(selected.contains(1), isFalse);
+          // unselect second
+          await tester.tap(find.byKey(const Key('image_gallery.1')));
+          await tester.pumpAndSettle();
+          expect(selected.contains(1), isFalse);
 
-      // cancel by btn
-      await tester.tap(find.byKey(const Key('image_gallery.cancel')));
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('image_gallery.delete')), findsNothing);
+          // cancel by btn
+          await tester.tap(find.byKey(const Key('image_gallery.cancel')));
+          await tester.pumpAndSettle();
+          expect(find.byKey(const Key('image_gallery.delete')), findsNothing);
 
-      // check select second
-      await tester.longPress(find.byKey(const Key('image_gallery.1')));
-      await tester.pumpAndSettle();
-      expect(selected.length, equals(1));
-      expect(selected.first, equals(1));
+          // check select second
+          await tester.longPress(find.byKey(const Key('image_gallery.1')));
+          await tester.pumpAndSettle();
+          expect(selected.length, equals(1));
+          expect(selected.first, equals(1));
 
-      // delete selected
-      await tester.tap(find.byKey(const Key('image_gallery.delete')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
-      await tester.pumpAndSettle();
+          // delete selected
+          await tester.tap(find.byKey(const Key('image_gallery.delete')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
+          await tester.pumpAndSettle();
 
-      // remain others
-      expect(find.byKey(const Key('image_gallery.0')), findsOneWidget);
-      expect(find.byKey(const Key('image_gallery.1')), findsOneWidget);
-      expect(find.byKey(const Key('image_gallery.2')), findsNothing);
+          // remain others
+          expect(find.byKey(const Key('image_gallery.0')), findsOneWidget);
+          expect(find.byKey(const Key('image_gallery.1')), findsOneWidget);
+          expect(find.byKey(const Key('image_gallery.2')), findsNothing);
 
-      expect(
-        gallery.currentState!.images,
-        equals([
-          'menu_image/g20230102030405333',
-          'menu_image/g20230102030405111',
-        ]),
-      );
+          expect(
+            gallery.currentState!.images,
+            equals([
+              'menu_image/g20230102030405333',
+              'menu_image/g20230102030405111',
+            ]),
+          );
 
-      // empty avatar is fine
-      await tester.longPress(find.byKey(const Key('image_gallery.1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('image_gallery.delete')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
-      await tester.pumpAndSettle();
+          // empty avatar is fine
+          await tester.longPress(find.byKey(const Key('image_gallery.1')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('image_gallery.delete')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
+          await tester.pumpAndSettle();
 
-      expect(
-        gallery.currentState!.images,
-        equals(['menu_image/g20230102030405333']),
-      );
-    });
+          expect(
+            gallery.currentState!.images,
+            equals(['menu_image/g20230102030405333']),
+          );
+        });
+      });
+    }
 
     setUpAll(() {
       initializeTranslator();

@@ -15,7 +15,7 @@ void main() {
             delegate: SlidableItemDelegate(
               items: const ['1', '2'],
               deleteValue: 0,
-              tileBuilder: (_, item, int index, __) => Text(item),
+              tileBuilder: (item, int index, __) => Text(item),
               warningContentBuilder: (_, __) => const Text('hi'),
               handleDelete: (_) async => deletionFired = true,
             ),
@@ -40,13 +40,16 @@ void main() {
             delegate: SlidableItemDelegate(
               items: const ['1'],
               deleteValue: 0,
-              tileBuilder: (_, item, int index, actionShower) {
-                return ListTile(title: Text(item), onTap: actionShower);
+              tileBuilder: (item, int index, actorBuilder) {
+                return Builder(builder: (context) {
+                  return ListTile(title: Text(item), onTap: actorBuilder(context));
+                });
               },
               handleDelete: (_) async {},
               actionBuilder: (item) => [
                 const BottomSheetAction<int>(
                   title: Text('Hi'),
+                  leading: Icon(Icons.ac_unit),
                   returnValue: 1,
                 ),
               ],

@@ -73,6 +73,9 @@ product:
   emptyBody: |-
     "Products" are the basic units in the menu, such as:
     "Cheese Burger", "Cola"
+  notSelected:
+  - Please select a category first
+  - When not selecting a category, the product list will not be displayed. This message will be displayed in the product list
   title:
     create: Add Product
     update: Edit Product
@@ -137,7 +140,7 @@ ingredient:
 quantity:
   title:
     create: Add Quantity
-    update: Edit Quantity
+    update: Edit
   meta:
     amount:
     - 'Amount: {amount}'

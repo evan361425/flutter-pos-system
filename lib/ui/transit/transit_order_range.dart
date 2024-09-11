@@ -23,7 +23,7 @@ class _TransitOrderRangeState extends State<TransitOrderRange> {
       title: Text(S.transitOrderMetaRange(range.format(S.localeName))),
       subtitle: Text(S.transitOrderMetaRangeDays(range.duration.inDays)),
       onTap: pickRange,
-      trailing: const Icon(Icons.date_range_sharp),
+      trailing: const Icon(Icons.date_range_outlined),
     );
   }
 

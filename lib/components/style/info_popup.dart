@@ -15,7 +15,7 @@ class InfoPopup extends StatelessWidget {
       triggerMode: TooltipTriggerMode.tap,
       showDuration: const Duration(seconds: 30),
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: const Icon(Icons.help_outline_sharp),
+      child: const Icon(Icons.help_outline_outlined),
     );
   }
 }

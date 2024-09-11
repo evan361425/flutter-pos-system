@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart' show User, FirebaseAuthException;
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -23,12 +23,16 @@ class SignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
+    return StreamBuilder<firebase.User?>(
       stream: Auth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        final user = snapshot.data;
+        User user = User(user: snapshot.data);
+        // if (kDebugMode) {
+        //   user = User(displayName: 'Test');
+        // }
+
         // User is not signed in
-        if (user == null) {
+        if (user.notSignedIn) {
           return const _GoogleSignInButton(key: Key('google_sign_in'));
         }
 
@@ -160,10 +164,24 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
     } catch (e, stack) {
       Log.err(e, 'auth_signin', stack);
       setState(() {
-        error = e is FirebaseAuthException ? e.message : e.toString();
+        error = e is firebase.FirebaseAuthException ? e.message : e.toString();
       });
     } finally {
       if (mounted && !success) setState(() => isLoading = false);
     }
   }
+}
+
+class User {
+  final firebase.User? user;
+
+  final String? _displayName;
+
+  String get displayName => user?.displayName ?? _displayName!;
+
+  final bool notSignedIn;
+
+  User({String? displayName, this.user})
+      : _displayName = displayName,
+        notSignedIn = user == null && displayName == null;
 }

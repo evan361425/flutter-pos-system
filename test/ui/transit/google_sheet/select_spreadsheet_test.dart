@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
@@ -11,6 +12,7 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/google_sheet/sheet_namer.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
@@ -29,15 +31,20 @@ void main() {
     const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
-      return MaterialApp(
-        home: TransitStation(
-          catalog: TransitCatalog.model,
-          method: TransitMethod.googleSheet,
-          exporter: GoogleSheetExporter(
-            sheetsApi: sheetsApi,
-            scopes: gsExporterScopes,
+      return MaterialApp.router(
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => TransitStation(
+              catalog: TransitCatalog.model,
+              method: TransitMethod.googleSheet,
+              exporter: GoogleSheetExporter(
+                sheetsApi: sheetsApi,
+                scopes: gsExporterScopes,
+              ),
+            ),
           ),
-        ),
+        ]),
       );
     }
 

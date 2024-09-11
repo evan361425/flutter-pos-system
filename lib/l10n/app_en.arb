@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-07-08T13:16:38.533669Z",
+  "@@last_modified": "2024-09-11T07:30:16.339769Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -38,24 +38,6 @@
     }
   },
   "settingLanguageTitle": "Language",
-  "settingOrderOutlookTitle": "Ordering Outlook",
-  "settingOrderOutlookName": "{name, select, slidingPanel{Sliding Panel} singleView{Classic Mode} other{UNKNOWN}}",
-  "@settingOrderOutlookName": {
-    "description": "Appearance during ordering",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "settingOrderOutlookTip": "{name, select, slidingPanel{Panel slides up during ordering, suitable for small-screen phones} singleView{All info displayed on a single screen, suitable for large-screen tablets} other{UNKNOWN}}",
-  "@settingOrderOutlookTip": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "settingCheckoutWarningTitle": "Cash Registry Warnings",
   "settingCheckoutWarningName": "{name, select, showAll{Show All} onlyNotEnough{Show Only When Not Enough} hideAll{Hide All} other{UNKNOWN}}",
   "@settingCheckoutWarningName": {
@@ -74,9 +56,6 @@
       }
     }
   },
-  "settingOrderProductCountTitle": "Products per Row during Ordering",
-  "settingOrderProductCountHint": "Set to \"0\" to display only text during ordering",
-  "settingOrderProductCountMinLabel": "Text Only",
   "settingOrderAwakeningTitle": "Keep Screen On During Ordering",
   "@settingOrderAwakeningTitle": {
     "description": "Keep the screen on during ordering, even when idle"
@@ -125,7 +104,7 @@
   "stockIngredientAmountLabel": "Current Amount",
   "stockIngredientAmountMaxLabel": "Maximum Amount",
   "stockIngredientAmountMaxHelper": "Setting this value helps you see how much of the ingredient is being used.\nLeave blank or don't fill it in, and the value will automatically be set each time inventory is increased.",
-  "stockIngredientRestockTitle": "The amount of ingredient you can restock each time.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"\nThis helps you quickly restock by price.",
+  "stockIngredientRestockTitle": "The amount of ingredient you can restock each time.\nFor example, if 30 units of cheese cost 100 dollars,\nfill in \"30\" for \"Restock Unit\" and \"100\" for \"Restock Price.\"\n\nThis helps you quickly restock by price.",
   "stockIngredientRestockPriceLabel": "Restock Price",
   "stockIngredientRestockQuantityLabel": "Restock Unit",
   "stockIngredientRestockDialogTitle": "Each {quantity} costs {price} dollars",
@@ -159,27 +138,27 @@
   "@stockIngredientRestockDialogPriceOldAmount": {
     "description": "The original amount before the restock"
   },
-  "stockReplenishmentButton": "Purchase",
+  "stockReplenishmentButton": "Replenish",
   "stockReplenishmentEmptyBody": "Purchasing helps you quickly adjust ingredient inventory",
-  "stockReplenishmentTitleList": "Purchase List",
-  "stockReplenishmentTitleCreate": "Add Purchase",
-  "stockReplenishmentTitleUpdate": "Edit Purchase",
+  "stockReplenishmentTitleList": "Replenishment",
+  "stockReplenishmentTitleCreate": "Add Replenishment",
+  "stockReplenishmentTitleUpdate": "Edit Replenishment",
   "stockReplenishmentMetaAffect": "Affects {count} Ingredients",
   "@stockReplenishmentMetaAffect": {
-    "description": "Indicates in the purchase list how many ingredients are affected",
+    "description": "Indicates in the replenishment list how many ingredients are affected",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "stockReplenishmentNever": "Never Purchased",
+  "stockReplenishmentNever": "Never Replenished",
   "@stockReplenishmentNever": {
     "description": "The stock page displays the last replenishment time; if never replenished, this text is set"
   },
-  "stockReplenishmentApplyButton": "Apply Purchase",
+  "stockReplenishmentApplyPreview": "Preview",
   "stockReplenishmentApplyConfirmButton": "Apply",
-  "stockReplenishmentApplyConfirmTitle": "Apply Purchase?",
+  "stockReplenishmentApplyConfirmTitle": "Apply Replenishment?",
   "stockReplenishmentApplyConfirmColumn": "{value, select, name{Name} amount{Amount} other{UNKNOWN}}",
   "@stockReplenishmentApplyConfirmColumn": {
     "placeholders": {
@@ -189,15 +168,15 @@
     }
   },
   "stockReplenishmentApplyConfirmHint": "After apply, following ingredients will be adjusted",
-  "stockReplenishmentTutorialTitle": "Ingredient Purchases",
-  "stockReplenishmentTutorialContent": "Through purchases, you no longer need to set the inventory of each ingredient one by one.\nSet up purchases now and adjust multiple ingredients at once!",
-  "stockReplenishmentNameLabel": "Purchase Name",
-  "stockReplenishmentNameHint": "e.g., Costco Purchase",
-  "stockReplenishmentNameErrorRepeat": "Purchase name already exists",
+  "stockReplenishmentTutorialTitle": "Replenishment",
+  "stockReplenishmentTutorialContent": "Through Replenishment, you no longer need to set the inventory of each ingredient one by one.\nSet up Replenishment now and adjust multiple ingredients at once!",
+  "stockReplenishmentNameLabel": "Replenishment Name",
+  "stockReplenishmentNameHint": "e.g., Costco Shopping",
+  "stockReplenishmentNameErrorRepeat": "Replenishment name already exists",
   "stockReplenishmentIngredientsDivider": "Ingredients",
   "stockReplenishmentIngredientsHelper": "Click to set the quantity of different ingredients to be purchased",
   "stockReplenishmentIngredientAmountHint": "Set the amount to increase/decrease",
-  "stockQuantityTitle": "Quantity",
+  "stockQuantityTitle": "Quantities",
   "stockQuantityDescription": "Half Sugar, Low Sugar, etc.",
   "stockQuantityTitleCreate": "Add Quantity",
   "stockQuantityTitleUpdate": "Edit Quantity",
@@ -1014,6 +993,7 @@
       }
     }
   },
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
   "dialogDeletionTitle": "Delete Confirmation",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1169,7 +1149,7 @@
   "@orderAttributeHeaderInfo": {
     "description": "Displayed on the upper rectangle in homepage"
   },
-  "orderAttributeTutorialTitle": "Customer Settings",
+  "orderAttributeTutorialTitle": "Create Your Customer Settings",
   "orderAttributeTutorialContent": "This is where you set customer information, such as dine-in, takeout, office worker, etc.\nThis information helps us track who comes to consume and make better business strategies.",
   "orderAttributeTutorialCreateExample": "Help create an example to test.",
   "orderAttributeExampleAge": "Age",
@@ -1217,19 +1197,19 @@
   "orderAttributeNameHint": "e.g., Age",
   "orderAttributeNameErrorRepeat": "Name already exists",
   "orderAttributeOptionTitleCreate": "Add Option",
-  "orderAttributeOptionTitleCreateWith": "Add option for {name}",
-  "@orderAttributeOptionTitleCreateWith": {
+  "orderAttributeOptionTitleUpdate": "Edit Option",
+  "orderAttributeOptionTitleReorder": "Reorder Options",
+  "orderAttributeOptionMetaDefault": "Default",
+  "orderAttributeOptionMetaOptionOf": "option of {name}",
+  "@orderAttributeOptionMetaOptionOf": {
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "orderAttributeOptionTitleUpdate": "Edit Option",
-  "orderAttributeOptionTitleReorder": "Reorder Options",
-  "orderAttributeOptionMetaDefault": "Default",
   "orderAttributeOptionNameLabel": "Option Name",
-  "orderAttributeOptionNameHelper": "For example, possible options for age include:\n- Under 20\n- 20 to 30",
+  "orderAttributeOptionNameHelper": "For 'age', possible options are:\n- ⇣ 20\n- 20 ⇢ 30",
   "orderAttributeOptionNameErrorRepeat": "Name already exists",
   "orderAttributeOptionModeTitle": "Option Mode",
   "orderAttributeOptionModeHelper": "{name, select, statOnly{No need to set \"Discount\" or \"Price Change\" because this setting is \"Normal\"} changePrice{Selecting this option during ordering will apply this price change} changeDiscount{Selecting this option during ordering will apply this discount} other{UNKNOWN}}",
@@ -1359,6 +1339,10 @@
     "description": "Displayed on the upper rectangle in homepage"
   },
   "menuProductEmptyBody": "\"Products\" are the basic units in the menu, such as:\n\"Cheese Burger\", \"Cola\"",
+  "menuProductNotSelected": "Please select a category first",
+  "@menuProductNotSelected": {
+    "description": "When not selecting a category, the product list will not be displayed. This message will be displayed in the product list"
+  },
   "menuProductTitleCreate": "Add Product",
   "menuProductTitleUpdate": "Edit Product",
   "menuProductTitleReorder": "Reorder Products",
@@ -1429,7 +1413,7 @@
   "menuIngredientAmountLabel": "Amount Used",
   "menuIngredientAmountHelper": "Default amount used.\nIf customers are able to adjust the amount,\nset different quantities in \"Quantity.\"",
   "menuQuantityTitleCreate": "Add Quantity",
-  "menuQuantityTitleUpdate": "Edit Quantity",
+  "menuQuantityTitleUpdate": "Edit",
   "menuQuantityMetaAmount": "Amount: {amount}",
   "@menuQuantityMetaAmount": {
     "placeholders": {
@@ -1558,8 +1542,8 @@
   "cashierChangerCustomCountLabel": "Quantity",
   "cashierChangerCustomUnitLabel": "Currency",
   "cashierChangerCustomUnitAddBtn": "Add Currency",
-  "cashierChangerCustomDividerFrom": "Withdraw from Cash Register",
-  "cashierChangerCustomDividerTo": "Exchange",
+  "cashierChangerCustomDividerFrom": "Take",
+  "cashierChangerCustomDividerTo": "Exchange to",
   "cashierSurplusTitle": "Surplus",
   "cashierSurplusButton": "Surplus",
   "cashierSurplusTutorialTitle": "Daily Surplus",
@@ -1635,15 +1619,11 @@
   },
   "orderLoaderEmpty": "No order records found",
   "orderCatalogListEmpty": "No product categories set yet",
-  "orderProductListTutorialTitle": "Start Ordering!",
-  "orderProductListTutorialContent": "Ordering through images is more convenient!\nYou can go to \"Settings\" > \"[Items Per Row]({link})\" to adjust\nand allow text-only ordering here.",
-  "@orderProductListTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
+  "orderProductListViewHelper": "{name, select, grid{Grid} list{List} other{UNKNOWN}}",
+  "@orderProductListViewHelper": {
+    "description": "Product list display mode"
   },
+  "orderProductListNoIngredient": "No ingredients",
   "orderCartActionBulkify": "Bulk Actions",
   "orderCartActionToggle": "Toggle",
   "orderCartActionSelectAll": "Select All",
@@ -1663,15 +1643,6 @@
   "orderCartActionChangeCountSuffix": "items",
   "orderCartActionFree": "Free",
   "orderCartActionDelete": "Delete",
-  "orderCartSnapshotTutorialTitle": "Cart",
-  "orderCartSnapshotTutorialContent": "To make selecting products more convenient,\nwe've placed the products you've ordered here.\nIf you need a layout that shows all information at once (suitable for large screens),\ngo to \"Settings\" > \"[Ordering Layout]({link})\" to adjust.",
-  "@orderCartSnapshotTutorialContent": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
-  },
   "orderCartSnapshotEmpty": "No items in cart",
   "orderCartMetaTotalPrice": "Price: {price}",
   "@orderCartMetaTotalPrice": {
@@ -1868,7 +1839,7 @@
   "analysisGoalsProfitTitle": "Profit",
   "analysisGoalsProfitDescription": "Profit is the balance after deducting operating costs from operating income and is crucial for the company's ongoing operations.\nProfit directly reflects operational efficiency and cost management capabilities.\nUnlike revenue, profit considers the business expenses, including raw material costs, labor, rent, etc.\nIt's a more practical indicator that helps you evaluate the effectiveness and sustainability of operations.",
   "analysisGoalsCostTitle": "Cost",
-  "analysisGoalsAchievedRate": "Profit Achievement\n{rate}",
+  "analysisGoalsAchievedRate": "Profit Goal\n{rate}",
   "@analysisGoalsAchievedRate": {
     "placeholders": {
       "rate": {
@@ -1878,6 +1849,7 @@
   },
   "analysisChartTitle": "Chart Analysis",
   "analysisChartTitleCreate": "Create Chart",
+  "analysisChartTitleUpdate": "Edit Chart",
   "analysisChartTitleReorder": "Reorder Charts",
   "analysisChartTutorialTitle": "Chart Analysis",
   "analysisChartTutorialContent": "With charts, you can visualize data changes more intuitively.\nStart designing charts to track your sales performance now!",

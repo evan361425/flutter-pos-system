@@ -109,12 +109,12 @@ void main() {
       return ChangeNotifierProvider.value(
         value: Cart.instance,
         child: MaterialApp.router(
-          routerConfig: GoRouter(routes: [
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
               builder: (_, __) => const OrderPage(),
-              routes: Routes.routes,
             ),
+            ...Routes.getDesiredRoute(0).routes,
           ]),
         ),
       );

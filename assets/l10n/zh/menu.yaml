@@ -64,6 +64,8 @@ product:
   emptyBody: |-
     「產品」是菜單裡的基本單位，例如：
     「起司漢堡」、「可樂」
+  notSelected:
+  - 請先選擇產品種類
   title:
     create: 新增產品
     update: 編輯產品
@@ -110,7 +112,7 @@ ingredient:
 quantity:
   title:
     create: 新增份量
-    update: 編輯份量
+    update: 編輯
   meta:
     amount: 使用量：{amount}
     additionalPrice: 額外售價：{price}

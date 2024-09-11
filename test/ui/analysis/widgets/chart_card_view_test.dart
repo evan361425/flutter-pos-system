@@ -33,14 +33,14 @@ void main() {
         range: range ?? ValueNotifier(Util.getDateRange()),
       );
       return MaterialApp.router(
-        routerConfig: GoRouter(routes: [
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
-            routes: Routes.routes,
             builder: (ctx, state) {
               return Scaffold(body: view);
             },
           ),
+          ...Routes.getDesiredRoute(0).routes,
         ]),
       );
     }

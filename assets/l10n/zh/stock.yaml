@@ -63,7 +63,7 @@ replenishment:
     affect: 會影響 {count} 項成分
   never: 尚未補貨過
   apply:
-    button: 套用採購
+    preview: 預覽
     confirm:
       button: 套用
       title: 套用採購？

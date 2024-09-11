@@ -14,12 +14,12 @@ int _hashMonth(DateTime e) => e.month + e.year * 100;
 class HistoryCalendarView extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  final bool isPortrait;
+  final bool shouldFillViewport;
 
   const HistoryCalendarView({
     super.key,
     required this.notifier,
-    required this.isPortrait,
+    required this.shouldFillViewport,
   });
 
   @override
@@ -49,7 +49,7 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
         lastDay: DateTime.now(),
         focusedDay: _focusedDay,
         calendarFormat: _calendarFormat,
-        shouldFillViewport: widget.isPortrait ? false : true,
+        shouldFillViewport: widget.shouldFillViewport,
         startingDayOfWeek: StartingDayOfWeek.monday,
         rangeSelectionMode: RangeSelectionMode.disabled,
         locale: LanguageSetting.instance.language.locale.toString(),

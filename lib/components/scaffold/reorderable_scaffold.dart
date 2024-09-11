@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
@@ -27,63 +28,65 @@ class ReorderableScaffold<T extends ModelOrderable> extends StatefulWidget {
 class _ReorderableScaffoldState<T extends ModelOrderable> extends State<ReorderableScaffold<T>> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const PopButton(),
-        actions: [
-          TextButton(
-            key: const Key('reorder.save'),
-            onPressed: () async {
-              await widget.handleSubmit(widget.items);
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+    Widget child = ReorderableList(
+      itemCount: widget.items.length,
+      onReorder: _handleReorder,
+      onReorderStart: (int index) => HapticFeedback.lightImpact(),
+      onReorderEnd: (int index) => HapticFeedback.lightImpact(),
+      itemBuilder: (BuildContext context, int index) {
+        final item = widget.items[index];
+
+        // delayed drag let it able to scroll
+        return ReorderableDelayedDragStartListener(
+          key: Key('reorder.$index'), // required for reorder
+          index: index,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 1.0),
+            child: Material(
+              elevation: 1.0,
+              child: ListTile(
+                title: Text(item.name),
+                trailing: ReorderableDragStartListener(
+                  index: index,
+                  child: const Icon(Icons.reorder_outlined),
+                ),
+              ),
+            ),
           ),
-        ],
-        title: Text(widget.title),
+        );
+      },
+    );
+    final size = MediaQuery.sizeOf(context);
+    if (size.width > Breakpoint.medium.max) {
+      child = SizedBox(
+        width: Breakpoint.compact.max,
+        child: child,
+      );
+    }
+    return ResponsiveDialog(
+      title: Text(widget.title),
+      scrollable: false,
+      action: TextButton(
+        key: const Key('reorder.save'),
+        onPressed: () async {
+          await widget.handleSubmit(widget.items);
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
       ),
-      body: Column(
+      content: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(kSpacing0),
+              padding: const EdgeInsets.only(top: kTopSpacing, bottom: kInternalSpacing),
               child: HintText(S.totalCount(widget.items.length)),
             ),
           ),
-          Expanded(
-            child: ReorderableList(
-              itemCount: widget.items.length,
-              onReorder: _handleReorder,
-              onReorderStart: (int index) => HapticFeedback.lightImpact(),
-              onReorderEnd: (int index) => HapticFeedback.lightImpact(),
-              itemBuilder: (BuildContext context, int index) {
-                final item = widget.items[index];
-
-                // delayed drag let it able to scroll
-                return ReorderableDelayedDragStartListener(
-                  key: Key('reorder.$index'), // required for reorder
-                  index: index,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 1.0),
-                    child: Material(
-                      elevation: 1.0,
-                      child: ListTile(
-                        title: Text(item.name),
-                        trailing: ReorderableDragStartListener(
-                          index: index,
-                          child: const Icon(Icons.reorder_sharp),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          Expanded(child: child),
         ],
       ),
     );

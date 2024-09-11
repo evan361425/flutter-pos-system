@@ -4,105 +4,100 @@ import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/buttons.dart';
-import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
 
-class OrderAttributeList extends StatelessWidget {
-  final List<OrderAttribute> attributes;
+class OrderAttributeTile extends StatelessWidget {
+  final OrderAttribute attr;
 
-  const OrderAttributeList(this.attributes, {super.key});
+  const OrderAttributeTile({super.key, required this.attr});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: <Widget>[
-      const SizedBox(height: 8.0),
-      Center(child: HintText(S.totalCount(attributes.length))),
-      const SizedBox(height: 8.0),
-      for (final attribute in attributes)
-        ChangeNotifierProvider<OrderAttribute>.value(
-          value: attribute,
-          child: const _OrderAttributeCard(),
-        ),
-      // Floating action button offset
-      const SizedBox(height: 72.0),
-    ]);
+    return ListenableBuilder(
+      listenable: attr,
+      builder: (context, child) => _buildTile(context),
+    );
   }
-}
 
-class _OrderAttributeCard extends StatelessWidget {
-  const _OrderAttributeCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final attr = context.watch<OrderAttribute>();
-    final mode = S.orderAttributeModeName(attr.mode.name);
+  Widget _buildTile(BuildContext context) {
     final key = 'order_attributes.${attr.id}';
     final theme = Theme.of(context);
+    final subtitle = RichText(
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        children: [
+          TextSpan(text: S.orderAttributeMetaMode(S.orderAttributeModeName(attr.mode.name))),
+          MetaBlock.span(),
+          attr.defaultOption?.name != null
+              ? TextSpan(text: S.orderAttributeMetaDefault(attr.defaultOption!.name))
+              : TextSpan(text: S.orderAttributeMetaDefault(''), children: [
+                  TextSpan(
+                    text: S.orderAttributeMetaNoDefault,
+                    style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                  ),
+                ]),
+        ],
+        // disable parent text style
+        style: theme.textTheme.bodyMedium,
+      ),
+    );
 
     return ExpansionTile(
       key: Key(key),
       title: Text(attr.name),
-      subtitle: RichText(
-        overflow: TextOverflow.ellipsis,
-        text: TextSpan(
-          children: [
-            TextSpan(text: S.orderAttributeMetaMode(mode)),
-            MetaBlock.span(),
-            attr.defaultOption?.name != null
-                ? TextSpan(text: S.orderAttributeMetaDefault(attr.defaultOption!.name))
-                : TextSpan(text: S.orderAttributeMetaDefault(''), children: [
-                    TextSpan(
-                      text: S.orderAttributeMetaNoDefault,
-                      style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
-                    ),
-                  ]),
-          ],
-          // disable parent text style
-          style: theme.textTheme.bodyMedium,
-        ),
-      ),
+      subtitle: subtitle,
       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        ListTile(
-          key: Key('$key.add'),
-          leading: const CircleAvatar(child: Icon(KIcons.add)),
-          title: Text(S.orderAttributeOptionTitleCreate),
-          onTap: () => context.pushNamed(
-            Routes.orderAttrNew,
-            queryParameters: {'id': attr.id},
-          ),
-          trailing: EntryMoreButton(
-            key: Key('$key.more'),
-            onPressed: () => showActions(context, attr),
-          ),
-        ),
+        _buildActions(context),
+        const SizedBox(height: kInternalLargeSpacing),
         for (final item in attr.itemList) _OptionTile(item),
       ],
     );
   }
 
-  void showActions(BuildContext context, OrderAttribute attr) {
-    BottomSheetActions.withDelete<int>(
+  Widget _buildActions(BuildContext context) {
+    return Row(children: [
+      Expanded(
+        child: ElevatedButton.icon(
+          key: Key('order_attributes.${attr.id}.add'),
+          onPressed: () => context.pushNamed(
+            Routes.orderAttrCreate,
+            queryParameters: {'id': attr.id},
+          ),
+          label: Text(S.orderAttributeOptionTitleCreate),
+          icon: const Icon(KIcons.add),
+        ),
+      ),
+      const SizedBox(width: kInternalSpacing),
+      EntryMoreButton(
+        key: Key('order_attributes.${attr.id}.more'),
+        onPressed: _showActions,
+      ),
+    ]);
+  }
+
+  void _showActions(BuildContext context) async {
+    await BottomSheetActions.withDelete<int>(
       context,
       deleteValue: 0,
       actions: <BottomSheetAction<int>>[
         BottomSheetAction(
           title: Text(S.orderAttributeTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.orderAttrModal,
+          route: Routes.orderAttrUpdate,
           routePathParameters: {'id': attr.id},
         ),
         BottomSheetAction(
           title: Text(S.orderAttributeOptionTitleReorder),
           leading: const Icon(KIcons.reorder),
-          route: Routes.orderAttrOptionReorder,
+          route: Routes.orderAttrReorderOption,
           routePathParameters: {'id': attr.id},
         ),
       ],
@@ -135,7 +130,7 @@ class _OptionTile extends StatelessWidget {
           deleteCallback: _remove,
         ),
         onTap: () => context.pushNamed(
-          Routes.orderAttrModal,
+          Routes.orderAttrUpdate,
           pathParameters: {'id': option.attribute.id},
           queryParameters: {'oid': option.id},
         ),

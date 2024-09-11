@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -36,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
               child: PopupMenuButton<TransitMethod>(
                 key: const Key('history.export'),
-                icon: const Icon(Icons.upload_file_sharp),
+                icon: const Icon(Icons.upload_file_outlined),
                 tooltip: S.analysisHistoryExportBtn,
                 itemBuilder: (context) => TransitMethod.values
                     .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
@@ -56,9 +57,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
           ],
         ),
-        body: OrientationBuilder(
-          builder: (context, orientation) => orientation == Orientation.portrait ? _buildPortrait() : _buildLandscape(),
-        ),
+        body: MediaQuery.sizeOf(context).width <= Breakpoint.medium.max ? _buildSingleColumn() : _buildTwoColumns(),
       ),
     );
   }
@@ -75,14 +74,36 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
-  Widget _buildCalendar({required bool isPortrait}) {
+  Widget _buildTwoColumns() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: _buildCalendar(shouldFillViewport: true)),
+        Expanded(child: _buildOrderList()),
+      ],
+    );
+  }
+
+  Widget _buildSingleColumn() {
+    return Column(children: [
+      PhysicalModel(
+        elevation: 5,
+        color: Theme.of(context).colorScheme.surface,
+        shadowColor: Colors.transparent,
+        child: _buildCalendar(shouldFillViewport: false),
+      ),
+      Expanded(child: _buildOrderList()),
+    ]);
+  }
+
+  Widget _buildCalendar({required bool shouldFillViewport}) {
     return Tutorial(
       id: 'history.calendar',
       title: S.analysisHistoryCalendarTutorialTitle,
       message: S.analysisHistoryCalendarTutorialContent,
       spotlightBuilder: const SpotlightRectBuilder(),
       child: HistoryCalendarView(
-        isPortrait: isPortrait,
+        shouldFillViewport: shouldFillViewport,
         notifier: notifier,
       ),
     );
@@ -90,27 +111,5 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildOrderList() {
     return HistoryOrderList(notifier: notifier);
-  }
-
-  Widget _buildLandscape() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: _buildCalendar(isPortrait: false)),
-        Expanded(child: _buildOrderList()),
-      ],
-    );
-  }
-
-  Widget _buildPortrait() {
-    return Column(children: [
-      PhysicalModel(
-        elevation: 5,
-        color: Theme.of(context).colorScheme.surface,
-        shadowColor: Colors.transparent,
-        child: _buildCalendar(isPortrait: true),
-      ),
-      Expanded(child: _buildOrderList()),
-    ]);
   }
 }

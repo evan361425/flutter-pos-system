@@ -63,6 +63,7 @@ chart:
   _title:
     $prefix: title
     create: 新增圖表
+    update: 編輯圖表
     reorder: 排序圖表
   tutorial:
     title: 圖表分析

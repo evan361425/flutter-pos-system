@@ -13,12 +13,13 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/ui/menu/menu_page.dart';
 import 'package:provider/provider.dart';
 
-import '../../test_helpers/file_mocker.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
   Widget buildApp({String? popImage}) {
+    final baseRoute = Routes.getDesiredRoute(0).routes[0] as GoRoute;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<Stock>.value(value: Stock()),
@@ -26,9 +27,10 @@ void main() {
         ChangeNotifierProvider<Menu>.value(value: Menu.instance)
       ],
       child: MaterialApp.router(
-        routerConfig: GoRouter(routes: [
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
+            builder: (_, __) => const MenuPage(),
             routes: [
               GoRoute(
                 name: Routes.imageGallery,
@@ -38,10 +40,13 @@ void main() {
                   child: const Text('tap me'),
                 ),
               ),
-              ...Routes.routes.where((e) => e.name != Routes.imageGallery),
             ],
-            builder: (_, __) => const MenuPage(),
-          )
+          ),
+          GoRoute(
+            path: baseRoute.path,
+            redirect: baseRoute.redirect,
+            routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
+          ),
         ]),
       ),
     );
@@ -73,7 +78,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // navigate to product screen
-      expect(find.byKey(const Key('product.add')), findsOneWidget);
+      expect(find.byKey(const Key('menu.add_product')), findsOneWidget);
 
       final product = catalog.items.first;
       expect(product.name, equals('name'));
@@ -101,7 +106,7 @@ void main() {
       await tester.tap(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('product.add')), findsOneWidget);
+      expect(find.byKey(const Key('menu.add_product')), findsOneWidget);
     });
 
     testWidgets('Edit product', (WidgetTester tester) async {
@@ -122,7 +127,7 @@ void main() {
 
       await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.text_fields_sharp));
+      await tester.tap(find.byIcon(KIcons.modal));
       await tester.pumpAndSettle();
 
       // save failed
@@ -179,7 +184,7 @@ void main() {
       await tester.tap(find.byIcon(KIcons.reorder));
       await tester.pumpAndSettle();
 
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
+      await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
 
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();

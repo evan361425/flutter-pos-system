@@ -107,13 +107,12 @@ class _ExportBasicViewState extends State<ExportBasicView> {
   void previewData(SheetType type) {
     const formatter = GoogleSheetFormatter();
     final able = Formatter.nameToFormattable(type.name);
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => SheetPreviewPage(
-          source: SheetPreviewerDataTableSource(formatter.getRows(able)),
-          header: formatter.getHeader(able),
-          title: S.transitModelName(able.name),
-        ),
+    showAdaptiveDialog(
+      context: context,
+      builder: (_) => SheetPreviewPage(
+        source: SheetPreviewerDataTableSource(formatter.getRows(able)),
+        header: formatter.getHeader(able),
+        title: S.transitModelName(able.name),
       ),
     );
   }

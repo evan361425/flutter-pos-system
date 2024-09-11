@@ -43,7 +43,7 @@ class HistoryOrderList extends StatelessWidget {
       ),
       subtitle: subtitle,
       onTap: () => context.pushNamed(
-        Routes.historyModal,
+        Routes.historyOrder,
         pathParameters: {'id': order.id?.toString() ?? ''},
       ),
     );

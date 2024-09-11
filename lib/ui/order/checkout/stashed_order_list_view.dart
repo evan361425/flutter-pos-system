@@ -73,7 +73,7 @@ class StashedOrderListView extends StatelessWidget {
         key: Key('stashed_order.${order.id}'),
         title: Text(title),
         subtitle: MetaBlock.withString(context, products, emptyText: S.orderCheckoutStashNoProducts),
-        trailing: MoreButton(onPressed: () => _showActions(context, order)),
+        trailing: MoreButton(onPressed: (context) => _showActions(context, order)),
         onTap: () => _act(_Action.checkout, context, order),
         onLongPress: () => _showActions(context, order),
       ),
@@ -86,12 +86,12 @@ class StashedOrderListView extends StatelessWidget {
       actions: [
         BottomSheetAction(
           title: Text(S.orderCheckoutStashActionCheckout),
-          leading: const Icon(Icons.price_check_sharp),
+          leading: const Icon(Icons.price_check_outlined),
           returnValue: _Action.checkout,
         ),
         BottomSheetAction(
           title: Text(S.orderCheckoutStashActionRestore),
-          leading: const Icon(Icons.file_upload),
+          leading: const Icon(Icons.file_upload_outlined),
           returnValue: _Action.restore,
         ),
       ],

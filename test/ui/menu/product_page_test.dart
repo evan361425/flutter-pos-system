@@ -19,11 +19,13 @@ import 'package:possystem/ui/menu/product_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
   Widget buildApp(Product product, {String? popImage, WidgetBuilder? home}) {
+    final baseRoute = Routes.getDesiredRoute(0).routes[0] as GoRoute;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<Stock>.value(value: Stock.instance),
@@ -32,9 +34,10 @@ void main() {
       child: MaterialApp.router(
         darkTheme: ThemeData.dark(),
         themeMode: ThemeMode.dark,
-        routerConfig: GoRouter(routes: [
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
+            builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
             routes: [
               GoRoute(
                 name: Routes.imageGallery,
@@ -44,95 +47,104 @@ void main() {
                   child: const Text('tap me'),
                 ),
               ),
-              ...Routes.routes.where((e) => e.name != Routes.imageGallery),
             ],
-            builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
-          )
+          ),
+          GoRoute(
+            path: baseRoute.path,
+            redirect: baseRoute.redirect,
+            routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
+          ),
         ]),
       ),
     );
   }
 
   group('Product Page', () {
-    testWidgets('Reorder Ingredients', (WidgetTester tester) async {
-      Stock().replaceItems({
-        'p-1': Ingredient(id: 'p-1', name: 'p-1'),
-        'p-2': Ingredient(id: 'p-2', name: 'p-2'),
-        'p-3': Ingredient(id: 'p-3', name: 'p-3'),
+    for (final device in [Device.desktop, Device.mobile]) {
+      group(device.name, () {
+        testWidgets('Edit image', (WidgetTester tester) async {
+          deviceAs(device, tester);
+          final newImage = await createImage('test-image');
+          final product = Product(id: 'p-1', imagePath: 'wrong-path');
+          final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
+            'p-1': product,
+          })
+            ..prepareItem();
+          Menu().replaceItems({'c': catalog});
+          Stock();
+          Quantities();
+
+          await tester.pumpWidget(buildApp(product, popImage: newImage));
+
+          await tester.tap(find.byKey(const Key('product.more')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(Icons.image_outlined));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('tap me'));
+          await tester.pumpAndSettle();
+
+          // wait to failed loading image
+          await tester.pump(const Duration(milliseconds: 500));
+          final captured = verify(storage.set(any, captureAny)).captured;
+          expect(captured.length, equals(2));
+          expect(
+            captured[0],
+            predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == null),
+          );
+          expect(
+            captured[1],
+            predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == newImage),
+          );
+
+          expect(product.imagePath, equals(newImage));
+        });
+
+        testWidgets('Reorder Ingredients', (WidgetTester tester) async {
+          deviceAs(device, tester);
+          Stock().replaceItems({
+            'p-1': Ingredient(id: 'p-1', name: 'p-1'),
+            'p-2': Ingredient(id: 'p-2', name: 'p-2'),
+            'p-3': Ingredient(id: 'p-3', name: 'p-3'),
+          });
+          Quantities();
+          final p1 = ProductIngredient(id: 'p-1', name: 'p-1', index: 1, ingredient: Stock.instance.getItem('p-1'));
+          final p2 = ProductIngredient(id: 'p-2', name: 'p-2', index: 2, ingredient: Stock.instance.getItem('p-2'));
+          final p = Product(id: 'p', name: 'p', ingredients: {
+            'p-1': p1,
+            'p-2': p2,
+            'p-3': ProductIngredient(id: 'p-3', name: 'p-3', index: 3, ingredient: Stock.instance.getItem('p-3')),
+          });
+          final catalog = Catalog(id: 'c', products: {'p': p..prepareItem()})..prepareItem();
+          Menu().replaceItems({'c': catalog});
+
+          await tester.pumpWidget(buildApp(p));
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.byKey(const Key('product.more')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(KIcons.reorder).last);
+          await tester.pumpAndSettle();
+
+          await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
+
+          await tester.tap(find.byKey(const Key('reorder.save')));
+          await tester.pumpAndSettle();
+
+          final y1 = tester.getCenter(find.byKey(const Key('product_ingredient.p-1'))).dy;
+          final y2 = tester.getCenter(find.byKey(const Key('product_ingredient.p-2'))).dy;
+          final itemList = p.itemList;
+          expect(y1, greaterThan(y2));
+          expect(itemList[0].id, equals('p-2'));
+          expect(itemList[1].id, equals('p-1'));
+          expect(itemList[2].id, equals('p-3'));
+
+          verify(storage.set(
+            any,
+            argThat(equals({'${p1.prefix}.index': 2, '${p2.prefix}.index': 1})),
+          ));
+        });
       });
-      Quantities();
-      final p1 = ProductIngredient(id: 'p-1', name: 'p-1', index: 1, ingredient: Stock.instance.getItem('p-1'));
-      final p2 = ProductIngredient(id: 'p-2', name: 'p-2', index: 2, ingredient: Stock.instance.getItem('p-2'));
-      final p = Product(id: 'p', name: 'p', ingredients: {
-        'p-1': p1,
-        'p-2': p2,
-        'p-3': ProductIngredient(id: 'p-3', name: 'p-3', index: 3, ingredient: Stock.instance.getItem('p-3')),
-      });
-      final catalog = Catalog(id: 'c', products: {'p': p..prepareItem()})..prepareItem();
-      Menu().replaceItems({'c': catalog});
-
-      await tester.pumpWidget(buildApp(p));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('item_more_action')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.reorder));
-      await tester.pumpAndSettle();
-
-      await tester.drag(find.byIcon(Icons.reorder_sharp).first, const Offset(0, 150));
-
-      await tester.tap(find.byKey(const Key('reorder.save')));
-      await tester.pumpAndSettle();
-
-      final y1 = tester.getCenter(find.byKey(const Key('product_ingredient.p-1'))).dy;
-      final y2 = tester.getCenter(find.byKey(const Key('product_ingredient.p-2'))).dy;
-      final itemList = p.itemList;
-      expect(y1, greaterThan(y2));
-      expect(itemList[0].id, equals('p-2'));
-      expect(itemList[1].id, equals('p-1'));
-      expect(itemList[2].id, equals('p-3'));
-
-      verify(storage.set(
-        any,
-        argThat(equals({'${p1.prefix}.index': 2, '${p2.prefix}.index': 1})),
-      ));
-    });
-
-    testWidgets('Update image', (WidgetTester tester) async {
-      final newImage = await createImage('test-image');
-      final product = Product(id: 'p-1', imagePath: 'wrong-path');
-      final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
-        'p-1': product,
-      })
-        ..prepareItem();
-      Menu().replaceItems({'c': catalog});
-      Stock();
-      Quantities();
-
-      await tester.pumpWidget(buildApp(product, popImage: newImage));
-
-      await tester.tap(find.byKey(const Key('item_more_action')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.image_sharp));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('tap me'));
-      await tester.pumpAndSettle();
-
-      // wait to failed loading image
-      await tester.pump(const Duration(milliseconds: 500));
-      final captured = verify(storage.set(any, captureAny)).captured;
-      expect(captured.length, equals(2));
-      expect(
-        captured[0],
-        predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == null),
-      );
-      expect(
-        captured[1],
-        predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == newImage),
-      );
-
-      expect(product.imagePath, equals(newImage));
-    });
+    }
 
     testWidgets('Delete product', (WidgetTester tester) async {
       final imagePath = await createImage('old');
@@ -271,17 +283,17 @@ void main() {
         await tester.pumpAndSettle();
 
         // go into modal and edit ingredient2 name
-        await tester.tap(find.byIcon(Icons.open_in_new_sharp));
+        await tester.tap(find.byIcon(Icons.open_in_new_outlined));
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key('stock.ingredient.name')), 'i-2-n');
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('modal.save')));
+        await tester.tap(find.byKey(const Key('modal.save')).last);
         await tester.pumpAndSettle();
 
         // select new name
         await tester.tap(find.byKey(const Key('product_ingredient.search')));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('i-2-n'));
+        await tester.tap(find.text('i-2-n').last);
         await tester.pumpAndSettle();
 
         // enter amount
@@ -333,6 +345,7 @@ void main() {
 
       testWidgets('Delete', (WidgetTester tester) async {
         prepareData();
+        Quantities();
         final product = Menu.instance.items.first.items.first;
         final ingredient = product.items.first;
 
@@ -450,17 +463,17 @@ void main() {
         await tester.pumpAndSettle();
 
         // go into modal and edit quantity2 name
-        await tester.tap(find.byIcon(Icons.open_in_new_sharp));
+        await tester.tap(find.byIcon(Icons.open_in_new_outlined));
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key('quantity.name')), 'q-2-n');
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('modal.save')));
+        await tester.tap(find.byKey(const Key('modal.save')).last);
         await tester.pumpAndSettle();
 
         // select new name
         await tester.tap(find.byKey(const Key('product_quantity.search')));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('q-2-n'));
+        await tester.tap(find.text('q-2-n').last);
         await tester.pumpAndSettle();
 
         // edit properties

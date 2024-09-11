@@ -9,6 +9,7 @@
     "firestore",
     "Formattable",
     "googleapis",
+    "Ingr",
     "Linkify",
     "loadmore",
     "LTRB",

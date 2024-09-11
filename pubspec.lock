@@ -512,11 +512,12 @@ packages:
   go_router:
     dependency: "direct main"
     description:
-      name: go_router
-      sha256: aa073287b8f43553678e6fa9e8bb9c83212ff76e09542129a8099bbc8db4df65
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.1.2"
+      path: "packages/go_router"
+      ref: main
+      resolved-ref: "296274099d38f243fbc94b228bf3a8411cef034c"
+      url: "https://github.com/evan361425/flutter-packages"
+    source: git
+    version: "14.2.4"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -1118,10 +1119,10 @@ packages:
     dependency: "direct main"
     description:
       name: spotlight_ant
-      sha256: "30c1fb6dbb2356dc92e61da332bd5cf7bf63e4b74c1414c618caab34127ed96a"
+      sha256: "8e9266780dff9785c4a31b53ac62c4f132b8231ae361592afbe1d97ca726d854"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.4.1"
   sprintf:
     dependency: transitive
     description:

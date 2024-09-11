@@ -22,12 +22,12 @@ void main() {
       when(cache.get(any)).thenReturn(null);
 
       await tester.pumpWidget(MaterialApp.router(
-        routerConfig: GoRouter(routes: [
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
             builder: (_, __) => const TransitPage(),
-            routes: Routes.routes,
           ),
+          ...Routes.getDesiredRoute(0).routes,
         ]),
       ));
 

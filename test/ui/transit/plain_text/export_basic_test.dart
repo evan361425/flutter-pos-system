@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -8,6 +9,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/quantity.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/plain_text/views.dart' as pt;
 import 'package:possystem/ui/transit/transit_station.dart';
@@ -23,12 +25,17 @@ void main() {
         .setMockMethodCallHandler(SystemChannels.platform, mockClipboard.handleMethodCall);
 
     Widget buildApp() {
-      return const MaterialApp(
-        home: TransitStation(
-          exporter: PlainTextExporter(),
-          catalog: TransitCatalog.model,
-          method: TransitMethod.plainText,
-        ),
+      return MaterialApp.router(
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => const TransitStation(
+              exporter: PlainTextExporter(),
+              catalog: TransitCatalog.model,
+              method: TransitMethod.plainText,
+            ),
+          ),
+        ]),
       );
     }
 

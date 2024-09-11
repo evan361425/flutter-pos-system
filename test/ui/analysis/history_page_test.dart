@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/order_setter.dart';
 import '../../test_helpers/translator.dart';
 
@@ -30,17 +31,15 @@ void main() {
           themeMode: themeMode,
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          routerConfig: GoRouter(
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (_, __) {
-                  return const HistoryPage();
-                },
-                routes: Routes.routes,
-              ),
-            ],
-          ),
+          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) {
+                return const HistoryPage();
+              },
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ]),
         ),
       );
     }
@@ -58,7 +57,7 @@ void main() {
       )).thenAnswer((_) => Future.value(count));
     }
 
-    testWidgets('select date and show order list in portrait', (tester) async {
+    testWidgets('select date and show order list in mobile', (tester) async {
       final now = DateTime.now();
       final nowD = DateTime(now.year, now.month, now.day);
       final nowS = (nowD.millisecondsSinceEpoch -
@@ -74,11 +73,7 @@ void main() {
         {'day': nowS - 1, 'count': 50},
       ]);
 
-      // setup portrait env
-      tester.view.physicalSize = const Size(1000, 2000);
-
-      // resets the screen to its original size after the test end
-      addTearDown(tester.view.resetPhysicalSize);
+      deviceAs(Device.mobile, tester);
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -119,11 +114,7 @@ void main() {
         {'day': nowS - now.day - 7, 'count': 60},
       ]);
 
-      // setup landscape env
-      tester.view.physicalSize = const Size(2000, 1000);
-
-      // resets the screen to its original size after the test end
-      addTearDown(tester.view.resetPhysicalSize);
+      deviceAs(Device.landscape, tester);
 
       await tester.pumpWidget(buildApp(themeMode: ThemeMode.dark));
       await tester.pumpAndSettle();

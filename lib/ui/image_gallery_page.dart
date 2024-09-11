@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/image_dumper.dart';
@@ -21,7 +23,7 @@ class ImageGalleryPage extends StatefulWidget {
 class ImageGalleryPageState extends State<ImageGalleryPage> {
   List<String>? images;
 
-  bool isSelecting = false;
+  bool selecting = false;
 
   final Set<int> selectedImages = {};
 
@@ -29,96 +31,115 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+    final fullScreen = bp <= Breakpoint.medium;
+
+    final PreferredSizeWidget? appBar = selecting
+        ? AppBar(
+            title: Text(S.imageGallerySelectionTitle),
+            primary: false,
+            leading: IconButton(
+              key: const Key('image_gallery.cancel'),
+              onPressed: () => onPopInvoked(false),
+              icon: const Icon(Icons.cancel),
+            ),
+            actions: [
+              TextButton(
+                key: const Key('image_gallery.delete'),
+                onPressed: () {
+                  DeleteDialog.show(
+                    context,
+                    warningContent: Text(S.imageGallerySelectionDeleteConfirm(selectedImages.length)),
+                    finishMessage: false,
+                    deleteCallback: deleteImages,
+                  );
+                },
+                child: Text(S.imageGalleryActionDelete),
+              ),
+            ],
+          )
+        : fullScreen
+            ? AppBar(
+                title: Text(S.imageGalleryTitle),
+                primary: false,
+                leading: const CloseButton(key: Key('image_gallery.close')),
+              )
+            : null;
+
+    final body = Scaffold(
+      primary: false,
+      appBar: appBar,
+      body: Padding(
+        padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
+        child: _buildBody(bp),
+      ),
+    );
+
     return PopScope(
-      canPop: !isSelecting,
+      canPop: !selecting,
       onPopInvoked: onPopInvoked,
-      child: SafeArea(
-        child: isSelecting ? buildSelectingScaffold() : buildScaffold(),
-      ),
+      child: fullScreen
+          ? Dialog.fullscreen(child: body)
+          : AlertDialog(
+              contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+              scrollable: false,
+              title: appBar == null ? Text(S.imageGalleryTitle) : null,
+              content: Center(child: SizedBox(width: 800, child: body)),
+            ),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    prepareImages();
-  }
-
-  Widget buildSelectingScaffold() {
-    return Scaffold(
-      appBar: AppBar(
-        leading: CloseButton(
-          key: const Key('image_gallery.cancel'),
-          onPressed: () => onPopInvoked(false),
-        ),
-        actions: [
-          TextButton(
-            key: const Key('image_gallery.delete'),
-            onPressed: () {
-              DeleteDialog.show(
-                context,
-                warningContent: Text(S.imageGallerySelectionDeleteConfirm(selectedImages.length)),
-                finishMessage: false,
-                deleteCallback: deleteImages,
-              );
-            },
-            child: Text(S.imageGalleryActionDelete),
-          ),
-        ],
-        title: Text(S.imageGallerySelectionTitle),
-      ),
-      body: buildBody(),
-    );
-  }
-
-  Widget buildScaffold() {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const BackButton(),
-        title: Text(S.imageGalleryTitle),
-      ),
-      floatingActionButton: FloatingActionButton(
-        key: const Key('image_gallery.add'),
-        onPressed: createImage,
-        tooltip: S.imageGalleryActionCreate,
-        child: const Icon(KIcons.add),
-      ),
-      body: buildBody(),
-    );
-  }
-
-  Widget buildBody() {
+  Widget _buildBody(Breakpoint bp) {
     if (images == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SingleChildScrollView(
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
 
     if (images!.isEmpty) {
-      return Center(
-        child: EmptyBody(
-          onPressed: createImage,
-          content: S.imageGalleryEmpty,
+      return SingleChildScrollView(
+        child: Center(
+          child: EmptyBody(
+            onPressed: createImage,
+            content: S.imageGalleryEmpty,
+          ),
         ),
       );
     }
 
-    const crossAxisCount = 3;
+    final spacing = bp.lookup(compact: 4.0, expanded: 12.0);
     return GridView.builder(
-      primary: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
+      primary: false,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: bp.lookup(compact: 3, expanded: 4),
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
       ),
-      itemCount: images!.length + crossAxisCount,
+      // add 1 for add button, add crossAxisCount for spacing
+      itemCount: images!.length + (selecting ? 0 : 1) + 3,
       semanticChildCount: images!.length,
       itemBuilder: (context, index) {
+        if (!selecting && index == images!.length) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              key: const Key('image_gallery.add'),
+              onPressed: createImage,
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                const Icon(KIcons.add),
+                Text(S.imageGalleryActionCreate, textAlign: TextAlign.center),
+              ]),
+            ),
+          );
+        }
+
         if (index >= images!.length) {
           // Floating action button offset
-          return const SizedBox(height: 72.0);
+          return const SizedBox(height: kFABSpacing);
         }
-        final image = XFile(images![index]);
 
-        final inkwell = isSelecting
+        final image = XFile(images![index]);
+        final inkwell = selecting
             ? Material(
                 color: Colors.black.withAlpha(100),
                 child: Checkbox(
@@ -136,19 +157,17 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
                 child: const SizedBox.expand(),
               );
 
-        return Container(
-          width: double.infinity,
-          constraints: const BoxConstraints(maxHeight: 512, maxWidth: 512),
-          decoration: const BoxDecoration(border: Border()),
-          child: Ink.image(
-            padding: EdgeInsets.zero,
-            image: FileImage(image.file),
-            fit: BoxFit.cover,
-            child: Material(
-              key: Key('image_gallery.$index'),
-              type: MaterialType.transparency,
-              child: inkwell,
+        return Ink.image(
+          image: FileImage(image.file),
+          fit: BoxFit.cover,
+          child: Material(
+            key: Key('image_gallery.$index'),
+            type: MaterialType.transparency,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.grey.shade400),
+              borderRadius: BorderRadius.circular(4),
             ),
+            child: inkwell,
           ),
         );
       },
@@ -156,7 +175,13 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     );
   }
 
-  void prepareImages() async {
+  @override
+  void initState() {
+    super.initState();
+    _prepareImages();
+  }
+
+  void _prepareImages() async {
     if (context.mounted) {
       final dir = await XFile.getRootPath();
       baseDir = XFile(XFile.fs.path.join(dir, 'menu_image')).dir;
@@ -219,7 +244,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       }
       Log.out(e.toString(), 'delete_image_error');
     } finally {
-      prepareImages();
+      _prepareImages();
     }
   }
 
@@ -232,7 +257,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   void cancelSelecting({reloadImages = false}) {
     setState(() {
       if (reloadImages) images = null;
-      isSelecting = false;
+      selecting = false;
     });
   }
 
@@ -240,7 +265,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     setState(() {
       selectedImages.clear();
       selectedImages.add(index);
-      isSelecting = true;
+      selecting = true;
     });
   }
 }

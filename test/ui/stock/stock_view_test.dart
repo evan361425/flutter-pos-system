@@ -27,12 +27,12 @@ void main() {
   group('Stock View', () {
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(routes: [
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
-            routes: Routes.routes,
             builder: (_, __) => const Scaffold(body: StockView()),
-          )
+          ),
+          ...Routes.getDesiredRoute(0).routes,
         ]),
       );
     }
@@ -249,7 +249,7 @@ void main() {
       await tester.dragUntilVisible(p1, find.byType(ListView), const Offset(0, -300));
       await tester.tap(p1);
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('pop')));
+      await tester.tap(find.byKey(const Key('pop')).last);
       await tester.pumpAndSettle();
 
       // validate failed

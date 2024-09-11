@@ -11,7 +11,15 @@ class Linkify extends StatelessWidget {
 
   const Linkify(this.data, {super.key, this.textAlign});
 
-  factory Linkify.fromString(text, {TextAlign? textAlign}) {
+  /// Not sure why need nullable text, since I got error in production
+  ///
+  /// Issue ID: 9e4fa89521982197e4212f2c0b1ee6b4
+  /// ```txt
+  /// type 'Null' is not a subtype of type 'String'. Error thrown .
+  ///   at new Linkify.fromString(linkify.dart:15)
+  ///   at Tutorial.build(tutorial.dart:107)
+  /// ```
+  factory Linkify.fromString(String text, {TextAlign? textAlign, String? id}) {
     return Linkify(_parseText(text), textAlign: textAlign);
   }
 

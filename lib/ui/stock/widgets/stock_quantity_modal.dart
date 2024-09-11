@@ -25,7 +25,7 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
   late FocusNode _proportionFocusNode;
 
   @override
-  String get title => widget.quantity?.name ?? S.stockQuantityTitleCreate;
+  String get title => widget.isNew ? S.stockQuantityTitleCreate : S.stockQuantityTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -37,7 +37,7 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           labelText: S.stockQuantityNameLabel,
-          hintText: S.stockQuantityNameHint,
+          hintText: widget.quantity?.name ?? S.stockQuantityNameHint,
           filled: false,
         ),
         maxLength: 30,
