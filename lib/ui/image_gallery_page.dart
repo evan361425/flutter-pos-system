@@ -40,7 +40,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
             primary: false,
             leading: IconButton(
               key: const Key('image_gallery.cancel'),
-              onPressed: () => onPopInvoked(false),
+              onPressed: () => onPopInvoked(false, null),
               icon: const Icon(Icons.cancel),
             ),
             actions: [
@@ -77,7 +77,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
     return PopScope(
       canPop: !selecting,
-      onPopInvoked: onPopInvoked,
+      onPopInvokedWithResult: onPopInvoked,
       child: fullScreen
           ? Dialog.fullscreen(child: body)
           : AlertDialog(
@@ -248,7 +248,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     }
   }
 
-  void onPopInvoked(bool didPop) {
+  void onPopInvoked(bool didPop, dynamic result) {
     if (!didPop) {
       cancelSelecting();
     }

@@ -40,7 +40,11 @@ class ExportOrderView extends StatelessWidget {
                   export(),
                   context,
                   'pt_export_failed',
-                ).then((value) => showSnackBar(context, S.transitPTCopySuccess));
+                ).then((value) {
+                  if (context.mounted) {
+                    showSnackBar(context, S.transitPTCopySuccess);
+                  }
+                });
               },
             ),
           ),

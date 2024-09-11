@@ -134,6 +134,10 @@ class _ExportBasicViewState extends State<ExportBasicView> with SingleTickerProv
       widget.exporter.export(able),
       context,
       'pt_export_failed',
-    ).then((value) => showSnackBar(context, S.transitPTCopySuccess));
+    ).then((value) {
+      if (mounted) {
+        showSnackBar(context, S.transitPTCopySuccess);
+      }
+    });
   }
 }

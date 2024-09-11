@@ -138,7 +138,9 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
       ) as _i3.Future<T>);
 
   @override
-  _i3.Future<T> readTransaction<T>(_i3.Future<T> Function(_i2.Transaction)? action) => (super.noSuchMethod(
+  _i3.Future<T> readTransaction<T>(
+          _i3.Future<T> Function(_i2.Transaction)? action) =>
+      (super.noSuchMethod(
         Invocation.method(
           #readTransaction,
           [action],
@@ -326,7 +328,8 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
             #offset: offset,
           },
         ),
-        returnValue: _i3.Future<List<Map<String, Object?>>>.value(<Map<String, Object?>>[]),
+        returnValue: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
       ) as _i3.Future<List<Map<String, Object?>>>);
 
   @override
@@ -342,7 +345,8 @@ class MockDatabase extends _i1.Mock implements _i2.Database {
             arguments,
           ],
         ),
-        returnValue: _i3.Future<List<Map<String, Object?>>>.value(<Map<String, Object?>>[]),
+        returnValue: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
       ) as _i3.Future<List<Map<String, Object?>>>);
 
   @override

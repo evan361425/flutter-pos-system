@@ -6,7 +6,8 @@
 import 'dart:async' as _i3;
 
 import 'package:image_cropper/src/cropper.dart' as _i2;
-import 'package:image_cropper_platform_interface/image_cropper_platform_interface.dart' as _i4;
+import 'package:image_cropper_platform_interface/image_cropper_platform_interface.dart'
+    as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -36,14 +37,6 @@ class MockImageCropper extends _i1.Mock implements _i2.ImageCropper {
     int? maxWidth,
     int? maxHeight,
     _i4.CropAspectRatio? aspectRatio,
-    List<_i4.CropAspectRatioPreset>? aspectRatioPresets = const [
-      _i4.CropAspectRatioPreset.original,
-      _i4.CropAspectRatioPreset.square,
-      _i4.CropAspectRatioPreset.ratio3x2,
-      _i4.CropAspectRatioPreset.ratio4x3,
-      _i4.CropAspectRatioPreset.ratio16x9,
-    ],
-    _i4.CropStyle? cropStyle = _i4.CropStyle.rectangle,
     _i4.ImageCompressFormat? compressFormat = _i4.ImageCompressFormat.jpg,
     int? compressQuality = 90,
     List<_i4.PlatformUiSettings>? uiSettings,
@@ -57,8 +50,6 @@ class MockImageCropper extends _i1.Mock implements _i2.ImageCropper {
             #maxWidth: maxWidth,
             #maxHeight: maxHeight,
             #aspectRatio: aspectRatio,
-            #aspectRatioPresets: aspectRatioPresets,
-            #cropStyle: cropStyle,
             #compressFormat: compressFormat,
             #compressQuality: compressQuality,
             #uiSettings: uiSettings,

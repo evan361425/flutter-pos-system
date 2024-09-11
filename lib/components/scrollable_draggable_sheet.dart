@@ -119,7 +119,7 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
           }
           return PopScope(
             canPop: controller.snapIndex.value == 0,
-            onPopInvoked: (popped) {
+            onPopInvokedWithResult: (popped, _) {
               if (!popped) {
                 controller.reset();
               }

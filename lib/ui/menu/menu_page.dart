@@ -51,7 +51,7 @@ class _MenuPageState extends State<MenuPage> {
       return PopScope(
         key: const Key('menu_page'),
         canPop: selected == null,
-        onPopInvoked: _onPopInvoked,
+        onPopInvokedWithResult: _onPopInvoked,
         child: Scaffold(
           appBar: AppBar(
             title: Text(selected?.name ?? S.menuTitle),
@@ -181,12 +181,12 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _handlePop() {
-    if (_onPopInvoked(selected == null)) {
+    if (_onPopInvoked(selected == null, null)) {
       PopButton.safePop(context, path: '${Routes.base}/_');
     }
   }
 
-  bool _onPopInvoked(bool didPop) {
+  bool _onPopInvoked(bool didPop, dynamic result) {
     if (!didPop) {
       _pageSlideTo(0).then((_) => setState(() => selected = null));
       return false;

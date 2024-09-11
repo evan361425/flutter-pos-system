@@ -69,7 +69,7 @@ bump: ## Bump beta version
 ##@ Tools
 .PHONY: mock
 mock: ## Mock dependencies
-	flutter pub run build_runner build --delete-conflicting-outputs
+	dart run build_runner build --delete-conflicting-outputs
 
 .PHONY: build-l10n
 build-l10n: ## Build localization

@@ -177,7 +177,7 @@ class _RestockDialogState extends State<_RestockDialog> {
       style: Theme.of(context).textTheme.bodyLarge!,
       child: PopScope(
         canPop: true,
-        onPopInvoked: (popped) async {
+        onPopInvokedWithResult: (popped, _) async {
           if (popped && widget.currentValue.value != null) {
             final price = num.tryParse(controller.text);
             if (price != null) {
