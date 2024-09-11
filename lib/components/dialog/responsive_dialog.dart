@@ -58,7 +58,10 @@ class ResponsiveDialog extends StatelessWidget {
         actions: action == null
             ? null
             : [
-                PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+                PopButton(
+                  key: const Key('pop'),
+                  title: MaterialLocalizations.of(context).cancelButtonLabel,
+                ),
                 action!,
               ],
       );

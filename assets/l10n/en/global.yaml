@@ -29,13 +29,14 @@ title:
 - analysis: Stats
   stock: Inventory
   cashier: Cashier
-  setting: Settings
+  settings: Settings
   menu: Menu
   transit: Data Transfer
-  orderAttribute: Customer Settings
-  stockQuantity: Quantities
+  orderAttributes: Customer Settings
+  stockQuantities: Quantities
   elf: Suggestions
   more: More
+  debug: Debug
 dialog:
   deletionTitle:
   - Delete Confirmation

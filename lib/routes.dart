@@ -78,8 +78,8 @@ class Routes {
   static get initLocation => Cache.instance.get<bool>('tutorial.home.order') != true
       ? homeMode.value == HomeMode.bottomNavigationBar
           ? '$base/_'
-          : '$base/_/menu'
-      : base;
+          : '$base/_/menu' // if going to anal, the tutorial will conflicts with analysis page's tutorial
+      : '$base/anal';
 
   /// Base redirect function
   ///

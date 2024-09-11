@@ -49,6 +49,7 @@ void main() {
               actionBuilder: (item) => [
                 const BottomSheetAction<int>(
                   title: Text('Hi'),
+                  leading: Icon(Icons.ac_unit),
                   returnValue: 1,
                 ),
               ],

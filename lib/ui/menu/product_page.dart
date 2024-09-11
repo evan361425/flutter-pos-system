@@ -6,6 +6,7 @@ import 'package:possystem/components/slivers/sliver_image_app_bar.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -35,12 +36,12 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final dialog = size.width > Breakpoint.medium.max;
+    final asPage = size.width <= Breakpoint.medium.max;
 
-    return dialog ? _buildDialog() : _buildFullScreen();
+    return asPage ? _buildPage() : _buildDialog();
   }
 
-  Widget _buildFullScreen() {
+  Widget _buildPage() {
     // get the ordered items
     final items = widget.product.itemList;
     return Dialog.fullscreen(
@@ -84,23 +85,10 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildDialog() {
     final metadataTile = Row(children: [
-      // change the image opacity with animation
-      AnimatedContainer(
-        constraints: const BoxConstraints(
-          minHeight: 100,
-          minWidth: 100,
-          maxWidth: 140,
-          maxHeight: 140,
-        ),
-        duration: kThemeChangeDuration,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: widget.product.image,
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(8),
-          shape: BoxShape.rectangle,
-        ),
+      ImageHolder(
+        size: 140,
+        image: widget.product.image,
+        onImageError: () => widget.product.saveImage(null),
       ),
       const SizedBox(width: kInternalLargeSpacing),
       Expanded(
@@ -178,7 +166,7 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildActionButton() {
     return MoreButton(
-      key: const Key('item_more_action'),
+      key: const Key('product.more'),
       onPressed: _showActions,
     );
   }

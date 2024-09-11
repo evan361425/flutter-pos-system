@@ -77,7 +77,7 @@ class _WithTab extends StatelessWidget {
           );
         },
         destinations: [
-          for (final HomeTab e in _bottomNavTabs)
+          for (final _Tab e in _bottomNavTabs)
             NavigationDestination(
               key: Key('home.${e.name}'),
               icon: e.icon,
@@ -104,8 +104,8 @@ class _WithDrawerState extends State<_WithDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final tab = HomeTab.values.elementAtOrNull(widget.shell.currentIndex) ?? HomeTab.analysis;
-    final needNested = tab == HomeTab.analysis;
+    final tab = _Tab.values.elementAtOrNull(widget.shell.currentIndex) ?? _Tab.analysis;
+    final needNested = tab == _Tab.analysis;
 
     // Which means body have [CustomScrollView]
     if (needNested) {
@@ -129,15 +129,7 @@ class _WithDrawerState extends State<_WithDrawer> {
     );
   }
 
-  @override
-  void initState() {
-    if (Cache.instance.get<bool>('tutorial.home.order') != true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => scaffold.currentState?.openDrawer());
-    }
-    super.initState();
-  }
-
-  Widget _buildDrawer(HomeTab tab) {
+  Widget _buildDrawer(_Tab tab) {
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -148,35 +140,35 @@ class _WithDrawerState extends State<_WithDrawer> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
                 child: e.wrap(
-                    ListTile(
-                      leading: tab == e ? e.selectedIcon : e.icon,
-                      title: Text(S.title(e.name)),
-                      selected: tab == e,
-                      visualDensity: VisualDensity.compact,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      onTap: () => _navTo(e.index),
+                  ListTile(
+                    key: Key('home.${e.name}'),
+                    leading: tab == e ? e.selectedIcon : e.icon,
+                    title: Text(S.title(e.name)),
+                    selected: tab == e,
+                    visualDensity: VisualDensity.compact,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
-                    scaffold.currentState?.closeDrawer),
-              ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 12, 0),
-              child: ListTile(
-                leading: const Icon(Icons.bug_report_outlined),
-                title: const Text('Debug'),
-                visualDensity: VisualDensity.compact,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                    onTap: () => _navTo(e.index),
+                  ),
+                  scaffold.currentState?.closeDrawer,
                 ),
-                onTap: () => _navTo(_drawerTabs.length),
               ),
-            ),
             const Footer(),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    if (Cache.instance.get<bool>('tutorial.home.order') != true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scaffold.currentState?.openDrawer();
+      });
+    }
+    super.initState();
   }
 
   void _navTo(int index) {
@@ -197,11 +189,12 @@ class _WithRail extends StatefulWidget {
 
 class _WithRailState extends State<_WithRail> {
   late final ValueNotifier<bool> railExpanded;
+  late final ValueNotifier<int> railSelected;
 
   @override
   Widget build(BuildContext context) {
-    final tab = HomeTab.values.elementAtOrNull(widget.shell.currentIndex) ?? HomeTab.analysis;
-    final needNested = tab == HomeTab.analysis;
+    final tab = _Tab.values.elementAtOrNull(widget.shell.currentIndex) ?? _Tab.analysis;
+    final needNested = tab == _Tab.analysis;
 
     // Which means body have [CustomScrollView]
     if (needNested) {
@@ -225,32 +218,9 @@ class _WithRailState extends State<_WithRail> {
     return Row(children: [
       ListenableBuilder(
         listenable: railExpanded,
-        builder: (context, child) => NavigationRail(
-          extended: railExpanded.value,
-          onDestinationSelected: (int index) {
-            SpotlightShow.of(context).reset();
-            widget.shell.goBranch(index, initialLocation: index == widget.shell.currentIndex);
-          },
-          leading: IconButton(
-            icon: Icon(railExpanded.value ? Icons.close_outlined : Icons.menu_outlined),
-            onPressed: () => railExpanded.value = !railExpanded.value,
-          ),
-          destinations: [
-            for (final e in _drawerTabs)
-              // Show all tabs if expanded, otherwise only show important tabs
-              if (railExpanded.value || e.important)
-                NavigationRailDestination(
-                  icon: e.icon,
-                  selectedIcon: e.selectedIcon,
-                  label: e.wrap(Text(S.title(e.name))),
-                ),
-            if (!isProd)
-              const NavigationRailDestination(
-                icon: Icon(Icons.bug_report_outlined),
-                label: Text('Debug'),
-              ),
-          ],
-          selectedIndex: 0,
+        builder: (context, child) => ListenableBuilder(
+          listenable: railSelected,
+          builder: (context, child) => _buildRail(),
         ),
       ),
       const VerticalDivider(),
@@ -258,9 +228,36 @@ class _WithRailState extends State<_WithRail> {
     ]);
   }
 
+  Widget _buildRail() {
+    return NavigationRail(
+      extended: railExpanded.value,
+      onDestinationSelected: (int index) {
+        SpotlightShow.of(context).reset();
+        widget.shell.goBranch(index, initialLocation: index == widget.shell.currentIndex);
+        setState(() => railSelected.value = index);
+      },
+      leading: IconButton(
+        icon: Icon(railExpanded.value ? Icons.close : Icons.menu),
+        onPressed: () => railExpanded.value = !railExpanded.value,
+      ),
+      selectedIndex: min(railSelected.value, railExpanded.value ? 999 : 2),
+      destinations: [
+        for (final e in _drawerTabs)
+          // Show all tabs if expanded, otherwise only show important tabs
+          if (railExpanded.value || e.important)
+            NavigationRailDestination(
+              icon: e.icon,
+              selectedIcon: e.selectedIcon,
+              label: e.wrap(Text(S.title(e.name))),
+            ),
+      ],
+    );
+  }
+
   @override
   void initState() {
-    railExpanded = ValueNotifier(Cache.instance.get<bool>('tutorial.home.order') == true);
+    railExpanded = ValueNotifier(Cache.instance.get<bool>('tutorial.home.order') != true);
+    railSelected = ValueNotifier(widget.shell.currentIndex);
     super.initState();
   }
 }
@@ -326,25 +323,26 @@ class _FlexibleSpace extends StatelessWidget {
 }
 
 const _bottomNavTabs = [
-  HomeTab.analysis,
-  HomeTab.stock,
-  HomeTab.cashier,
-  HomeTab.more,
+  _Tab.analysis,
+  _Tab.stock,
+  _Tab.cashier,
+  _Tab.more,
 ];
 
 const _drawerTabs = [
-  HomeTab.analysis,
-  HomeTab.stock,
-  HomeTab.cashier,
-  HomeTab.orderAttribute,
-  HomeTab.menu,
-  HomeTab.stockQuantity,
-  HomeTab.transit,
-  HomeTab.elf,
-  HomeTab.setting,
+  _Tab.analysis,
+  _Tab.stock,
+  _Tab.cashier,
+  _Tab.orderAttributes,
+  _Tab.menu,
+  _Tab.stockQuantities,
+  _Tab.transit,
+  _Tab.elf,
+  _Tab.settings,
+  if (!isProd) _Tab.debug,
 ];
 
-enum HomeTab {
+enum _Tab {
   analysis(
     icon: Icon(Icons.analytics_outlined),
     selectedIcon: Icon(Icons.analytics),
@@ -360,7 +358,7 @@ enum HomeTab {
     selectedIcon: Icon(Icons.monetization_on),
     important: true,
   ),
-  orderAttribute(
+  orderAttributes(
     icon: Icon(Icons.assignment_ind_outlined),
     selectedIcon: Icon(Icons.assignment_ind),
   ),
@@ -368,7 +366,7 @@ enum HomeTab {
     icon: Icon(Icons.collections_outlined),
     selectedIcon: Icon(Icons.collections),
   ),
-  stockQuantity(
+  stockQuantities(
     icon: Icon(Icons.exposure_outlined),
     selectedIcon: Icon(Icons.exposure),
   ),
@@ -380,9 +378,13 @@ enum HomeTab {
     icon: Icon(Icons.lightbulb_outlined),
     selectedIcon: Icon(Icons.lightbulb),
   ),
-  setting(
+  settings(
     icon: Icon(Icons.settings_outlined),
     selectedIcon: Icon(Icons.settings),
+  ),
+  debug(
+    icon: Icon(Icons.bug_report_outlined),
+    selectedIcon: Icon(Icons.bug_report),
   ),
 
   /// entrypoint for mobile screen
@@ -395,7 +397,7 @@ enum HomeTab {
   final Icon selectedIcon;
   final bool important;
 
-  const HomeTab({
+  const _Tab({
     required this.icon,
     required this.selectedIcon,
     this.important = false,
@@ -403,11 +405,12 @@ enum HomeTab {
 
   Widget wrap(Widget child, [void Function()? action]) {
     switch (this) {
-      case HomeTab.menu:
+      case _Tab.menu:
         return MenuTutorial(
           child: child,
         );
-      case HomeTab.orderAttribute:
+      case _Tab.orderAttributes:
+        // after finish this tutorial, we will close the drawer
         return OrderAttrTutorial(
           onDismissed: action,
           child: child,

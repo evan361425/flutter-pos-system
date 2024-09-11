@@ -66,6 +66,30 @@ class _OrderPageState extends State<OrderPage> {
       ),
     );
 
+    final body = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= Breakpoint.medium
+        ? DraggableSheetView(
+            row1: orderCatalogListView,
+            row2: orderProductListView,
+            row3_1: const CartProductSelector(),
+            row3_2Builder: (scroll, scrollable) => Expanded(
+              child: CartProductList(
+                scrollController: scroll,
+                scrollable: scrollable,
+              ),
+            ),
+            row3_3: const CartMetadataView(),
+            row4: const CartProductStateSelector(),
+            resetNotifier: _resetNotifier,
+          )
+        : OrientatedView(
+            row1: orderCatalogListView,
+            row2: orderProductListView,
+            row3_1: const CartProductSelector(),
+            row3_2: const Expanded(child: CartProductList()),
+            row3_3: const CartMetadataView(),
+            row4: const CartProductStateSelector(),
+          );
+
     return TutorialWrapper(
       child: Scaffold(
         // avoid resize when keyboard(bottom inset) shows
@@ -81,33 +105,7 @@ class _OrderPageState extends State<OrderPage> {
             ),
           ],
         ),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return Breakpoint.find(box: constraints) <= Breakpoint.medium
-                ? DraggableSheetView(
-                    row1: orderCatalogListView,
-                    row2: orderProductListView,
-                    row3_1: const CartProductSelector(),
-                    row3_2Builder: (scroll, scrollable) => Expanded(
-                      child: CartProductList(
-                        scrollController: scroll,
-                        scrollable: scrollable,
-                      ),
-                    ),
-                    row3_3: const CartMetadataView(),
-                    row4: const CartProductStateSelector(),
-                    resetNotifier: _resetNotifier,
-                  )
-                : OrientatedView(
-                    row1: orderCatalogListView,
-                    row2: orderProductListView,
-                    row3_1: const CartProductSelector(),
-                    row3_2: const Expanded(child: CartProductList()),
-                    row3_3: const CartMetadataView(),
-                    row4: const CartProductStateSelector(),
-                  );
-          },
-        ),
+        body: body,
       ),
     );
   }

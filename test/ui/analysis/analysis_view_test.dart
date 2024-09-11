@@ -15,6 +15,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
@@ -76,6 +77,8 @@ void main() {
     }
 
     testWidgets('navigate to history', (tester) async {
+      deviceAs(Device.compact, tester);
+
       mockGetChart();
       mockGetOrder();
       Analysis();

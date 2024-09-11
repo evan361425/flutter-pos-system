@@ -8,7 +8,6 @@ import 'dialog/delete_dialog.dart';
 Future<T?> showCircularBottomSheet<T>(
   BuildContext context, {
   required List<BottomSheetAction<T>> actions,
-  bool useRootNavigator = true,
 }) {
   Feedback.forLongPress(context);
   final size = MediaQuery.sizeOf(context);
@@ -17,7 +16,7 @@ Future<T?> showCircularBottomSheet<T>(
   if (bp <= Breakpoint.medium) {
     return showModalBottomSheet<T>(
       context: context,
-      useRootNavigator: useRootNavigator,
+      useRootNavigator: true,
       clipBehavior: Clip.hardEdge,
       constraints: BoxConstraints(maxWidth: size.width - 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -44,7 +43,6 @@ Future<T?> showCircularBottomSheet<T>(
   return showMenu(
     context: context,
     position: position,
-    useRootNavigator: useRootNavigator,
     clipBehavior: Clip.hardEdge,
     items: [
       for (final action in actions) action.toPopupMenuItem(context),
@@ -55,7 +53,7 @@ Future<T?> showCircularBottomSheet<T>(
 class BottomSheetAction<T> {
   final Widget title;
 
-  final Widget? leading;
+  final Widget leading;
 
   final T? returnValue;
 
@@ -68,9 +66,9 @@ class BottomSheetAction<T> {
   final Map<String, dynamic> routeQueryParameters;
 
   const BottomSheetAction({
-    required this.title,
     this.key,
-    this.leading,
+    required this.title,
+    required this.leading,
     this.returnValue,
     this.route,
     this.routePathParameters = const <String, String>{},
@@ -87,7 +85,7 @@ class BottomSheetAction<T> {
         if (context.mounted) {
           Navigator.of(context).pop(returnValue);
         }
-        onTap(context);
+        await onTap(context);
       },
     );
   }
@@ -97,18 +95,11 @@ class BottomSheetAction<T> {
       key: key,
       value: returnValue,
       onTap: () => onTap(context),
-      child: Row(children: [
-        if (leading != null)
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: leading!,
-          ),
-        title,
-      ]),
+      child: ListTile(leading: leading, title: title),
     );
   }
 
-  void onTap(BuildContext context) async {
+  Future<void> onTap(BuildContext context) async {
     if (route != null && context.mounted) {
       await context.pushNamed(
         route!,

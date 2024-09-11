@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -21,6 +22,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
@@ -34,7 +36,10 @@ void main() {
         routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
-            builder: (_, __) => const MenuPage(),
+            builder: (context, __) {
+              final singleView = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= Breakpoint.medium;
+              return singleView ? const MenuPage() : const Scaffold(body: MenuPage());
+            },
             routes: [
               GoRoute(
                 name: Routes.imageGallery,
@@ -55,47 +60,174 @@ void main() {
       );
     }
 
-    testWidgets('Add catalog with image', (WidgetTester tester) async {
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Menu>.value(value: Menu()),
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-        ],
-        child: buildApp('test-image'),
-      ));
+    for (final device in [Device.desktop, Device.mobile]) {
+      group(device.name, () {
+        testWidgets('Add catalog with image', (WidgetTester tester) async {
+          deviceAs(device, tester);
+          await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Menu>.value(value: Menu()),
+              ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ],
+            child: buildApp('test-image'),
+          ));
 
-      await tester.tap(find.byKey(const Key('empty_body')));
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('empty_body')));
+          await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('image_holder.edit')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('tap me'));
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('image_holder.edit')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('tap me'));
+          await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(const Key('catalog.name')), 'name');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
+          await tester.enterText(find.byKey(const Key('catalog.name')), 'name');
+          await tester.testTextInput.receiveAction(TextInputAction.done);
+          await tester.pumpAndSettle();
+          await tester.pumpAndSettle();
 
-      // catalog view
-      expect(find.byKey(const Key('catalog.empty')), findsOneWidget);
+          // catalog view
+          expect(find.byKey(const Key('catalog.empty')), findsOneWidget);
 
-      final catalog = Menu.instance.items.first;
-      expect(catalog.name, equals('name'));
-      expect(catalog.index, equals(1));
+          final catalog = Menu.instance.items.first;
+          expect(catalog.name, equals('name'));
+          expect(catalog.index, equals(1));
 
-      verify(storage.add(
-        any,
-        any,
-        argThat(predicate((data) =>
-            data is Map &&
-            data['name'] == 'name' &&
-            data['index'] == 1 &&
-            data['createdAt'] > 0 &&
-            data['imagePath'] == 'test-image' &&
-            (data['products'] as Map).isEmpty)),
-      ));
-    });
+          verify(storage.add(
+            any,
+            any,
+            argThat(predicate((data) =>
+                data is Map &&
+                data['name'] == 'name' &&
+                data['index'] == 1 &&
+                data['createdAt'] > 0 &&
+                data['imagePath'] == 'test-image' &&
+                (data['products'] as Map).isEmpty)),
+          ));
+        });
+
+        testWidgets('Edit catalog', (WidgetTester tester) async {
+          deviceAs(device, tester);
+          final newImage = await createImage('test-image');
+          final catalog1 = Catalog(id: 'c-1', name: 'c-1', imagePath: 'wrong-path');
+          final catalog2 = Catalog(id: 'c-2', name: 'c-2');
+          Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
+
+          await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+            ],
+            child: buildApp(newImage),
+          ));
+
+          await tester.longPress(find.byKey(const Key('catalog.c-1')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(Icons.text_fields_outlined));
+          await tester.pumpAndSettle();
+
+          // edit image
+          await tester.tap(find.byKey(const Key('image_holder.edit')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('tap me'));
+          await tester.pumpAndSettle();
+
+          // save failed
+          await tester.enterText(find.byKey(const Key('catalog.name')), 'c-2');
+          await tester.tap(find.byKey(const Key('modal.save')));
+          await tester.pumpAndSettle();
+
+          await tester.enterText(find.byKey(const Key('catalog.name')), 'new-name');
+          await tester.testTextInput.receiveAction(TextInputAction.done);
+          await tester.pumpAndSettle();
+          await tester.pumpAndSettle();
+
+          // reset catalog name
+          final w = find.byKey(const Key('catalog.c-1')).evaluate().first.widget;
+          expect(((w as ListTile).title as Text).data, equals('new-name'));
+          expect(catalog1.imagePath, equals(newImage));
+
+          verify(storage.set(
+            any,
+            argThat(equals({
+              'c-1.name': 'new-name',
+              'c-1.imagePath': newImage,
+            })),
+          ));
+        });
+
+        testWidgets('Reorder catalog', (WidgetTester tester) async {
+          deviceAs(device, tester);
+          final catalog1 = Catalog(name: 'c-1', id: 'c-1', index: 1);
+          final catalog2 = Catalog(name: 'c-2', id: 'c-2', index: 2);
+          final catalog3 = Catalog(name: 'c-3', id: 'c-3', index: 3);
+          Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2, 'c-3': catalog3});
+
+          await tester.pumpWidget(MultiProvider(providers: [
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+          ], child: buildApp()));
+
+          await tester.tap(find.byIcon(KIcons.reorder));
+          await tester.pumpAndSettle();
+
+          await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
+
+          await tester.tap(find.byKey(const Key('reorder.save')));
+          await tester.pumpAndSettle();
+
+          final y1 = tester.getCenter(find.byKey(const Key('catalog.c-1'))).dy;
+          final y2 = tester.getCenter(find.byKey(const Key('catalog.c-2'))).dy;
+          final itemList = Menu.instance.itemList;
+          expect(y1, greaterThan(y2));
+          expect(itemList[0].id, equals('c-2'));
+          expect(itemList[1].id, equals('c-1'));
+          expect(itemList[2].id, equals('c-3'));
+
+          verify(storage.set(
+            any,
+            argThat(equals({'c-1.index': 2, 'c-2.index': 1})),
+          ));
+        });
+
+        testWidgets('Delete catalog', (WidgetTester tester) async {
+          deviceAs(device, tester);
+          final productImage = await createImage('product');
+          final catalogImage = await createImage('catalog');
+          final catalog1 = Catalog(id: 'c-1');
+          final catalog2 = Catalog(id: 'c-2', imagePath: catalogImage, products: {
+            'p-1': Product(id: 'p-1', imagePath: productImage),
+          });
+          Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
+          await createImage('product-avator');
+          await createImage('catalog-avator');
+
+          await tester.pumpWidget(MultiProvider(providers: [
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+          ], child: buildApp()));
+
+          await tester.longPress(find.byKey(const Key('catalog.c-1')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(KIcons.delete));
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
+          await tester.pumpAndSettle();
+
+          expect(find.byKey(const Key('catalog.c-1')), findsNothing);
+          verify(storage.set(any, argThat(equals({catalog1.prefix: null}))));
+
+          await tester.longPress(find.byKey(const Key('catalog.c-2')));
+          await (device == Device.mobile ? tester.pumpAndSettle() : tester.pump(const Duration(milliseconds: 500)));
+          await tester.tap(find.byIcon(KIcons.delete));
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
+          await tester.pumpAndSettle();
+
+          expect(find.byKey(const Key('catalog.c-2')), findsNothing);
+          expect(Menu.instance.isEmpty, isTrue);
+          verify(storage.set(any, argThat(equals({catalog2.prefix: null}))));
+        });
+      });
+    }
 
     testWidgets('Navigate to catalog', (WidgetTester tester) async {
       Menu().replaceItems({'c-1': Catalog(id: 'c-1', name: 'c-1')});
@@ -109,125 +241,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('catalog.empty')), findsOneWidget);
-    });
-
-    testWidgets('Edit catalog', (WidgetTester tester) async {
-      final newImage = await createImage('test-image');
-      final catalog1 = Catalog(id: 'c-1', name: 'c-1', imagePath: 'wrong-path');
-      final catalog2 = Catalog(id: 'c-2', name: 'c-2');
-      Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
-
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-        ],
-        child: buildApp(newImage),
-      ));
-
-      await tester.longPress(find.byKey(const Key('catalog.c-1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.text_fields_outlined));
-      await tester.pumpAndSettle();
-
-      // edit image
-      await tester.tap(find.byKey(const Key('image_holder.edit')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('tap me'));
-      await tester.pumpAndSettle();
-
-      // save failed
-      await tester.enterText(find.byKey(const Key('catalog.name')), 'c-2');
-      await tester.tap(find.byKey(const Key('modal.save')));
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byKey(const Key('catalog.name')), 'new-name');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
-
-      // reset catalog name
-      final w = find.byKey(const Key('catalog.c-1')).evaluate().first.widget;
-      expect(((w as ListTile).title as Text).data, equals('new-name'));
-      expect(catalog1.imagePath, equals(newImage));
-
-      verify(storage.set(
-        any,
-        argThat(equals({
-          'c-1.name': 'new-name',
-          'c-1.imagePath': newImage,
-        })),
-      ));
-    });
-
-    testWidgets('Reorder catalog', (WidgetTester tester) async {
-      final catalog1 = Catalog(name: 'c-1', id: 'c-1', index: 1);
-      final catalog2 = Catalog(name: 'c-2', id: 'c-2', index: 2);
-      final catalog3 = Catalog(name: 'c-3', id: 'c-3', index: 3);
-      Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2, 'c-3': catalog3});
-
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: buildApp()));
-
-      await tester.tap(find.byIcon(KIcons.reorder));
-      await tester.pumpAndSettle();
-
-      await tester.drag(find.byIcon(Icons.reorder_outlined).first, const Offset(0, 150));
-
-      await tester.tap(find.byKey(const Key('reorder.save')));
-      await tester.pumpAndSettle();
-
-      final y1 = tester.getCenter(find.byKey(const Key('catalog.c-1'))).dy;
-      final y2 = tester.getCenter(find.byKey(const Key('catalog.c-2'))).dy;
-      final itemList = Menu.instance.itemList;
-      expect(y1, greaterThan(y2));
-      expect(itemList[0].id, equals('c-2'));
-      expect(itemList[1].id, equals('c-1'));
-      expect(itemList[2].id, equals('c-3'));
-
-      verify(storage.set(
-        any,
-        argThat(equals({'c-1.index': 2, 'c-2.index': 1})),
-      ));
-    });
-
-    testWidgets('Delete catalog', (WidgetTester tester) async {
-      final productImage = await createImage('product');
-      final catalogImage = await createImage('catalog');
-      final catalog1 = Catalog(id: 'c-1');
-      final catalog2 = Catalog(id: 'c-2', imagePath: catalogImage, products: {
-        'p-1': Product(id: 'p-1', imagePath: productImage),
-      });
-      Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
-      await createImage('product-avator');
-      await createImage('catalog-avator');
-
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-      ], child: buildApp()));
-
-      await tester.longPress(find.byKey(const Key('catalog.c-1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.delete));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('catalog.c-1')), findsNothing);
-      verify(storage.set(any, argThat(equals({catalog1.prefix: null}))));
-
-      await tester.longPress(find.byKey(const Key('catalog.c-2')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.delete));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('catalog.c-2')), findsNothing);
-      expect(Menu.instance.isEmpty, isTrue);
-      verify(storage.set(any, argThat(equals({catalog2.prefix: null}))));
     });
 
     testWidgets('Search product', (WidgetTester tester) async {

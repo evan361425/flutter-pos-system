@@ -24,102 +24,118 @@ import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
   group('Home Page', () {
-    testWidgets('should navigate correctly', (tester) async {
-      when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
-      when(cache.get(any)).thenReturn(null);
-      // disable tutorial
-      when(cache.get(
-        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-      )).thenReturn(true);
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        groupBy: anyNamed('groupBy'),
-        orderBy: anyNamed('orderBy'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        escapeTable: anyNamed('escapeTable'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([]));
-      final stock = Stock()..replaceItems({'i1': Ingredient(id: 'i1')});
+    for (final device in [Device.desktop, Device.landscape, Device.mobile]) {
+      group(device.name, () {
+        testWidgets('should navigate correctly', (tester) async {
+          deviceAs(device, tester);
+          // disable tutorial
+          when(cache.get(
+            argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
+          )).thenReturn(true);
 
-      tester.view.physicalSize = const Size(800, 1400);
-      tester.view.devicePixelRatio = 1.0;
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: SettingsProvider.instance),
-          ChangeNotifierProvider.value(value: Seller.instance),
-          ChangeNotifierProvider.value(value: Menu()),
-          ChangeNotifierProvider.value(value: stock),
-          ChangeNotifierProvider.value(value: Quantities()),
-          ChangeNotifierProvider.value(value: OrderAttributes()),
-          ChangeNotifierProvider.value(value: Analysis()),
-          ChangeNotifierProvider.value(value: Cart()),
-          ChangeNotifierProvider.value(value: Cashier()),
-        ],
-        child: MaterialApp.router(
-          routerConfig: GoRouter(
-            navigatorKey: Routes.rootNavigatorKey,
-            observers: [App.routeObserver],
-            initialLocation: '${Routes.base}/_',
-            routes: Routes.getDesiredRoute(0).routes,
-          ),
-          theme: AppThemes.lightTheme,
-          darkTheme: AppThemes.darkTheme,
-        ),
-      ));
+          await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: SettingsProvider.instance),
+              ChangeNotifierProvider.value(value: Seller.instance),
+              ChangeNotifierProvider.value(value: Menu()),
+              ChangeNotifierProvider.value(value: Stock()..replaceItems({'i1': Ingredient(id: 'i1')})),
+              ChangeNotifierProvider.value(value: Quantities()),
+              ChangeNotifierProvider.value(value: OrderAttributes()),
+              ChangeNotifierProvider.value(value: Analysis()),
+              ChangeNotifierProvider.value(value: Cart()),
+              ChangeNotifierProvider.value(value: Cashier()),
+            ],
+            child: MaterialApp.router(
+              routerConfig: GoRouter(
+                navigatorKey: Routes.rootNavigatorKey,
+                observers: [App.routeObserver],
+                initialLocation: device == Device.mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
+                routes: Routes.getDesiredRoute(device.width / tester.view.devicePixelRatio).routes,
+              ),
+              theme: AppThemes.lightTheme,
+              darkTheme: AppThemes.darkTheme,
+            ),
+          ));
 
-      Future<void> navAndCheck(String key, String check) async {
-        await tester.tap(find.byKey(Key(key)), warnIfMissed: false);
-        await tester.pumpAndSettle();
+          Future<void> navAndCheck(
+            String key,
+            String check, {
+            bool drag = false,
+            bool pop = true,
+            bool openMenu = true,
+            Device? only,
+            IconData? icon,
+          }) async {
+            if (only != null && device != only) {
+              return;
+            }
 
-        expect(find.byKey(Key(check)), findsOneWidget);
-      }
+            if (device == Device.landscape && openMenu) {
+              await tester.tap(find.byIcon(Icons.menu));
+              await tester.pumpAndSettle();
+            }
 
-      Future<void> navAndPop(String key, String check) async {
-        await navAndCheck(key, check);
+            if (drag) {
+              await tester.dragFrom(const Offset(400, 400), const Offset(0, -200));
+              await tester.pumpAndSettle();
+            }
 
-        await tester.tap(find.byKey(const Key('pop')));
-        await tester.pumpAndSettle();
-      }
+            if (device == Device.desktop && icon != null) {
+              await tester.tap(find.byIcon(icon));
+            } else {
+              await tester.tap(find.byKey(Key(key)));
+            }
+            await tester.pumpAndSettle();
 
-      Future<void> dragDown() async {
-        await tester.dragFrom(const Offset(400, 400), const Offset(0, -200));
-        await tester.pumpAndSettle();
-      }
+            expect(find.byKey(Key(check)), findsOneWidget);
 
-      await navAndPop('setting_header.menu1', 'menu.search');
-      await navAndPop('setting_header.menu2', 'menu.search');
-      await navAndPop('setting_header.order_attrs', 'order_attributes_page');
+            if (device == Device.mobile && pop) {
+              await tester.tap(find.byKey(const Key('pop')));
+              await tester.pumpAndSettle();
+            }
+          }
 
-      // rest
-      await navAndPop('setting.debug', 'debug.list');
-      await navAndPop('setting.menu', 'menu.search');
-      await navAndPop('setting.transit', 'transit.google_sheet');
-      await navAndPop('setting.quantity', 'quantities_page');
-      await navAndPop('setting.order_attrs', 'order_attributes_page');
-      await dragDown();
-      await navAndPop('setting.feature_request', 'elf_page');
-      await dragDown();
-      await navAndPop('setting.setting', 'feature.theme');
-      await navAndPop('home.order', 'order.more');
-      await navAndCheck('home.stock', 'stock.replenisher');
-      await navAndCheck('home.cashier', 'cashier.changer');
-      await navAndCheck('home.analysis', 'anal.history');
-    });
+          if (device == Device.desktop) {
+            await tester.tap(find.byIcon(Icons.menu));
+            await tester.pumpAndSettle();
+          }
+
+          await navAndCheck('more_header.menu1', 'menu_page', only: Device.mobile);
+          await navAndCheck('more_header.menu2', 'menu_page', only: Device.mobile);
+          await navAndCheck('more_header.order_attrs', 'order_attributes_page', only: Device.mobile);
+          await navAndCheck('home.debug', 'debug.list', icon: Icons.bug_report_outlined);
+          await navAndCheck('home.menu', 'menu_page', icon: Icons.collections_outlined);
+          await navAndCheck('home.transit', 'transit.google_sheet', icon: Icons.local_shipping_outlined);
+          await navAndCheck('home.stockQuantities', 'quantities_page', drag: true, icon: Icons.exposure_outlined);
+          await navAndCheck('home.orderAttributes', 'order_attributes_page', icon: Icons.assignment_ind_outlined);
+          await navAndCheck('home.elf', 'elf_page', icon: Icons.lightbulb_outlined);
+          await navAndCheck('home.settings', 'feature.theme', drag: true, icon: Icons.settings_outlined);
+
+          if (device == Device.desktop) {
+            await tester.tap(find.byIcon(Icons.close));
+            await tester.pumpAndSettle();
+          }
+
+          await navAndCheck('home.stock', 'stock.replenisher', pop: false, icon: Icons.inventory_2_outlined);
+          await navAndCheck('home.cashier', 'cashier.changer', pop: false, icon: Icons.monetization_on_outlined);
+          await navAndCheck('home.analysis', 'anal.history', pop: false, icon: Icons.analytics_outlined);
+
+          await navAndCheck('home.order', 'order.more', openMenu: false);
+        });
+      });
+    }
 
     group('example menu', () {
       setUp(() {
-        reset(cache);
-        when(cache.get(any)).thenReturn(null);
         when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
       });
 
-      Widget buildApp() {
+      Widget buildApp(WidgetTester tester, {Device device = Device.mobile}) {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider.value(value: SettingsProvider.instance),
@@ -127,13 +143,14 @@ void main() {
             ChangeNotifierProvider.value(value: Stock()),
             ChangeNotifierProvider.value(value: Quantities()),
             ChangeNotifierProvider.value(value: OrderAttributes()),
+            ChangeNotifierProvider.value(value: Analysis()),
           ],
           child: MaterialApp.router(
             routerConfig: GoRouter(
               navigatorKey: Routes.rootNavigatorKey,
               observers: [App.routeObserver],
-              initialLocation: '${Routes.base}/_',
-              routes: Routes.getDesiredRoute(0).routes,
+              initialLocation: device == Device.mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
+              routes: Routes.getDesiredRoute(device.width / tester.view.devicePixelRatio).routes,
             ),
             theme: AppThemes.lightTheme,
             darkTheme: AppThemes.darkTheme,
@@ -142,7 +159,9 @@ void main() {
       }
 
       Future<void> startTutorial(WidgetTester tester) async {
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pump(const Duration(milliseconds: 100));
         await tester.pump(const Duration(milliseconds: 5));
       }
 
@@ -152,27 +171,33 @@ void main() {
         await tester.pump(const Duration(milliseconds: 5));
       }
 
-      testWidgets('Setup', (tester) async {
-        await tester.pumpWidget(buildApp());
-        expect(Menu.instance.isEmpty, isTrue);
-        expect(OrderAttributes.instance.isEmpty, isTrue);
+      for (final device in [Device.desktop, Device.landscape, Device.mobile]) {
+        group(device.name, () {
+          testWidgets('Setup', (tester) async {
+            deviceAs(device, tester);
+            await tester.pumpWidget(buildApp(tester, device: device));
+            expect(Menu.instance.isEmpty, isTrue);
+            expect(OrderAttributes.instance.isEmpty, isTrue);
 
-        await startTutorial(tester);
-        await goNext(tester);
+            await startTutorial(tester);
+            expect(find.text(S.menuTutorialTitle), findsOneWidget);
 
-        expect(find.text(S.orderAttributeTutorialContent), findsOneWidget);
-        expect(Menu.instance.isNotEmpty, isTrue);
-        verify(cache.set('tutorial.home.menu', true));
+            await goNext(tester);
+            expect(find.text(S.orderAttributeTutorialTitle), findsOneWidget);
+            expect(Menu.instance.isNotEmpty, isTrue);
+            verify(cache.set('tutorial.home.menu', true));
 
-        await goNext(tester);
+            await goNext(tester);
 
-        expect(find.text(S.orderTutorialTitle), findsOneWidget);
-        expect(OrderAttributes.instance.isNotEmpty, isTrue);
-        verify(cache.set('tutorial.home.order_attr', true));
-      });
+            expect(find.text(S.orderTutorialTitle), findsOneWidget);
+            expect(OrderAttributes.instance.isNotEmpty, isTrue);
+            verify(cache.set('tutorial.home.order_attr', true));
+          });
+        });
+      }
 
       testWidgets('Disable example menu', (tester) async {
-        await tester.pumpWidget(buildApp());
+        await tester.pumpWidget(buildApp(tester));
 
         await startTutorial(tester);
         await tester.tap(find.text(S.menuTutorialCreateExample));
@@ -185,9 +210,16 @@ void main() {
     });
 
     setUp(() {
+      reset(auth);
+      reset(cache);
+      reset(database);
+
       // setup currency
-      when(cache.get('currency')).thenReturn(null);
+      when(cache.get(any)).thenReturn(null);
       CurrencySetting.instance.initialize();
+
+      // setup auth
+      when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
 
       // setup seller
       when(database.query(
@@ -198,6 +230,16 @@ void main() {
       )).thenAnswer((_) => Future.value([
             {'totalPrice': 20, 'count': 10},
           ]));
+      when(database.query(
+        any,
+        columns: anyNamed('columns'),
+        groupBy: anyNamed('groupBy'),
+        orderBy: anyNamed('orderBy'),
+        where: anyNamed('where'),
+        whereArgs: anyNamed('whereArgs'),
+        escapeTable: anyNamed('escapeTable'),
+        limit: anyNamed('limit'),
+      )).thenAnswer((_) => Future.value([]));
     });
 
     setUpAll(() {

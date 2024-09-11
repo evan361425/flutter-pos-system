@@ -5,6 +5,7 @@ import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -33,12 +34,22 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   late Catalog? selected;
   late final PageController controller;
-  bool get isBottomNav => Routes.homeMode.value == HomeMode.bottomNavigationBar;
+  late bool singleView;
 
   @override
   Widget build(BuildContext context) {
-    if (isBottomNav) {
+    context.watch<Menu>();
+
+    final width = MediaQuery.sizeOf(context).width;
+    singleView = Breakpoint.find(width: width) <= Breakpoint.medium;
+    // if we are in two-view mode, we should always show the second view
+    if (!singleView) {
+      selected ??= Menu.instance.itemList.firstOrNull;
+    }
+
+    if (singleView) {
       return PopScope(
+        key: const Key('menu_page'),
         canPop: selected == null,
         onPopInvoked: _onPopInvoked,
         child: Scaffold(
@@ -60,7 +71,8 @@ class _MenuPageState extends State<MenuPage> {
       );
     }
 
-    return Row(children: [
+    // no need to use Scaffold here, because this will be wrapped by HomePage
+    return Row(key: const Key('menu_page'), children: [
       Expanded(child: firstView),
       const VerticalDivider(),
       Expanded(child: secondView),
@@ -68,14 +80,8 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   @override
-  void didChangeDependencies() {
-    context.watch<Menu>();
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
-    selected = widget.catalog ?? (isBottomNav ? null : Menu.instance.itemList.firstOrNull);
+    selected = widget.catalog;
     controller = PageController(
       // go to product if has selected catalog
       initialPage: widget.catalog == null ? 0 : 1,
@@ -99,13 +105,13 @@ class _MenuPageState extends State<MenuPage> {
       );
     }
 
-    if (widget.productOnly && isBottomNav) {
+    if (widget.productOnly && singleView) {
       return const MenuProductList(catalog: null);
     }
 
     return MenuCatalogList(
       Menu.instance.itemList, // put it here to handle reload
-      leading: isBottomNav
+      leading: singleView
           ? null
           : const Padding(
               padding: EdgeInsets.only(left: kHorizontalSpacing),
@@ -190,7 +196,7 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _pageSlideTo(int index) async {
-    if (isBottomNav) {
+    if (singleView) {
       return controller.animateToPage(
         index,
         duration: const Duration(milliseconds: 300),

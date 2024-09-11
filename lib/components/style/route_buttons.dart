@@ -7,11 +7,9 @@ import 'package:possystem/translator.dart';
 class RouteElevatedIconButton extends StatelessWidget {
   final Icon icon;
 
-  final String? route;
-
   final String label;
 
-  final bool popTrueShowSuccess;
+  final String? route;
 
   final Map<String, String> pathParameters;
 
@@ -22,7 +20,6 @@ class RouteElevatedIconButton extends StatelessWidget {
     required this.icon,
     required this.route,
     required this.label,
-    this.popTrueShowSuccess = false,
     this.pathParameters = const {},
     this.queryParameters = const {},
   });
@@ -32,16 +29,11 @@ class RouteElevatedIconButton extends StatelessWidget {
     return ElevatedButton.icon(
       icon: icon,
       label: Text(label),
-      onPressed: () async {
-        final result = await context.pushNamed(
-          route!,
-          pathParameters: pathParameters,
-          queryParameters: queryParameters,
-        );
-        if (result == true && popTrueShowSuccess && context.mounted) {
-          showSnackBar(context, S.actSuccess);
-        }
-      },
+      onPressed: () => context.pushNamed(
+        route!,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+      ),
     );
   }
 }

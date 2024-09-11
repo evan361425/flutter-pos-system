@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/style/info_popup.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/cache.dart';
@@ -58,7 +60,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     final style = Theme.of(context).textTheme.bodyLarge?.copyWith(overflow: TextOverflow.ellipsis);
 
     return LayoutBuilder(builder: (context, constraint) {
-      final compact = constraint.maxWidth < 600;
+      final compact = constraint.maxWidth < Breakpoint.compact.max;
       final align = goal!.profit == 0 ? MainAxisAlignment.start : MainAxisAlignment.spaceAround;
       return Row(mainAxisAlignment: align, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
@@ -216,7 +218,8 @@ class _GoalItem extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 320),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         label,
-        Expanded(child: value),
+        const SizedBox(width: kInternalLargeSpacing),
+        Expanded(child: Align(alignment: Alignment.centerRight, child: value)),
       ]),
     );
   }

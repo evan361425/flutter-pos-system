@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/launcher.dart';
-import 'package:possystem/helpers/logger.dart';
 
 final _regex = RegExp(r'\[([^\]]+)\]\((https?:\/\/[^\)]+)\)');
 
@@ -20,11 +19,8 @@ class Linkify extends StatelessWidget {
   ///   at new Linkify.fromString(linkify.dart:15)
   ///   at Tutorial.build(tutorial.dart:107)
   /// ```
-  factory Linkify.fromString(String? text, {TextAlign? textAlign, String? id}) {
-    if (text == null) {
-      Log.err('Get null string id tutorial id: $id', 'linkify');
-    }
-    return Linkify(_parseText(text ?? ''), textAlign: textAlign);
+  factory Linkify.fromString(String text, {TextAlign? textAlign, String? id}) {
+    return Linkify(_parseText(text), textAlign: textAlign);
   }
 
   @override

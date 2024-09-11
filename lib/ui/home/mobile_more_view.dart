@@ -51,7 +51,7 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
         ),
         OrderAttrTutorial(
           child: _buildRouteTile(
-            id: 'order_attrs',
+            id: 'orderAttributes',
             icon: Icons.assignment_ind_outlined,
             route: Routes.orderAttr,
             title: S.orderAttributeTitle,
@@ -59,21 +59,21 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
           ),
         ),
         _buildRouteTile(
-          id: 'quantity',
+          id: 'stockQuantities',
           icon: Icons.exposure_outlined,
           route: Routes.quantities,
           title: S.stockQuantityTitle,
           subtitle: S.stockQuantityDescription,
         ),
         _buildRouteTile(
-          id: 'feature_request',
+          id: 'elf',
           icon: Icons.lightbulb_outlined,
           route: Routes.elf,
           title: S.settingElfTitle,
           subtitle: S.settingElfDescription,
         ),
         _buildRouteTile(
-          id: 'setting',
+          id: 'settings',
           icon: Icons.settings_outlined,
           route: Routes.settings,
           title: S.settingFeatureTitle,
@@ -95,7 +95,7 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
     required String subtitle,
   }) {
     return ListTile(
-      key: Key('setting.$id'),
+      key: Key('home.$id'),
       leading: Icon(icon),
       trailing: const Icon(Icons.navigate_next_outlined),
       onTap: () => context.goNamed(route),
@@ -161,7 +161,7 @@ class _HeaderInfoList extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ElevatedButton(
-      key: Key('setting_header.$id'),
+      key: Key('more_header.$id'),
       style: const ButtonStyle(
         fixedSize: WidgetStatePropertyAll(Size.square(128)),
         padding: WidgetStatePropertyAll(EdgeInsets.zero),

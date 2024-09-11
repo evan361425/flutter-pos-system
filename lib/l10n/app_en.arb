@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-09-01T08:25:33.606863Z",
+  "@@last_modified": "2024-09-11T07:30:16.339769Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -993,7 +993,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} setting{Settings} menu{Menu} transit{Data Transfer} orderAttribute{Customer Settings} stockQuantity{Quantities} elf{Suggestions} more{More} other{UNKNOWN}}",
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
   "dialogDeletionTitle": "Delete Confirmation",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1149,7 +1149,7 @@
   "@orderAttributeHeaderInfo": {
     "description": "Displayed on the upper rectangle in homepage"
   },
-  "orderAttributeTutorialTitle": "Customer Settings",
+  "orderAttributeTutorialTitle": "Create Your Customer Settings",
   "orderAttributeTutorialContent": "This is where you set customer information, such as dine-in, takeout, office worker, etc.\nThis information helps us track who comes to consume and make better business strategies.",
   "orderAttributeTutorialCreateExample": "Help create an example to test.",
   "orderAttributeExampleAge": "Age",

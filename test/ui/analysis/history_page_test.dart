@@ -57,7 +57,7 @@ void main() {
       )).thenAnswer((_) => Future.value(count));
     }
 
-    testWidgets('select date and show order list in portrait', (tester) async {
+    testWidgets('select date and show order list in mobile', (tester) async {
       final now = DateTime.now();
       final nowD = DateTime(now.year, now.month, now.day);
       final nowS = (nowD.millisecondsSinceEpoch -
@@ -73,11 +73,7 @@ void main() {
         {'day': nowS - 1, 'count': 50},
       ]);
 
-      // setup portrait env
-      tester.view.physicalSize = const Size(1000, 2000);
-
-      // resets the screen to its original size after the test end
-      addTearDown(tester.view.resetPhysicalSize);
+      deviceAs(Device.mobile, tester);
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();

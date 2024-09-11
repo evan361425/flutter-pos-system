@@ -12,13 +12,14 @@ title:
 - analysis: 分析
   stock: 庫存
   cashier: 收銀
-  setting: 設定
+  settings: 設定
   menu: 菜單
   transit: 資料轉移
-  orderAttribute: 顧客設定
-  stockQuantity: 份量
+  orderAttributes: 顧客設定
+  stockQuantities: 份量
   elf: 建議
   more: 更多
+  debug: Debug
 dialog:
   deletionTitle: 刪除確認通知
   deletionContent: |-

@@ -18,6 +18,7 @@ class SliverImageAppBar extends StatelessWidget {
     final background = ImageHolder(
       image: model.image,
       padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
+      // required for the gradient
       title: '',
       onImageError: () => model.saveImage(null),
     );

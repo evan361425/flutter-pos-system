@@ -23,6 +23,7 @@ import '../../../mocks/mock_cache.dart';
 import '../../../mocks/mock_google_api.dart';
 import '../../../mocks/mock_storage.dart';
 import '../../../services/auth_test.mocks.dart';
+import '../../../test_helpers/breakpoint_mocker.dart';
 import '../../../test_helpers/translator.dart';
 
 void main() {
@@ -182,36 +183,49 @@ void main() {
         expect(find.text(S.transitGSErrorImportNotFoundSheets('title')), findsOneWidget);
       });
 
-      testWidgets('pop preview source', (tester) async {
-        const ing = '- i1,1\n  + q1,1,1,1\n  + q2';
-        final sheetsApi = getMockSheetsApi();
-        final notifier = ValueNotifier<String>('');
-        mockSheetData(sheetsApi, [
-          ['c1', 'p1', 1, 1],
-          ['c1', 'p2', 2, 2, ing],
-        ]);
+      for (final device in [Device.desktop, Device.mobile]) {
+        group(device.name, () {
+          testWidgets('pop preview source', (tester) async {
+            deviceAs(device, tester);
+            const ing = '- i1,1\n  + q1,1,1,1\n  + q2';
+            final sheetsApi = getMockSheetsApi();
+            final notifier = ValueNotifier<String>('');
+            mockSheetData(sheetsApi, [
+              ['c1', 'p1', 1, 1],
+              ['c1', 'p2', 2, 2, ing],
+            ]);
 
-        await tester.pumpWidget(MaterialApp(
-          home: TransitStation(
-            catalog: TransitCatalog.model,
-            notifier: notifier,
-            exporter: GoogleSheetExporter(
-              sheetsApi: sheetsApi,
-              scopes: gsExporterScopes,
-            ),
-            method: TransitMethod.googleSheet,
-          ),
-        ));
-        await tapBtn(tester);
+            await tester.pumpWidget(MaterialApp.router(
+              routerConfig: GoRouter(
+                navigatorKey: Routes.rootNavigatorKey,
+                routes: [
+                  GoRoute(
+                    path: '/',
+                    builder: (_, __) => TransitStation(
+                      catalog: TransitCatalog.model,
+                      notifier: notifier,
+                      exporter: GoogleSheetExporter(
+                        sheetsApi: sheetsApi,
+                        scopes: gsExporterScopes,
+                      ),
+                      method: TransitMethod.googleSheet,
+                    ),
+                  ),
+                ],
+              ),
+            ));
+            await tapBtn(tester);
 
-        expect(find.text(ing), findsOneWidget);
-        expect(notifier.value, equals(S.transitGSProgressStatusVerifyUser));
+            expect(find.text(ing), findsOneWidget);
+            expect(notifier.value, equals(S.transitGSProgressStatusVerifyUser));
 
-        await tester.tap(find.byKey(const Key('pop')).last);
-        await tester.pumpAndSettle();
+            await tester.tap(find.byKey(const Key('pop')).last);
+            await tester.pumpAndSettle();
 
-        expect(notifier.value, equals('_finish'));
-      });
+            expect(notifier.value, equals('_finish'));
+          });
+        });
+      }
 
       testWidgets('menu(commit)', (tester) async {
         final sheetsApi = getMockSheetsApi();
