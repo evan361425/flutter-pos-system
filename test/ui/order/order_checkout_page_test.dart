@@ -228,7 +228,7 @@ void main() {
 
           // only mobile has this change text and allow to drag
           if (device == Device.mobile) {
-            expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('2')), findsOneWidget);
+            expect(find.text(S.orderCheckoutDetailsSnapshotLabelChange('2')), findsOneWidget);
             await tester.drag(
               find.byKey(const Key('order.details.ds')),
               const Offset(0, -408),
@@ -274,7 +274,7 @@ void main() {
             await tester.tapAt(const Offset(400, 161));
             await tester.pumpAndSettle();
 
-            expect(find.text(S.orderCheckoutCashierSnapshotLabelChange('62')), findsOneWidget);
+            expect(find.text(S.orderCheckoutDetailsSnapshotLabelChange('62')), findsOneWidget);
           }
 
           expect(find.byKey(const Key('cashier.snapshot.90')), findsOneWidget);
@@ -370,7 +370,7 @@ void main() {
           await tester.tap(find.byKey(const Key('order.attr.oa-1.oao-1')));
           await tester.tap(find.byKey(const Key('order.attr.oa-2.oao-3')));
 
-          await tester.tap(find.text(S.orderCheckoutCashierTab));
+          await tester.tap(find.text(S.orderCheckoutDetailsTab));
           await tester.pumpAndSettle();
 
           final now = DateTime.now();

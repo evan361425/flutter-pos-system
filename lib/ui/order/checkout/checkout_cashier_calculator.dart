@@ -42,7 +42,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
           _SingleField(
             key: paidState,
             id: 'cashier.calculator.paid',
-            prefix: S.orderCheckoutCashierCalculatorLabelPaid,
+            prefix: S.orderCheckoutDetailsCalculatorLabelPaid,
             defaultText: widget.price.value.toCurrency(),
             errorText: '',
           ),
@@ -50,7 +50,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
           _SingleField(
             key: changeState,
             id: 'cashier.calculator.change',
-            prefix: S.orderCheckoutCashierCalculatorLabelChange,
+            prefix: S.orderCheckoutDetailsCalculatorLabelChange,
             defaultText: '0',
             errorText: S.orderCheckoutSnackbarPaidFailed,
           ),

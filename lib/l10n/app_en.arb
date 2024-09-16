@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-09-14T13:02:19.109593Z",
+  "@@last_modified": "2024-09-16T01:27:44.582362Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -1735,11 +1735,11 @@
   "orderCheckoutStashDialogRestoreContent": "This action will override the current cart contents.",
   "orderCheckoutStashDialogDeleteName": "order",
   "orderCheckoutAttributeTab": "Customer",
-  "orderCheckoutCashierTab": "Checkout",
-  "orderCheckoutCashierCalculatorLabelPaid": "Paid",
-  "orderCheckoutCashierCalculatorLabelChange": "Change",
-  "orderCheckoutCashierSnapshotLabelChange": "Change: {change}",
-  "@orderCheckoutCashierSnapshotLabelChange": {
+  "orderCheckoutDetailsTab": "Details",
+  "orderCheckoutDetailsCalculatorLabelPaid": "Paid",
+  "orderCheckoutDetailsCalculatorLabelChange": "Change",
+  "orderCheckoutDetailsSnapshotLabelChange": "Change: {change}",
+  "@orderCheckoutDetailsSnapshotLabelChange": {
     "description": "Change given by the cashier after the customer's payment",
     "placeholders": {
       "change": {

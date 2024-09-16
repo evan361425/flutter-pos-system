@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-09-14T13:02:19.146195Z",
+  "@@last_modified": "2024-09-16T01:27:44.603687Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -1735,11 +1735,11 @@
   "orderCheckoutStashDialogRestoreContent": "此動作將會覆蓋掉現在購物車內的訂單。",
   "orderCheckoutStashDialogDeleteName": "訂單",
   "orderCheckoutAttributeTab": "顧客設定",
-  "orderCheckoutCashierTab": "收銀機",
-  "orderCheckoutCashierCalculatorLabelPaid": "付額",
-  "orderCheckoutCashierCalculatorLabelChange": "找錢",
-  "orderCheckoutCashierSnapshotLabelChange": "找錢：{change}",
-  "@orderCheckoutCashierSnapshotLabelChange": {
+  "orderCheckoutDetailsTab": "訂單細項",
+  "orderCheckoutDetailsCalculatorLabelPaid": "付額",
+  "orderCheckoutDetailsCalculatorLabelChange": "找錢",
+  "orderCheckoutDetailsSnapshotLabelChange": "找錢：{change}",
+  "@orderCheckoutDetailsSnapshotLabelChange": {
     "description": "Change given by the cashier after the customer's payment",
     "placeholders": {
       "change": {

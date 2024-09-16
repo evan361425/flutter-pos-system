@@ -57,7 +57,7 @@ class _CheckoutCashierSnapshotState extends State<CheckoutCashierSnapshot> {
       Expanded(child: chips),
       Padding(
         padding: const EdgeInsets.fromLTRB(kInternalLargeSpacing, 0, kHorizontalSpacing, 0),
-        child: Text(S.orderCheckoutCashierSnapshotLabelChange(change.toCurrency())),
+        child: Text(S.orderCheckoutDetailsSnapshotLabelChange(change.toCurrency())),
       ),
     ]);
   }

@@ -111,7 +111,7 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
           controller: _controller,
           tabs: [
             if (widget.hasAttr) Tab(key: const Key('order.details.attr'), text: S.orderCheckoutAttributeTab),
-            Tab(key: const Key('order.details.order'), text: S.orderCheckoutCashierTab),
+            Tab(key: const Key('order.details.order'), text: S.orderCheckoutDetailsTab),
             Tab(key: const Key('order.details.stashed'), text: S.orderCheckoutStashTab),
           ],
         ),
@@ -319,7 +319,7 @@ class _Desktop extends StatelessWidget {
       onSelectionChanged: (value) => viewIndex.value = value.first,
       segments: [
         if (hasAttr) ButtonSegment(value: idx++, label: Text(S.orderCheckoutAttributeTab)),
-        ButtonSegment(value: idx++, label: Text(S.orderCheckoutCashierTab)),
+        ButtonSegment(value: idx++, label: Text(S.orderCheckoutDetailsTab)),
         ButtonSegment(value: idx++, label: Text(S.orderCheckoutStashTab)),
       ],
     );
