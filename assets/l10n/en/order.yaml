@@ -143,8 +143,8 @@ checkout:
         name: order
   attribute:
     tab: Customer
-  cashier:
-    tab: Checkout
+  details:
+    tab: Details
     calculator:
       label:
         paid: Paid

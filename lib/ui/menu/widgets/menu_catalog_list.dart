@@ -12,24 +12,20 @@ import 'package:possystem/translator.dart';
 class MenuCatalogList extends StatelessWidget {
   final List<Catalog> catalogs;
 
-  /// Search bar in wide screen
-  final Widget? leading;
-  final Widget tailing;
+  final Widget leading;
   final void Function(Catalog) onSelected;
 
   const MenuCatalogList(
     this.catalogs, {
     super.key,
     required this.onSelected,
-    this.leading,
-    required this.tailing,
+    required this.leading,
   });
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Catalog, _Action>(
       leading: leading,
-      tailing: tailing,
       action: RouteIconButton(
         label: S.menuCatalogTitleReorder,
         icon: const Icon(KIcons.reorder),

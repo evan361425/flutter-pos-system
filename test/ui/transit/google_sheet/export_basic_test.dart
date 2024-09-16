@@ -130,9 +130,9 @@ void main() {
         bool selected = true,
       }) async {
         await tester.pumpAndSettle();
-        await tester.tap(find.text(
-          selected ? S.transitGSSpreadsheetExportExistLabel : S.transitGSSpreadsheetExportEmptyLabel,
-        ));
+        await tester.tap(
+          find.text(selected ? S.transitGSSpreadsheetExportExistLabel : S.transitGSSpreadsheetExportEmptyLabel).first,
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();

@@ -108,33 +108,37 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     }
 
     final spacing = bp.lookup(compact: 4.0, expanded: 12.0);
+    // maximum width is 800
+    final crossAxisCount = bp.lookup(compact: 3, medium: 4);
     return GridView.builder(
       primary: false,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: bp.lookup(compact: 3, expanded: 4),
+        crossAxisCount: crossAxisCount,
         crossAxisSpacing: spacing,
         mainAxisSpacing: spacing,
       ),
-      // add 1 for add button, add crossAxisCount for spacing
-      itemCount: images!.length + (selecting ? 0 : 1) + 3,
+      // add 1 for add button, and add crossAxisCount for bottom spacing
+      itemCount: images!.length + (selecting ? 0 : 1) + crossAxisCount,
       semanticChildCount: images!.length,
       itemBuilder: (context, index) {
-        if (!selecting && index == images!.length) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              key: const Key('image_gallery.add'),
-              onPressed: createImage,
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Icon(KIcons.add),
-                Text(S.imageGalleryActionCreate, textAlign: TextAlign.center),
-              ]),
-            ),
-          );
+        if (!selecting) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                key: const Key('image_gallery.add'),
+                onPressed: createImage,
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  const Icon(KIcons.add),
+                  Text(S.imageGalleryActionCreate, textAlign: TextAlign.center),
+                ]),
+              ),
+            );
+          }
+          index--; // remove 0-index of add button
         }
 
         if (index >= images!.length) {
-          // Floating action button offset
           return const SizedBox(height: kFABSpacing);
         }
 

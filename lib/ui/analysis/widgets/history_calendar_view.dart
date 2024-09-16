@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
     hashCode: _hashDate,
   );
 
-  CalendarFormat _calendarFormat = CalendarFormat.week;
+  late CalendarFormat _calendarFormat;
 
   late DateTime _selectedDay;
 
@@ -74,7 +75,10 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
           defaultBuilder: _defaultBuilder,
         ),
         onPageChanged: _searchPageData,
-        onFormatChanged: (format) => setState(() => _calendarFormat = format),
+        onFormatChanged: (format) async {
+          setState(() => _calendarFormat = format);
+          await Cache.instance.set('history.calendar_format', format.index);
+        },
         onDaySelected: (DateTime selectedDay, DateTime focusedDay) => _onDaySelected(selectedDay),
       ),
     );
@@ -82,9 +86,14 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
 
   @override
   void initState() {
-    super.initState();
-
     _focusedDay = _selectedDay = widget.notifier.value.start;
+
+    // cache from last time, or default to month if in wide screen else week
+    final cached = Cache.instance.get<int>('history.calendar_format') ?? CalendarFormat.values.length;
+    _calendarFormat = CalendarFormat.values.elementAtOrNull(cached) ??
+        (widget.shouldFillViewport ? CalendarFormat.month : CalendarFormat.week);
+
+    super.initState();
   }
 
   @override

@@ -24,6 +24,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final singleView = MediaQuery.sizeOf(context).width <= Breakpoint.medium.max;
     return TutorialWrapper(
       child: Scaffold(
         appBar: AppBar(
@@ -57,7 +58,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
           ],
         ),
-        body: MediaQuery.sizeOf(context).width <= Breakpoint.medium.max ? _buildSingleColumn() : _buildTwoColumns(),
+        body: singleView ? _buildSingleColumn() : _buildTwoColumns(),
       ),
     );
   }

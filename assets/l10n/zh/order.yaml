@@ -107,8 +107,8 @@ checkout:
         name: 訂單
   attribute:
     tab: 顧客設定
-  cashier:
-    tab: 收銀機
+  details:
+    tab: 訂單細項
     calculator:
       label:
         paid: 付額

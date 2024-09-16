@@ -7,6 +7,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart' show CalendarFormat;
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
@@ -119,10 +120,6 @@ void main() {
       await tester.pumpWidget(buildApp(themeMode: ThemeMode.dark));
       await tester.pumpAndSettle();
 
-      // change format
-      await tester.tap(find.text(S.singleMonth));
-      await tester.pumpAndSettle();
-
       expect(find.text('50'), findsOneWidget);
       expect(find.text('60'), findsNothing);
 
@@ -133,6 +130,14 @@ void main() {
 
       expect(find.text('50'), now.day < now.weekday ? findsOneWidget : findsNothing);
       expect(find.text('60'), findsOneWidget);
+
+      // change format
+      when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+
+      await tester.tap(find.text(S.twoWeeks));
+      await tester.pumpAndSettle();
+
+      verify(cache.set('history.calendar_format', CalendarFormat.twoWeeks.index));
     });
 
     testWidgets('should navigate to exporter', (tester) async {
@@ -149,6 +154,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitMethodName('plainText')), findsOneWidget);
+    });
+
+    setUp(() {
+      reset(cache);
     });
 
     setUpAll(() {

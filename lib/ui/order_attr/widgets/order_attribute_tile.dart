@@ -64,6 +64,7 @@ class OrderAttributeTile extends StatelessWidget {
 
   Widget _buildActions(BuildContext context) {
     return Row(children: [
+      const SizedBox(width: kHorizontalSpacing),
       Expanded(
         child: ElevatedButton.icon(
           key: Key('order_attributes.${attr.id}.add'),
@@ -75,11 +76,11 @@ class OrderAttributeTile extends StatelessWidget {
           icon: const Icon(KIcons.add),
         ),
       ),
-      const SizedBox(width: kInternalSpacing),
       EntryMoreButton(
         key: Key('order_attributes.${attr.id}.more'),
         onPressed: _showActions,
       ),
+      const SizedBox(width: kHorizontalSpacing),
     ]);
   }
 

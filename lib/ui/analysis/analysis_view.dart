@@ -36,9 +36,11 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
           final bp = Breakpoint.find(box: constraints);
           return CustomScrollView(slivers: <Widget>[
             child!,
-            SliverAppBar(primary: false, title: Text(S.analysisChartTitle), actions: const [
-              _MoreButton(),
-            ]),
+            SliverAppBar(
+              primary: false,
+              automaticallyImplyLeading: false, // avoid giving drawer's menu icon
+              title: Text(S.analysisChartTitle), actions: const [_MoreButton()],
+            ),
             _buildChartHeader(),
             _buildCharts(Analysis.instance.itemList, bp),
           ]);
@@ -87,17 +89,16 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   }
 
   Widget _buildCharts(List<Chart> items, Breakpoint bp) {
+    final col = bp.lookup<int>(compact: 1, medium: 2, expanded: 3, large: 4);
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: kFABSpacing),
       sliver: SliverGrid.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: bp.lookup<int>(expanded: 2, large: 3, compact: 1),
-        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: col),
         itemCount: items.length + 1,
         itemBuilder: (context, index) {
           if (index == items.length) {
             return Align(
-              alignment: Alignment.topCenter,
+              alignment: col == 1 ? Alignment.topCenter : Alignment.center,
               child: SizedBox(
                 width: 200,
                 height: 200,

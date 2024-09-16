@@ -145,7 +145,9 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     );
 
     // Remove the first data, which is the latest data.
-    final todayData = result.firstOrNull?.at == range.end ? result.removeAt(0) : OrderSummary(at: range.start);
+    final todayData = result.firstOrNull?.at == range.end.subtract(const Duration(days: 1))
+        ? result.removeAt(0)
+        : OrderSummary(at: range.start);
 
     if (goal == null) {
       final reversed = result.take(20).toList().reversed;

@@ -109,21 +109,28 @@ class _MenuPageState extends State<MenuPage> {
       return const MenuProductList(catalog: null);
     }
 
+    final addButton = Row(children: [
+      Expanded(
+        child: ElevatedButton.icon(
+          key: const Key('menu.add_catalog'),
+          onPressed: _handleCatalogCreate,
+          label: Text(S.menuCatalogTitleCreate),
+          icon: const Icon(KIcons.add),
+        ),
+      ),
+    ]);
+
     return MenuCatalogList(
       Menu.instance.itemList, // put it here to handle reload
-      leading: singleView
-          ? null
-          : const Padding(
-              padding: EdgeInsets.only(left: kHorizontalSpacing),
-              child: _SearchAction(withTextFiled: true),
-            ),
+      leading: Column(children: [
+        if (!singleView)
+          const Padding(
+            padding: EdgeInsets.only(bottom: kInternalSpacing),
+            child: _SearchAction(withTextFiled: true),
+          ),
+        addButton,
+      ]),
       onSelected: _handleSelected,
-      tailing: ElevatedButton.icon(
-        key: const Key('menu.add_catalog'),
-        onPressed: _handleCatalogCreate,
-        label: Text(S.menuCatalogTitleCreate),
-        icon: const Icon(KIcons.add),
-      ),
     );
   }
 
@@ -145,12 +152,16 @@ class _MenuPageState extends State<MenuPage> {
 
     return MenuProductList(
       catalog: selected,
-      tailing: ElevatedButton.icon(
-        key: const Key('menu.add_product'),
-        onPressed: _handleProductCreate,
-        label: Text(S.menuProductTitleCreate),
-        icon: const Icon(KIcons.add),
-      ),
+      leading: Row(children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            key: const Key('menu.add_product'),
+            onPressed: _handleProductCreate,
+            label: Text(S.menuProductTitleCreate),
+            icon: const Icon(KIcons.add),
+          ),
+        ),
+      ]),
     );
   }
 

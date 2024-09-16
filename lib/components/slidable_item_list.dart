@@ -10,7 +10,6 @@ class SlidableItemList<T, Action> extends StatelessWidget {
   final SlidableItemDelegate<T, Action> delegate;
   final String? hintText;
   final Widget? leading;
-  final Widget? tailing;
   final Widget? action;
 
   const SlidableItemList({
@@ -18,31 +17,35 @@ class SlidableItemList<T, Action> extends StatelessWidget {
     required this.delegate,
     this.hintText,
     this.leading,
-    this.tailing,
     this.action,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
-      child: Column(children: <Widget>[
-        if (leading != null) leading!,
-        Row(children: [
-          Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
-          if (action != null)
+    return Material(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
+        child: Column(children: <Widget>[
+          if (leading != null)
             Padding(
-              padding: const EdgeInsets.only(right: kHorizontalSpacing),
-              child: action,
+              padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+              child: leading!,
             ),
+          Row(children: [
+            Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
+            if (action != null)
+              Padding(
+                padding: const EdgeInsets.only(right: kHorizontalSpacing),
+                child: action,
+              ),
+          ]),
+          const SizedBox(height: kInternalSpacing),
+          for (final widget in delegate.items.mapIndexed(
+            (index, item) => delegate.build(item, index),
+          ))
+            widget,
         ]),
-        const SizedBox(height: kInternalSpacing),
-        for (final widget in delegate.items.mapIndexed(
-          (index, item) => delegate.build(item, index),
-        ))
-          widget,
-        if (tailing != null) tailing!,
-      ]),
+      ),
     );
   }
 }

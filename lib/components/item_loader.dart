@@ -59,6 +59,14 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
       key: const Key('item_loader'),
       prototypeItem: widget.leading == null ? widget.prototypeItem : null,
       itemBuilder: (context, index) {
+        // leading is always the first item
+        if (widget.leading != null) {
+          if (index == 0) {
+            return widget.leading!;
+          }
+          index--;
+        }
+
         if (index == 0) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
@@ -66,11 +74,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
           );
         }
 
-        if (widget.leading != null && index == 1) {
-          return widget.leading!;
-        }
-
-        index = widget.leading == null ? index - 1 : index - 2;
+        index--;
         // loading over the size
         if (items.length == index) {
           if (isFinish) {

@@ -7,7 +7,7 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(alignment: WrapAlignment.center, children: [
+    return Wrap(alignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, children: [
       TextButton(
         onPressed: _links[0].launch,
         child: Text(_links[0].text),

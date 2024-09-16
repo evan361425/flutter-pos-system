@@ -35,12 +35,16 @@ class ReplenishmentPage extends StatelessWidget {
 
           return buildList(
             (Replenishment a, ReplenishActions b) => handleActions(context, a, b),
-            ElevatedButton.icon(
-              key: const Key('replenisher.add'),
-              onPressed: handleCreate,
-              label: Text(S.stockReplenishmentTitleCreate),
-              icon: const Icon(KIcons.add),
-            ),
+            Row(children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  key: const Key('replenisher.add'),
+                  onPressed: handleCreate,
+                  label: Text(S.stockReplenishmentTitleCreate),
+                  icon: const Icon(KIcons.add),
+                ),
+              ),
+            ]),
           );
         },
       ),
@@ -49,10 +53,10 @@ class ReplenishmentPage extends StatelessWidget {
 
   Widget buildList(
     void Function(Replenishment a, ReplenishActions b) actionHandler,
-    Widget trailing,
+    Widget leading,
   ) {
     return SlidableItemList<Replenishment, ReplenishActions>(
-      tailing: trailing,
+      leading: leading,
       delegate: SlidableItemDelegate(
         handleDelete: (item) => item.remove(),
         deleteValue: ReplenishActions.delete,

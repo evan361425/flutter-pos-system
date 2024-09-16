@@ -15,18 +15,18 @@ import 'package:possystem/translator.dart';
 class MenuProductList extends StatelessWidget {
   final Catalog? catalog;
 
-  final Widget? tailing;
+  final Widget? leading;
 
   const MenuProductList({
     super.key,
     required this.catalog,
-    this.tailing,
+    this.leading,
   });
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList(
-      tailing: tailing,
+      leading: leading,
       action: RouteIconButton(
         label: S.menuProductTitleReorder,
         icon: const Icon(KIcons.reorder),

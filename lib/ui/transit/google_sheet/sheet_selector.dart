@@ -29,9 +29,7 @@ class SheetSelectorState extends State<SheetSelector> {
       value: selected,
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
-        label: Text(S.transitGSSheetNameLabel(
-          S.transitModelName(widget.label),
-        )),
+        label: Text(S.transitGSSheetNameLabel(S.transitModelName(widget.label))),
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       onChanged: (newSelected) => setState(() => selected = newSelected),
@@ -39,7 +37,7 @@ class SheetSelectorState extends State<SheetSelector> {
         DropdownMenuItem<GoogleSheetProperties?>(
           value: null,
           child: Text(
-            S.stockReplenishmentNameHint,
+            S.transitGSSpreadsheetImportDropdownHint,
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ),

@@ -116,7 +116,7 @@ GS:
         - name:
       exist:
         label:
-        - Specify & Export
+        - Export
         - Inform the user that data will be exported to the specified spreadsheet.
         hint:
         - Export to spreadsheet "{name}"
@@ -136,6 +136,7 @@ GS:
       empty:
         label: Select Spreadsheet
         hint: Once you choose the spreadsheet to import, you can start importing data.
+      dropdownHint: Sheet to Import
     confirm:
     - This action will {hint}
     - hint:

@@ -12,18 +12,18 @@ import 'package:possystem/translator.dart';
 class StockQuantityList extends StatelessWidget {
   final List<Quantity> quantities;
 
-  final Widget tailing;
+  final Widget leading;
 
   const StockQuantityList({
     super.key,
     required this.quantities,
-    required this.tailing,
+    required this.leading,
   });
 
   @override
   Widget build(BuildContext context) {
     return SlidableItemList<Quantity, int>(
-      tailing: tailing,
+      leading: leading,
       delegate: SlidableItemDelegate(
         items: quantities,
         deleteValue: 0,

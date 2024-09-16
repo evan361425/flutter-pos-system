@@ -48,14 +48,25 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
                 _buildActions(),
                 const SizedBox(width: kHorizontalSpacing),
               ]),
-              const SizedBox(height: kInternalSpacing),
-              for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
-              RouteElevatedIconButton(
-                key: const Key('stock.add'),
-                icon: const Icon(KIcons.add),
-                label: S.stockIngredientTitleCreate,
-                route: Routes.stockIngrCreate,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  kHorizontalSpacing,
+                  kInternalSpacing,
+                  kHorizontalSpacing,
+                  kInternalSpacing,
+                ),
+                child: Row(children: [
+                  Expanded(
+                    child: RouteElevatedIconButton(
+                      key: const Key('stock.add'),
+                      icon: const Icon(KIcons.add),
+                      label: S.stockIngredientTitleCreate,
+                      route: Routes.stockIngrCreate,
+                    ),
+                  ),
+                ]),
               ),
+              for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
             ]);
           },
         ),

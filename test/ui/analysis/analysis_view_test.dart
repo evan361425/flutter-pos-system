@@ -8,8 +8,10 @@ import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart' show CalendarFormat;
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../mocks/mock_cache.dart';
@@ -86,8 +88,11 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
+      when(cache.get('history.calendar_format')).thenReturn(CalendarFormat.twoWeeks.index);
       await tester.tap(find.byKey(const Key('anal.history')));
       await tester.pumpAndSettle();
+
+      expect(find.text(S.singleWeek), findsOneWidget);
     });
 
     testWidgets('interact with chart', (tester) async {

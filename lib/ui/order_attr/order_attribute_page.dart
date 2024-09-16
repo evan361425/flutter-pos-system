@@ -48,6 +48,19 @@ class OrderAttributePage extends StatelessWidget {
       child: ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: <Widget>[
         Row(children: [
           Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+              child: RouteElevatedIconButton(
+                key: const Key('order_attributes.add'),
+                icon: const Icon(KIcons.add),
+                label: S.orderAttributeTitleCreate,
+                route: Routes.orderAttrCreate,
+              ),
+            ),
+          ),
+        ]),
+        Row(children: [
+          Expanded(
             child: Center(child: HintText(S.totalCount(OrderAttributes.instance.length))),
           ),
           RouteIconButton(
@@ -61,12 +74,6 @@ class OrderAttributePage extends StatelessWidget {
         ]),
         const SizedBox(height: kInternalSpacing),
         for (final attribute in OrderAttributes.instance.itemList) OrderAttributeTile(attr: attribute),
-        RouteElevatedIconButton(
-          key: const Key('order_attributes.add'),
-          icon: const Icon(KIcons.add),
-          label: S.orderAttributeTitleCreate,
-          route: Routes.orderAttrCreate,
-        ),
       ]),
     );
   }

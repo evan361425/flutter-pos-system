@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-09-11T08:15:55.195501Z",
+  "@@last_modified": "2024-09-14T13:02:19.146195Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -387,6 +387,7 @@
   "transitGSSpreadsheetImportExistHint": "從試算表中取得所有表單的名稱，並進行匯入",
   "transitGSSpreadsheetImportEmptyLabel": "選擇試算表",
   "transitGSSpreadsheetImportEmptyHint": "選擇要匯入的試算表後，就能開始匯入資料",
+  "transitGSSpreadsheetImportDropdownHint": "匯入的表單",
   "transitGSSpreadsheetConfirm": "此動作將會{hint}",
   "@transitGSSpreadsheetConfirm": {
     "placeholders": {

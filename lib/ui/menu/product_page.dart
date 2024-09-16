@@ -64,15 +64,10 @@ class _ProductPageState extends State<ProductPage> {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (_, int index) {
-                    if (index == items.length) {
-                      return ElevatedButton.icon(
-                        key: const Key('product.add'),
-                        icon: const Icon(KIcons.add),
-                        label: Text(S.menuProductTitleCreate),
-                        onPressed: _handleCreateIng,
-                      );
+                    if (index == 0) {
+                      return _buildAddButton();
                     }
-                    return ProductIngredientView(items[index]);
+                    return ProductIngredientView(items[index - 1]);
                   },
                   childCount: items.length + 1,
                 ),
@@ -109,15 +104,9 @@ class _ProductPageState extends State<ProductPage> {
         child: Column(children: [
           metadataTile,
           _buildIngredientTitle(),
+          if (widget.product.isNotEmpty) _buildAddButton(),
           if (widget.product.isNotEmpty)
             for (final item in widget.product.itemList) ProductIngredientView(item),
-          if (widget.product.isNotEmpty)
-            ElevatedButton.icon(
-              key: const Key('product.add'),
-              icon: const Icon(KIcons.add),
-              label: Text(S.menuProductTitleCreate),
-              onPressed: _handleCreateIng,
-            ),
           const SizedBox(height: kFABSpacing),
         ]),
       ),
@@ -160,6 +149,19 @@ class _ProductPageState extends State<ProductPage> {
         route: Routes.menuProductReorderIngredient,
         pathParameters: {'id': widget.product.id},
         hideLabel: true,
+      ),
+    ]);
+  }
+
+  Widget _buildAddButton() {
+    return Row(children: [
+      Expanded(
+        child: ElevatedButton.icon(
+          key: const Key('product.add'),
+          icon: const Icon(KIcons.add),
+          label: Text(S.menuIngredientTitleCreate),
+          onPressed: _handleCreateIng,
+        ),
       ),
     ]);
   }

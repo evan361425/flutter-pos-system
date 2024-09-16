@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-09-11T08:15:55.169432Z",
+  "@@last_modified": "2024-09-14T13:02:19.109593Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -367,7 +367,7 @@
       }
     }
   },
-  "transitGSSpreadsheetExportExistLabel": "Specify & Export",
+  "transitGSSpreadsheetExportExistLabel": "Export",
   "@transitGSSpreadsheetExportExistLabel": {
     "description": "Inform the user that data will be exported to the specified spreadsheet."
   },
@@ -387,6 +387,7 @@
   "transitGSSpreadsheetImportExistHint": "Get all sheet names from the spreadsheet and ready to import.",
   "transitGSSpreadsheetImportEmptyLabel": "Select Spreadsheet",
   "transitGSSpreadsheetImportEmptyHint": "Once you choose the spreadsheet to import, you can start importing data.",
+  "transitGSSpreadsheetImportDropdownHint": "Sheet to Import",
   "transitGSSpreadsheetConfirm": "This action will {hint}",
   "@transitGSSpreadsheetConfirm": {
     "placeholders": {

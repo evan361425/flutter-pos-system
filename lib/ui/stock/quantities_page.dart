@@ -3,6 +3,7 @@ import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -20,7 +21,9 @@ class QuantitiesPage extends StatelessWidget {
       builder: (context, child) => _buildBody(context),
     );
 
-    return Routes.homeMode.value == HomeMode.bottomNavigationBar
+    final withScaffold = MediaQuery.sizeOf(context).width <= Breakpoint.medium.max;
+
+    return withScaffold
         ? Scaffold(
             appBar: AppBar(
               title: Text(S.stockQuantityTitle),
@@ -28,7 +31,10 @@ class QuantitiesPage extends StatelessWidget {
             ),
             body: body,
           )
-        : body;
+        : ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+            child: body,
+          );
   }
 
   Widget _buildBody(BuildContext context) {
@@ -41,12 +47,16 @@ class QuantitiesPage extends StatelessWidget {
 
     return StockQuantityList(
       quantities: Quantities.instance.itemList,
-      tailing: RouteElevatedIconButton(
-        key: const Key('quantity.add'),
-        route: Routes.quantityCreate,
-        label: S.stockQuantityTitleCreate,
-        icon: const Icon(KIcons.add),
-      ),
+      leading: Row(children: [
+        Expanded(
+          child: RouteElevatedIconButton(
+            key: const Key('quantity.add'),
+            route: Routes.quantityCreate,
+            label: S.stockQuantityTitleCreate,
+            icon: const Icon(KIcons.add),
+          ),
+        ),
+      ]),
     );
   }
 }
