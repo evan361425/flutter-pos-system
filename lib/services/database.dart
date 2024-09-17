@@ -159,15 +159,15 @@ class Database {
     final limitQuery = limit == null ? '' : 'LIMIT $offset, $limit';
     final joinQuery = join == null ? '' : join.toString();
 
-    try {
-      return await db.rawQuery(
-        'SELECT $selectQuery FROM $table $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
-        whereArgs,
-      );
-    } catch (e, stack) {
+    return db
+        .rawQuery(
+      'SELECT $selectQuery FROM $table $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
+      whereArgs,
+    )
+        .catchError((e, stack) {
       Log.err(e, 'db_query_error', stack);
-      return [];
-    }
+      return <Map<String, Object?>>[];
+    });
   }
 
   Future<int> update(

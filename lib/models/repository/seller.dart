@@ -71,26 +71,22 @@ class Seller extends ChangeNotifier {
 
     final result = await Future.wait(queries);
 
-    try {
-      final order = result[0][0];
-      int? productCount;
-      int? ingredientCount;
-      int? attrCount;
-      if (countingAll) {
-        productCount = result[1][0]['count'] as int;
-        ingredientCount = result[2][0]['count'] as int;
-        attrCount = result[3][0]['count'] as int;
-      }
-
-      return OrderMetrics.fromMap(
-        order,
-        productCount: productCount,
-        ingredientCount: ingredientCount,
-        attrCount: attrCount,
-      );
-    } catch (e) {
-      return OrderMetrics.fromMap(const {});
+    final order = result[0][0];
+    int? productCount;
+    int? ingredientCount;
+    int? attrCount;
+    if (countingAll) {
+      productCount = result[1][0]['count'] as int;
+      ingredientCount = result[2][0]['count'] as int;
+      attrCount = result[3][0]['count'] as int;
     }
+
+    return OrderMetrics.fromMap(
+      order,
+      productCount: productCount,
+      ingredientCount: ingredientCount,
+      attrCount: attrCount,
+    );
   }
 
   /// Get the metric of orders grouped by the day.

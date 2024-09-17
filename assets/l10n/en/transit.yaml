@@ -136,7 +136,7 @@ GS:
       empty:
         label: Select Spreadsheet
         hint: Once you choose the spreadsheet to import, you can start importing data.
-      dropdownHint: Sheet to Import
+      dropdownHint: Select desired sheet
     confirm:
     - This action will {hint}
     - hint:

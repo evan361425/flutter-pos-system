@@ -103,7 +103,7 @@ GS:
       empty:
         label: 選擇試算表
         hint: 選擇要匯入的試算表後，就能開始匯入資料
-      dropdownHint: 匯入的表單
+      dropdownHint: 選擇欲匯入的表單
     confirm: 此動作將會{hint}
     selectionHint:
     - _: 輸入試算表網址或試算表 ID

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-09-16T01:27:44.582362Z",
+  "@@last_modified": "2024-09-17T01:42:01.939663Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -387,7 +387,7 @@
   "transitGSSpreadsheetImportExistHint": "Get all sheet names from the spreadsheet and ready to import.",
   "transitGSSpreadsheetImportEmptyLabel": "Select Spreadsheet",
   "transitGSSpreadsheetImportEmptyHint": "Once you choose the spreadsheet to import, you can start importing data.",
-  "transitGSSpreadsheetImportDropdownHint": "Sheet to Import",
+  "transitGSSpreadsheetImportDropdownHint": "Select desired sheet",
   "transitGSSpreadsheetConfirm": "This action will {hint}",
   "@transitGSSpreadsheetConfirm": {
     "placeholders": {

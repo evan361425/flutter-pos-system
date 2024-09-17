@@ -50,6 +50,8 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   /// Last built target, used to prevent rebuild when reloading
   Widget? lastBuiltTarget;
 
+  Future<T>? lastFuture;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -145,7 +147,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
         key: Key('anal_card.${widget.id}'),
         onVisibilityChanged: (info) async {
           // if partially visible
-          if (info.visibleFraction > 0) {
+          if (info.visibleFraction > 0.1) {
             await reload();
           }
         },
@@ -196,12 +198,10 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   Future<void> reload() async {
     // only reload when data changed
     if (reloadable) {
-      reloadable = false;
       lastBuiltTarget = null;
       final inline = await load();
 
       setState(() {
-        // TODO: avoid run conflict with handleUpdate
         reloadable = false;
         lastBuiltTarget = null;
         data = inline;

@@ -33,8 +33,9 @@ void main() {
 
       for (var key in keys) {
         await tester.tap(find.byKey(Key(key)));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('pop')));
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.tap(find.byKey(const Key('pop')).last);
         await tester.pumpAndSettle();
       }
 
