@@ -64,7 +64,7 @@ bump: ## Bump beta version
 	rm pubspec.yaml.bk; \
 	git add pubspec.yaml; \
 	git commit -m "chore: bump to $$version+$$code"; \
-	git tag "$$version"; \
+	git tag "v$$version"; \
 	git push; \
 	git push --tags
 
