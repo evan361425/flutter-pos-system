@@ -18,7 +18,7 @@ class QuantitiesPage extends StatelessWidget {
     final body = ListenableBuilder(
       key: const Key('quantities_page'),
       listenable: Quantities.instance,
-      builder: (context, child) => _buildBody(context),
+      builder: (context, child) => Center(child: _buildBody(context)),
     );
 
     final withScaffold = MediaQuery.sizeOf(context).width <= Breakpoint.medium.max;
@@ -31,10 +31,7 @@ class QuantitiesPage extends StatelessWidget {
             ),
             body: body,
           )
-        : ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-            child: body,
-          );
+        : body;
   }
 
   Widget _buildBody(BuildContext context) {
@@ -45,18 +42,21 @@ class QuantitiesPage extends StatelessWidget {
       );
     }
 
-    return StockQuantityList(
-      quantities: Quantities.instance.itemList,
-      leading: Row(children: [
-        Expanded(
-          child: RouteElevatedIconButton(
-            key: const Key('quantity.add'),
-            route: Routes.quantityCreate,
-            label: S.stockQuantityTitleCreate,
-            icon: const Icon(KIcons.add),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+      child: StockQuantityList(
+        quantities: Quantities.instance.itemList,
+        leading: Row(children: [
+          Expanded(
+            child: RouteElevatedIconButton(
+              key: const Key('quantity.add'),
+              route: Routes.quantityCreate,
+              label: S.stockQuantityTitleCreate,
+              icon: const Icon(KIcons.add),
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

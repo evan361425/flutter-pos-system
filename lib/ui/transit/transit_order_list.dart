@@ -140,6 +140,7 @@ class TransitOrderList extends StatelessWidget {
       actions: [
         PopButton(title: MaterialLocalizations.of(context).okButtonLabel),
       ],
+      scrollable: true,
       content: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 600),
         child: Column(children: [
@@ -172,7 +173,7 @@ class TransitOrderList extends StatelessWidget {
           ),
           const Divider(),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
             child: Linkify.fromString([
               S.transitOrderCapacityContent,
               if (warning != null) '\n$warning',
