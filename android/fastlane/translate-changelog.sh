@@ -45,13 +45,15 @@ zh-TW Traditional Chinese
       continue
     fi
 
-    local langCode langName prompt changelog
+    local langCode langName prompt changelog response
     langCode="$(echo "$lang" | cut -d' ' -f1)"
     langName="$(echo "$lang" | cut -d' ' -f2-)"
     echo "Translating changelog to $langName ($langCode)..."
 
     prompt="$(printf "$(cat android/fastlane/translate-prompt.txt)" "$langName")"
     echo "Prompt: $prompt"
+    response="$(printf "## **Prompt:**\n* Translate the following product changelog from English to %s.\n* Ensure that each bullet point maintains the same prefix.\n* You should not give me any other information or anything prefix.\n\n**Please provide the English product changelog.**\n\nOnce you provide the English text, I can begin the translation process and ensure that the bullet points maintain their original prefix.\n" "$langName")"
+    echo "Fixed response: $response"
 
     curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=$googleApiKey" \
       -H 'Content-Type: application/json' \
@@ -59,10 +61,11 @@ zh-TW Traditional Chinese
       -s \
       -d "$(jq -n \
         --arg prompt "$prompt" \
+        --arg response "$response" \
         --arg changelog "$changelog" \
         '{contents: [
           {role: "user", parts: [{text: $prompt}]},
-          {role: "model", parts: [{text: "ok"}]},
+          {role: "model", parts: [{text: $response}]},
           {role: "user", parts: [{text: $changelog}]}
         ]}')" \
       | jq -r '.candidates[0].content.parts[0].text' \
