@@ -50,7 +50,8 @@ bump-dev: ## Bump development version
 	git commit -m "chore: bump to $$version+$$code"; \
 	id=$$( echo "$$code" | awk '{print substr($$0,length($$0)-2)}' | awk '{$$1=$$1+0; print}' ); \
 	git tag "v$$version-rc$$id"; \
-	git push --follow-tags
+	git push; \
+	git push --tags
 
 .PHONY: bump
 bump: ## Bump beta version
@@ -64,7 +65,8 @@ bump: ## Bump beta version
 	git add pubspec.yaml; \
 	git commit -m "chore: bump to $$version+$$code"; \
 	git tag "$$version"; \
-	git push --follow-tags
+	git push; \
+	git push --tags
 
 ##@ Tools
 .PHONY: mock
