@@ -47,6 +47,11 @@ class _MenuPageState extends State<MenuPage> {
       selected ??= Menu.instance.itemList.firstOrNull;
     }
 
+    // if selected catalog is not exist, reset it
+    if (selected != null && !Menu.instance.hasItem(selected!.id)) {
+      selected = null;
+    }
+
     if (singleView) {
       return PopScope(
         key: const Key('menu_page'),
@@ -72,7 +77,7 @@ class _MenuPageState extends State<MenuPage> {
     }
 
     // no need to use Scaffold here, because this will be wrapped by HomePage
-    return Row(key: const Key('menu_page'), children: [
+    return Row(key: const Key('menu_page'), crossAxisAlignment: CrossAxisAlignment.start, children: [
       Expanded(child: firstView),
       const VerticalDivider(),
       Expanded(child: secondView),

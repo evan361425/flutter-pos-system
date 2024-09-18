@@ -151,7 +151,7 @@ class _WithDrawerState extends State<_WithDrawer> {
                     ),
                     onTap: () => _navTo(e.index),
                   ),
-                  scaffold.currentState?.closeDrawer,
+                  _closeDrawer,
                 ),
               ),
             const Footer(),
@@ -172,9 +172,13 @@ class _WithDrawerState extends State<_WithDrawer> {
   }
 
   void _navTo(int index) {
-    scaffold.currentState?.closeDrawer();
+    _closeDrawer();
     SpotlightShow.of(context).reset();
     widget.shell.goBranch(index, initialLocation: index == widget.shell.currentIndex);
+  }
+
+  void _closeDrawer() {
+    scaffold.currentState?.closeDrawer();
   }
 }
 

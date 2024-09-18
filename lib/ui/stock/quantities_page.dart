@@ -18,7 +18,7 @@ class QuantitiesPage extends StatelessWidget {
     final body = ListenableBuilder(
       key: const Key('quantities_page'),
       listenable: Quantities.instance,
-      builder: (context, child) => Center(child: _buildBody(context)),
+      builder: (context, child) => Align(alignment: Alignment.topCenter, child: _buildBody(context)),
     );
 
     final withScaffold = MediaQuery.sizeOf(context).width <= Breakpoint.medium.max;

@@ -39,6 +39,8 @@ class Tutorial extends StatelessWidget {
   /// widget to be placed below the [message]
   final Widget? below;
 
+  final bool traceChild;
+
   final SpotlightBuilder spotlightBuilder;
 
   final EdgeInsets padding;
@@ -65,6 +67,7 @@ class Tutorial extends StatelessWidget {
     this.title,
     required this.message,
     this.below,
+    this.traceChild = false,
     this.spotlightBuilder = const SpotlightCircularBuilder(),
     this.padding = const EdgeInsets.all(8),
     this.disable = false,
@@ -84,6 +87,7 @@ class Tutorial extends StatelessWidget {
     return SpotlightAnt(
       enable: enabled,
       index: index,
+      traceChild: traceChild,
       duration: debug ? SpotlightDurationConfig.zero : const SpotlightDurationConfig(),
       monitorId: monitorVisibility ? 'tutorial.$id' : null,
       onDismiss: _onDismiss,
@@ -142,6 +146,7 @@ class MenuTutorial extends StatelessWidget {
       index: 0,
       title: S.menuTutorialTitle,
       message: S.menuTutorialContent,
+      traceChild: true,
       below: TutorialCheckboxListTile(
         key: checkbox,
         title: S.menuTutorialCreateExample,
@@ -181,10 +186,10 @@ class OrderAttrTutorial extends StatelessWidget {
       ),
       spotlightBuilder: const SpotlightRectBuilder(),
       action: () async {
+        onDismissed?.call();
         if (checkbox.currentState?.value == true) {
           await setupExampleOrderAttrs();
         }
-        onDismissed?.call();
       },
       child: child,
     );
