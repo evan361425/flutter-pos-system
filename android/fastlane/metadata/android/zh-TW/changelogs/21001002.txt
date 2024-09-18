@@ -1,0 +1,5 @@
+- **New:** Added support for dark mode.
+- **Improved:** Enhanced the search functionality to be faster and more accurate.
+- **Fixed:** Resolved an issue where the app would crash on certain devices.
+- **Removed:** Deprecated the "legacy" setting as it was no longer needed. 
+
