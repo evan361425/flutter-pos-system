@@ -52,7 +52,7 @@ zh-TW Traditional Chinese
 
     prompt="$(printf "$(cat android/fastlane/translate-prompt.txt)" "$langName")"
     echo "Prompt: $prompt"
-    response="$(printf "## **Prompt:**\n* Translate the following product changelog from English to %s.\n* Ensure that each bullet point maintains the same prefix.\n* You should not give me any other information or anything prefix.\n\n**Please provide the English product changelog.**\n\nOnce you provide the English text, I can begin the translation process and ensure that the bullet points maintain their original prefix.\n" "$langName")"
+    response="ok"
     echo "Fixed response: $response"
 
     curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=$googleApiKey" \
