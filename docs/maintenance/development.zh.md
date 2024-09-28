@@ -69,3 +69,44 @@ Certificate fingerprint (SHA-256): 6F:14:57:54:CC:26:0A:4C:70:E3:28:1D:CE:D0:73:
 最後產出的覆蓋率就可以打開以網頁格式打開：
 
     open coverage/html/index.html
+
+## 建立藍牙虛擬裝置
+
+為了測試藍牙相關功能，根據[官網建議](https://developer.android.com/training/wearables/apps/test-bluetooth-audio)，
+需要建立虛擬裝置才能和 Android 的虛擬裝置連結。
+
+透過 [Android Studio 建議的做法](https://developer.android.com/studio/run/emulator-commandline)，
+找到你的 emulator 指令後，啟動你的虛擬機。
+以我的例子來說，就是 `Pixel_8_API_34`：
+
+```bash
+# 注意前綴的 `@`
+emulator @Pixel_8_API_34 -no-boot-anim -packet-streamer-endpoint default
+```
+
+??? tip "Flag 代表的意思"
+    - `-no-boot-anim` 可以關閉啟動動畫，單純想省計算資源而已；
+    - `-packet-streamer-endpoint` 讓虛擬機透過 [netsimd](https://google.github.io/bumble/hive/index.html) 去建立對外溝通。
+
+接著下載 alpha 版本的虛擬裝置工具 [bumble](https://google.github.io/bumble)：
+
+```bash
+git clone https://github.com/google/bumble
+```
+
+之所以要把他 clone 下來是因為裡面已經寫好一些範例了，
+如果你有興趣可以透過 python 依賴，自己撰寫相關邏輯：
+
+```bash
+cd bumble && python3 -m pip install "."
+```
+
+!!! note "建議安裝做法"
+    我自己習慣使用 [pipenv](https://pipenv.pypa.io/en/latest/) 做事，
+    可以把系統 python 和專案開發隔絕開來。
+
+最後啟動 bumble 的 RFComm Server 應用程式，模擬印表機：
+
+```bash
+python run_rfcomm_server.py device1.json android-netsim 8080 00001101-0000-1000-8000-00805F9B34FB
+```

@@ -32,7 +32,8 @@ class SlidableItemList<T, Action> extends StatelessWidget {
               child: leading!,
             ),
           Row(children: [
-            Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
+            if (hintText != '')
+              Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
             if (action != null)
               Padding(
                 padding: const EdgeInsets.only(right: kHorizontalSpacing),

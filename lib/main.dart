@@ -10,6 +10,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/repository/printers.dart';
 import 'package:provider/provider.dart';
 
 import 'app.dart';
@@ -62,6 +63,7 @@ void main() async {
       await Replenisher().initialize();
       await Cashier().reset();
       await Analysis().initialize();
+      await Printers().initialize();
       // Last for setup ingredient and quantity
       await Menu().initialize();
 
@@ -78,6 +80,7 @@ void main() async {
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Cashier.instance),
           ChangeNotifierProvider.value(value: Cart.instance),
+          ChangeNotifierProvider.value(value: Printers.instance),
         ],
         child: const App(),
       ));

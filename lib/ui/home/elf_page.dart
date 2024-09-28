@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/linkify.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class ElfPage extends StatelessWidget {
@@ -10,7 +8,8 @@ class ElfPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = Center(
+    // vertical center
+    return Center(
       child: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
@@ -33,12 +32,5 @@ class ElfPage extends StatelessWidget {
         ]),
       ),
     );
-
-    return Routes.homeMode.value == HomeMode.bottomNavigationBar
-        ? Scaffold(
-            appBar: AppBar(leading: const PopButton()),
-            body: child,
-          )
-        : child;
   }
 }

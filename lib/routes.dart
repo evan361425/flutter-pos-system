@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/dialog/dialog_page.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/debug/debug_page.dart';
 import 'package:possystem/helpers/breakpoint.dart';
@@ -13,6 +14,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:possystem/ui/analysis/widgets/chart_modal.dart';
@@ -313,7 +315,10 @@ class Routes {
         name: orderAttr,
         path: '${(inShell ? '_/' : '')}order_attr',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const OrderAttributePage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          const OrderAttributePage(),
+          S.orderAttributeTitle,
+        ),
         routes: [
           GoRoute(
             name: orderAttrCreate,
@@ -482,7 +487,7 @@ class Routes {
         name: quantities,
         path: '${(inShell ? '_/' : '')}quantities',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const QuantitiesPage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(const QuantitiesPage(), S.stockQuantityTitle),
         routes: [
           GoRoute(
             name: quantityCreate,
@@ -512,7 +517,10 @@ class Routes {
         name: transit,
         path: '${(inShell ? '_/' : '')}transit',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const TransitPage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          const TransitPage(),
+          S.transitTitle,
+        ),
         routes: [
           GoRoute(
             name: transitStation,
@@ -544,13 +552,19 @@ class Routes {
         name: elf,
         path: '${(inShell ? '_/' : '')}elf',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const ElfPage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          const ElfPage(),
+          S.settingElfTitle,
+        ),
       );
   static GoRoute _settingsRoute({required bool inShell}) => GoRoute(
         name: settings,
         path: '${(inShell ? '_/' : '')}settings',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => SettingsPage(focus: state.uri.queryParameters['f']),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          SettingsPage(focus: state.uri.queryParameters['f']),
+          S.settingFeatureTitle,
+        ),
         routes: [
           GoRoute(
             name: settingsFeature,
@@ -652,6 +666,9 @@ class Routes {
   static const imageGallery = 'imageGallery';
   static const settings = 'settings';
   static const settingsFeature = 'settings.feature';
+  static const printers = 'printers';
+  static const printersCreate = 'printers.create';
+  static const printersUsage = 'printers.usage';
 }
 
 T _findEnum<T extends Enum>(Iterable<T> values, String? path, T other) {
@@ -679,6 +696,25 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
     // namedLocation is not allowed.
     return id == null || !hasItem(id) ? '${Routes.base}/$path' : null;
   };
+}
+
+Widget _wrapPageByHomeMode(Widget child, String title) {
+  child = Align(
+    alignment: Alignment.topCenter,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+      child: child,
+    ),
+  );
+
+  if (Routes.homeMode.value == HomeMode.bottomNavigationBar) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title), leading: const PopButton()),
+      body: child,
+    );
+  }
+
+  return child;
 }
 
 GoRoute _createPrefixRoute({

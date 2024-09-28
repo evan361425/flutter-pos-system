@@ -33,98 +33,94 @@ class SettingsPage extends StatelessWidget {
       context.pushNamed(Routes.settingsFeature, pathParameters: {'feature': feature.name});
     }
 
-    final body = ListView(children: <Widget>[
-      const SizedBox(height: 8.0),
-      FutureBuilder<PackageInfo>(
-        future: PackageInfo.fromPlatform(),
-        builder: (context, snapshot) {
-          final info = snapshot.data;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (info != null) Text(S.settingVersion(info.version)),
-              const SizedBox(width: 8.0),
-              OutlinedText((kDebugMode ? '_' : '') + flavor.toUpperCase()),
-            ],
-          );
-        },
-      ),
-      const SizedBox(height: 8.0),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: SignInButton(
-          signedInWidgetBuilder: (user) => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(S.settingWelcome(user?.displayName ?? '')),
-              OutlinedButton(
-                key: const Key('feature.sign_out'),
-                onPressed: () async {
-                  await Auth.instance.signOut();
-                },
-                child: Text(S.settingLogoutBtn),
-              ),
-            ],
+    return ListView(
+      padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing),
+      children: <Widget>[
+        const SizedBox(height: 8.0),
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            final info = snapshot.data;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (info != null) Text(S.settingVersion(info.version)),
+                const SizedBox(width: 8.0),
+                OutlinedText((kDebugMode ? '_' : '') + flavor.toUpperCase()),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 8.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: SignInButton(
+            signedInWidgetBuilder: (user) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(S.settingWelcome(user?.displayName ?? '')),
+                OutlinedButton(
+                  key: const Key('feature.sign_out'),
+                  onPressed: () async {
+                    await Auth.instance.signOut();
+                  },
+                  child: Text(S.settingLogoutBtn),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      ListTile(
-        key: const Key('feature.theme'),
-        leading: const Icon(Icons.palette_outlined),
-        title: Text(S.settingThemeTitle),
-        subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
-        trailing: const Icon(Icons.navigate_next_outlined),
-        onTap: () => navigateTo(Feature.theme),
-      ),
-      ListTile(
-        key: const Key('feature.language'),
-        leading: const Icon(Icons.language_outlined),
-        title: Text(S.settingLanguageTitle),
-        subtitle: Text(LanguageSetting.instance.language.title),
-        trailing: const Icon(Icons.navigate_next_outlined),
-        onTap: () => navigateTo(Feature.language),
-      ),
-      const Divider(),
-      ListTile(
-        key: const Key('feature.checkout_warning'),
-        leading: const Icon(Icons.store_mall_directory_outlined),
-        title: Text(S.settingCheckoutWarningTitle),
-        subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
-        trailing: const Icon(Icons.navigate_next_outlined),
-        onTap: () => navigateTo(Feature.checkoutWarning),
-      ),
-      ListTile(
-        leading: const Icon(Icons.remove_red_eye_outlined),
-        title: Text(S.settingOrderAwakeningTitle),
-        subtitle: Text(S.settingOrderAwakeningDescription),
-        trailing: FeatureSwitch(
-          key: const Key('feature.order_awakening'),
-          autofocus: focus == 'orderAwakening',
-          value: OrderAwakeningSetting.instance.value,
-          onChanged: (value) => OrderAwakeningSetting.instance.update(value),
+        ListTile(
+          key: const Key('feature.theme'),
+          leading: const Icon(Icons.palette_outlined),
+          title: Text(S.settingThemeTitle),
+          subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
+          trailing: const Icon(Icons.navigate_next_outlined),
+          onTap: () => navigateTo(Feature.theme),
         ),
-      ),
-      const Divider(),
-      ListTile(
-        leading: const Icon(Icons.report_outlined),
-        title: Text(S.settingReportTitle),
-        subtitle: Text(S.settingReportDescription),
-        trailing: FeatureSwitch(
-          key: const Key('feature.collect_events'),
-          autofocus: focus == 'collectEvents',
-          value: CollectEventsSetting.instance.value,
-          onChanged: (value) => CollectEventsSetting.instance.update(value),
+        ListTile(
+          key: const Key('feature.language'),
+          leading: const Icon(Icons.language_outlined),
+          title: Text(S.settingLanguageTitle),
+          subtitle: Text(LanguageSetting.instance.language.title),
+          trailing: const Icon(Icons.navigate_next_outlined),
+          onTap: () => navigateTo(Feature.language),
         ),
-      ),
-      const SizedBox(height: kFABSpacing),
-    ]);
-
-    return Routes.homeMode.value == HomeMode.bottomNavigationBar
-        ? Scaffold(
-            appBar: AppBar(leading: const PopButton()),
-            body: body,
-          )
-        : body;
+        const Divider(),
+        ListTile(
+          key: const Key('feature.checkout_warning'),
+          leading: const Icon(Icons.store_mall_directory_outlined),
+          title: Text(S.settingCheckoutWarningTitle),
+          subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
+          trailing: const Icon(Icons.navigate_next_outlined),
+          onTap: () => navigateTo(Feature.checkoutWarning),
+        ),
+        ListTile(
+          leading: const Icon(Icons.remove_red_eye_outlined),
+          title: Text(S.settingOrderAwakeningTitle),
+          subtitle: Text(S.settingOrderAwakeningDescription),
+          trailing: FeatureSwitch(
+            key: const Key('feature.order_awakening'),
+            autofocus: focus == 'orderAwakening',
+            value: OrderAwakeningSetting.instance.value,
+            onChanged: (value) => OrderAwakeningSetting.instance.update(value),
+          ),
+        ),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.report_outlined),
+          title: Text(S.settingReportTitle),
+          subtitle: Text(S.settingReportDescription),
+          trailing: FeatureSwitch(
+            key: const Key('feature.collect_events'),
+            autofocus: focus == 'collectEvents',
+            value: CollectEventsSetting.instance.value,
+            onChanged: (value) => CollectEventsSetting.instance.update(value),
+          ),
+        ),
+        const SizedBox(height: kFABSpacing),
+      ],
+    );
   }
 }
 
