@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
@@ -17,7 +18,8 @@ class CashierView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
         child: ListenableBuilder(
@@ -43,7 +45,8 @@ class CashierView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: kHorizontalSpacing),
       child: Row(children: [
-        const SizedBox(width: kInternalSpacing),
+        // TODO: why this sized box needed?
+        // const SizedBox(width: kInternalSpacing),
         Tutorial(
           id: 'cashier.default',
           title: S.cashierToDefaultTutorialTitle,
@@ -57,38 +60,33 @@ class CashierView extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Material(
-          elevation: 1.0,
-          borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-          child: Row(children: [
-            Tutorial(
-              id: 'cashier.change',
-              title: S.cashierChangerTutorialTitle,
-              message: S.cashierChangerTutorialContent,
-              preferVertical: true,
-              child: RouteIconButton(
-                key: const Key('cashier.changer'),
-                route: Routes.cashierChanger,
-                icon: const Icon(Icons.sync_alt_outlined),
-                label: S.cashierChangerTitle,
-                popTrueShowSuccess: true,
-              ),
+        ButtonGroup(buttons: [
+          Tutorial(
+            id: 'cashier.change',
+            title: S.cashierChangerTutorialTitle,
+            message: S.cashierChangerTutorialContent,
+            preferVertical: true,
+            child: RouteIconButton(
+              key: const Key('cashier.changer'),
+              route: Routes.cashierChanger,
+              icon: const Icon(Icons.sync_alt_outlined),
+              label: S.cashierChangerTitle,
+              popTrueShowSuccess: true,
             ),
-            const SizedBox(height: 28, child: VerticalDivider()),
-            Tutorial(
-              id: 'cashier.surplus',
-              title: S.cashierSurplusTutorialTitle,
-              message: S.cashierSurplusTutorialContent,
-              preferVertical: true,
-              child: RouteIconButton(
-                key: const Key('cashier.surplus'),
-                icon: const Icon(Icons.coffee_outlined),
-                label: S.cashierSurplusTitle,
-                onPressed: () => _handleSurplus(context),
-              ),
+          ),
+          Tutorial(
+            id: 'cashier.surplus',
+            title: S.cashierSurplusTutorialTitle,
+            message: S.cashierSurplusTutorialContent,
+            preferVertical: true,
+            child: RouteIconButton(
+              key: const Key('cashier.surplus'),
+              icon: const Icon(Icons.coffee_outlined),
+              label: S.cashierSurplusTitle,
+              onPressed: () => _handleSurplus(context),
             ),
-          ]),
-        ),
+          ),
+        ]),
       ]),
     );
   }

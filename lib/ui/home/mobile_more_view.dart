@@ -33,6 +33,15 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
             title: 'Debug',
             subtitle: 'For developer only',
           ),
+        OrderAttrTutorial(
+          child: _buildRouteTile(
+            id: 'orderAttributes',
+            icon: Icons.assignment_ind_outlined,
+            route: Routes.orderAttr,
+            title: S.orderAttributeTitle,
+            subtitle: S.orderAttributeDescription,
+          ),
+        ),
         MenuTutorial(
           child: _buildRouteTile(
             id: 'menu',
@@ -43,20 +52,18 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
           ),
         ),
         _buildRouteTile(
+          id: 'printer',
+          icon: Icons.print_outlined,
+          route: Routes.printer,
+          title: '出單機設定',
+          subtitle: '藍牙連線、出單設定',
+        ),
+        _buildRouteTile(
           id: 'transit',
           icon: Icons.upload_file_outlined,
           route: Routes.transit,
           title: S.transitTitle,
           subtitle: S.transitDescription,
-        ),
-        OrderAttrTutorial(
-          child: _buildRouteTile(
-            id: 'orderAttributes',
-            icon: Icons.assignment_ind_outlined,
-            route: Routes.orderAttr,
-            title: S.orderAttributeTitle,
-            subtitle: S.orderAttributeDescription,
-          ),
         ),
         _buildRouteTile(
           id: 'stockQuantities',

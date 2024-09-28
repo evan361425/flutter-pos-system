@@ -67,9 +67,6 @@ class Catalog extends Model<CatalogObject>
   Menu get repository => Menu.instance;
 
   @override
-  set repository(Repository repo) {}
-
-  @override
   Product buildItem(String id, Map<String, Object?> value) {
     throw UnimplementedError();
   }

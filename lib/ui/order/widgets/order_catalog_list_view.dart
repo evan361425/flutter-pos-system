@@ -129,6 +129,7 @@ class _ProductListView extends StatelessWidget {
           borderRadius: BorderRadius.horizontal(right: Radius.circular(8)),
         ),
       ),
+      // TODO: use AnimatedIcon
       child: MenuAnchor(
         controller: controller,
         childFocusNode: focusNode,

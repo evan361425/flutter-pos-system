@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/dialog/dialog_page.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/debug/debug_page.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/analysis/analysis.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/analysis_view.dart';
 import 'package:possystem/ui/analysis/history_page.dart';
 import 'package:possystem/ui/analysis/widgets/chart_modal.dart';
@@ -42,6 +45,9 @@ import 'package:possystem/ui/order_attr/widgets/order_attribute_modal.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_option_modal.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_option_reorder.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_reorder.dart';
+import 'package:possystem/ui/printer/printer_modal.dart';
+import 'package:possystem/ui/printer/printer_page.dart';
+import 'package:possystem/ui/printer/printer_settings_modal.dart';
 import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
@@ -76,7 +82,7 @@ class Routes {
   ///
   /// if the user is new, redirect to menu page
   static get initLocation => Cache.instance.get<bool>('tutorial.home.order') != true
-      ? homeMode.value == HomeMode.bottomNavigationBar
+      ? homeMode.value.isMobile()
           ? '$base/_'
           : '$base/_/menu' // if going to anal, the tutorial will conflicts with analysis page's tutorial
       : '$base/anal';
@@ -127,6 +133,7 @@ class Routes {
                 routes: [
                   if (!isProd) _debugRoute(inShell: false),
                   _menuRoute(inShell: false),
+                  _printerRoute(inShell: false),
                   _quantitiesRoute(inShell: false),
                   _orderAttrsRoute(inShell: false),
                   _elfRoute(inShell: false),
@@ -154,6 +161,7 @@ class Routes {
             StatefulShellBranch(routes: [_cashierRoute]),
             StatefulShellBranch(routes: [_orderAttrsRoute(inShell: true)]),
             StatefulShellBranch(routes: [_menuRoute(inShell: true)]),
+            StatefulShellBranch(routes: [_printerRoute(inShell: true)]),
             StatefulShellBranch(routes: [_quantitiesRoute(inShell: true)]),
             StatefulShellBranch(routes: [_transitRoute(inShell: true)]),
             StatefulShellBranch(routes: [_elfRoute(inShell: true)]),
@@ -313,7 +321,10 @@ class Routes {
         name: orderAttr,
         path: '${(inShell ? '_/' : '')}order_attr',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const OrderAttributePage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          const OrderAttributePage(),
+          S.orderAttributeTitle,
+        ),
         routes: [
           GoRoute(
             name: orderAttrCreate,
@@ -478,11 +489,50 @@ class Routes {
           ),
         ],
       );
+  static GoRoute _printerRoute({required bool inShell}) => GoRoute(
+        name: printer,
+        path: '${(inShell ? '_/' : '')}printer',
+        parentNavigatorKey: inShell ? null : rootNavigatorKey,
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          const PrinterPage(),
+          '出單機管理',
+        ),
+        routes: [
+          GoRoute(
+            name: printerCreate,
+            path: 'create',
+            parentNavigatorKey: rootNavigatorKey,
+            pageBuilder: (ctx, state) => const MaterialDialogPage(child: PrinterModal()),
+          ),
+          GoRoute(
+            name: printerSettings,
+            path: 'settings',
+            parentNavigatorKey: rootNavigatorKey,
+            pageBuilder: (ctx, state) => const MaterialDialogPage(child: PrinterSettingsModal()),
+          ),
+          GoRoute(
+            path: 'a/:id',
+            parentNavigatorKey: rootNavigatorKey,
+            redirect: _redirectIfMissed(path: 'printer', hasItem: (id) => Printers.instance.hasItem(id)),
+            routes: [
+              GoRoute(
+                name: printerUpdate,
+                path: 'update',
+                parentNavigatorKey: rootNavigatorKey,
+                pageBuilder: (ctx, state) {
+                  final p = Printers.instance.getItem(state.pathParameters['id']!)!;
+                  return MaterialDialogPage(child: PrinterModal(printer: p));
+                },
+              ),
+            ],
+          ),
+        ],
+      );
   static GoRoute _quantitiesRoute({required bool inShell}) => GoRoute(
         name: quantities,
         path: '${(inShell ? '_/' : '')}quantities',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const QuantitiesPage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(const QuantitiesPage(), S.stockQuantityTitle),
         routes: [
           GoRoute(
             name: quantityCreate,
@@ -512,7 +562,10 @@ class Routes {
         name: transit,
         path: '${(inShell ? '_/' : '')}transit',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const TransitPage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          const TransitPage(),
+          S.transitTitle,
+        ),
         routes: [
           GoRoute(
             name: transitStation,
@@ -544,13 +597,19 @@ class Routes {
         name: elf,
         path: '${(inShell ? '_/' : '')}elf',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const ElfPage(),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          const ElfPage(),
+          S.settingElfTitle,
+        ),
       );
   static GoRoute _settingsRoute({required bool inShell}) => GoRoute(
         name: settings,
         path: '${(inShell ? '_/' : '')}settings',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => SettingsPage(focus: state.uri.queryParameters['f']),
+        builder: (ctx, state) => _wrapPageByHomeMode(
+          SettingsPage(focus: state.uri.queryParameters['f']),
+          S.settingFeatureTitle,
+        ),
         routes: [
           GoRoute(
             name: settingsFeature,
@@ -652,6 +711,10 @@ class Routes {
   static const imageGallery = 'imageGallery';
   static const settings = 'settings';
   static const settingsFeature = 'settings.feature';
+  static const printer = 'printer';
+  static const printerCreate = 'printer.create';
+  static const printerSettings = 'printer.settings';
+  static const printerUpdate = 'printer.update';
 }
 
 T _findEnum<T extends Enum>(Iterable<T> values, String? path, T other) {
@@ -681,6 +744,25 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
   };
 }
 
+Widget _wrapPageByHomeMode(Widget child, String title) {
+  child = Align(
+    alignment: Alignment.topCenter,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+      child: child,
+    ),
+  );
+
+  if (Routes.homeMode.value.isMobile()) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title), leading: const PopButton()),
+      body: child,
+    );
+  }
+
+  return child;
+}
+
 GoRoute _createPrefixRoute({
   required String path,
   required String prefix,
@@ -698,5 +780,7 @@ GoRoute _createPrefixRoute({
 enum HomeMode {
   bottomNavigationBar,
   drawer,
-  rail,
+  rail;
+
+  bool isMobile() => this == HomeMode.bottomNavigationBar;
 }

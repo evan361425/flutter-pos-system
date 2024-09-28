@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/order/cart_product.dart';
+import 'package:possystem/models/order/order_attribute_option.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/settings/currency_setting.dart';
+import 'package:possystem/ui/order/widgets/checkout_receipt_dialog.dart';
 
 import 'cashier.dart';
 import 'seller.dart';
@@ -107,18 +109,37 @@ class Cart extends ChangeNotifier {
   }
 
   /// Finish the order and get paid.
-  Future<CheckoutStatus> checkout(num price, num paid) async {
+  ///
+  /// - [paid] is the money that customer paid. If it is less than the price,
+  ///  will return [CheckoutStatus.paidNotEnough].
+  /// - [context] is the context to show the receipt dialog.
+  Future<CheckoutStatus> checkout({
+    required num paid,
+    required BuildContext context,
+  }) async {
     if (isEmpty) return CheckoutStatus.nothingHappened;
 
     if (paid < price) return CheckoutStatus.paidNotEnough;
 
     Log.ger(name, 'order_paid');
-
     final data = toObject(paid: paid);
+
+    // print receipt if any printer connected
+    if (Printers.instance.hasConnected) {
+      final images = await CheckoutReceiptDialog.show(context, data, Printers.instance.wantedPixelsWidths);
+      if (images != null) {
+        // this action is not required to be awaited, it can be done in background.
+        Printers.instance.print(images);
+      }
+    }
+
     await Seller.instance.push(data);
     await Stock.instance.order(data);
-    final status = await Cashier.instance.paid(paid, price);
+    final status = await Cashier.instance.paid(paid, data.price);
 
+    // After all the process, clear the cart.
+    // If any error occurred, the cart will not be cleared and the decision will
+    // be made by the user (re-try or discard).
     clear();
 
     return CheckoutStatus.fromCashier(status);

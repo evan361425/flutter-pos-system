@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
 
 void showSnackBar(
@@ -19,18 +20,31 @@ void showSnackBar(
   ));
 }
 
+Stream<T> showSnackbarWhenError<T>(Stream<T> stream, BuildContext context, String code) {
+  stream.handleError((err) {
+    if (context.mounted) {
+      showSnackBar(context, '${S.actError}：${Util.transError(err)}');
+    }
+    Log.err(err, code, err is Error ? err.stackTrace : null);
+  });
+
+  return stream;
+}
+
 Future<T?> showSnackbarWhenFailed<T>(
-  Future<T?> future,
+  Future<T> future,
   BuildContext context,
   String code,
-) {
-  return future.catchError((err) {
+) async {
+  try {
+    return await future;
+  } catch (err) {
     if (context.mounted) {
-      showSnackBar(context, '${S.actError}：$err');
+      showSnackBar(context, '${S.actError}：${Util.transError(err)}');
     }
     Log.err(err, code, err is Error ? err.stackTrace : null);
     return null;
-  });
+  }
 }
 
 void showMoreInfoSnackBar(BuildContext context, String message, Widget content) {

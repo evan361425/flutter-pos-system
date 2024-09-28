@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/choice_chip_with_help.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
@@ -56,8 +55,9 @@ class _TransitPageState extends State<TransitPage> {
       ),
       const SizedBox(height: kFABSpacing),
     ]);
+
     // allow scroll as TabView
-    final body = GestureDetector(
+    return GestureDetector(
       onHorizontalDragEnd: (details) {
         selector.currentState?.updateSelectedIndex(
           details.velocity.pixelsPerSecond.dx,
@@ -66,16 +66,6 @@ class _TransitPageState extends State<TransitPage> {
       // fill the screen to allow drag from white space
       child: SizedBox(height: double.infinity, child: list),
     );
-
-    return Routes.homeMode.value == HomeMode.bottomNavigationBar
-        ? Scaffold(
-            appBar: AppBar(
-              title: Text(S.transitTitle),
-              leading: const PopButton(),
-            ),
-            body: body,
-          )
-        : body;
   }
 
   void _goToStation(BuildContext context, TransitMethod method) {

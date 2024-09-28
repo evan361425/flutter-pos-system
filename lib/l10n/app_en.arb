@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-09-17T01:42:01.939663Z",
+  "@@last_modified": "2024-10-25T08:03:04.151533Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -958,7 +958,7 @@
   "@actSuccess": {
     "description": "Action executed successfully and displayed on the Snackbar."
   },
-  "actError": "Unknown error occurred.",
+  "actError": "Error",
   "@actError": {
     "description": "Error message displayed on the Snackbar when an error occurs."
   },
@@ -994,7 +994,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printer{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
   "dialogDeletionTitle": "Delete Confirmation",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."

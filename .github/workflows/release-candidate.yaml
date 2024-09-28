@@ -98,80 +98,80 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Build APK to release, only work if you using tag.
-  create-asset:
-    name: Create Android build
-    runs-on: ubuntu-latest
-    needs:
-      - check-version
-    steps:
-      # Setup Java environment in order to build the Android app.
-      - uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17"
+  # create-asset:
+  #   name: Create Android build
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - check-version
+  #   steps:
+  #     # Setup Java environment in order to build the Android app.
+  #     - uses: actions/setup-java@v4
+  #       with:
+  #         distribution: "zulu"
+  #         java-version: "17"
 
-      # Setup the flutter environment.
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.24.x"
-          cache: true
-          channel: "stable"
+  #     # Setup the flutter environment.
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: "3.24.x"
+  #         cache: true
+  #         channel: "stable"
 
-      # Checkout code.
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #     # Checkout code.
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      # Recreate missing files, and get packages.
-      - name: Build dependencies
-        run: flutter pub get
+  #     # Recreate missing files, and get packages.
+  #     - name: Build dependencies
+  #       run: flutter pub get
 
-      - name: Configure Google Services
-        run: echo "$GOOGLE_SERVICES_JSON" > google-services.json
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON_DEV }}
-        working-directory: android/app
+  #     - name: Configure Google Services
+  #       run: echo "$GOOGLE_SERVICES_JSON" > google-services.json
+  #       env:
+  #         GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON_DEV }}
+  #       working-directory: android/app
 
-      - name: Configure Play Store
-        run: |
-          echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
-          echo "storeFile=upload-keystore.jks" >> key.properties
-          echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
-          echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
-          echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
-        env:
-          PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
-          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
-          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
-          KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
-        working-directory: android
+  #     - name: Configure Play Store
+  #       run: |
+  #         echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
+  #         echo "storeFile=upload-keystore.jks" >> key.properties
+  #         echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
+  #         echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
+  #         echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
+  #       env:
+  #         PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
+  #         KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+  #         KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+  #         KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
+  #       working-directory: android
 
-      # Build the application.
-      - name: Start building
-        run: |
-          flutter build apk --release --verbose \
-            --flavor dev \
-            --dart-define=appFlavor=dev \
-            --dart-define=logLevel=info
-          mv build/app/outputs/flutter-apk/app-dev-release.apk \
-            $GITHUB_WORKSPACE/pos_system.apk
+  #     # Build the application.
+  #     - name: Start building
+  #       run: |
+  #         flutter build apk --release --verbose \
+  #           --flavor dev \
+  #           --dart-define=appFlavor=dev \
+  #           --dart-define=logLevel=info
+  #         mv build/app/outputs/flutter-apk/app-dev-release.apk \
+  #           $GITHUB_WORKSPACE/pos_system.apk
 
-      - name: Get upload URL
-        id: get_release
-        run: |
-          release=$(curl -s \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H 'Accept: application/vnd.github.v3+json' \
-            https://api.github.com/repos/evan361425/flutter-pos-system/releases \
-            | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag_version }}"))')
-          echo "upload_url=$(echo "$release" | jq -r '.upload_url')" >> $GITHUB_OUTPUT
+  #     - name: Get upload URL
+  #       id: get_release
+  #       run: |
+  #         release=$(curl -s \
+  #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+  #           -H 'Accept: application/vnd.github.v3+json' \
+  #           https://api.github.com/repos/evan361425/flutter-pos-system/releases \
+  #           | jq -c '.[] | select( .name | contains("${{ needs.check-version.outputs.tag_version }}"))')
+  #         echo "upload_url=$(echo "$release" | jq -r '.upload_url')" >> $GITHUB_OUTPUT
 
-      # Upload the build.
-      - name: Upload built package to release
-        id: upload_release_asset
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./pos_system.apk
-          asset_name: pos_system.dev.${{ needs.check-version.outputs.build_code }}.apk
-          asset_content_type: application/vnd.android.package-archive
+  #     # Upload the build.
+  #     - name: Upload built package to release
+  #       id: upload_release_asset
+  #       uses: shogo82148/actions-upload-release-asset@v1
+  #       with:
+  #         upload_url: ${{ steps.get_release.outputs.upload_url }}
+  #         asset_path: ./pos_system.apk
+  #         asset_name: pos_system.dev.${{ needs.check-version.outputs.build_code }}.apk
+  #         asset_content_type: application/vnd.android.package-archive

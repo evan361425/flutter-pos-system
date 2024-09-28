@@ -4,7 +4,7 @@ act:
   - Successful!
   - Action executed successfully and displayed on the Snackbar.
   error:
-  - Unknown error occurred.
+  - Error
   - Error message displayed on the Snackbar when an error occurs.
   moreInfo:
   - More
@@ -31,6 +31,7 @@ title:
   cashier: Cashier
   settings: Settings
   menu: Menu
+  printer: Printer
   transit: Data Transfer
   orderAttributes: Customer Settings
   stockQuantities: Quantities

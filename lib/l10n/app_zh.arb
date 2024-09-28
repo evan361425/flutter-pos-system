@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-09-17T01:42:02.002121Z",
+  "@@last_modified": "2024-10-25T08:03:04.178201Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -958,7 +958,7 @@
   "@actSuccess": {
     "description": "Action executed successfully and displayed on the Snackbar."
   },
-  "actError": "發生未知錯誤",
+  "actError": "錯誤",
   "@actError": {
     "description": "Error message displayed on the Snackbar when an error occurs."
   },
@@ -994,7 +994,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} printer{出單機} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
   "dialogDeletionTitle": "刪除確認通知",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."

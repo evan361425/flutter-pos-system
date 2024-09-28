@@ -9,6 +9,10 @@ help: ## Display this help
 format: ## Format code
 	dart format --set-exit-if-changed --line-length 120 .
 
+.PHONY: lint
+lint: ## Lint code
+	flutter analyze .
+
 .PHONY: outdated
 outdated: ## Find outdated dependencies
 	flutter pub outdated --no-transitive --no-prereleases

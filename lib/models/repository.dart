@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
@@ -137,7 +138,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
 mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
   /// sorted by index
   @override
-  List<T> get itemList => items.toList()..sort((a, b) => a.index.compareTo(b.index));
+  List<T> get itemList => items.sorted((a, b) => a.index.compareTo(b.index));
 
   /// Get highest index of products plus 1
   /// 1-index
@@ -189,9 +190,9 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   T buildItem(String id, Map<String, Object?> value);
 
-  Future<void> initialize() async {
+  Future<void> initialize({String? record}) async {
     try {
-      final data = await Storage.instance.get(storageStore);
+      final data = await Storage.instance.get(storageStore, record);
 
       data.forEach((id, value) {
         try {
@@ -243,6 +244,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 enum RepositoryStorageType {
   pureRepo,
   repoModel,
+  repoProperties,
 }
 
 class RepositoryBatchData {

@@ -12,7 +12,7 @@ class CircularLoading extends StatelessWidget {
         height: size ?? 20,
         width: size ?? 20,
         child: const Center(
-          child: CircularProgressIndicator(strokeWidth: 2),
+          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
         ),
       ),
     );

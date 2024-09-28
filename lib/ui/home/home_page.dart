@@ -339,6 +339,7 @@ const _drawerTabs = [
   _Tab.cashier,
   _Tab.orderAttributes,
   _Tab.menu,
+  _Tab.printer,
   _Tab.stockQuantities,
   _Tab.transit,
   _Tab.elf,
@@ -377,6 +378,10 @@ enum _Tab {
   transit(
     icon: Icon(Icons.local_shipping_outlined),
     selectedIcon: Icon(Icons.local_shipping),
+  ),
+  printer(
+    icon: Icon(Icons.print_outlined),
+    selectedIcon: Icon(Icons.print),
   ),
   elf(
     icon: Icon(Icons.lightbulb_outlined),

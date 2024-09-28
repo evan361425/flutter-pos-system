@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart_object.dart';
 import 'package:possystem/models/model.dart';
-import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/storage.dart';
 
@@ -57,9 +56,6 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
 
   @override
   Analysis get repository => Analysis.instance;
-
-  @override
-  set repository(Repository repo) {}
 
   @override
   ChartObject toObject() {

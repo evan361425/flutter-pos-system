@@ -165,11 +165,7 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
                   child: SizedBox(
                     height: calculatorHeight,
                     child: CheckoutCashierCalculator(
-                      onSubmit: () => _ConfirmButton.confirm(
-                        context,
-                        price: widget.price.value,
-                        paid: widget.paid.value,
-                      ),
+                      onSubmit: () => _ConfirmButton.confirm(context, paid: widget.paid.value),
                       price: widget.price,
                       paid: widget.paid,
                     ),
@@ -242,11 +238,7 @@ class _Desktop extends StatelessWidget {
             ),
             Expanded(
               child: CheckoutCashierCalculator(
-                onSubmit: () => _ConfirmButton.confirm(
-                  context,
-                  price: price.value,
-                  paid: paid.value,
-                ),
+                onSubmit: () => _ConfirmButton.confirm(context, paid: paid.value),
                 price: price,
                 paid: paid,
               ),
@@ -352,11 +344,12 @@ class _ConfirmButton extends StatelessWidget {
 
   const _ConfirmButton({required this.price, required this.paid});
 
-  static void confirm(BuildContext context, {required num price, required num paid}) async {
-    final status = await Cart.instance.checkout(price, paid);
+  static void confirm(BuildContext context, {required num paid}) async {
+    final future = Cart.instance.checkout(paid: paid, context: context);
+    final status = await showSnackbarWhenFailed(future, context, 'order_checkout');
 
     // send success message
-    if (context.mounted) {
+    if (context.mounted && status != null) {
       if (status == CheckoutStatus.paidNotEnough) {
         showSnackBar(context, S.orderCheckoutSnackbarPaidFailed);
       } else if (context.canPop()) {
@@ -369,7 +362,7 @@ class _ConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       key: const Key('order.details.confirm'),
-      onPressed: () => confirm(context, price: price.value, paid: paid.value),
+      onPressed: () => confirm(context, paid: paid.value),
       tooltip: S.orderCheckoutActionConfirm,
       icon: const Icon(Icons.check_outlined),
     );

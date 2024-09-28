@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/storage.dart';
 
@@ -78,9 +77,6 @@ class Ingredient extends Model<IngredientObject>
 
   @override
   Stock get repository => Stock.instance;
-
-  @override
-  set repository(Repository repo) {}
 
   Future<void> setAmount(num amount) =>
       // only allow difference

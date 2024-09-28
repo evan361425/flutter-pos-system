@@ -177,19 +177,27 @@ class StashedOrderListView extends StatelessWidget {
       ),
     );
 
-    if (confirmed == true) {
-      final status = await cart.checkout(price.value, paid.value);
-      if (status == CheckoutStatus.paidNotEnough) {
-        if (context.mounted) {
+    if (confirmed == true && context.mounted) {
+      final future = Cart.instance.checkout(paid: paid.value, context: context);
+      final status = await showSnackbarWhenFailed(future, context, 'stashed_order_checkout');
+
+      if (status == CheckoutStatus.paidNotEnough || status == null) {
+        if (context.mounted && status != null) {
           showSnackBar(context, S.orderCheckoutSnackbarPaidFailed);
         }
         return;
       }
 
-      await StashedOrders.instance.delete(order.id ?? 0);
-
       if (context.mounted) {
-        handleCheckoutStatus(context, status);
+        await showSnackbarWhenFailed(
+          StashedOrders.instance.delete(order.id ?? 0),
+          context,
+          'stashed_order_finished',
+        );
+
+        if (context.mounted) {
+          handleCheckoutStatus(context, status);
+        }
       }
     }
   }

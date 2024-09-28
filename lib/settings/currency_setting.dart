@@ -116,6 +116,7 @@ extension ToCurrency on num {
     return CurrencySetting.instance.formatter.format(toCurrencyNum());
   }
 
+  /// Without any `intl` format
   String toCurrencyLong() {
     if (CurrencySetting.instance.isInt) {
       return round().toString();

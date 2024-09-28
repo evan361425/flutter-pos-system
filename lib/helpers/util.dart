@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:uuid/uuid.dart';
 
 class Util {
@@ -39,10 +40,14 @@ class Util {
   static Widget Function(
     BuildContext context,
     AsyncSnapshot<T> snapshot,
-  ) handleSnapshot<T>(Widget Function(BuildContext context, T? data) builder) {
+  ) handleSnapshot<T>(
+    Widget Function(BuildContext context, T? data) builder, {
+    void Function(Object)? onError,
+  }) {
     return (BuildContext context, AsyncSnapshot<T> snapshot) {
       final error = snapshot.error;
       if (error != null) {
+        onError?.call(error);
         return Center(child: Text(error.toString()));
       }
 
@@ -60,6 +65,41 @@ class Util {
 
       return builder(context, snapshot.data);
     };
+  }
+
+  static transError(Object e) {
+    if (e is BluetoothOffException) {
+      return '藍牙未開啟';
+    }
+
+    if (e is BluetoothException) {
+      if (e.code == BluetoothExceptionCode.timeout.index) {
+        return '連線逾時';
+      }
+
+      if (e.code == BluetoothExceptionCode.deviceIsDisconnected.index) {
+        return '裝置已斷線';
+      }
+
+      if ([
+        BluetoothExceptionCode.serviceNotFound.index,
+        BluetoothExceptionCode.characteristicNotFound.index,
+      ].contains(e.code)) {
+        return '服務不相容';
+      }
+
+      if ([
+        BluetoothExceptionCode.adapterIsOff.index,
+        BluetoothExceptionCode.connectionCanceled.index,
+        BluetoothExceptionCode.userRejected.index,
+      ].contains(e.code)) {
+        return '無法進行連線';
+      }
+
+      return e.description ?? 'error from ${e.function}';
+    }
+
+    return e;
   }
 }
 
@@ -84,5 +124,15 @@ extension RangeFormat on DateTimeRange {
 
     final fe = end.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
     return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
+  }
+}
+
+extension MenuControllerToggle on MenuController {
+  void toggle() {
+    if (isOpen) {
+      close();
+    } else {
+      open();
+    }
   }
 }

@@ -70,9 +70,6 @@ class OrderAttribute extends Model<OrderAttributeObject>
   @override
   OrderAttributes get repository => OrderAttributes.instance;
 
-  @override
-  set repository(repo) {}
-
   bool get shouldHaveModeValue => mode != OrderAttributeMode.statOnly;
 
   @override
