@@ -36,7 +36,8 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       );
     }
 
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
         child: ListenableBuilder(

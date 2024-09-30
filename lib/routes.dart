@@ -666,9 +666,11 @@ class Routes {
   static const imageGallery = 'imageGallery';
   static const settings = 'settings';
   static const settingsFeature = 'settings.feature';
-  static const printers = 'printers';
-  static const printersCreate = 'printers.create';
-  static const printersUsage = 'printers.usage';
+  static const printer = 'printer';
+  static const printerCreate = 'printer.create';
+  static const printerUpdate = 'printer.update';
+  static const printerTest = 'printer.test';
+  static const printerConnect = 'printer.connect';
 }
 
 T _findEnum<T extends Enum>(Iterable<T> values, String? path, T other) {

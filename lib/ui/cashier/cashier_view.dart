@@ -17,7 +17,8 @@ class CashierView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
         child: ListenableBuilder(
@@ -43,7 +44,8 @@ class CashierView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: kHorizontalSpacing),
       child: Row(children: [
-        const SizedBox(width: kInternalSpacing),
+        // TODO: why this sized box needed?
+        // const SizedBox(width: kInternalSpacing),
         Tutorial(
           id: 'cashier.default',
           title: S.cashierToDefaultTutorialTitle,
