@@ -109,4 +109,9 @@ cd bumble && python3 -m pip install "."
 
 ```bash
 python run_rfcomm_server.py device1.json android-netsim 8080 00001101-0000-1000-8000-00805F9B34FB
+
+cd ~/Library/Android/sdk/platform-tools
+./adb logcat -c && ./adb shell dumpsys batterystats --reset
+./adb bugreport ~/Downloads
+LC_CTYPE=C sed -n "/BEGIN:BTSNOOP_LOG_SUMMARY/,/END:BTSNOOP_LOG_SUMMARY/p " ~/Downloads/bugreport/dumpstate-2024-10-02-19-58-20.txt | egrep -av "BTSNOOP_LOG_SUMMARY" | python3 btsnooz.py > hci.log
 ```

@@ -54,3 +54,27 @@ class NavToButton extends StatelessWidget {
     );
   }
 }
+
+class ButtonGroup extends StatelessWidget {
+  final List<Widget> buttons;
+
+  const ButtonGroup({
+    super.key,
+    required this.buttons,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[buttons.first];
+    for (var i = 1; i < buttons.length; i++) {
+      children.add(const SizedBox(height: 28, child: VerticalDivider()));
+      children.add(buttons[i]);
+    }
+
+    return Material(
+      elevation: 1.0,
+      borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+      child: Row(children: children),
+    );
+  }
+}

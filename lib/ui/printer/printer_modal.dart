@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
@@ -48,7 +49,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       }
 
       return [
-        Center(child: HintText('搜尋出 ${searched.length} 個裝置')),
+        Center(child: HintText('搜尋到 ${searched.length} 個裝置')),
         for (final device in searched)
           ListTile(
             title: Text(device.name ?? '未命名裝置'),
@@ -56,36 +57,35 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
             onTap: () => selectDevice(device),
           ),
         // still searching
-        if (scanStream != null) const CircularProgressIndicator(),
+        if (scanStream != null)
+          Row(children: [
+            const CircularProgressIndicator(),
+            TextButton(onPressed: reScan, child: const Text('重新搜尋')),
+          ]),
       ];
     }
 
     return [
-      Material(
-        elevation: 1.0,
-        borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-        child: Row(children: [
-          IconButton(
-            key: const Key('printer.test'),
-            onPressed: () => context.pushNamed(Routes.printerTest, pathParameters: {'address': selected!.address}),
-            icon: const Column(children: [
-              Icon(Icons.print_outlined),
-              SizedBox(height: 4),
-              Text('測試列印'),
-            ]),
-          ),
-          const SizedBox(height: 28, child: VerticalDivider()),
-          IconButton(
-            key: const Key('printer.scan'),
-            onPressed: reScan,
-            icon: const Column(children: [
-              Icon(Icons.bluetooth_searching_outlined),
-              SizedBox(height: 4),
-              Text('重新搜尋'),
-            ]),
-          ),
-        ]),
-      ),
+      ButtonGroup(buttons: [
+        IconButton(
+          key: const Key('printer.test'),
+          onPressed: testPrinter,
+          icon: const Column(children: [
+            Icon(Icons.print_outlined),
+            SizedBox(height: 4),
+            Text('測試列印'),
+          ]),
+        ),
+        IconButton(
+          key: const Key('printer.scan'),
+          onPressed: reScan,
+          icon: const Column(children: [
+            Icon(Icons.bluetooth_searching_outlined),
+            SizedBox(height: 4),
+            Text('重新搜尋'),
+          ]),
+        ),
+      ]),
       const SizedBox(height: kInternalSpacing),
       p(TextFormField(
         key: const Key('printer.name'),
@@ -102,13 +102,12 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         validator: Validator.textLimit('出單機名稱', 30, focusNode: nameFocusNode),
       )),
       CheckboxListTile(
+        key: const Key('printer.defaultReceiptPrinter'),
+        controlAffinity: ListTileControlAffinity.leading,
         value: defaultReceiptPrinter,
-        onChanged: (value) {
-          setState(() {
-            defaultReceiptPrinter = value!;
-          });
-        },
-        title: const Text('是否為預設出單機'),
+        selected: defaultReceiptPrinter,
+        onChanged: toggleDefault,
+        title: const Text('設為預設出單機'),
       ),
     ];
   }
@@ -155,6 +154,16 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
     await scanStream?.cancel();
     scanStream = null;
+  }
+
+  void toggleDefault(value) {
+    setState(() {
+      defaultReceiptPrinter = value!;
+    });
+  }
+
+  void testPrinter() {
+    context.pushNamed(Routes.printerTest, pathParameters: {'address': selected!.address});
   }
 
   @override
