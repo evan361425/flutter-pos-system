@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
-import 'package:possystem/components/style/imageable_container.dart';
+import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -95,8 +95,15 @@ class _PrinterTestDialogState extends State<PrinterTestDialog> {
 
       final data = await controller.toImage();
       if (data != null) {
-        size = data.length;
-        printStream.value = Bluetooth.instance.write(device, data);
+        final image = data
+            .toGrayScale()
+            .toBitMap(
+              width: controller.width,
+              blackIsOne: true,
+              invertBits: true,
+            )
+            .bytes;
+        printStream.value = Bluetooth.instance.write(device, image);
       }
     }
   }
