@@ -64,7 +64,7 @@ class ImageableController {
 
     final image = await boundary.toImage(pixelRatio: width / boundary.paintBounds.width);
     final byteData = await image.toByteData();
-    final result = ConvertibleImage(byteData!.buffer.asUint8List());
+    final result = ConvertibleImage(byteData!.buffer.asUint8List(), width: width);
 
     image.dispose();
     return result;
@@ -74,7 +74,9 @@ class ImageableController {
 class ConvertibleImage {
   final Uint8List bytes;
 
-  const ConvertibleImage(this.bytes);
+  final int width;
+
+  const ConvertibleImage(this.bytes, {required this.width});
 
   /// see: https://en.wikipedia.org/wiki/Luma_%28video%29#Rec._601_luma_versus_Rec._709_luma_coefficients
   ConvertibleImage toGrayScale() {
@@ -87,44 +89,31 @@ class ConvertibleImage {
       result[i ~/ 4] = (r * 0.299 + g * 0.587 + b * 0.114).round();
     }
 
-    return ConvertibleImage(result);
+    return ConvertibleImage(result, width: width);
   }
 
-  /// see: https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering
-  ConvertibleImage toBitMap({required int width, bool invertBits = false, bool blackIsOne = false}) {
+  /// Black is 0, White is 1
+  ///
+  /// If [mirrored] is true, the bits will be mirrored, for example, 10000000 will be 00000001
+  /// If [invert] is true, black will be 1, white will be 0
+  ConvertibleImage toBitMap({bool mirrored = false, bool invert = false}) {
     // 8 bits to 1 bit
     final result = Uint8List(bytes.length ~/ 8);
-    final lastRow = bytes.length - width;
     for (var i = 0; i < bytes.length; i++) {
       // convert to binary image
-      var err = bytes[i];
       if (bytes[i] > 127) {
-        err = bytes[i] - 255;
-        if (invertBits) {
+        if (mirrored) {
           result[i ~/ 8] |= 1 << (i % 8);
         } else {
           result[i ~/ 8] |= 1 << (7 - i % 8);
         }
       }
-
-      // floyd-steinberg dithering
-      if (i % width < width - 1) {
-        bytes[i + 1] += err * 7 ~/ 16;
-        if (i < lastRow) {
-          bytes[i + width + 1] += err ~/ 16;
-        }
-      }
-
-      if (i < lastRow) {
-        bytes[i + width - 1] += err * 3 ~/ 16;
-        bytes[i + width] += err * 5 ~/ 16;
-      }
     }
 
-    if (blackIsOne) {
-      return ConvertibleImage(Uint8List.fromList(result.map((e) => ~e).toList()));
+    if (invert) {
+      return ConvertibleImage(Uint8List.fromList(result.map((e) => ~e).toList()), width: width);
     }
 
-    return ConvertibleImage(result);
+    return ConvertibleImage(result, width: width);
   }
 }

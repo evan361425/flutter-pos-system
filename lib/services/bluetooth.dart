@@ -11,62 +11,6 @@ class Bluetooth {
     return null;
   }
 
-  /// Commands:
-  /// - cat:
-  ///   - 0xA0 Retract paper (go inside the box). #(number of steps)
-  ///   - 0xA1 Feed paper (go outside the box). #(number of steps)
-  ///   - 0xA2 Draw line. 0x00 (don't draw pixel), 0x01 (draw pixel)
-  ///   - 0xA3 Get device state. 0x00 (get by subscription, 3 bytes, only first byte is meaningful)
-  ///     - 1 - paper sensor (0x01) - paper not found or paper door open
-  ///     - 2 - cover (0x02)
-  ///     - 3 - head hot (0x04)
-  ///     - 4 - low battery (0x08)
-  ///     - 8 - in print progress (0x80)
-  ///   - 0xA4 Set quality. 0x31 - 0x36 looks all same, should be 0x33 or 0x34.
-  ///   - 0xA6 Control Lattice-Eleven bytes. (should not be used)
-  ///   - 0xA8 Get device info. 0x00 (get by subscription, return device version)
-  ///   - 0xAE Control line. 0x00 (On), 0x01 (Off)
-  ///   - 0xAF Set energy. 0x01 - 0xFFFF (0x0A before printing, 0x0F after printing)
-  ///   - 0xBD Config feed speed. 0x00 - 0xFF (speed of feeding, 0x1e before printing, 0x19 after printing)
-  ///   - 0xBE Set drawing mode. 0x00 (for images), 0x01 (for text)
-  ///   - 0xF2 Unknown. Always 0x01b4
-  ///
-  /// Checksum:
-  /// ```
-  /// final checksum = 0;
-  /// for (final byte in bytes) {
-  ///  checksum = _checksumTable[checksum ^ byte];
-  /// }
-  /// ```
-  ///
-  /// Format:
-  /// - cat:
-  ///  - prefix_STX(0x5178)
-  ///  - command (see above)
-  ///  - direction=0 (command, to printer),1 (response, from printer)
-  ///  - length lower byte (length % 256; length & 0xFF)
-  ///  - length upper byte ( length / 256; length >> 8)
-  ///  - command arguments
-  ///  - checksum (see above)
-  ///  - suffix_ETX(0xFF)
-  ///
-  /// Steps:
-  /// 1. send meta:
-  ///   - cat:
-  ///     - optional command(0xF2, default_value)          5178f200020001b410ff
-  ///     - optional command(get_device_state, 0x00)       5178a30001000000ff
-  ///     - optional command(set_quality, 0x34)            5178a4000100348cff
-  ///     - optional command(control_lat, prefixLattice)   5178a6000b00aa551738445f5f5f44382ca1ff
-  ///     - optional command(set_energy, 0x1027)           5178af0002001027a2ff
-  ///     - required command(set_drawing_mode, 0x00)       5178be0001000000ff
-  ///     - optional command(config_feed_speed, 0x0a)      5178bd0001000a36ff
-  ///     - write image                                    5178a2003000..??ff
-  ///     - ...                                            ...
-  ///     - optional command(config_feed_speed, 0x0a);     5178bd0001000a36ff
-  ///     - optional command(feed_paper, 0x3000);          5178a10002003000f9ff
-  ///     - optional command(control_lat, postfixLattice); 5178a6000b00aa5517000000000000001711ff
-  ///     - optional command(get_device_state, 0x00);      5178a30001000000ff
-  ///     - optional command(get_device_state, 0x00);      5178a30001000000ff
   Stream<num> write(BluetoothDevice device, Uint8List data) {
     return Stream.fromFutures([
       Future.delayed(const Duration(seconds: 1), () => 0),
@@ -77,10 +21,6 @@ class Bluetooth {
   }
 }
 
-/// Targets:
-/// - cat:
-///   - 0xAE01 - Write no response - used for printing
-///   - 0xAE02 - Notify - receive notifications for commands 0xA3 and 0xA8
 class BluetoothDevice {
   final String? name;
   final String address;

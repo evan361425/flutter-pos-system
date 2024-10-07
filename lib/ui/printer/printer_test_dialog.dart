@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/imageable_container.dart';
+import 'package:possystem/components/style/zigzag_line.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -31,9 +33,18 @@ class _PrinterTestDialogState extends State<PrinterTestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = ImageableContainer(controller: controller, children: const [
-      Text('這是一張測試列印'),
-    ]);
+    Widget content = DecoratedBox(
+      decoration: const BoxDecoration(color: Colors.white),
+      child: Column(
+        children: [
+          const CustomPaint(painter: ZigZagPainter()),
+          const SizedBox(height: kInternalLargeSpacing),
+          ImageableContainer(controller: controller, children: const [
+            Text('這是一張測試列印'),
+          ]),
+        ],
+      ),
+    );
 
     if (isPrinting) {
       content = Stack(
@@ -98,9 +109,8 @@ class _PrinterTestDialogState extends State<PrinterTestDialog> {
         final image = data
             .toGrayScale()
             .toBitMap(
-              width: controller.width,
-              blackIsOne: true,
-              invertBits: true,
+              invert: true,
+              mirrored: true,
             )
             .bytes;
         printStream.value = Bluetooth.instance.write(device, image);

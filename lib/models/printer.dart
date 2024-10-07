@@ -132,3 +132,30 @@ class PrinterObject extends ModelObject<Printer> {
     );
   }
 }
+
+abstract class PrinterImpl {
+  /// The desired service UUID
+  final int serviceUuid;
+
+  /// The desired characteristic UUIDs to write
+  final int writerChar;
+
+  /// The desired characteristic UUIDs to read (notified)
+  final int readChar;
+
+  const PrinterImpl({
+    required this.serviceUuid,
+    required this.writerChar,
+    this.readChar = 0,
+  });
+
+  /// Commands after connected
+  Uint8List prepare() => Uint8List(0);
+
+  /// The actual command for image
+  Uint8List draw(Uint8List image, {required int width, int padding = 0});
+}
+
+enum PrinterManufactory {
+  MX;
+}
