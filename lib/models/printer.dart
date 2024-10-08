@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/repository.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/services/storage.dart';
 
 class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorage<Printer> {
@@ -154,8 +155,20 @@ abstract class PrinterImpl {
 
   /// The actual command for image
   Uint8List draw(Uint8List image, {required int width, int padding = 0});
+
+  /// Get current printer status
+  Future<PrinterStatus> getStatus(BluetoothDevice device);
 }
 
 enum PrinterManufactory {
-  MX;
+  MX; // cat printer
+}
+
+enum PrinterStatus {
+  good,
+  paperNotFound,
+  tooHot,
+  lowBattery,
+  printing,
+  unknown,
 }

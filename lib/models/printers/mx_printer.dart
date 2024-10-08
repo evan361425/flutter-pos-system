@@ -1,7 +1,8 @@
-import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/services/bluetooth.dart';
 
 ///   - 0xAE01 - Write no response - used for printing
 ///   - 0xAE02 - Notify - receive notifications for commands 0xA3 and 0xA8
@@ -22,13 +23,49 @@ class MxPrinter extends PrinterImpl {
   }
 
   @override
+  Future<PrinterStatus> getStatus(BluetoothDevice device) async {
+    await Bluetooth.instance.write(device, Uint8List.fromList(_wrap(_Cmd.getStatus, [0x00])));
+    final result = await Bluetooth.instance.watch(device).first;
+
+    // example: 5178a301030000abcd00ff
+    const expected = [0x51, 0x78, _Cmd.getStatus, 0x01, 0x03, 0x00];
+    final wrong = result.sublist(0, 7).firstWhereIndexedOrNull((index, element) {
+      if (index == expected.length) {
+        return false;
+      }
+
+      if (element == expected[index]) {
+        return false;
+      }
+
+      return true;
+    });
+    if (wrong != null) {
+      return PrinterStatus.unknown;
+    }
+
+    switch (result[6]) {
+      case 0x00:
+        return PrinterStatus.good;
+      case 0x01:
+        return PrinterStatus.paperNotFound;
+      case 0x03:
+        return PrinterStatus.tooHot;
+      case 0x04:
+        return PrinterStatus.lowBattery;
+      case 0x08:
+        return PrinterStatus.printing;
+      default:
+        return PrinterStatus.unknown;
+    }
+  }
+
+  @override
   Uint8List draw(Uint8List image, {required int width, int padding = 0x2A}) {
+    // convert byte array to bit array
     width ~/= 8;
     return Uint8List.fromList(
-      [
-            for (var i = 0; i < image.length; i += width)
-              ..._wrap(_Cmd.draw, image.sublist(i, min(i + width, image.length)))
-          ] +
+      image.slices(width).map((e) => _wrap(_Cmd.draw, e)).flattened.toList() +
           _wrap(_Cmd.feedPaper, _int2Bytes(padding)),
     );
   }
@@ -48,20 +85,21 @@ class MxPrinter extends PrinterImpl {
   }
 }
 
-///     - optional command(0xF2, default_value)          5178f200020001b410ff
-///     - optional command(get_device_state, 0x00)       5178a30001000000ff
-///     - optional command(set_quality, 0x34)            5178a4000100348cff
-///     - optional command(control_lat, prefixLattice)   5178a6000b00aa551738445f5f5f44382ca1ff
-///     - optional command(set_energy, 0x1027)           5178af0002001027a2ff
-///     - required command(set_drawing_mode, 0x00)       5178be0001000000ff
-///     - optional command(config_feed_speed, 0x0a)      5178bd0001000a36ff
-///     - write image                                    5178a2003000..??ff
-///     - ...                                            ...
-///     - optional command(config_feed_speed, 0x0a);     5178bd0001000a36ff
-///     - optional command(feed_paper, 0x3000);          5178a10002003000f9ff
-///     - optional command(control_lat, postfixLattice); 5178a6000b00aa5517000000000000001711ff
-///     - optional command(get_device_state, 0x00);      5178a30001000000ff
-///     - optional command(get_device_state, 0x00);      5178a30001000000ff
+/// Actual packet dump:
+/// - optional command(0xF2, 0x01B4)                 5178f200020001b410ff
+/// - optional command(get_device_state, 0x00)       5178a30001000000ff
+/// - optional command(set_quality, 0x34)            5178a4000100348cff
+/// - optional command(control_lat, prefixLattice)   5178a6000b00aa551738445f5f5f44382ca1ff
+/// - optional command(set_energy, 0x1027)           5178af0002001027a2ff
+/// - required command(set_drawing_mode, 0x00)       5178be0001000000ff
+/// - optional command(config_feed_speed, 0x0A)      5178bd0001000a36ff
+/// - write image                                    5178a2003000..??ff
+/// - ...                                            ...
+/// - optional command(config_feed_speed, 0x0A);     5178bd0001000a36ff
+/// - optional command(feed_paper, 0x3000);          5178a10002003000f9ff
+/// - optional command(control_lat, postfixLattice); 5178a6000b00aa5517000000000000001711ff
+/// - optional command(get_device_state, 0x00);      5178a30001000000ff
+/// - optional command(get_device_state, 0x00);      5178a30001000000ff
 class _Cmd {
   static const prefix1 = 0x51;
   static const prefix2 = 0x78;
@@ -77,7 +115,7 @@ class _Cmd {
   /// For example:
   /// - 0x01abcd - paper not found or paper door open
   /// - 0x001234 - all good
-  static const getState = 0xA3;
+  static const getStatus = 0xA3;
 
   /// Get device info. 0x00 (get by subscription (0xAE02), return device version)
   /// For example:

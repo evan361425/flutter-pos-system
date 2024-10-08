@@ -11,13 +11,12 @@ class Bluetooth {
     return null;
   }
 
-  Stream<num> write(BluetoothDevice device, Uint8List data) {
-    return Stream.fromFutures([
-      Future.delayed(const Duration(seconds: 1), () => 0),
-      Future.delayed(const Duration(seconds: 1, milliseconds: 500), () => data.length / 3),
-      Future.delayed(const Duration(seconds: 2), () => data.length / 2),
-      Future.delayed(const Duration(seconds: 3), () => data.length),
-    ]);
+  Stream<Uint8List> watch(BluetoothDevice device) async* {
+    yield Uint8List.fromList([0x00, 0x01, 0x02, 0x03]);
+  }
+
+  Future<void> write(BluetoothDevice device, Uint8List data) async {
+    return Future.delayed(const Duration(seconds: 1), () => 0);
   }
 }
 
