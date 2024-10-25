@@ -12,7 +12,6 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
 void Function() goGenerateRandomOrders(BuildContext context) {

@@ -205,6 +205,7 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   }
 
   /// Connected printer has a higher priority
+  @override
   int compareTo(Printer other) {
     int myScore = 0;
     if (connected) {

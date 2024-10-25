@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/slider_text_dialog.dart';
 import 'package:possystem/components/style/percentile_bar.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/cashier_object.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class UnitListTile extends StatelessWidget {

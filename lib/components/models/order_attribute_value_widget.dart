@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderAttributeValueWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/services/bluetooth.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:uuid/uuid.dart';
 
 class Util {
@@ -66,41 +66,6 @@ class Util {
       return builder(context, snapshot.data);
     };
   }
-
-  static transError(Object e) {
-    if (e is BluetoothOffException) {
-      return '藍牙未開啟';
-    }
-
-    if (e is BluetoothException) {
-      if (e.code == BluetoothExceptionCode.timeout.index) {
-        return '連線逾時';
-      }
-
-      if (e.code == BluetoothExceptionCode.deviceIsDisconnected.index) {
-        return '裝置已斷線';
-      }
-
-      if ([
-        BluetoothExceptionCode.serviceNotFound.index,
-        BluetoothExceptionCode.characteristicNotFound.index,
-      ].contains(e.code)) {
-        return '服務不相容';
-      }
-
-      if ([
-        BluetoothExceptionCode.adapterIsOff.index,
-        BluetoothExceptionCode.connectionCanceled.index,
-        BluetoothExceptionCode.userRejected.index,
-      ].contains(e.code)) {
-        return '無法進行連線';
-      }
-
-      return e.description ?? 'error from ${e.function}';
-    }
-
-    return e;
-  }
 }
 
 extension RangeFormat on DateTimeRange {
@@ -134,5 +99,41 @@ extension MenuControllerToggle on MenuController {
     } else {
       open();
     }
+  }
+}
+
+extension IntOrDouble on num {
+  /// If it has decimal, show it, else show as int.
+  String toShortString() {
+    final rounded = round();
+    if (this == rounded) {
+      return rounded.toString();
+    }
+
+    return toStringAsFixed(2);
+  }
+
+  /// Parse value to int or double string, decided by [CurrencySetting.isInt]
+  String toCurrency() {
+    return CurrencySetting.instance.formatter.format(toCurrencyNum());
+  }
+
+  /// Without any `intl` format
+  String toCurrencyLong() {
+    if (CurrencySetting.instance.isInt) {
+      return round().toString();
+    }
+
+    // if it has decimal, show it, else show int
+    final rounded = round();
+    if (this == rounded) {
+      return rounded.toString();
+    }
+
+    return toString();
+  }
+
+  num toCurrencyNum() {
+    return CurrencySetting.instance.isInt ? round() : this;
   }
 }

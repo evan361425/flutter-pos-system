@@ -3,7 +3,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/helpers/exception.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/ui/printer/widgets/printer_receipt_view.dart';
 
@@ -13,7 +12,6 @@ class CheckoutReceiptDialog extends StatefulWidget {
   final List<int> widths;
 
   const CheckoutReceiptDialog._({
-    super.key,
     required this.order,
     required this.widths,
   });
@@ -30,7 +28,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
     );
 
     if (data is! List<ConvertibleImage>) {
-      if (data is Error) {
+      if (data is String) {
         // We need Log.err in this function, no matter context is mounted or not
         // ignore: use_build_context_synchronously
         await showSnackbarWhenFailed(Future.error(data), context, 'order_print_receipt');
@@ -97,7 +95,7 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
       final data = await controller.toImage(widths: widget.widths);
       if (mounted && context.canPop()) {
         final result = data?.map((e) => e.toGrayScale().toBitMap()).toList();
-        context.pop(result ?? _FailedToGenerateImage());
+        context.pop(result ?? '無法正確產生出單資料');
       }
     } catch (e) {
       if (mounted && context.canPop()) {
@@ -105,8 +103,4 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
       }
     }
   }
-}
-
-class _FailedToGenerateImage extends POSError {
-  _FailedToGenerateImage() : super('Failed to generate image');
 }

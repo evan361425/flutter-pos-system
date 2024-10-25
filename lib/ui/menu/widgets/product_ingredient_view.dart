@@ -7,10 +7,10 @@ import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class ProductIngredientView extends StatelessWidget {

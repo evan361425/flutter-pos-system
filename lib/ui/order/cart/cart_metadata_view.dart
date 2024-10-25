@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_actions.dart';
 import 'package:provider/provider.dart';

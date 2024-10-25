@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/card_info_text.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/translator.dart';
 
@@ -70,8 +70,8 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
   void initState() {
     super.initState();
 
-    final rp = widget.ingredient.restockPrice?.toAmountString();
-    final rq = widget.ingredient.restockQuantity.toAmountString();
+    final rp = widget.ingredient.restockPrice?.toShortString();
+    final rq = widget.ingredient.restockQuantity.toShortString();
 
     priceController = TextEditingController(text: rp);
     quantityController = TextEditingController(text: rq);

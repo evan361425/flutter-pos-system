@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/imageable_container.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/settings/currency_setting.dart';
 
 class PrinterReceiptView extends StatelessWidget {
   final OrderObject order;

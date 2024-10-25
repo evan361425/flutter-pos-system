@@ -4,7 +4,6 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/analysis/ema_calculator.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 

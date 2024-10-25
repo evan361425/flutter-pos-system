@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/helpers/util.dart';
 
 class SliderTextDialog extends StatefulWidget {
   final String? Function(String?)? validator;
@@ -110,7 +110,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController(text: widget.value.toAmountString());
+    textController = TextEditingController(text: widget.value.toShortString());
     sliderValue = ValueNotifier(widget.value.toDouble());
     sliderMax = max(widget.max, sliderValue.value);
     withSlider = widget.max > 0;

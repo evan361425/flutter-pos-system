@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/cart_product.dart';
@@ -10,7 +11,6 @@ import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/ui/order/widgets/checkout_receipt_dialog.dart';
 
 import 'cashier.dart';
