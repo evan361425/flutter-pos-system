@@ -36,13 +36,13 @@ class ExportOrderView extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
               ),
               onTap: () {
-                showSnackbarWhenFailed(
+                showSnackbarWhenFutureError(
                   export(),
-                  context,
                   'pt_export_failed',
+                  context: context,
                 ).then((value) {
                   if (context.mounted) {
-                    showSnackBar(context, S.transitPTCopySuccess);
+                    showSnackBar(S.transitPTCopySuccess, context: context);
                   }
                 });
               },

@@ -1,95 +1,122 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 
 void showSnackBar(
-  BuildContext context,
   String message, {
+  BuildContext? context,
+  GlobalKey<ScaffoldMessengerState>? key,
   SnackBarAction? action,
 }) {
-  ScaffoldMessenger.of(context).clearSnackBars();
-  // If want to add a "close" button, should consider taking root context, which is hard to handle.
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    showCloseIcon: true,
-    // make floating button below
-    behavior: SnackBarBehavior.floating,
-    content: Text(message),
-    width: MediaQuery.sizeOf(context).width > 700 ? 600 : null,
-    action: action,
-  ));
+  ScaffoldMessengerState? state;
+  if (context != null) {
+    if (context.mounted) {
+      state = ScaffoldMessenger.maybeOf(context);
+    }
+  } else {
+    if (key?.currentContext?.mounted == true) {
+      state = key?.currentState;
+    }
+  }
+
+  if (state != null) {
+    state.clearSnackBars();
+    // If want to add a "close" button, should consider taking root context, which is hard to handle.
+    state.showSnackBar(SnackBar(
+      showCloseIcon: true,
+      // make floating button below
+      behavior: SnackBarBehavior.floating,
+      content: Text(message),
+      width: Routes.homeMode.value.isMobile() ? null : 600,
+      action: action,
+    ));
+  }
 }
 
-Stream<T> showSnackbarWhenError<T>(Stream<T> stream, BuildContext context, String code) {
+Stream<T> showSnackbarWhenStreamError<T>(
+  Stream<T> stream,
+  String code, {
+  BuildContext? context,
+  GlobalKey<ScaffoldMessengerState>? key,
+}) {
   stream.handleError((err) {
-    if (context.mounted) {
-      final e = _prettierError(err);
-      showMoreInfoSnackBar(context, '${S.actError}: ${e.message}', e.moreWidget);
-    }
+    _prettierError(err);
     Log.err(err, code, err is Error ? err.stackTrace : null);
   });
 
   return stream;
 }
 
-Future<T?> showSnackbarWhenFailed<T>(
+Future<T?> showSnackbarWhenFutureError<T>(
   Future<T> future,
-  BuildContext context,
-  String code,
-) async {
+  String code, {
+  BuildContext? context,
+  GlobalKey<ScaffoldMessengerState>? key,
+}) async {
   try {
     return await future;
   } catch (err) {
-    if (context.mounted) {
-      final e = _prettierError(err);
-      showMoreInfoSnackBar(context, '${S.actError}: ${e.message}', e.moreWidget);
-    }
+    _prettierError(err, context: context, key: key);
     Log.err(err, code, err is Error ? err.stackTrace : null);
     return null;
   }
 }
 
-void showMoreInfoSnackBar(BuildContext context, String message, Widget? content) {
-  final action = content == null
+void showMoreInfoSnackBar(
+  String message,
+  Widget? content, {
+  BuildContext? context,
+  GlobalKey<ScaffoldMessengerState>? key,
+}) {
+  final ctx = context ?? key?.currentContext;
+  final action = content == null || ctx == null
       ? null
       : SnackBarAction(
           label: S.actMoreInfo,
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return SimpleDialog(
-                  title: Text(message),
-                  contentPadding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
-                  children: [content],
-                );
-              },
-            );
-          },
+          onPressed: () => showMoreInfoDialog(ctx, message, content),
         );
 
-  showSnackBar(context, message, action: action);
+  showSnackBar(message, action: action, context: context, key: key);
 }
 
-_PrettierError _prettierError(Object e) {
+void showMoreInfoDialog(BuildContext context, String title, Widget body) {
+  showAdaptiveDialog(
+    context: context,
+    builder: (context) {
+      return SimpleDialog(
+        title: Text(title),
+        contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 16.0),
+        children: [body],
+      );
+    },
+  );
+}
+
+void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key}) {
+  void show(String msg, [String? more]) {
+    showMoreInfoSnackBar(msg, more == null ? null : Text(more), context: context, key: key);
+  }
+
   if (e is BluetoothOffException) {
-    return const _PrettierError('藍牙未開啟');
+    return show('藍牙未開啟');
   }
 
   if (e is BluetoothException) {
     if (e.code == BluetoothExceptionCode.timeout.index) {
-      return const _PrettierError('連線逾時', more: '聯絡不到該裝置，可以嘗試以下操作：\n• 確認裝置是否開啟\n• 確認裝置是否在範圍內\n• 重新開啟藍牙');
+      return show('連線逾時', '聯絡不到該裝置，可以嘗試以下操作：\n• 確認裝置是否開啟\n• 確認裝置是否在範圍內\n• 重新開啟藍牙');
     }
 
     if (e.code == BluetoothExceptionCode.deviceIsDisconnected.index) {
-      return const _PrettierError('裝置已斷線');
+      return show('裝置已斷線');
     }
 
     if ([
       BluetoothExceptionCode.serviceNotFound.index,
       BluetoothExceptionCode.characteristicNotFound.index,
     ].contains(e.code)) {
-      return const _PrettierError('裝置不相容', more: '目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得支援。');
+      return show('裝置不相容', '目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得支援。');
     }
 
     if ([
@@ -97,20 +124,11 @@ _PrettierError _prettierError(Object e) {
       BluetoothExceptionCode.connectionCanceled.index,
       BluetoothExceptionCode.userRejected.index,
     ].contains(e.code)) {
-      return const _PrettierError('連線請求被中斷');
+      return show('連線請求被中斷');
     }
 
-    return _PrettierError(e.description ?? 'error from ${e.function}');
+    return show(e.description ?? 'error from ${e.function}');
   }
 
-  return _PrettierError(e.toString());
-}
-
-class _PrettierError {
-  final String message;
-  final String? more;
-
-  const _PrettierError(this.message, {this.more});
-
-  Widget? get moreWidget => more == null ? null : Text(more!);
+  return show(e.toString());
 }

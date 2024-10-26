@@ -165,7 +165,11 @@ class _PrinterViewState extends State<PrinterView> {
     if (!waiting.value) {
       waiting.value = true;
 
-      final success = await showSnackbarWhenFailed(widget.printer.connect(), context, 'printer_view_connect');
+      final success = await showSnackbarWhenFutureError(
+        widget.printer.connect(),
+        'printer_view_connect',
+        context: context,
+      );
       onConnected(success);
 
       waiting.value = false;
@@ -176,7 +180,11 @@ class _PrinterViewState extends State<PrinterView> {
     if (!waiting.value) {
       waiting.value = true;
 
-      await showSnackbarWhenFailed(widget.printer.disconnect(), context, 'printer_view_disconnect');
+      await showSnackbarWhenFutureError(
+        widget.printer.disconnect(),
+        'printer_view_disconnect',
+        context: context,
+      );
 
       waiting.value = false;
     }
@@ -186,11 +194,11 @@ class _PrinterViewState extends State<PrinterView> {
     if (!waiting.value) {
       waiting.value = true;
 
-      await showSnackbarWhenFailed(() async {
+      await showSnackbarWhenFutureError(() async {
         await widget.printer.disconnect();
         final success = await widget.printer.connect();
         onConnected(success);
-      }(), context, 'printer_view_reconnect');
+      }(), 'printer_view_reconnect', context: context);
 
       waiting.value = false;
     }
@@ -199,8 +207,11 @@ class _PrinterViewState extends State<PrinterView> {
   /// if success == null, it means the error has been thrown and caught
   void onConnected(bool? success) {
     if (success == false && mounted) {
-      // TODO: add action for unsupported device
-      showSnackBar(context, '連線失敗，該機型可能不支援');
+      showMoreInfoSnackBar(
+        '裝置不相容',
+        const Text('目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得支援。'),
+        context: context,
+      );
     }
   }
 
@@ -286,14 +297,14 @@ class _PrintButton extends StatelessWidget {
     void handleDone() {
       if (progress.value != null) {
         progress.value = null;
-        showSnackBar(context, '列印完成');
+        showSnackBar('列印完成', context: context);
       }
     }
 
     void handleError(Object error, StackTrace trace) {
       Log.err(error, 'printer_test', trace);
       progress.value = null;
-      showSnackBar(context, '列印錯誤：$error');
+      showSnackBar('列印錯誤：$error', context: context);
     }
 
     void handlePress() async {

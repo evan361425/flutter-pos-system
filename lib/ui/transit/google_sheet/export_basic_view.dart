@@ -150,8 +150,8 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     Log.ger('export finish', 'gs_export');
     if (mounted) {
       showSnackBar(
-        context,
         S.actSuccess,
+        context: context,
         action: LauncherSnackbarAction(
           label: S.transitGSSpreadsheetSnackbarAction,
           link: ss.toLink(),

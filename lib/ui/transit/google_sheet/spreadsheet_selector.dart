@@ -153,10 +153,10 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
 
   /// Execute the action when the button is clicked
   void execute() async {
-    await showSnackbarWhenFailed(
+    await showSnackbarWhenFutureError(
       _execute(),
-      context,
       '${widget.cacheKey}_failed',
+      context: context,
     );
 
     _notify('_finish');
@@ -166,10 +166,10 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
   Future<void> choose() async {
     _notify('_start');
 
-    await showSnackbarWhenFailed(
+    await showSnackbarWhenFutureError(
       _choose(),
-      context,
       'gs_select_request_failed',
+      context: context,
     );
 
     _notify('_finish');
@@ -180,7 +180,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     await _update(null);
 
     if (mounted) {
-      showSnackBar(context, S.actSuccess);
+      showSnackBar(S.actSuccess, context: context);
     }
   }
 
@@ -253,13 +253,13 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     if (result != null) {
       await _update(result);
       if (mounted) {
-        showSnackBar(context, S.actSuccess);
+        showSnackBar(S.actSuccess, context: context);
       }
     } else if (mounted) {
       showMoreInfoSnackBar(
-        context,
         S.transitGSErrorImportNotFoundSpreadsheet,
         Text(S.transitGSErrorImportNotFoundHelper),
+        context: context,
       );
     }
   }
@@ -285,12 +285,12 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
     Map<SheetType, String> sheets,
   ) async {
     if (sheets.isEmpty) {
-      showSnackBar(context, S.transitGSErrorSheetEmpty);
+      showSnackBar(S.transitGSErrorSheetEmpty, context: context);
       return null;
     }
 
     if (sheets.values.toSet().length != sheets.length) {
-      showSnackBar(context, S.transitGSErrorSheetRepeat);
+      showSnackBar(S.transitGSErrorSheetRepeat, context: context);
       return null;
     }
 
@@ -309,9 +309,9 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       if (other == null) {
         if (mounted) {
           showMoreInfoSnackBar(
-            context,
             S.transitGSErrorCreateSpreadsheet,
             Text(S.transitGSErrorCreateSpreadsheetHelper),
+            context: context,
           );
         }
         return null;
@@ -327,9 +327,9 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
       if (!success) {
         if (mounted) {
           showMoreInfoSnackBar(
-            context,
             S.transitGSErrorCreateSheet,
             Text(S.transitGSErrorCreateSheetHelper),
+            context: context,
           );
         }
         return null;

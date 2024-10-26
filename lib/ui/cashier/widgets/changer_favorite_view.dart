@@ -71,14 +71,14 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
 
   Future<bool> handleApply() async {
     if (selected == null) {
-      showSnackBar(context, S.cashierChangerErrorNoSelection);
+      showSnackBar(S.cashierChangerErrorNoSelection, context: context);
       return false;
     }
 
     final isValid = await Cashier.instance.applyFavorite(selected!.item);
 
     if (!isValid && mounted) {
-      showSnackBar(context, S.cashierChangerErrorNotEnough(selected!.source.unit?.toCurrency() ?? ''));
+      showSnackBar(S.cashierChangerErrorNotEnough(selected!.source.unit?.toCurrency() ?? ''), context: context);
     }
 
     return isValid;

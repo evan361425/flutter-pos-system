@@ -16,6 +16,7 @@ class PrinterButtonView extends StatefulWidget {
 }
 
 class _PrinterButtonViewState extends State<PrinterButtonView> {
+  late final Set<String> printers;
   final List<Printer> connected = [];
   final List<Printer> connecting = [];
   final Map<String, _Record<BluetoothSignal>> signalRecords = {};
@@ -23,20 +24,20 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
   @override
   Widget build(BuildContext context) {
+    final unused = printers
+        .difference(connected.map((e) => e.id).toSet())
+        .difference(connecting.map((e) => e.id).toSet())
+        .map((e) => Printers.instance.getItem(e))
+        .where((e) => e != null)
+        .toList();
+
     final menuChildren = <Widget>[
       if (connected.isNotEmpty) const Center(child: HintText('使用中')),
       for (final printer in connected)
         MenuItemButton(
           leadingIcon: statusIcons[statusRecords[printer.id]!.value],
           trailingIcon: signalIcons[signalRecords[printer.id]!.value],
-          onPressed: () => showAdaptiveDialog(
-            context: context,
-            builder: (context) => PrinterStatusDialog(
-              printer: printer,
-              signal: signalRecords[printer.id]!.value,
-              status: statusRecords[printer.id]!.value,
-            ),
-          ),
+          onPressed: _showPrinterStatusDialog(printer),
           child: Text(printer.name),
         ),
       if (connecting.isNotEmpty) const Center(child: HintText('連線中')),
@@ -46,13 +47,14 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
           onPressed: null,
           child: Text(printer.name),
         ),
+      if (unused.isNotEmpty) const Center(child: HintText('未使用')),
+      for (final printer in unused)
+        MenuItemButton(
+          leadingIcon: const Icon(Icons.print_disabled_outlined),
+          onPressed: _showPrinterStatusDialog(printer!),
+          child: Text(printer.name),
+        ),
     ];
-    if (menuChildren.isEmpty) {
-      menuChildren.add(const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 6.0),
-        child: Center(child: HintText('無可用出單機')),
-      ));
-    }
 
     return MenuAnchor(
       menuChildren: menuChildren,
@@ -82,6 +84,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
   void initState() {
     _addConnected(Printers.instance.items.where((e) => e.connected));
     connecting.addAll(Printers.instance.items.where((e) => e.autoConnect && !e.connected));
+    printers = Printers.instance.items.map((e) => e.id).toSet();
 
     // after initialized, start watching printer status
     for (final printer in Printers.instance.items) {
@@ -113,10 +116,10 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
       await Future.wait([
         for (final printer in connecting)
-          showSnackbarWhenFailed(
+          showSnackbarWhenFutureError(
             printer.connect(),
-            context,
             'order_printer_connect',
+            context: context,
           ),
       ]);
 
@@ -137,7 +140,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         connected.removeWhere((e) {
           if (!e.connected) {
             Log.ger('printer ${e.name}(${e.address}) disconnected', 'order_printer_disconnect');
-            showSnackBar(context, '出單機「${e.name}」斷線');
+            showSnackBar('出單機「${e.name}」斷線', context: context);
             signalRecords.remove(e.id)?.stream.cancel();
             statusRecords.remove(e.id)?.stream.cancel();
             return true;
@@ -160,8 +163,11 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
   }
 
   StreamSubscription<BluetoothSignal> _listenSignal(Printer printer) {
-    return showSnackbarWhenError(printer.p.device!.createSignalStream(), context, 'order_printer_signal')
-        .listen((value) {
+    return showSnackbarWhenStreamError(
+      printer.p.device!.createSignalStream(),
+      'order_printer_signal',
+      context: context,
+    ).listen((value) {
       final record = signalRecords[printer.id];
       if (mounted && record != null && record.value != value) {
         setState(() {
@@ -172,7 +178,11 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
   }
 
   StreamSubscription<PrinterStatus> _listenStatus(Printer printer) {
-    return showSnackbarWhenError(printer.p.statusStream, context, 'order_printer_status').listen((value) {
+    return showSnackbarWhenStreamError(
+      printer.p.statusStream,
+      'order_printer_status',
+      context: context,
+    ).listen((value) {
       final record = statusRecords[printer.id];
       if (mounted && record != null && record.value != value) {
         setState(() {
@@ -180,6 +190,31 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         });
       }
     });
+  }
+
+  VoidCallback _showPrinterStatusDialog(Printer printer) {
+    return () async {
+      final result = await showAdaptiveDialog(
+        context: context,
+        builder: (context) => PrinterStatusDialog(
+          printer: printer,
+          signal: signalRecords[printer.id]?.value,
+          status: statusRecords[printer.id]?.value,
+        ),
+      );
+
+      if (result == true && mounted) {
+        if (printer.connected) {
+          await printer.disconnect();
+          return;
+        }
+
+        setState(() {
+          connecting.add(printer);
+        });
+        _connectWantedPrinters();
+      }
+    };
   }
 }
 

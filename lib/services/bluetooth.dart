@@ -17,6 +17,7 @@ class Bluetooth {
 
   Bluetooth({bt.Bluetooth? blue}) : blue = blue ?? bt.Bluetooth.i;
 
+  /// Timeout in 3 minutes
   Stream<List<bt.BluetoothDevice>> startScan() {
     Log.ger('start scanning', 'bt_scan');
     return blue.startScan();
@@ -25,11 +26,6 @@ class Bluetooth {
   Future<bt.BluetoothDevice?> connect(String address) {
     Log.ger('connect to: $address', 'bt_connect');
     return blue.connect(address);
-  }
-
-  Future<List<bt.BluetoothDevice>> pairedDevices() {
-    Log.ger('getting paired', 'bt_scan');
-    return blue.pairedDevices();
   }
 
   Future<void> stopScan() {

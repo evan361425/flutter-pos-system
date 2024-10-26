@@ -14,9 +14,9 @@ void main() {
             return TextButton(
                 onPressed: () {
                   showMoreInfoSnackBar(
-                    context,
                     'message',
                     const Text('info'),
+                    context: context,
                   );
                 },
                 child: const Text('btn'));

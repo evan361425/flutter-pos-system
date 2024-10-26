@@ -173,7 +173,7 @@ class _OrderPageState extends State<OrderPage> {
       final success = await result.exec(context);
 
       if (success == true && context.mounted) {
-        showSnackBar(context, S.actSuccess);
+        showSnackBar(S.actSuccess, context: context);
       }
     }
   }
@@ -191,16 +191,16 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
     case CheckoutStatus.ok:
     case CheckoutStatus.stash:
     case CheckoutStatus.restore:
-      showSnackBar(context, S.actSuccess);
+      showSnackBar(S.actSuccess, context: context);
       break;
     case CheckoutStatus.cashierNotEnough:
-      showSnackBar(context, S.orderSnackbarCashierNotEnough);
+      showSnackBar(S.orderSnackbarCashierNotEnough, context: context);
       break;
     case CheckoutStatus.cashierUsingSmall:
       showMoreInfoSnackBar(
-        context,
         S.orderSnackbarCashierUsingSmallMoney,
         Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('settings/checkoutWarning'))),
+        context: context,
       );
       break;
     default:

@@ -4,14 +4,14 @@ import 'package:possystem/models/printer.dart';
 
 class PrinterStatusDialog extends StatelessWidget {
   final Printer printer;
-  final BluetoothSignal signal;
-  final PrinterStatus status;
+  final BluetoothSignal? signal;
+  final PrinterStatus? status;
 
   const PrinterStatusDialog({
     super.key,
     required this.printer,
-    required this.signal,
-    required this.status,
+    this.signal,
+    this.status,
   });
 
   @override
@@ -31,20 +31,26 @@ class PrinterStatusDialog extends StatelessWidget {
             leading: const Icon(Icons.location_on),
             subtitle: Text(printer.address),
           ),
-          ListTile(
-            title: const Text('訊號'),
-            leading: signalIcons[signal],
-            subtitle: Text(signal.name),
-          ),
-          ListTile(
-            title: const Text('狀態'),
-            leading: statusIcons[status],
-            subtitle: Text(status.name),
-          ),
+          if (signal != null)
+            ListTile(
+              title: const Text('訊號'),
+              leading: signalIcons[signal],
+              subtitle: Text(signal!.name),
+            ),
+          if (status != null)
+            ListTile(
+              title: const Text('狀態'),
+              leading: statusIcons[status],
+              subtitle: Text(status!.name),
+            ),
         ],
       ),
       actions: [
         PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(printer.connected ? '中斷連線' : '建立連線'),
+        ),
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'package:possystem/constants/constant.dart';
 
 mixin ItemModal<T extends StatefulWidget> on State<T> {
   final formKey = GlobalKey<FormState>();
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   bool isSaving = false;
 
@@ -18,6 +19,8 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         onPressed: () => handleSubmit(),
         child: Text(MaterialLocalizations.of(context).saveButtonLabel),
       ),
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      floatingActionButton: buildFloatingActionButton(),
       content: Form(
         key: formKey,
         child: Column(
@@ -32,6 +35,9 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   /// Fields in form
   List<Widget> buildFormFields();
+
+  /// Build floating action button if needed
+  Widget? buildFloatingActionButton() => null;
 
   /// Handle submission from input field (e.g. onFieldSubmitted)
   void handleFieldSubmit(String _) {

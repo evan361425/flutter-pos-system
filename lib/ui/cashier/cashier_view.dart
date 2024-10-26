@@ -45,8 +45,6 @@ class CashierView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: kHorizontalSpacing),
       child: Row(children: [
-        // TODO: why this sized box needed?
-        // const SizedBox(width: kInternalSpacing),
         Tutorial(
           id: 'cashier.default',
           title: S.cashierToDefaultTutorialTitle,
@@ -107,19 +105,19 @@ class CashierView extends StatelessWidget {
     await Cashier.instance.setDefault();
 
     if (context.mounted) {
-      showSnackBar(context, S.actSuccess);
+      showSnackBar(S.actSuccess, context: context);
     }
   }
 
   void _handleSurplus(BuildContext context) async {
     if (Cashier.instance.defaultNotSet) {
-      return showSnackBar(context, S.cashierSurplusErrorEmptyDefault);
+      return showSnackBar(S.cashierSurplusErrorEmptyDefault, context: context);
     }
 
     final result = await context.pushNamed(Routes.cashierSurplus);
     if (result == true) {
       if (context.mounted) {
-        showSnackBar(context, S.actSuccess);
+        showSnackBar(S.actSuccess, context: context);
       }
     }
   }

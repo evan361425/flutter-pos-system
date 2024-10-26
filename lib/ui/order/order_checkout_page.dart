@@ -346,13 +346,13 @@ class _ConfirmButton extends StatelessWidget {
 
   static void confirm(BuildContext context, {required num paid}) async {
     final future = Cart.instance.checkout(paid: paid, context: context);
-    final status = await showSnackbarWhenFailed(future, context, 'order_checkout');
+    final status = await showSnackbarWhenFutureError(future, 'order_checkout', context: context);
 
-    // send success message
     if (context.mounted && status != null) {
       if (status == CheckoutStatus.paidNotEnough) {
-        showSnackBar(context, S.orderCheckoutSnackbarPaidFailed);
+        showSnackBar(S.orderCheckoutSnackbarPaidFailed, context: context);
       } else if (context.canPop()) {
+        // send success message
         context.pop(status);
       }
     }

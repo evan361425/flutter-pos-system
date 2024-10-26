@@ -21,6 +21,8 @@ class ImageGalleryPage extends StatefulWidget {
 }
 
 class ImageGalleryPageState extends State<ImageGalleryPage> {
+  final messenger = GlobalKey<ScaffoldMessengerState>();
+
   List<String>? images;
 
   bool selecting = false;
@@ -236,20 +238,17 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
     cancelSelecting(reloadImages: true);
 
-    try {
-      await Future.wait(target.map((image) => image.file.delete()));
+    final result = await showSnackbarWhenFutureError(
+      Future.wait(target.map((image) => image.file.delete())),
+      'image_gallery_delete',
+      key: messenger,
+    );
 
-      if (mounted) {
-        showSnackBar(context, S.actSuccess);
-      }
-    } catch (e) {
-      if (mounted) {
-        showSnackBar(context, S.imageGallerySnackbarDeleteFailed);
-      }
-      Log.out(e.toString(), 'delete_image_error');
-    } finally {
-      _prepareImages();
+    if (result != null) {
+      showSnackBar(S.actSuccess, key: messenger);
     }
+
+    _prepareImages();
   }
 
   void onPopInvoked(bool didPop, dynamic result) {

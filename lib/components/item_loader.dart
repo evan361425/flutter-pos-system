@@ -109,29 +109,29 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
 
   void loadData() {
     if (!isFinish) {
-      showSnackbarWhenFailed(
+      showSnackbarWhenFutureError(
         widget.loader(items.length).then((data) {
           setState(() {
             isFinish = data.length != widget.itemLoadSize;
             items.addAll(data);
           });
         }),
-        context,
         'item_loader_failed',
+        context: context,
       );
     }
   }
 
   void loadMetrics() {
     if (metrics == null) {
-      showSnackbarWhenFailed(
+      showSnackbarWhenFutureError(
         widget.metricsLoader().then((data) {
           setState(() {
             metrics = data;
           });
         }),
-        context,
         'metrics_loader_failed',
+        context: context,
       );
     }
   }

@@ -214,7 +214,7 @@ class _SettingPageState extends State<_SettingPage> {
 
     await Future.forEach<OrderObject>(result, (e) => seller.push(e));
     if (mounted) {
-      showSnackBar(context, 'Generate ${result.length} orders successfully');
+      showSnackBar('Generate ${result.length} orders successfully', context: context);
 
       Navigator.of(context).pop();
     }

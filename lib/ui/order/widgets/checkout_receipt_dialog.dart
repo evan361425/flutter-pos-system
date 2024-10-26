@@ -31,7 +31,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
       if (data is String) {
         // We need Log.err in this function, no matter context is mounted or not
         // ignore: use_build_context_synchronously
-        await showSnackbarWhenFailed(Future.error(data), context, 'order_print_receipt');
+        await showSnackbarWhenFutureError(Future.error(data), 'order_print_receipt', context: context);
       }
 
       return null;

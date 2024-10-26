@@ -69,10 +69,10 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
         context,
         deleteValue: _Action.delete,
         popAfterDeleted: true,
-        deleteCallback: () => showSnackbarWhenFailed(
+        deleteCallback: () => showSnackbarWhenFutureError(
           Seller.instance.delete(widget.orderId),
-          context,
           'analysis_delete_error',
+          context: context,
         ),
         warningContent: Text(S.analysisHistoryOrderDeleteDialog(createdAt!)),
       );

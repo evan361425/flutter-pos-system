@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:possystem/components/style/gradient_scroll_hint.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
@@ -8,15 +9,19 @@ class ResponsiveDialog extends StatelessWidget {
   final Widget title;
   final Widget content;
   final Widget? action;
+  final Widget? floatingActionButton;
   final bool scrollable;
+  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
   final Size? fixedSizeOnDialog;
 
   const ResponsiveDialog({
     super.key,
     required this.title,
     required this.content,
+    this.floatingActionButton,
     this.action,
     this.scrollable = true,
+    this.scaffoldMessengerKey,
     this.fixedSizeOnDialog,
   });
 
@@ -66,15 +71,21 @@ class ResponsiveDialog extends StatelessWidget {
               ],
       );
 
-      // TODO: use another package for showing snackbar in dialog.
-      // This is a workaround for showing snackbar in dialog. [IgnorePointer] is
-      // used to pass the touch event to the dialog behind the scaffold. But
-      // this will also block the action (i.e. close SnackBar) in snackbar.
+      // Using _PropertyHolderWidget to allow [Scaffold]'s snackbar able to be
+      // clicked but not blocking the dialog.
+      // https://stackoverflow.com/a/56290622/12089368
       return ScaffoldMessenger(
+        key: scaffoldMessengerKey,
         child: Stack(children: [
-          dialog,
-          const IgnorePointer(
-            child: Scaffold(primary: false, backgroundColor: Colors.transparent),
+          _Transparent(child: dialog),
+          _Transparent(
+            foreground: true,
+            child: Scaffold(
+              primary: false,
+              floatingActionButton: floatingActionButton,
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              backgroundColor: Colors.transparent,
+            ),
           ),
         ]),
       );
@@ -82,8 +93,11 @@ class ResponsiveDialog extends StatelessWidget {
 
     return Dialog.fullscreen(
       child: ScaffoldMessenger(
+        key: scaffoldMessengerKey,
         child: Scaffold(
           primary: false,
+          floatingActionButton: floatingActionButton,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           appBar: AppBar(
             primary: false,
             title: title,
@@ -94,5 +108,35 @@ class ResponsiveDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _Transparent extends SingleChildRenderObjectWidget {
+  final bool foreground;
+
+  const _Transparent({
+    this.foreground = false,
+    required super.child,
+  });
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return foreground ? _Foreground() : RenderProxyBox();
+  }
+
+  @override
+  void updateRenderObject(BuildContext context, RenderObject renderObject) {}
+}
+
+class _Foreground extends RenderProxyBox {
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    super.hitTest(result, position: position);
+
+    /// If greater than 10, it means not just tap on the empty space
+    /// for example:
+    /// - tap on FloatingActionButton has 18 targets
+    /// - tap on Snackbar has 18 targets
+    return result.path.length > 10;
   }
 }

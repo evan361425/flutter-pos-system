@@ -118,7 +118,7 @@ class TransitOrderList extends StatelessWidget {
       onTap: () async {
         final detailedOrder = await Seller.instance.getOrder(order.id!);
         if (detailedOrder != null && context.mounted) {
-          await showDialog(
+          await showAdaptiveDialog(
             context: context,
             builder: (context) {
               return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [
