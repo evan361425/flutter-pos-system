@@ -104,7 +104,7 @@ class PrinterReceiptView extends StatelessWidget {
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(S.printerReceiptPaid),
               Padding(
-                padding: EdgeInsets.only(left: 16),
+                padding: const EdgeInsets.only(left: 16),
                 child: Column(children: [
                   Text(S.printerReceiptPrice),
                   Text(S.printerReceiptChange),

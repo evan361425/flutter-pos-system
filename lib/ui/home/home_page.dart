@@ -371,6 +371,10 @@ enum _Tab {
     icon: Icon(Icons.collections_outlined),
     selectedIcon: Icon(Icons.collections),
   ),
+  printer(
+    icon: Icon(Icons.print_outlined),
+    selectedIcon: Icon(Icons.print),
+  ),
   stockQuantities(
     icon: Icon(Icons.exposure_outlined),
     selectedIcon: Icon(Icons.exposure),
@@ -378,10 +382,6 @@ enum _Tab {
   transit(
     icon: Icon(Icons.local_shipping_outlined),
     selectedIcon: Icon(Icons.local_shipping),
-  ),
-  printer(
-    icon: Icon(Icons.print_outlined),
-    selectedIcon: Icon(Icons.print),
   ),
   elf(
     icon: Icon(Icons.lightbulb_outlined),

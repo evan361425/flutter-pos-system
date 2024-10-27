@@ -6,6 +6,7 @@ import 'package:possystem/app.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/models/analysis/analysis.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -49,6 +50,7 @@ void main() {
               ChangeNotifierProvider.value(value: Analysis()),
               ChangeNotifierProvider.value(value: Cart()),
               ChangeNotifierProvider.value(value: Cashier()),
+              ChangeNotifierProvider.value(value: Printers()),
             ],
             child: MaterialApp.router(
               routerConfig: GoRouter(
@@ -173,7 +175,7 @@ void main() {
 
       for (final device in [Device.desktop, Device.landscape, Device.mobile]) {
         group(device.name, () {
-          testWidgets('Setup', (tester) async {
+          testWidgets('setup', (tester) async {
             deviceAs(device, tester);
             await tester.pumpWidget(buildApp(tester, device: device));
             expect(Menu.instance.isEmpty, isTrue);
@@ -196,7 +198,7 @@ void main() {
         });
       }
 
-      testWidgets('Disable example menu', (tester) async {
+      testWidgets('disabled', (tester) async {
         await tester.pumpWidget(buildApp(tester));
 
         await startTutorial(tester);

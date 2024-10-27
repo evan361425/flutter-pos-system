@@ -11,6 +11,7 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/order/cart_product.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -35,6 +36,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Page', () {
     void prepareData() {
+      Printers();
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),

@@ -493,10 +493,7 @@ class Routes {
         name: printer,
         path: '${(inShell ? '_/' : '')}printer',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(
-          const PrinterPage(),
-          S.printerTitle,
-        ),
+        builder: (ctx, state) => _wrapPageByHomeMode(const PrinterPage(), S.printerTitle),
         routes: [
           GoRoute(
             name: printerCreate,
@@ -562,10 +559,7 @@ class Routes {
         name: transit,
         path: '${(inShell ? '_/' : '')}transit',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(
-          const TransitPage(),
-          S.transitTitle,
-        ),
+        builder: (ctx, state) => _wrapPageByHomeMode(const TransitPage(), S.transitTitle),
         routes: [
           GoRoute(
             name: transitStation,
@@ -597,10 +591,7 @@ class Routes {
         name: elf,
         path: '${(inShell ? '_/' : '')}elf',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(
-          const ElfPage(),
-          S.settingElfTitle,
-        ),
+        builder: (ctx, state) => _wrapPageByHomeMode(const ElfPage(), S.settingElfTitle),
       );
   static GoRoute _settingsRoute({required bool inShell}) => GoRoute(
         name: settings,

@@ -19,6 +19,18 @@ import '../../test_helpers/translator.dart';
 
 void main() {
   group('Quantity Page', () {
+    Widget buildApp() {
+      return MaterialApp.router(
+        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, __) => const Scaffold(body: QuantitiesPage()),
+          ),
+          ...Routes.getDesiredRoute(0).routes,
+        ]),
+      );
+    }
+
     testWidgets('Edit quantity', (tester) async {
       final quantity = Quantity(id: 'q-1', name: 'q-1');
       final quantities = Quantities()
@@ -30,15 +42,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
         value: quantities,
-        builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const QuantitiesPage(),
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
-        ),
+        builder: (_, __) => buildApp(),
       ));
 
       await tester.tap(find.byKey(const Key('quantities.q-1')));
@@ -68,15 +72,7 @@ void main() {
 
       await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
         value: quantities,
-        builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const QuantitiesPage(),
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
-        ),
+        builder: (_, __) => buildApp(),
       ));
 
       await tester.tap(find.byKey(const Key('empty_body')));
@@ -131,15 +127,7 @@ void main() {
           ChangeNotifierProvider<Menu>.value(value: menu),
           ChangeNotifierProvider<Quantities>.value(value: quantities),
         ],
-        builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const QuantitiesPage(),
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
-        ),
+        builder: (_, __) => buildApp(),
       ));
 
       deleteQuantity(String id) async {

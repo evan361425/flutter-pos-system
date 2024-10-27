@@ -25,7 +25,7 @@ void main() {
         routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
           GoRoute(
             path: '/',
-            builder: (_, __) => const TransitPage(),
+            builder: (_, __) => const Scaffold(body: TransitPage()),
           ),
           ...Routes.getDesiredRoute(0).routes,
         ]),

@@ -52,7 +52,7 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
           ),
         ),
         _buildRouteTile(
-          id: 'printer',
+          id: 'printers',
           icon: Icons.print_outlined,
           route: Routes.printer,
           title: S.printerTitle,
