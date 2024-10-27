@@ -127,7 +127,8 @@ jobs:
   #       env:
   #         GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
   #       run: |
-  #         flutter pub token add https://github.com/evan361425/flutter-pos-packages --env-var GH_READ_PAT
+  #         echo "https://oauth:$GH_READ_PAT@github.com" > ~/.git-credentials
+  #         git config --global credential.helper store
   #         flutter pub get
 
   #     - name: Configure Google Services
