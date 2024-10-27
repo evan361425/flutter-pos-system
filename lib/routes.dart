@@ -495,7 +495,7 @@ class Routes {
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
         builder: (ctx, state) => _wrapPageByHomeMode(
           const PrinterPage(),
-          '出單機管理',
+          S.printerTitle,
         ),
         routes: [
           GoRoute(

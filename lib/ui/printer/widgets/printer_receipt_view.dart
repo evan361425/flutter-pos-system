@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/translator.dart';
 
 class PrinterReceiptView extends StatelessWidget {
   final OrderObject order;
@@ -25,7 +26,7 @@ class PrinterReceiptView extends StatelessWidget {
       constraints: const BoxConstraints(maxHeight: 400),
       child: ImageableContainer(controller: controller, children: [
         Text(
-          '交易明細',
+          S.printerReceiptTitle,
           style: theme.headlineMedium?.copyWith(height: 1, color: text),
           textAlign: TextAlign.center,
         ),
@@ -50,11 +51,11 @@ class PrinterReceiptView extends StatelessWidget {
               bottom: BorderSide(color: color.outline),
             ),
             children: [
-              const TableRow(children: [
-                TableCell(child: Text('品項')),
-                TableCell(child: Text('數量', textAlign: TextAlign.end)),
-                TableCell(child: Text('單價', textAlign: TextAlign.end)),
-                TableCell(child: Text('小計', textAlign: TextAlign.end)),
+              TableRow(children: [
+                TableCell(child: Text(S.printerReceiptColumnName)),
+                TableCell(child: Text(S.printerReceiptColumnCount, textAlign: TextAlign.end)),
+                TableCell(child: Text(S.printerReceiptColumnPrice, textAlign: TextAlign.end)),
+                TableCell(child: Text(S.printerReceiptColumnTotal, textAlign: TextAlign.end)),
               ]),
               for (final product in order.products)
                 TableRow(children: [
@@ -70,7 +71,7 @@ class PrinterReceiptView extends StatelessWidget {
         if (discounted.isNotEmpty)
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(mainAxisSize: MainAxisSize.min, children: [
-              const Text('折扣'),
+              Text(S.printerReceiptDiscountLabel),
               Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Column(children: [
@@ -82,14 +83,14 @@ class PrinterReceiptView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Text('原單價'),
+                Text(S.printerReceiptDiscountOrigin),
                 for (final product in discounted)
                   Text('\$${product.originalPrice.toCurrency()}', style: theme.labelMedium?.copyWith(color: text)),
               ],
             ),
           ]),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          const Text('總價'),
+          Text(S.printerReceiptTotal),
           const SizedBox(width: 4),
           Text(
             '\$${order.price.toCurrency()}',
@@ -100,13 +101,13 @@ class PrinterReceiptView extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           DefaultTextStyle(
             style: theme.bodyMedium!.copyWith(fontSize: theme.labelMedium!.fontSize, color: text),
-            child: const Column(mainAxisSize: MainAxisSize.min, children: [
-              Text('付額'),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Text(S.printerReceiptPaid),
               Padding(
                 padding: EdgeInsets.only(left: 16),
                 child: Column(children: [
-                  Text('總價'),
-                  Text('找錢'),
+                  Text(S.printerReceiptPrice),
+                  Text(S.printerReceiptChange),
                 ]),
               ),
             ]),

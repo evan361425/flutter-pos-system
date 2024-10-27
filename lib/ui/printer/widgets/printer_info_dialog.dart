@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/translator.dart';
 
-class PrinterStatusDialog extends StatelessWidget {
+class PrinterInfoDialog extends StatelessWidget {
   final Printer printer;
   final BluetoothSignal? signal;
   final PrinterStatus? status;
 
-  const PrinterStatusDialog({
+  const PrinterInfoDialog({
     super.key,
     required this.printer,
     this.signal,
@@ -17,31 +18,31 @@ class PrinterStatusDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('出單機狀態'),
+      title: Text(S.printerInfoTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            title: const Text('名稱'),
+            title: Text(S.printerInfoName),
             leading: const Icon(Icons.text_fields),
             subtitle: Text(printer.name),
           ),
           ListTile(
-            title: const Text('地址'),
+            title: Text(S.printerInfoAddress),
             leading: const Icon(Icons.location_on),
             subtitle: Text(printer.address),
           ),
           if (signal != null)
             ListTile(
-              title: const Text('訊號'),
+              title: Text(S.printerInfoSignal),
               leading: signalIcons[signal],
-              subtitle: Text(signal!.name),
+              subtitle: Text(S.printerSignalName(signal!.name)),
             ),
           if (status != null)
             ListTile(
-              title: const Text('狀態'),
+              title: Text(S.printerInfoStatus),
               leading: statusIcons[status],
-              subtitle: Text(status!.name),
+              subtitle: Text(S.printerStatusName(status!.name)),
             ),
         ],
       ),
@@ -49,7 +50,7 @@ class PrinterStatusDialog extends StatelessWidget {
         PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(printer.connected ? '中斷連線' : '建立連線'),
+          child: Text(printer.connected ? S.printerBtnDisconnect : S.printerBtnConnect),
         ),
       ],
     );

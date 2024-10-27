@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-10-25T08:03:04.178201Z",
+  "@@last_modified": "2024-10-27T03:33:57.240553Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -205,6 +205,78 @@
   "stockQuantityNameErrorRepeat": "份量名稱重複",
   "stockQuantityProportionLabel": "預設比例",
   "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。\n\n若設為「1」則無任何影響。\n\n若設為「0」則代表將不會使用此成分",
+  "printerTitle": "出單機管理",
+  "printerDescription": "藍牙連線、出單設定",
+  "printerTitleCreate": "新增出單機",
+  "printerTitleUpdate": "編輯出單機",
+  "printerTitleSettings": "設定格式",
+  "printerBtnConnect": "建立連線",
+  "printerBtnDisconnect": "中斷連線",
+  "printerBtnTestPrint": "列印測試",
+  "printerBtnRetry": "重新連線",
+  "printerBtnPrint": "列印",
+  "printerStatusSuccess": "成功連結出單機",
+  "printerStatusConnecting": "連線中",
+  "printerStatusStandby": "尚未進行連線",
+  "printerStatusPrinted": "列印完成",
+  "printerStatusName": "{name, select, good{正常} writeFailed{上次列印失敗} paperNotFound{缺紙} tooHot{出單機過熱} lowBattery{電量不足} printing{列印中} unknown{未知} other{UNKNOWN}}",
+  "printerSignalName": "{name, select, good{良好} normal{一般} weak{微弱} other{UNKNOWN}}",
+  "printerScanIng": "搜尋藍牙設備中...",
+  "printerScanCount": "搜尋到 {count} 個裝置",
+  "@printerScanCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compactLong"
+      }
+    }
+  },
+  "printerScanRetry": "重新搜尋",
+  "printerScanNotFound": "找不到裝置？",
+  "printerErrorNotSelect": "尚未選擇裝置",
+  "printerErrorNotSupportTitle": "裝置不相容",
+  "printerErrorNotSupportContent": "目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得協助。",
+  "printerErrorBluetoothOff": "藍牙未開啟",
+  "printerErrorDisconnected": "出單機已斷線",
+  "printerErrorTimeout": "連線逾時",
+  "printerErrorCanceled": "連線請求被中斷",
+  "printerErrorTimeoutMore": "可以嘗試以下操作：\n• 確認裝置是否開啟（通常裝置會閃爍）\n• 確認裝置是否在範圍內\n• 重新開啟藍牙",
+  "printerNameLabel": "出單機名稱",
+  "printerNameHint": "例如：廚房的出單機",
+  "printerNameHelper": "位置：{address}",
+  "@printerNameHelper": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "printerAutoConnLabel": "自動連線",
+  "printerAutoConnHelper": "當進入訂單頁時自動連線",
+  "printerMetaConnected": "已連線",
+  "printerMetaExist": "已建立，無法新增",
+  "printerMetaHelper": "打開藍牙並確保出單機就在你旁邊",
+  "printerSettingsTitle": "設定出單機格式",
+  "printerSettingsPaddingLabel": "窄間距",
+  "printerSettingsPaddingHelper": "單子跟單子之間的空白會變少，較省紙張，但是撕紙時要小心",
+  "printerSettingsMore": "其他更多設定，敬請期待！",
+  "printerReceiptTitle": "交易明細",
+  "printerReceiptColumnName": "品項",
+  "printerReceiptColumnPrice": "單價",
+  "printerReceiptColumnCount": "數量",
+  "printerReceiptColumnTotal": "小計",
+  "printerReceiptColumnTime": "時間",
+  "printerReceiptDiscountLabel": "折扣",
+  "printerReceiptDiscountOrigin": "原單價",
+  "printerReceiptTotal": "總價",
+  "printerReceiptPaid": "付額",
+  "printerReceiptPrice": "總價",
+  "printerReceiptChange": "找錢",
+  "printerInfoTitle": "出單機資訊",
+  "printerInfoName": "名稱",
+  "printerInfoAddress": "位置",
+  "printerInfoSignal": "訊號強度",
+  "printerInfoStatus": "狀態",
   "transitTitle": "資料轉移",
   "transitDescription": "匯入、匯出店家資訊和訂單",
   "transitMethodTitle": "請選擇欲轉移的方式",
@@ -1183,7 +1255,7 @@
   "orderAttributeModeDivider": "顧客設定種類",
   "orderAttributeModeName": "{name, select, statOnly{一般} changePrice{變價} changeDiscount{折扣} other{UNKNOWN}}",
   "@orderAttributeModeName": {
-    "description": "name"
+    "description": "Customer setting mode name"
   },
   "orderAttributeModeHelper": "{name, select, statOnly{一般的設定，選取時並不會影響點單價格。} changePrice{選取設定時，可能會影響價格。\n例如：外送 + 30塊錢、環保杯 - 5塊錢。} changeDiscount{選取設定時，會根據折扣影響總價。\n例如：內用 + 10% 服務費、親友價 - 10%。} other{UNKNOWN}}",
   "@orderAttributeModeHelper": {
@@ -1573,6 +1645,14 @@
   "orderBtn": "點餐",
   "orderTutorialTitle": "開始點餐！",
   "orderTutorialContent": "一旦設定好菜單，就可以開始點餐囉\n讓我們趕緊進去看看有什麼吧！\n",
+  "orderSnackbarPrinterDisconnected": "出單機「{name}」斷線",
+  "@orderSnackbarPrinterDisconnected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "orderSnackbarCashierNotEnough": "收銀機錢不夠找囉！",
   "orderSnackbarCashierUsingSmallMoney": "收銀機使用小錢去找零",
   "orderSnackbarCashierUsingSmallMoneyHelper": "找錢給顧客時，收銀機無法使用最適合的錢，就會顯示這個訊息。\n\n例如，售價「65」，消費者支付「100」，此時應找「35」\n如果收銀機只有兩個十元，且有三個以上的五元，就會顯示本訊息。\n\n怎麼避免本提示：\n• 到換錢頁面把各幣值補足。\n• 到[設定頁]({link})關閉收銀機的相關提示。",
@@ -1625,6 +1705,10 @@
     "description": "Product list display mode"
   },
   "orderProductListNoIngredient": "無設定成分",
+  "orderPrinterDividerUnused": "未使用",
+  "orderPrinterDividerConnecting": "連線中",
+  "orderPrinterDividerConnected": "已連線",
+  "orderPrinterErrorCreateReceipt": "無法產生出單資料",
   "orderCartActionBulkify": "批量操作",
   "orderCartActionToggle": "反選",
   "orderCartActionSelectAll": "全選",

@@ -1,0 +1,90 @@
+$prefix: printer
+title: 出單機管理
+description: 藍牙連線、出單設定
+_title:
+  $prefix: title
+  create: 新增出單機
+  update: 編輯出單機
+  settings: 設定格式
+btn:
+  connect: 建立連線
+  disconnect: 中斷連線
+  testPrint: 列印測試
+  retry: 重新連線
+  print: 列印
+status:
+  success: 成功連結出單機
+  connecting: 連線中
+  standby: 尚未進行連線
+  printed: 列印完成
+  name:
+  - good: 正常
+    writeFailed: 上次列印失敗
+    paperNotFound: 缺紙
+    tooHot: 出單機過熱
+    lowBattery: 電量不足
+    printing: 列印中
+    unknown: 未知
+signal:
+  name:
+  - good: 良好
+    normal: 一般
+    weak: 微弱
+scan:
+  ing: 搜尋藍牙設備中...
+  count: 搜尋到 {count} 個裝置
+  retry: 重新搜尋
+  notFound: 找不到裝置？
+error:
+  notSelect: 尚未選擇裝置
+  notSupport:
+    title: 裝置不相容
+    content: |-
+      目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得協助。
+  bluetoothOff: 藍牙未開啟
+  disconnected: 出單機已斷線
+  timeout: 連線逾時
+  canceled: 連線請求被中斷
+  timeoutMore: |-
+    可以嘗試以下操作：
+    • 確認裝置是否開啟（通常裝置會閃爍）
+    • 確認裝置是否在範圍內
+    • 重新開啟藍牙
+name:
+  label: 出單機名稱
+  hint: 例如：廚房的出單機
+  helper: 位置：{address}
+autoConn:
+  label: 自動連線
+  helper: 當進入訂單頁時自動連線
+meta:
+  connected: 已連線
+  exist: 已建立，無法新增
+  helper: 打開藍牙並確保出單機就在你旁邊
+settings:
+  title: 設定出單機格式
+  padding:
+    label: 窄間距
+    helper: 單子跟單子之間的空白會變少，較省紙張，但是撕紙時要小心
+  more: 其他更多設定，敬請期待！
+receipt:
+  title: 交易明細
+  column:
+    name: 品項
+    price: 單價
+    count: 數量
+    total: 小計
+    time: 時間
+  discount:
+    label: 折扣
+    origin: 原單價
+  total: 總價
+  paid: 付額
+  price: 總價
+  change: 找錢
+info:
+  title: 出單機資訊
+  name: 名稱
+  address: 位置
+  signal: 訊號強度
+  status: 狀態

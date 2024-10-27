@@ -29,27 +29,27 @@ class PrinterPage extends StatelessWidget {
 
     return Column(
       children: [
-        const Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           ButtonGroup(buttons: [
             RouteIconButton(
-              key: Key('printer.format'),
+              key: const Key('printer.format'),
               route: Routes.printerSettings,
-              icon: Icon(Icons.settings),
-              label: '設定格式',
+              icon: const Icon(Icons.settings),
+              label: S.printerTitleSettings,
             ),
           ]),
-          SizedBox(width: kHorizontalSpacing),
+          const SizedBox(width: kHorizontalSpacing),
         ]),
         const SizedBox(height: kInternalSpacing),
         SlidableItemList(
           hintText: '', // disabling hint text
-          leading: const Row(children: [
+          leading: Row(children: [
             Expanded(
               child: RouteElevatedIconButton(
-                key: Key('printer.create'),
+                key: const Key('printer.create'),
                 route: Routes.printerCreate,
-                icon: Icon(KIcons.add),
-                label: '新增',
+                icon: const Icon(KIcons.add),
+                label: S.printerTitleCreate,
               ),
             ),
           ]),
@@ -155,14 +155,14 @@ class _EmptyBody extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 300),
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
-                  '打開藍牙並確保出單機就在你旁邊',
+                  S.printerMetaHelper,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.titleMedium,
                 ),
                 const SizedBox(height: kInternalSpacing),
                 FilledButton(
                   onPressed: () => context.goNamed(Routes.printerCreate),
-                  child: const Text('新增出單機'),
+                  child: Text(S.printerTitleCreate),
                 ),
               ]),
             ),

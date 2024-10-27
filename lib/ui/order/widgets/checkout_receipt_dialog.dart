@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/widgets/printer_receipt_view.dart';
 
 class CheckoutReceiptDialog extends StatefulWidget {
@@ -95,7 +96,7 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
       final data = await controller.toImage(widths: widget.widths);
       if (mounted && context.canPop()) {
         final result = data?.map((e) => e.toGrayScale().toBitMap()).toList();
-        context.pop(result ?? '無法正確產生出單資料');
+        context.pop(result ?? S.orderPrinterErrorCreateReceipt);
       }
     } catch (e) {
       if (mounted && context.canPop()) {

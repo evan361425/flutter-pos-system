@@ -4,7 +4,6 @@ import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/printer.dart';
@@ -65,13 +64,13 @@ class _PrinterViewState extends State<PrinterView> {
           ListTile(
             title: Text(widget.printer.name),
             leading: const Icon(Icons.bluetooth_connected),
-            subtitle: const Text('成功連結出單機'),
+            subtitle: Text(S.printerStatusSuccess),
             trailing: widget.trailing,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             OutlinedButton.icon(
               onPressed: startPrint,
-              label: const Text('列印測試'),
+              label: Text(S.printerBtnTestPrint),
               icon: const Icon(Icons.print),
             ),
             const SizedBox(width: 4),
@@ -80,18 +79,18 @@ class _PrinterViewState extends State<PrinterView> {
                 MenuItemButton(
                   onPressed: connect,
                   leadingIcon: const Icon(Icons.refresh),
-                  child: const Text('重新連線'),
+                  child: Text(S.printerBtnRetry),
                 ),
                 MenuItemButton(
                   onPressed: disconnect,
                   leadingIcon: const Icon(Icons.bluetooth_disabled),
-                  child: const Text('斷開連線'),
+                  child: Text(S.printerBtnDisconnect),
                 ),
               ],
               builder: (context, controller, _) {
                 return FilledButton.icon(
                   onPressed: controller.toggle,
-                  label: const Text('連線中'),
+                  label: Text(S.printerStatusConnecting),
                   icon: const Icon(Icons.arrow_drop_down),
                   iconAlignment: IconAlignment.end,
                 );
@@ -114,13 +113,13 @@ class _PrinterViewState extends State<PrinterView> {
           ListTile(
             title: Text(widget.printer.name),
             leading: const Icon(Icons.bluetooth_disabled),
-            subtitle: const HintText('尚未進行連線'),
+            subtitle: HintText(S.printerStatusStandby),
             trailing: widget.trailing,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             FilledButton(
               onPressed: connect,
-              child: const Text('連線'),
+              child: Text(S.printerBtnConnect),
             ),
             const SizedBox(width: 4),
           ]),
@@ -208,8 +207,8 @@ class _PrinterViewState extends State<PrinterView> {
   void onConnected(bool? success) {
     if (success == false && mounted) {
       showMoreInfoSnackBar(
-        '裝置不相容',
-        const Text('目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得支援。'),
+        S.printerErrorNotSupportTitle,
+        Text(S.printerErrorNotSupportContent),
         context: context,
       );
     }
@@ -222,7 +221,7 @@ class _PrinterViewState extends State<PrinterView> {
       context: context,
       builder: (context) {
         return ResponsiveDialog(
-          title: const Text('測試列印'),
+          title: Text(S.printerBtnTestPrint),
           action: _PrintButton(progress: progress, controller: controller, printer: widget.printer),
           content: Padding(
             padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
@@ -297,14 +296,8 @@ class _PrintButton extends StatelessWidget {
     void handleDone() {
       if (progress.value != null) {
         progress.value = null;
-        showSnackBar('列印完成', context: context);
+        showSnackBar(S.printerStatusPrinted, context: context);
       }
-    }
-
-    void handleError(Object error, StackTrace trace) {
-      Log.err(error, 'printer_test', trace);
-      progress.value = null;
-      showSnackBar('列印錯誤：$error', context: context);
     }
 
     void handlePress() async {
@@ -312,15 +305,20 @@ class _PrintButton extends StatelessWidget {
       progress.value = 0;
 
       final data = await controller.toImage(widths: [printer.provider.manufactory.widthBits]);
-      if (data != null) {
+      if (data != null && context.mounted) {
         final image = data.first.toGrayScale().toBitMap().bytes;
-        printer.draw(image).listen((value) {
+        showSnackbarWhenStreamError(
+          printer.draw(image),
+          'printer_test',
+          context: context,
+          callback: () => progress.value = null,
+        ).listen((value) {
           if (value == 1) {
             handleDone();
           }
 
           progress.value = value;
-        }, onError: handleError, onDone: handleDone);
+        }, onDone: handleDone);
       }
     }
 
@@ -329,7 +327,7 @@ class _PrintButton extends StatelessWidget {
       builder: (context, value, _) {
         return TextButton(
           onPressed: value == null ? handlePress : null,
-          child: const Text('列印'),
+          child: Text(S.printerBtnPrint),
         );
       },
     );

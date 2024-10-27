@@ -1,0 +1,97 @@
+$prefix: printer
+title: Printer Management
+description: Bluetooth Connection, Printer Settings
+_title:
+  $prefix: title
+  create: Add Printer
+  update: Edit Printer
+  settings: Format Settings
+btn:
+  connect: Connect
+  disconnect: Disconnect
+  testPrint: Test Print
+  retry: Re-Connect
+  print: Print
+status:
+  success: Printer connected
+  connecting: Connecting
+  standby: Not connected
+  printed: Print complete
+  name:
+  - good: All Good
+    writeFailed: Last Print Failed
+    paperNotFound: Paper Not Found
+    tooHot: Printer Overheated
+    lowBattery: Low Battery
+    printing: Printing
+    unknown: Unknown
+signal:
+  name:
+  - good: Good
+    normal: Normal
+    weak: Weak
+scan:
+  ing: Scanning for Bluetooth Devices...
+  count:
+  - =1: '{count} Device Found'
+    other: '{count} Devices Found'
+  - count: {type: int, mode: plural, format: compactLong}
+  retry: Re-scan
+  notFound: Not Found?
+error:
+  notSelect: No device selected
+  notSupport:
+    title: Device Not Compatible
+    content: |-
+      This device is currently unsupported.
+
+      [Contact Us](mailto:evanlu361425@gmail.com) for assistance.
+  bluetoothOff: Bluetooth is off
+  disconnected: Printer is disconnected
+  timeout: Connection timeout
+  canceled: Connection request interrupted
+  timeoutMore: |-
+    Try the following:
+    • Check if the device is powered on (usually will flash)
+    • Ensure the device is within range
+    • Restart Bluetooth
+name:
+  label: Printer Name
+  hint: e.g., Kitchen's Printer
+  helper:
+  - 'Location: {address}'
+  - address:
+autoConn:
+  label: Auto-Connect
+  helper: Automatically connect when entering the order page
+meta:
+  connected: Connected
+  exist: Existing, cannot add
+  helper: Enable Bluetooth and keep the printer nearby
+settings:
+  title: Printer Format Settings
+  padding:
+    label: Narrow Spacing
+    helper: Reduces paper between receipts; need caution when tearing
+  more: More Settings Coming Soon!
+receipt:
+  title: Receipt
+  column:
+    name: Item
+    price: Unit
+    count: Quantity
+    total: Subtotal
+    time: Time
+  discount:
+    label: Discount
+    origin: Origin
+  total: Total
+  paid: Paid
+  price: Price
+  change: Change
+info:
+  title: Printer Information
+  name: Name
+  address: Location
+  signal: Signal
+  status: Status

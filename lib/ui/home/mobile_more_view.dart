@@ -55,8 +55,8 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
           id: 'printer',
           icon: Icons.print_outlined,
           route: Routes.printer,
-          title: '出單機設定',
-          subtitle: '藍牙連線、出單設定',
+          title: S.printerTitle,
+          subtitle: S.printerDescription,
         ),
         _buildRouteTile(
           id: 'transit',

@@ -11,6 +11,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/services/bluetooth.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/widgets/printer_view.dart';
 
 class PrinterModal extends StatefulWidget {
@@ -39,30 +40,30 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   final nameFocusNode = FocusNode();
 
   @override
-  String get title => widget.isNew ? '新增出單機' : '編輯出單機';
+  String get title => widget.isNew ? S.printerTitleCreate : S.printerTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
     if (printer == null) {
       if (searched.isEmpty) {
         return [
-          p(const Column(children: [
-            Text('搜尋藍牙設備中...'),
-            SizedBox(height: kInternalSpacing),
-            LinearProgressIndicator(),
+          p(Column(children: [
+            Text(S.printerScanIng),
+            const SizedBox(height: kInternalSpacing),
+            const LinearProgressIndicator(),
           ])),
         ];
       }
 
       return [
-        Center(child: HintText('搜尋到 ${searched.length} 個裝置')),
+        Center(child: HintText(S.printerScanCount(searched.length))),
         for (final device in searched) _buildDeviceTile(device),
         const SizedBox(height: kInternalSpacing),
         scanStream != null
             ? const CircularProgressIndicator()
             : TextButton(
                 onPressed: scan,
-                child: const Text('重新搜尋'),
+                child: Text(S.printerScanRetry),
               ),
       ];
     }
@@ -70,7 +71,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     return [
       if (widget.isNew)
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          TextButton(onPressed: scan, child: const Text('重新搜尋')),
+          TextButton(onPressed: scan, child: Text(S.printerScanRetry)),
         ]),
       PrinterView(printer: printer!),
       p(TextFormField(
@@ -80,13 +81,13 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
-          labelText: '出單機名稱',
-          hintText: widget.printer?.name ?? '例如：黑色出單機',
-          helperText: '位置：${printer!.address}',
+          labelText: S.printerNameLabel,
+          hintText: widget.printer?.name ?? S.printerNameHint,
+          helperText: S.printerNameHelper(printer!.address),
           filled: false,
         ),
         maxLength: 30,
-        validator: Validator.textLimit('出單機名稱', 30, focusNode: nameFocusNode),
+        validator: Validator.textLimit(S.printerNameLabel, 30, focusNode: nameFocusNode),
       )),
       CheckboxListTile(
         key: const Key('printer.autoConnect'),
@@ -94,8 +95,8 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         value: autoConnect,
         selected: autoConnect,
         onChanged: (value) => setState(() => autoConnect = value!),
-        title: const Text('自動連線'),
-        subtitle: const Text('當進入訂單頁時自動連線'),
+        title: Text(S.printerAutoConnLabel),
+        subtitle: Text(S.printerAutoConnHelper),
       ),
     ];
   }
@@ -105,8 +106,8 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     return ListTile(
       title: Text(device.name),
       subtitle: MetaBlock.withString(context, [
-        if (device.connected) '已連線',
-        if (exist) '已建立，無法新增',
+        if (device.connected) S.printerMetaConnected,
+        if (exist) S.printerMetaExist,
       ]),
       textColor: exist ? Colors.grey : null,
       trailing: exist ? null : const Icon(Icons.add),
@@ -123,10 +124,10 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     return FloatingActionButton.extended(
       onPressed: () => showMoreInfoDialog(
         context,
-        '找不到裝置？',
-        const Text('可以嘗試以下操作：\n• 確認裝置是否開啟\n• 確認裝置是否在範圍內\n• 重新開啟藍牙'),
+        S.printerScanNotFound,
+        Text(S.printerErrorTimeoutMore),
       ),
-      label: const Text('找不到裝置？'),
+      label: Text(S.printerScanNotFound),
     );
   }
 
@@ -198,8 +199,8 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     if (provider == null) {
       Log.ger('non recognition ${device.name}', 'printer_modal_select');
       showMoreInfoSnackBar(
-        '不支援裝置 ${device.name}',
-        const Text('目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得支援。'),
+        S.printerErrorNotSupportTitle,
+        Text(S.printerErrorNotSupportContent),
         key: scaffoldMessengerKey,
       );
       return;
@@ -219,7 +220,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   @override
   Future<void> updateItem() async {
     if (printer == null) {
-      showSnackBar('尚未選擇裝置', key: scaffoldMessengerKey);
+      showSnackBar(S.printerErrorNotSelect, key: scaffoldMessengerKey);
       return;
     }
 

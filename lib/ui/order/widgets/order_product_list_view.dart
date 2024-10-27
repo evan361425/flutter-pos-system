@@ -5,6 +5,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 
 class OrderProductListView extends StatelessWidget {
@@ -72,7 +73,7 @@ class OrderProductListView extends StatelessWidget {
           subtitle: MetaBlock.withString(
             context,
             product.itemList.map((e) => e.name).toList(),
-            emptyText: '無設定成分',
+            emptyText: S.orderProductListNoIngredient,
           ),
           onTap: () => _onSelected(product),
         ),

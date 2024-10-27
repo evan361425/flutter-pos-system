@@ -141,7 +141,11 @@ jobs:
 
       # Get flutter dependencies.
       - name: Build dependencies
-        run: flutter pub get
+        env:
+          GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
+        run: |
+          flutter pub token add https://github.com/evan361425/flutter-pos-packages --env-var GH_READ_PAT
+          flutter pub get
 
       # Setup Java environment in order to build the Android app.
       - uses: actions/setup-java@v4

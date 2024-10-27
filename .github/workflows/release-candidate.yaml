@@ -124,7 +124,11 @@ jobs:
 
   #     # Recreate missing files, and get packages.
   #     - name: Build dependencies
-  #       run: flutter pub get
+  #       env:
+  #         GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
+  #       run: |
+  #         flutter pub token add https://github.com/evan361425/flutter-pos-packages --env-var GH_READ_PAT
+  #         flutter pub get
 
   #     - name: Configure Google Services
   #       run: echo "$GOOGLE_SERVICES_JSON" > google-services.json

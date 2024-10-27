@@ -6,7 +6,8 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/printer.dart';
-import 'package:possystem/ui/printer/widgets/printer_status_dialog.dart';
+import 'package:possystem/translator.dart';
+import 'package:possystem/ui/printer/widgets/printer_info_dialog.dart';
 
 class PrinterButtonView extends StatefulWidget {
   const PrinterButtonView({super.key});
@@ -32,7 +33,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         .toList();
 
     final menuChildren = <Widget>[
-      if (connected.isNotEmpty) const Center(child: HintText('使用中')),
+      if (connected.isNotEmpty) Center(child: HintText(S.orderPrinterDividerConnected)),
       for (final printer in connected)
         MenuItemButton(
           leadingIcon: statusIcons[statusRecords[printer.id]!.value],
@@ -40,14 +41,14 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
           onPressed: _showPrinterStatusDialog(printer),
           child: Text(printer.name),
         ),
-      if (connecting.isNotEmpty) const Center(child: HintText('連線中')),
+      if (connecting.isNotEmpty) Center(child: HintText(S.orderPrinterDividerConnecting)),
       for (final printer in connecting)
         MenuItemButton(
           leadingIcon: const Icon(Icons.refresh),
           onPressed: null,
           child: Text(printer.name),
         ),
-      if (unused.isNotEmpty) const Center(child: HintText('未使用')),
+      if (unused.isNotEmpty) Center(child: HintText(S.orderPrinterDividerUnused)),
       for (final printer in unused)
         MenuItemButton(
           leadingIcon: const Icon(Icons.print_disabled_outlined),
@@ -140,7 +141,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         connected.removeWhere((e) {
           if (!e.connected) {
             Log.ger('printer ${e.name}(${e.address}) disconnected', 'order_printer_disconnect');
-            showSnackBar('出單機「${e.name}」斷線', context: context);
+            showSnackBar(S.orderSnackbarPrinterDisconnected(e.name), context: context);
             signalRecords.remove(e.id)?.stream.cancel();
             statusRecords.remove(e.id)?.stream.cancel();
             return true;
@@ -196,7 +197,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
     return () async {
       final result = await showAdaptiveDialog(
         context: context,
-        builder: (context) => PrinterStatusDialog(
+        builder: (context) => PrinterInfoDialog(
           printer: printer,
           signal: signalRecords[printer.id]?.value,
           status: statusRecords[printer.id]?.value,

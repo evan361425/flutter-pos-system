@@ -50,7 +50,6 @@ mode:
     changePrice: Price Change
     changeDiscount: Discount
   - Customer setting mode name
-  - name
   helper:
   - statOnly: Normal setting, selecting won't affect the order price.
     changePrice: |-
@@ -107,7 +106,7 @@ option:
       - Doing this will make "{name}" no longer the default value
       - Prompt to ensure the user knows what the original default value was
       - name:
-value: # Options can have values, this is the text for `OrderAttributeValue`
+value:  # Options can have values, this is the text for `OrderAttributeValue`
   empty: No price impact
   free: Free
   discount:

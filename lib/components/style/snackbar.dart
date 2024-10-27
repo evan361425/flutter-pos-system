@@ -35,15 +35,24 @@ void showSnackBar(
   }
 }
 
+/// Show snackbar when stream error
+///
+/// - [stream] the stream to listen
+/// - [code] the error code
+/// - [context] the context to show snackbar
+/// - [key] the ScaffoldMessengerState to show snackbar
+/// - [callback] the callback to call when error
 Stream<T> showSnackbarWhenStreamError<T>(
   Stream<T> stream,
   String code, {
   BuildContext? context,
   GlobalKey<ScaffoldMessengerState>? key,
+  VoidCallback? callback,
 }) {
   stream.handleError((err) {
     _prettierError(err);
     Log.err(err, code, err is Error ? err.stackTrace : null);
+    callback?.call();
   });
 
   return stream;
@@ -100,23 +109,23 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
   }
 
   if (e is BluetoothOffException) {
-    return show('藍牙未開啟');
+    return show(S.printerErrorBluetoothOff);
   }
 
   if (e is BluetoothException) {
     if (e.code == BluetoothExceptionCode.timeout.index) {
-      return show('連線逾時', '聯絡不到該裝置，可以嘗試以下操作：\n• 確認裝置是否開啟\n• 確認裝置是否在範圍內\n• 重新開啟藍牙');
+      return show(S.printerErrorTimeout, S.printerErrorTimeoutMore);
     }
 
     if (e.code == BluetoothExceptionCode.deviceIsDisconnected.index) {
-      return show('裝置已斷線');
+      return show(S.printerErrorDisconnected);
     }
 
     if ([
       BluetoothExceptionCode.serviceNotFound.index,
       BluetoothExceptionCode.characteristicNotFound.index,
     ].contains(e.code)) {
-      return show('裝置不相容', '目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得支援。');
+      return show(S.printerErrorNotSupportTitle, S.printerErrorNotSupportContent);
     }
 
     if ([
@@ -124,7 +133,7 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
       BluetoothExceptionCode.connectionCanceled.index,
       BluetoothExceptionCode.userRejected.index,
     ].contains(e.code)) {
-      return show('連線請求被中斷');
+      return show(S.printerErrorCanceled);
     }
 
     return show(e.description ?? 'error from ${e.function}');
