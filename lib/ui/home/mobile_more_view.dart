@@ -57,6 +57,7 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
           route: Routes.printer,
           title: S.printerTitle,
           subtitle: S.printerDescription,
+          beta: true,
         ),
         _buildRouteTile(
           id: 'transit',
@@ -100,13 +101,20 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
     required String route,
     required String title,
     required String subtitle,
+    bool beta = false,
   }) {
     return ListTile(
       key: Key('home.$id'),
       leading: Icon(icon),
       trailing: const Icon(Icons.navigate_next_outlined),
       onTap: () => context.goNamed(route),
-      title: Text(title),
+      title: beta
+          ? Row(children: [
+              Text(title),
+              const SizedBox(width: 8),
+              const Badge(label: Text('Beta')),
+            ])
+          : Text(title),
       subtitle: Text(subtitle),
     );
   }

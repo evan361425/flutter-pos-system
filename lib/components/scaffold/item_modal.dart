@@ -6,7 +6,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   final formKey = GlobalKey<FormState>();
   final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-  bool isSaving = false;
+  bool _isSaving = false;
 
   String get title;
 
@@ -46,9 +46,15 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   /// Handle user submission
   Future<void> handleSubmit() async {
-    if (isSaving || !_validate()) return;
+    if (_isSaving || !_validate()) return;
 
-    await updateItem();
+    _isSaving = true;
+
+    try {
+      await updateItem();
+    } finally {
+      _isSaving = false;
+    }
   }
 
   /// Update item implementation, called when the form is valid
@@ -58,10 +64,6 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     if (formKey.currentState?.validate() != true) {
       return false;
     }
-
-    setState(() {
-      isSaving = true;
-    });
 
     return true;
   }

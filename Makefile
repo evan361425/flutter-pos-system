@@ -76,7 +76,7 @@ bump: ## Bump beta version
 .PHONY: mock
 mock: ## Mock dependencies
 	dart run build_runner build --delete-conflicting-outputs
-	make format
+	dart format --line-length 120 .
 
 .PHONY: build-l10n
 build-l10n: ## Build localization

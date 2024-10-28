@@ -31,7 +31,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   StreamSubscription<List<BluetoothDevice>>? scanStream;
   List<BluetoothDevice> searched = [];
   Future<void>? notFoundFuture;
-  bool showNotFound = false;
+  final notFoundFAB = ValueNotifier<bool>(false);
 
   // field variable
   bool autoConnect = false;
@@ -75,7 +75,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         ]),
       PrinterView(printer: printer!),
       p(TextFormField(
-        key: const Key('printer.name'),
         controller: nameController,
         focusNode: nameFocusNode,
         textInputAction: TextInputAction.next,
@@ -90,7 +89,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         validator: Validator.textLimit(S.printerNameLabel, 30, focusNode: nameFocusNode),
       )),
       CheckboxListTile(
-        key: const Key('printer.autoConnect'),
         controlAffinity: ListTileControlAffinity.leading,
         value: autoConnect,
         selected: autoConnect,
@@ -117,17 +115,22 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
   @override
   Widget? buildFloatingActionButton() {
-    if (!showNotFound) {
-      return null;
-    }
+    return ListenableBuilder(
+      listenable: notFoundFAB,
+      builder: (context, child) {
+        if (notFoundFAB.value) {
+          return FloatingActionButton.extended(
+            onPressed: () => showMoreInfoDialog(
+              context,
+              S.printerScanNotFound,
+              Text(S.printerErrorTimeoutMore),
+            ),
+            label: Text(S.printerScanNotFound),
+          );
+        }
 
-    return FloatingActionButton.extended(
-      onPressed: () => showMoreInfoDialog(
-        context,
-        S.printerScanNotFound,
-        Text(S.printerErrorTimeoutMore),
-      ),
-      label: Text(S.printerScanNotFound),
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -167,13 +170,11 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       );
     }, onDone: scanDone, cancelOnError: true);
 
-    notFoundFuture = Future.delayed(const Duration(seconds: 3), () {
+    notFoundFuture = Future.delayed(btSearchWarningTime, () {
       Log.out('not found delayed hit', 'printer_modal_scan');
-      if (scanStream != null && mounted) {
-        setState(() {
-          showNotFound = true;
-          notFoundFuture = null;
-        });
+      if (scanStream != null && notFoundFuture != null && mounted) {
+        notFoundFAB.value = true;
+        notFoundFuture = null;
       }
     });
 
@@ -186,6 +187,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     if (mounted) {
       Log.out('done', 'printer_modal_scan');
       scanStream?.cancel();
+      notFoundFAB.value = false;
       setState(() {
         notFoundFuture?.ignore();
         notFoundFuture = null;
@@ -206,6 +208,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       return;
     }
 
+    // advertise name is the default name
     nameController.text = device.name;
     printer = Printer(
       name: device.name,

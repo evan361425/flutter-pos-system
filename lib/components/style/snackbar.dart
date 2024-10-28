@@ -23,7 +23,6 @@ void showSnackBar(
 
   if (state != null) {
     state.clearSnackBars();
-    // If want to add a "close" button, should consider taking root context, which is hard to handle.
     state.showSnackBar(SnackBar(
       showCloseIcon: true,
       // make floating button below

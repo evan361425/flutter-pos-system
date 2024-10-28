@@ -51,7 +51,12 @@ class _PrinterViewState extends State<PrinterView> {
   }
 
   Widget _buildCard() {
-    return widget.printer.connected ? _buildConnected() : _buildDisconnected();
+    return ListenableBuilder(
+      listenable: widget.printer,
+      builder: (context, child) {
+        return widget.printer.connected ? _buildConnected() : _buildDisconnected();
+      },
+    );
   }
 
   Widget _buildConnected() {

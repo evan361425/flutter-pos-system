@@ -42,7 +42,7 @@ class PrinterPage extends StatelessWidget {
         ]),
         const SizedBox(height: kInternalSpacing),
         SlidableItemList(
-          hintText: '', // disabling hint text
+          hintText: '', // disabling hint text, no need to show count
           leading: Row(children: [
             Expanded(
               child: RouteElevatedIconButton(
@@ -161,7 +161,7 @@ class _EmptyBody extends StatelessWidget {
                 ),
                 const SizedBox(height: kInternalSpacing),
                 FilledButton(
-                  onPressed: () => context.goNamed(Routes.printerCreate),
+                  onPressed: () => context.pushNamed(Routes.printerCreate),
                   child: Text(S.printerTitleCreate),
                 ),
               ]),
