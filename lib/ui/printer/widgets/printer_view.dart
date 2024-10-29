@@ -146,25 +146,6 @@ class _PrinterViewState extends State<PrinterView> {
     );
   }
 
-  @override
-  void initState() {
-    widget.printer.addListener(listenConnect);
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    widget.printer.removeListener(listenConnect);
-    super.dispose();
-  }
-
-  void listenConnect() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   void connect() async {
     if (!waiting.value) {
       waiting.value = true;

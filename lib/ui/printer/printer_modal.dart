@@ -75,6 +75,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         ]),
       PrinterView(printer: printer!),
       p(TextFormField(
+        key: const Key('printer.name'),
         controller: nameController,
         focusNode: nameFocusNode,
         textInputAction: TextInputAction.next,
@@ -232,7 +233,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     if (widget.isNew) {
       final item = Printer(
         name: object.name!,
-        address: object.address!,
+        address: printer!.address,
         autoConnect: object.autoConnect!,
         provider: printer!.provider,
         other: printer!.p,
@@ -252,7 +253,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     return PrinterObject(
       name: nameController.text,
       autoConnect: autoConnect,
-      address: printer!.address,
     );
   }
 }

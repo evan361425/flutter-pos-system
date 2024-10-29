@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -106,23 +107,85 @@ void main() {
     });
 
     testWidgets("Edit printer", (tester) async {
-      final printer = MockPrinter();
-      when(storage.set(any, any)).thenAnswer((_) => Future.value());
-      when(printer.connected).thenReturn(false);
-      Printers.instance.replaceItems({'id': Printer(id: 'id', name: 'name1', address: 'address')..p = printer});
+      final p = MockPrinter();
+      bool connected = false;
+      when(p.connected).thenAnswer((_) => connected);
+
+      final printer = Printer(id: 'id', name: 'name1', address: 'address')..p = p;
+      Printers.instance.replaceItems({'id': printer});
 
       await tester.pumpWidget(buildApp());
 
       await tester.tap(find.text('name1'));
       await tester.pumpAndSettle();
 
-      when(printer.connect()).thenAnswer((_) => Future.value(true));
+      when(p.connect()).thenAnswer((_) => Future.value(false));
       await tester.tap(find.text(S.printerBtnConnect).last);
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.printerErrorNotSupportTitle), findsOneWidget);
+
+      when(p.connect()).thenAnswer((_) {
+        connected = true;
+        printer.notifyItem();
+        return Future.value(true);
+      });
+      when(p.disconnect()).thenAnswer((_) {
+        connected = false;
+        printer.notifyItem();
+        return Future.value();
+      });
+
+      await tester.tap(find.text(S.printerBtnConnect).last);
+      await tester.pumpAndSettle();
+      expect(find.text(S.printerStatusConnecting), findsWidgets);
+
+      await tester.tap(find.text(S.printerStatusConnecting).last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerBtnDisconnect).last);
+      await tester.pumpAndSettle();
+      expect(find.text(S.printerStatusStandby), findsWidgets);
+
+      await tester.tap(find.text(S.printerBtnConnect).last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerStatusConnecting).last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerBtnRetry).last);
+      await tester.pumpAndSettle();
+      expect(find.text(S.printerStatusConnecting), findsWidgets);
+
+      await tester.enterText(find.byKey(const Key('printer.name')), 'evan');
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
 
       // connect in modal, should update page's status
+      expect(find.text(S.printerStatusConnecting), findsWidgets);
+      expect(find.text('evan'), findsWidgets);
+
+      verify(storage.set(any, {'printer.id.name': 'evan'})).called(1);
     });
 
-    testWidgets("Delete printer", (tester) async {});
+    testWidgets("Delete printer", (tester) async {
+      final p = MockPrinter();
+      when(p.connected).thenReturn(false);
+      Printers.instance.replaceItems({'id': Printer(id: 'id', name: 'name1', address: 'address')..p = p});
+
+      await tester.pumpWidget(buildApp());
+
+      await tester.tap(find.byIcon(KIcons.entryMore));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(KIcons.delete));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      verify(storage.set(any, {'printer.id': null})).called(1);
+      expect(find.text(S.printerMetaHelper), findsOneWidget);
+    });
+
+    testWidgets("Test print", (tester) async {});
+
+    testWidgets("Settings", (tester) async {});
   });
 
   setUpAll(() {
