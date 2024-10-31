@@ -41,7 +41,8 @@ void main() {
     });
 
     testWidgets('#handleSnapshot error', (WidgetTester tester) async {
-      final f = Util.handleSnapshot((context, data) => const SizedBox.shrink());
+      Object? gotten;
+      final f = Util.handleSnapshot((context, data) => const SizedBox.shrink(), onError: (err) => gotten = err);
       const err = AsyncSnapshot<String>.withError(ConnectionState.done, 'test');
 
       await tester.pumpWidget(MaterialApp(
@@ -49,6 +50,7 @@ void main() {
       ));
 
       expect(find.text('test'), findsOneWidget);
+      expect(gotten, equals('test'));
     });
   });
 }

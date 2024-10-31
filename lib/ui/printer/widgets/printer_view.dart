@@ -26,11 +26,6 @@ class PrinterView extends StatefulWidget {
     this.onLogPress,
   });
 
-  /// Need this for complete testing
-  /// see: https://github.com/flutter/flutter/issues/50783
-  @visibleForTesting
-  static Future<List<ConvertibleImage>?>? preparingImage;
-
   @override
   State<PrinterView> createState() => _PrinterViewState();
 }
@@ -87,7 +82,7 @@ class _PrinterViewState extends State<PrinterView> {
             MenuAnchor(
               menuChildren: [
                 MenuItemButton(
-                  onPressed: connect,
+                  onPressed: reconnect,
                   leadingIcon: const Icon(Icons.refresh),
                   child: Text(S.printerBtnRetry),
                 ),
@@ -207,7 +202,7 @@ class _PrinterViewState extends State<PrinterView> {
 
   void startPrint() async {
     final progress = ValueNotifier<double?>(null);
-    final controller = ImageableController(key: GlobalKey());
+    final controller = ImageableManger.instance.create();
     await showAdaptiveDialog(
       context: context,
       builder: (context) {
@@ -229,9 +224,10 @@ class _PrinterViewState extends State<PrinterView> {
                       count: 2,
                       singlePrice: 60,
                       originalPrice: 120,
+                      isDiscount: true,
                     ),
                     OrderProductObject(
-                      productName: S.menuExampleProductCheeseBurger,
+                      productName: S.menuExampleProductHamBurger,
                       count: 1,
                       singlePrice: 180,
                       originalPrice: 180,
@@ -288,7 +284,7 @@ class _PrintButton extends StatelessWidget {
   Widget build(BuildContext context) {
     void handleDone() {
       if (progress.value != null) {
-        progress.value = null;
+        reset();
         showSnackBar(S.printerStatusPrinted, context: context);
       }
     }
@@ -297,7 +293,7 @@ class _PrintButton extends StatelessWidget {
       // disable the button
       progress.value = 0;
 
-      final future = PrinterView.preparingImage = controller.toImage(widths: [printer.provider.manufactory.widthBits]);
+      final future = controller.toImage(widths: [printer.provider.manufactory.widthBits]);
       final data = await future;
       if (data != null && context.mounted) {
         final image = data.first.toGrayScale().toBitMap().bytes;
@@ -305,7 +301,7 @@ class _PrintButton extends StatelessWidget {
           printer.draw(image),
           'printer_test',
           context: context,
-          callback: () => progress.value = null,
+          callback: reset,
         ).listen((value) {
           if (value == 1) {
             handleDone();
@@ -325,5 +321,9 @@ class _PrintButton extends StatelessWidget {
         );
       },
     );
+  }
+
+  void reset() {
+    progress.value = null;
   }
 }

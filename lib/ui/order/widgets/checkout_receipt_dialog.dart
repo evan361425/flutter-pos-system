@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:go_router/go_router.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -29,7 +28,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
     );
 
     if (data is! List<ConvertibleImage>) {
-      if (data is String) {
+      if (data != null) {
         // We need Log.err in this function, no matter context is mounted or not
         // ignore: use_build_context_synchronously
         await showSnackbarWhenFutureError(Future.error(data), 'order_print_receipt', context: context);
@@ -84,7 +83,7 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
 
   @override
   void initState() {
-    controller = ImageableController(key: GlobalKey());
+    controller = ImageableManger.instance.create();
 
     SchedulerBinding.instance.addPostFrameCallback(_popWithImage);
 
@@ -94,13 +93,13 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
   void _popWithImage([Duration? _]) async {
     try {
       final data = await controller.toImage(widths: widget.widths);
-      if (mounted && context.canPop()) {
+      if (mounted) {
         final result = data?.map((e) => e.toGrayScale().toBitMap()).toList();
-        context.pop(result ?? S.orderPrinterErrorCreateReceipt);
+        Navigator.of(context).pop(result ?? S.orderPrinterErrorCreateReceipt);
       }
     } catch (e) {
-      if (mounted && context.canPop()) {
-        context.pop(e);
+      if (mounted) {
+        Navigator.of(context).pop(e);
       }
     }
   }

@@ -3,14 +3,16 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
-import 'dart:typed_data' as _i6;
-import 'dart:ui' as _i7;
+import 'dart:async' as _i6;
+import 'dart:typed_data' as _i8;
+import 'dart:ui' as _i9;
 
 import 'package:bluetooth/bluetooth.dart' as _i3;
 import 'package:bluetooth/src/fbp.dart' as _i2;
+import 'package:flutter/material.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:possystem/components/imageable_container.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -55,6 +57,26 @@ class _FakePrinterManufactory_2 extends _i1.SmartFake implements _i3.PrinterManu
         );
 }
 
+class _FakeImageableController_3 extends _i1.SmartFake implements _i4.ImageableController {
+  _FakeImageableController_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeGlobalKey_4<T extends _i5.State<_i5.StatefulWidget>> extends _i1.SmartFake implements _i5.GlobalKey<T> {
+  _FakeGlobalKey_4(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [Bluetooth].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -73,47 +95,47 @@ class MockBluetooth extends _i1.Mock implements _i3.Bluetooth {
       ) as _i2.FBP);
 
   @override
-  _i4.Stream<List<_i3.BluetoothDevice>> startScan() => (super.noSuchMethod(
+  _i6.Stream<List<_i3.BluetoothDevice>> startScan() => (super.noSuchMethod(
         Invocation.method(
           #startScan,
           [],
         ),
-        returnValue: _i4.Stream<List<_i3.BluetoothDevice>>.empty(),
-      ) as _i4.Stream<List<_i3.BluetoothDevice>>);
+        returnValue: _i6.Stream<List<_i3.BluetoothDevice>>.empty(),
+      ) as _i6.Stream<List<_i3.BluetoothDevice>>);
 
   @override
-  _i4.Future<_i3.BluetoothDevice> connect(String? address) => (super.noSuchMethod(
+  _i6.Future<_i3.BluetoothDevice> connect(String? address) => (super.noSuchMethod(
         Invocation.method(
           #connect,
           [address],
         ),
-        returnValue: _i4.Future<_i3.BluetoothDevice>.value(_FakeBluetoothDevice_1(
+        returnValue: _i6.Future<_i3.BluetoothDevice>.value(_FakeBluetoothDevice_1(
           this,
           Invocation.method(
             #connect,
             [address],
           ),
         )),
-      ) as _i4.Future<_i3.BluetoothDevice>);
+      ) as _i6.Future<_i3.BluetoothDevice>);
 
   @override
-  _i4.Future<List<_i3.BluetoothDevice>> pairedDevices() => (super.noSuchMethod(
+  _i6.Future<List<_i3.BluetoothDevice>> pairedDevices() => (super.noSuchMethod(
         Invocation.method(
           #pairedDevices,
           [],
         ),
-        returnValue: _i4.Future<List<_i3.BluetoothDevice>>.value(<_i3.BluetoothDevice>[]),
-      ) as _i4.Future<List<_i3.BluetoothDevice>>);
+        returnValue: _i6.Future<List<_i3.BluetoothDevice>>.value(<_i3.BluetoothDevice>[]),
+      ) as _i6.Future<List<_i3.BluetoothDevice>>);
 
   @override
-  _i4.Future<void> stopScan() => (super.noSuchMethod(
+  _i6.Future<void> stopScan() => (super.noSuchMethod(
         Invocation.method(
           #stopScan,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 }
 
 /// A class which mocks [Printer].
@@ -127,7 +149,7 @@ class MockPrinter extends _i1.Mock implements _i3.Printer {
   @override
   String get address => (super.noSuchMethod(
         Invocation.getter(#address),
-        returnValue: _i5.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.getter(#address),
         ),
@@ -176,10 +198,10 @@ class MockPrinter extends _i1.Mock implements _i3.Printer {
       ) as bool);
 
   @override
-  _i4.Stream<_i3.PrinterStatus> get statusStream => (super.noSuchMethod(
+  _i6.Stream<_i3.PrinterStatus> get statusStream => (super.noSuchMethod(
         Invocation.getter(#statusStream),
-        returnValue: _i4.Stream<_i3.PrinterStatus>.empty(),
-      ) as _i4.Stream<_i3.PrinterStatus>);
+        returnValue: _i6.Stream<_i3.PrinterStatus>.empty(),
+      ) as _i6.Stream<_i3.PrinterStatus>);
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -188,27 +210,27 @@ class MockPrinter extends _i1.Mock implements _i3.Printer {
       ) as bool);
 
   @override
-  _i4.Future<bool> connect() => (super.noSuchMethod(
+  _i6.Future<bool> connect() => (super.noSuchMethod(
         Invocation.method(
           #connect,
           [],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
 
   @override
-  _i4.Future<void> disconnect() => (super.noSuchMethod(
+  _i6.Future<void> disconnect() => (super.noSuchMethod(
         Invocation.method(
           #disconnect,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i4.Stream<double> draw(
-    _i6.Uint8List? image, {
+  _i6.Stream<double> draw(
+    _i8.Uint8List? image, {
     _i3.PrinterDensity? density = _i3.PrinterDensity.normal,
   }) =>
       (super.noSuchMethod(
@@ -217,11 +239,11 @@ class MockPrinter extends _i1.Mock implements _i3.Printer {
           [image],
           {#density: density},
         ),
-        returnValue: _i4.Stream<double>.empty(),
-      ) as _i4.Stream<double>);
+        returnValue: _i6.Stream<double>.empty(),
+      ) as _i6.Stream<double>);
 
   @override
-  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -230,7 +252,7 @@ class MockPrinter extends _i1.Mock implements _i3.Printer {
       );
 
   @override
-  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -266,10 +288,10 @@ class MockBluetoothDevice extends _i1.Mock implements _i3.BluetoothDevice {
   }
 
   @override
-  _i4.Stream<bool> get connectionState => (super.noSuchMethod(
+  _i6.Stream<bool> get connectionState => (super.noSuchMethod(
         Invocation.getter(#connectionState),
-        returnValue: _i4.Stream<bool>.empty(),
-      ) as _i4.Stream<bool>);
+        returnValue: _i6.Stream<bool>.empty(),
+      ) as _i6.Stream<bool>);
 
   @override
   bool get connected => (super.noSuchMethod(
@@ -280,7 +302,7 @@ class MockBluetoothDevice extends _i1.Mock implements _i3.BluetoothDevice {
   @override
   String get name => (super.noSuchMethod(
         Invocation.getter(#name),
-        returnValue: _i5.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.getter(#name),
         ),
@@ -295,31 +317,31 @@ class MockBluetoothDevice extends _i1.Mock implements _i3.BluetoothDevice {
   @override
   String get address => (super.noSuchMethod(
         Invocation.getter(#address),
-        returnValue: _i5.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.getter(#address),
         ),
       ) as String);
 
   @override
-  _i4.Future<void> connect() => (super.noSuchMethod(
+  _i6.Future<void> connect() => (super.noSuchMethod(
         Invocation.method(
           #connect,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i4.Future<void> disconnect() => (super.noSuchMethod(
+  _i6.Future<void> disconnect() => (super.noSuchMethod(
         Invocation.method(
           #disconnect,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
   _i3.BluetoothService? getService(int? id) => (super.noSuchMethod(Invocation.method(
@@ -328,13 +350,151 @@ class MockBluetoothDevice extends _i1.Mock implements _i3.BluetoothDevice {
       )) as _i3.BluetoothService?);
 
   @override
-  _i4.Stream<_i3.BluetoothSignal> createSignalStream({Duration? interval = const Duration(minutes: 1)}) =>
+  _i6.Stream<_i3.BluetoothSignal> createSignalStream({Duration? interval = const Duration(minutes: 1)}) =>
       (super.noSuchMethod(
         Invocation.method(
           #createSignalStream,
           [],
           {#interval: interval},
         ),
-        returnValue: _i4.Stream<_i3.BluetoothSignal>.empty(),
-      ) as _i4.Stream<_i3.BluetoothSignal>);
+        returnValue: _i6.Stream<_i3.BluetoothSignal>.empty(),
+      ) as _i6.Stream<_i3.BluetoothSignal>);
+}
+
+/// A class which mocks [PrinterManufactory].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPrinterManufactory extends _i1.Mock implements _i3.PrinterManufactory {
+  MockPrinterManufactory() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  int get serviceUuid => (super.noSuchMethod(
+        Invocation.getter(#serviceUuid),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get writerChar => (super.noSuchMethod(
+        Invocation.getter(#writerChar),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get readerChar => (super.noSuchMethod(
+        Invocation.getter(#readerChar),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get widthMM => (super.noSuchMethod(
+        Invocation.getter(#widthMM),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get widthBits => (super.noSuchMethod(
+        Invocation.getter(#widthBits),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  _i8.Uint8List prepare() => (super.noSuchMethod(
+        Invocation.method(
+          #prepare,
+          [],
+        ),
+        returnValue: _i8.Uint8List(0),
+      ) as _i8.Uint8List);
+
+  @override
+  _i8.Uint8List toCommands(
+    _i8.Uint8List? image, {
+    required _i3.PrinterDensity? density,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #toCommands,
+          [image],
+          {#density: density},
+        ),
+        returnValue: _i8.Uint8List(0),
+      ) as _i8.Uint8List);
+
+  @override
+  _i6.Future<_i3.PrinterStatus> getStatus({
+    required _i3.BluetoothCharacteristic? writer,
+    required _i3.BluetoothCharacteristic? reader,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getStatus,
+          [],
+          {
+            #writer: writer,
+            #reader: reader,
+          },
+        ),
+        returnValue: _i6.Future<_i3.PrinterStatus>.value(_i3.PrinterStatus.good),
+      ) as _i6.Future<_i3.PrinterStatus>);
+}
+
+/// A class which mocks [ImageableManger].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockImageableManger extends _i1.Mock implements _i4.ImageableManger {
+  MockImageableManger() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.ImageableController create() => (super.noSuchMethod(
+        Invocation.method(
+          #create,
+          [],
+        ),
+        returnValue: _FakeImageableController_3(
+          this,
+          Invocation.method(
+            #create,
+            [],
+          ),
+        ),
+      ) as _i4.ImageableController);
+}
+
+/// A class which mocks [ImageableController].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockImageableController extends _i1.Mock implements _i4.ImageableController {
+  MockImageableController() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.GlobalKey<_i5.State<_i5.StatefulWidget>> get key => (super.noSuchMethod(
+        Invocation.getter(#key),
+        returnValue: _FakeGlobalKey_4<_i5.State<_i5.StatefulWidget>>(
+          this,
+          Invocation.getter(#key),
+        ),
+      ) as _i5.GlobalKey<_i5.State<_i5.StatefulWidget>>);
+
+  @override
+  _i6.Future<List<_i4.ConvertibleImage>?> toImage({
+    bool? asPng = false,
+    required List<int>? widths,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #toImage,
+          [],
+          {
+            #asPng: asPng,
+            #widths: widths,
+          },
+        ),
+        returnValue: _i6.Future<List<_i4.ConvertibleImage>?>.value(),
+      ) as _i6.Future<List<_i4.ConvertibleImage>?>);
 }

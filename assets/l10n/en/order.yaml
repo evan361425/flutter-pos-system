@@ -6,6 +6,9 @@ tutorial:
   content: |
     Once you have set up your menu, you can start ordering!
     Let's tap and go see what's available!
+  printerBtn:
+    title: Printer Status Change
+    content: Printer status has changed, please check.
 snackbar:
   printer:
     disconnected:

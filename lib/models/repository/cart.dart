@@ -11,7 +11,6 @@ import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
-import 'package:possystem/ui/order/widgets/checkout_receipt_dialog.dart';
 
 import 'cashier.dart';
 import 'seller.dart';
@@ -124,14 +123,7 @@ class Cart extends ChangeNotifier {
     Log.ger(name, 'order_paid');
     final data = toObject(paid: paid);
 
-    // print receipt if any printer connected
-    if (Printers.instance.hasConnected) {
-      final images = await CheckoutReceiptDialog.show(context, data, Printers.instance.wantedPixelsWidths);
-      if (images != null) {
-        // this action is not required to be awaited, it can be done in background.
-        Printers.instance.print(images);
-      }
-    }
+    Printers.instance.checkout(context: context, order: data);
 
     await Seller.instance.push(data);
     await Stock.instance.order(data);

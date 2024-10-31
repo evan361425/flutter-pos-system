@@ -6,6 +6,9 @@ tutorial:
   content: |
     一旦設定好菜單，就可以開始點餐囉
     讓我們趕緊進去看看有什麼吧！
+  printerBtn:
+    title: 出單機異動
+    content: 出單機狀態出現異動，請查看。
 snackbar:
   printer:
     disconnected: 出單機「{name}」斷線

@@ -6,12 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/app.dart';
 import 'package:possystem/components/imageable_container.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/model_object.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
+import 'package:possystem/ui/order/widgets/checkout_receipt_dialog.dart';
 
 typedef BluetoothDevice = bt.BluetoothDevice;
 typedef BluetoothSignal = bt.BluetoothSignal;
@@ -88,7 +90,24 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     notifyListeners();
   }
 
-  void print(List<ConvertibleImage> images) async {
+  /// Checkout the order and print the receipt.
+  ///
+  /// Return void to avoid breaking checkout flow.
+  /// Only do things if there is any printer connected.
+  void checkout({required BuildContext context, required OrderObject order}) async {
+    if (!Printers.instance.hasConnected) {
+      return;
+    }
+
+    final images = await CheckoutReceiptDialog.show(context, order, wantedPixelsWidths);
+    if (images == null) {
+      return;
+    }
+
+    await printReceipt(images);
+  }
+
+  Future<void> printReceipt(List<ConvertibleImage> images) async {
     final errors = <Object>[];
     final stackTraces = <StackTrace>[];
 
@@ -101,7 +120,6 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
             final msg = '${printer.name}: $e';
             errors.add(msg);
             stackTraces.add(s);
-            Log.err(msg, 'printer_draw', s);
             return 1;
           }));
     }).expand((e) => e);
@@ -109,13 +127,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     await Future.wait(futures);
 
     if (errors.isNotEmpty) {
-      App.scaffoldMessengerKey.currentState?.clearSnackBars();
-      App.scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
-        showCloseIcon: true,
-        behavior: SnackBarBehavior.floating,
-        content: Text(errors.join('\n')),
-        width: Routes.homeMode.value.isMobile() ? null : 600,
-      ));
+      showSnackbarWhenFutureError(Future.error(errors.join('\n')), 'printer_draw', key: App.scaffoldMessengerKey);
     }
   }
 }
@@ -262,17 +274,9 @@ class PrinterObject extends ModelObject<Printer> {
       model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (address != null && address != model.address) {
-      model.address = address!;
-      result['$prefix.address'] = address!;
-    }
     if (autoConnect != null && autoConnect != model.autoConnect) {
       model.autoConnect = autoConnect!;
       result['$prefix.autoConnect'] = autoConnect!;
-    }
-    if (provider != null && provider != model.provider.index) {
-      model.provider = PrinterProvider.values[provider!];
-      result['$prefix.provider'] = provider!;
     }
 
     return result;

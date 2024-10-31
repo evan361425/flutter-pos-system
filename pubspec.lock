@@ -83,7 +83,7 @@ packages:
     description:
       path: "packages/bluetooth"
       ref: master
-      resolved-ref: "3029915614f80fc486df5b93e03e0f04400e25fb"
+      resolved-ref: "245355d99da5cdf4df1447eccc330480fd419d95"
       url: "https://github.com/evan361425/flutter-pos-packages"
     source: git
     version: "0.0.1"

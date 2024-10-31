@@ -9,7 +9,7 @@ void main() {
     testWidgets('should render correctly', (tester) async {
       deviceAs(Device.mobile, tester);
 
-      final controller = ImageableController(key: GlobalKey());
+      final controller = ImageableManger.instance.create();
 
       await tester.pumpWidget(MaterialApp(
         theme: ThemeData.light(),

@@ -157,18 +157,15 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   }
 
   void scan() {
-    scanStream = Bluetooth.instance.startScan().listen((devices) {
+    scanStream = showSnackbarWhenStreamError(
+      Bluetooth.instance.startScan(),
+      'printer_modal_scan',
+    ).listen((devices) {
       if (mounted) {
         setState(() {
           searched = devices;
         });
       }
-    }, onError: (Object error, StackTrace trace) {
-      showSnackbarWhenFutureError(
-        Future.error(error),
-        'printer_modal_scan',
-        key: scaffoldMessengerKey,
-      );
     }, onDone: scanDone, cancelOnError: true);
 
     notFoundFuture = Future.delayed(btSearchWarningTime, () {

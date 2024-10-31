@@ -44,6 +44,14 @@ class ImageableContainer extends StatelessWidget {
   }
 }
 
+/// Manage the imageable container
+class ImageableManger {
+  static ImageableManger instance = ImageableManger();
+
+  /// Make testing easy
+  ImageableController create() => ImageableController(key: GlobalKey());
+}
+
 class ImageableController {
   final GlobalKey key;
 
@@ -118,9 +126,9 @@ class ConvertibleImage {
       }
     }
 
-    // if (invert) {
-    //   return ConvertibleImage(Uint8List.fromList(result.map((e) => ~e).toList()), width: width);
-    // }
+    if (invert) {
+      return ConvertibleImage(Uint8List.fromList(result.map((e) => ~e).toList()), width: width);
+    }
 
     return ConvertibleImage(result, width: width);
   }

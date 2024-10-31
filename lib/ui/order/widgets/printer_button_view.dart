@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/printer.dart';
@@ -63,7 +64,14 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         late final Widget icon;
         if (connected.isNotEmpty) {
           final s = statusRecords.values.map((e) => e.value).reduce((prev, e) => e.priority > prev.priority ? e : prev);
-          icon = s.priority < 1 ? const Icon(Icons.print_outlined) : statusIcons[s]!;
+          icon = s.priority < 1
+              ? const Icon(Icons.print_outlined)
+              : Tutorial(
+                  id: 'order.printer_status',
+                  title: S.orderTutorialPrinterBtnTitle,
+                  message: S.orderTutorialPrinterBtnContent,
+                  child: statusIcons[s]!,
+                );
         } else if (connecting.isEmpty) {
           icon = const Icon(Icons.print_disabled_outlined);
         } else {
@@ -114,9 +122,9 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
   void _connectWantedPrinters() async {
     if (connecting.isNotEmpty) {
       Log.ger('connecting ${connecting.length} printers', 'order_printer_connect');
-
       await Future.wait([
-        for (final printer in connecting)
+        // [toList] create new list which avoid concurrent modification of the original list
+        for (final printer in connecting.toList())
           showSnackbarWhenFutureError(
             printer.connect(),
             'order_printer_connect',
@@ -135,9 +143,15 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
   void _printerChanged([void _]) {
     if (mounted) {
       setState(() {
-        _addConnected(connecting.where((e) => e.connected));
-        connecting.removeWhere((e) => e.connected);
+        final wanted = <Printer>[];
+        connecting.removeWhere((e) {
+          if (e.connected) {
+            wanted.add(e);
+            return true;
+          }
 
+          return false;
+        });
         connected.removeWhere((e) {
           if (!e.connected) {
             Log.ger('printer ${e.name}(${e.address}) disconnected', 'order_printer_disconnect');
@@ -149,6 +163,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
           return false;
         });
+        _addConnected(wanted);
       });
     }
   }

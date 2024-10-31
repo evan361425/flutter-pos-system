@@ -9,7 +9,6 @@ import 'package:possystem/models/printer.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
-import 'package:possystem/ui/printer/widgets/printer_view.dart';
 
 import '../../mocks/mock_bluetooth.dart';
 import '../../mocks/mock_bluetooth.mocks.dart';
@@ -69,7 +68,7 @@ void main() {
       // exist has no add icon
       expect(find.byIcon(Icons.add), findsNWidgets(2));
 
-      // show not found dialog
+      // show not found more dialog
       await tester.tap(find.text(S.printerScanNotFound));
       await tester.pump(const Duration(milliseconds: 10));
       await tester.tapAt(const Offset(10, 10));
@@ -81,6 +80,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 30));
       await tester.pump(const Duration(milliseconds: 30));
       expect(find.text(S.printerErrorNotSelect), findsOneWidget);
+
+      // scan error
+      await controller.close();
+      await tester.pump();
 
       // tap device
       await tester.tap(find.text('MX11'));
@@ -107,7 +110,7 @@ void main() {
       )).called(1);
     });
 
-    testWidgets("Edit printer", (tester) async {
+    testWidgets("Edit printer with connection handling", (tester) async {
       final p = MockPrinter();
       bool connected = false;
       when(p.connected).thenAnswer((_) => connected);
@@ -156,6 +159,7 @@ void main() {
       expect(find.text(S.printerStatusConnecting), findsWidgets);
 
       await tester.enterText(find.byKey(const Key('printer.name')), 'evan');
+      await tester.tap(find.text(S.printerAutoConnLabel));
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
@@ -163,7 +167,7 @@ void main() {
       expect(find.text(S.printerStatusConnecting), findsWidgets);
       expect(find.text('evan'), findsWidgets);
 
-      verify(storage.set(any, {'printer.id.name': 'evan'})).called(1);
+      verify(storage.set(any, {'printer.id.name': 'evan', 'printer.id.autoConnect': true})).called(1);
     });
 
     testWidgets("Delete printer", (tester) async {
@@ -190,6 +194,7 @@ void main() {
       final p = MockPrinter();
       when(p.connected).thenReturn(true);
       when(p.draw(any, density: anyNamed('density'))).thenAnswer((_) => controller.stream);
+      prepareImageable();
 
       Printers.instance.replaceItems({'id': printer..p = p});
 
@@ -199,7 +204,6 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text(S.printerBtnPrint));
       await tester.pumpAndSettle();
-      await tester.runAsync(() => PrinterView.preparingImage!);
 
       controller.add(0.5);
       await tester.pumpAndSettle();
@@ -247,4 +251,6 @@ void main() {
     reset(blue);
     Printers();
   });
+
+  tearDown(resetImageable);
 }
