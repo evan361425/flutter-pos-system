@@ -156,6 +156,7 @@ enum Stores {
   cashier,
   orderAttributes,
   analysis,
+  printers,
 }
 
 class StorageSanitizedValue {

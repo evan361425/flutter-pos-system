@@ -5,11 +5,11 @@ import 'package:possystem/components/dialog/slider_text_dialog.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/replenisher.dart';
-import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/cache.dart';
@@ -197,8 +197,8 @@ class _RestockDialogState extends State<_RestockDialog> {
       ListTile(
         contentPadding: EdgeInsets.zero,
         title: Text(S.stockIngredientRestockDialogTitle(
-          widget.ingredient.restockQuantity.toAmountString(),
-          widget.ingredient.restockPrice!.toAmountString(),
+          widget.ingredient.restockQuantity.toShortString(),
+          widget.ingredient.restockPrice!.toShortString(),
         )),
         subtitle: Text(S.stockIngredientRestockDialogSubtitle),
         trailing: IconButton(
@@ -228,12 +228,12 @@ class _RestockDialogState extends State<_RestockDialog> {
         const Text('÷', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
         // this money is independent to currency, so we don't need use
         // currency to format it.
-        Text('\$${widget.ingredient.restockPrice!.toAmountString()}'),
+        Text('\$${widget.ingredient.restockPrice!.toShortString()}'),
       ]),
       const SizedBox(height: 8.0),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         const Text('*', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
-        Text(widget.ingredient.restockQuantity.toAmountString()),
+        Text(widget.ingredient.restockQuantity.toShortString()),
       ]),
       const SizedBox(height: 8.0),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -241,7 +241,7 @@ class _RestockDialogState extends State<_RestockDialog> {
           '+ (${S.stockIngredientRestockDialogPriceOldAmount})',
           style: const TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true),
         ),
-        Text(widget.ingredient.currentAmount.toAmountString()),
+        Text(widget.ingredient.currentAmount.toShortString()),
       ]),
       const Divider(),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -252,11 +252,11 @@ class _RestockDialogState extends State<_RestockDialog> {
             final price = num.tryParse(controller.text);
             if (price == null) {
               widget.currentValue.value = null;
-              return Text(widget.ingredient.currentAmount.toAmountString());
+              return Text(widget.ingredient.currentAmount.toShortString());
             }
 
             final quantity = price / widget.ingredient.restockPrice! * widget.ingredient.restockQuantity;
-            final value = (quantity + widget.ingredient.currentAmount).toAmountString();
+            final value = (quantity + widget.ingredient.currentAmount).toShortString();
             widget.currentValue.value = value;
             return Text(value);
           },
@@ -269,7 +269,7 @@ class _RestockDialogState extends State<_RestockDialog> {
   void initState() {
     final index = Cache.instance.get<int>('stock.replenishBy') ?? 0;
     replenishBy = ReplenishBy.values.elementAtOrNull(index) ?? ReplenishBy.quantity;
-    controller = TextEditingController(text: widget.ingredient.restockLastPrice?.toAmountString() ?? '');
+    controller = TextEditingController(text: widget.ingredient.restockLastPrice?.toShortString() ?? '');
     super.initState();
   }
 

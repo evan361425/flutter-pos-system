@@ -109,28 +109,3 @@ enum CurrencyTypes {
   twd,
   usd,
 }
-
-extension ToCurrency on num {
-  /// Parse value to int or double string, decided by [CurrencySetting.isInt]
-  String toCurrency() {
-    return CurrencySetting.instance.formatter.format(toCurrencyNum());
-  }
-
-  String toCurrencyLong() {
-    if (CurrencySetting.instance.isInt) {
-      return round().toString();
-    }
-
-    // if it has decimal, show it, else show int
-    final rounded = round();
-    if (this == rounded) {
-      return rounded.toString();
-    }
-
-    return toString();
-  }
-
-  num toCurrencyNum() {
-    return CurrencySetting.instance.isInt ? round() : this;
-  }
-}

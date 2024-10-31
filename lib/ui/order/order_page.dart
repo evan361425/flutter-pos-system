@@ -16,6 +16,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_metadata_view.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
 import 'package:possystem/ui/order/cart/cart_product_selector.dart';
+import 'package:possystem/ui/order/widgets/printer_button_view.dart';
 import 'package:wakelock/wakelock.dart';
 
 import 'cart/cart_product_state_selector.dart';
@@ -98,6 +99,7 @@ class _OrderPageState extends State<OrderPage> {
           leading: const PopButton(),
           actions: [
             MoreButton(key: const Key('order.more'), onPressed: _showActions),
+            const PrinterButtonView(),
             TextButton(
               key: const Key('order.checkout'),
               onPressed: () => _handleCheckout(),
@@ -171,7 +173,7 @@ class _OrderPageState extends State<OrderPage> {
       final success = await result.exec(context);
 
       if (success == true && context.mounted) {
-        showSnackBar(context, S.actSuccess);
+        showSnackBar(S.actSuccess, context: context);
       }
     }
   }
@@ -189,16 +191,16 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
     case CheckoutStatus.ok:
     case CheckoutStatus.stash:
     case CheckoutStatus.restore:
-      showSnackBar(context, S.actSuccess);
+      showSnackBar(S.actSuccess, context: context);
       break;
     case CheckoutStatus.cashierNotEnough:
-      showSnackBar(context, S.orderSnackbarCashierNotEnough);
+      showSnackBar(S.orderSnackbarCashierNotEnough, context: context);
       break;
     case CheckoutStatus.cashierUsingSmall:
       showMoreInfoSnackBar(
-        context,
         S.orderSnackbarCashierUsingSmallMoney,
         Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('settings/checkoutWarning'))),
+        context: context,
       );
       break;
     default:

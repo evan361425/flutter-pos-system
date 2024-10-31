@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -114,8 +115,8 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
   void initState() {
     super.initState();
 
-    final amount = widget.ingredient?.currentAmount.toAmountString() ?? '';
-    final totalAmount = widget.ingredient?.totalAmount?.toAmountString() ?? '';
+    final amount = widget.ingredient?.currentAmount.toShortString() ?? '';
+    final totalAmount = widget.ingredient?.totalAmount?.toShortString() ?? '';
 
     nameController = TextEditingController(text: widget.ingredient?.name);
     amountController = TextEditingController(text: amount);

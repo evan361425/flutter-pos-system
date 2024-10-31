@@ -1,13 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/stock_object.dart';
+import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/order/cart_product.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/stock/ingredient.dart';
+
+import '../mocks/mock_bluetooth.mocks.dart';
 
 void main() {
   group('Model', () {
@@ -88,6 +92,23 @@ void main() {
 
       expect(order.quantities.isEmpty, isTrue);
       expect(order.getQuantityId('pi-1'), isNull);
+    });
+  });
+
+  group('Printer', () {
+    test('Order compare', () {
+      final p1 = Printer(name: 'p1', autoConnect: true)..p = MockPrinter();
+      final p2 = Printer(name: 'p2', autoConnect: true)..p = MockPrinter();
+      final p3 = Printer(name: 'p3', autoConnect: false)..p = MockPrinter();
+      final p4 = Printer(name: 'p4', autoConnect: false)..p = MockPrinter();
+
+      when(p1.p.connected).thenReturn(true);
+      when(p2.p.connected).thenReturn(false);
+      when(p3.p.connected).thenReturn(true);
+      when(p4.p.connected).thenReturn(false);
+
+      final result = [p1, p2, p3, p4]..sort();
+      expect(result.map((e) => e.name).toList(), equals(['p1', 'p3', 'p2', 'p4']));
     });
   });
 }

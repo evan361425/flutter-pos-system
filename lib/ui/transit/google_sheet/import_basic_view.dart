@@ -123,14 +123,14 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     }
 
     if (mounted) {
-      showSnackBar(context, S.actSuccess);
+      showSnackBar(S.actSuccess, context: context);
     }
   }
 
   Future<void> import(Formattable? type) async {
     final ss = selector.currentState?.spreadsheet;
     if (ss == null) {
-      showSnackBar(context, S.transitGSErrorImportEmptySpreadsheet);
+      showSnackBar(S.transitGSErrorImportEmptySpreadsheet, context: context);
       return;
     }
 
@@ -140,16 +140,16 @@ class _ImportBasicViewState extends State<ImportBasicView> {
         .map((e) => MapEntry(e.key, e.value.currentState!.selected!))
         .toList();
     if (selected.isEmpty) {
-      showSnackBar(context, S.transitGSErrorImportEmptySheet);
+      showSnackBar(S.transitGSErrorImportEmptySheet, context: context);
       return;
     }
 
     widget.notifier.value = '_start';
 
-    await showSnackbarWhenFailed(
+    await showSnackbarWhenFutureError(
       _importSheets(ss, selected),
-      context,
       'gs_import_failed',
+      context: context,
     );
 
     widget.notifier.value = '_finish';
@@ -172,7 +172,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     }
 
     if (mounted) {
-      showSnackBar(context, S.actSuccess);
+      showSnackBar(S.actSuccess, context: context);
     }
   }
 
@@ -200,9 +200,9 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     if (source == null) {
       if (mounted) {
         showMoreInfoSnackBar(
-          context,
           S.transitGSErrorImportNotFoundSheets(sheet.title),
           Text(S.transitGSErrorImportNotFoundHelper),
+          context: context,
         );
       }
       return false;

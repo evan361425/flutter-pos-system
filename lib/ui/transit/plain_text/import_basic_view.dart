@@ -71,7 +71,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
     final able = widget.exporter.formatter.whichFormattable(first);
 
     if (able == null) {
-      showSnackBar(context, S.transitPTImportErrorNotFound);
+      showSnackBar(S.transitPTImportErrorNotFound, context: context);
       return;
     }
 
@@ -80,7 +80,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
     await Formatter.finishFormat(able, allow);
 
     if (mounted && allow == true) {
-      showSnackBar(context, S.actSuccess);
+      showSnackBar(S.actSuccess, context: context);
     }
   }
 }

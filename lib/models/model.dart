@@ -38,7 +38,7 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
 
   Repository<Model<T>> get repository;
 
-  set repository(Repository repo);
+  set repository(Repository repo) {}
 
   void notifyItem() {
     notifyListeners();

@@ -6,7 +6,12 @@ tutorial:
   content: |
     一旦設定好菜單，就可以開始點餐囉
     讓我們趕緊進去看看有什麼吧！
+  printerBtn:
+    title: 出單機異動
+    content: 出單機狀態出現異動，請查看。
 snackbar:
+  printer:
+    disconnected: 出單機「{name}」斷線
   cashier:
     notEnough: 收銀機錢不夠找囉！
     usingSmallMoney: 收銀機使用小錢去找零
@@ -38,6 +43,13 @@ productList:
     - grid: 圖片
       list: 列表
   noIngredient: 無設定成分
+printer:
+  divider:
+    unused: 未使用
+    connecting: 連線中
+    connected: 已連線
+  error:
+    createReceipt: 無法產生出單資料
 cart:
   action:
     bulkify: 批量操作

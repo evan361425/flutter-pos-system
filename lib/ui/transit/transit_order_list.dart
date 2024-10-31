@@ -8,9 +8,9 @@ import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class TransitOrderList extends StatelessWidget {
@@ -118,7 +118,7 @@ class TransitOrderList extends StatelessWidget {
       onTap: () async {
         final detailedOrder = await Seller.instance.getOrder(order.id!);
         if (detailedOrder != null && context.mounted) {
-          await showDialog(
+          await showAdaptiveDialog(
             context: context,
             builder: (context) {
               return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [

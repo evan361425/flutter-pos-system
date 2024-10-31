@@ -12,7 +12,6 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:provider/provider.dart';
 
 void Function() goGenerateRandomOrders(BuildContext context) {
@@ -215,7 +214,7 @@ class _SettingPageState extends State<_SettingPage> {
 
     await Future.forEach<OrderObject>(result, (e) => seller.push(e));
     if (mounted) {
-      showSnackBar(context, 'Generate ${result.length} orders successfully');
+      showSnackBar('Generate ${result.length} orders successfully', context: context);
 
       Navigator.of(context).pop();
     }

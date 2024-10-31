@@ -6,7 +6,14 @@ tutorial:
   content: |
     Once you have set up your menu, you can start ordering!
     Let's tap and go see what's available!
+  printerBtn:
+    title: Printer Status Change
+    content: Printer status has changed, please check.
 snackbar:
+  printer:
+    disconnected:
+    - 'Printer "{name}" disconnected'
+    - name:
   cashier:
     notEnough: Insufficient cash in the cashier!
     usingSmallMoney: Using smaller denominations to give change
@@ -52,6 +59,13 @@ productList:
       list: List
     - Product list display mode
   noIngredient: No ingredients
+printer:
+  divider:
+    unused: Unused
+    connecting: Connecting
+    connected: Connected
+  error:
+    createReceipt: Unable to generate receipt
 cart:
   action:
     bulkify: Bulk Actions

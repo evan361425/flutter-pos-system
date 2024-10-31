@@ -64,16 +64,3 @@ class Stock extends ChangeNotifier
     return super.commitStaged(save: save, reset: false);
   }
 }
-
-extension IntOrDouble on num {
-  /// Ingredient amount to string
-  String toAmountString() {
-    // if it has decimal, show it, else show int
-    final rounded = round();
-    if (this == rounded) {
-      return rounded.toString();
-    }
-
-    return toStringAsFixed(2);
-  }
-}

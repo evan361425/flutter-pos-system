@@ -130,13 +130,13 @@ class _ExportBasicViewState extends State<ExportBasicView> with SingleTickerProv
   }
 
   void _copy(Formattable able) {
-    showSnackbarWhenFailed(
+    showSnackbarWhenFutureError(
       widget.exporter.export(able),
-      context,
       'pt_export_failed',
+      context: context,
     ).then((value) {
       if (mounted) {
-        showSnackBar(context, S.transitPTCopySuccess);
+        showSnackBar(S.transitPTCopySuccess, context: context);
       }
     });
   }

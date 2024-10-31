@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/analysis/analysis.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -344,6 +345,44 @@ void main() {
       expect(c2.name, equals('c-2'));
       expect(c2.type.name, equals('circular'));
       expect(c2.metrics, equals([OrderMetricType.cost]));
+    });
+
+    test('Printers empty', () async {
+      when(storage.get(Stores.printers, any)).thenAnswer((_) => Future.value({}));
+      when(storage.add(any, any, any)).thenAnswer((_) async {});
+
+      await Printers().initialize();
+
+      // required to be initialized, otherwise we cannot set new printer by
+      // storage.set(), since there is no `{}` for it to set.
+      verify(storage.add(Stores.printers, 'setting', {'density': 0})).called(1);
+      verify(storage.add(Stores.printers, 'printer', {})).called(1);
+    });
+
+    test('Printers', () async {
+      when(storage.get(Stores.printers, 'printer')).thenAnswer((_) => Future.value({
+            'p-1': {
+              'name': 'name',
+              'address': 'address',
+              'autoConnect': true,
+              'provider': 0,
+            }
+          }));
+      when(storage.get(Stores.printers, 'setting')).thenAnswer((_) => Future.value({'density': 1}));
+
+      await Printers().initialize();
+
+      final printer = Printers.instance.getItem('p-1')!;
+      expect(printer.id, equals('p-1'));
+      expect(printer.name, equals('name'));
+      expect(printer.address, equals('address'));
+      expect(printer.autoConnect, isTrue);
+      expect(printer.provider.index, equals(0));
+    });
+
+    setUp(() {
+      reset(database);
+      reset(storage);
     });
 
     setUpAll(() {

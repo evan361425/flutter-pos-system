@@ -15,6 +15,8 @@ import 'translator.dart';
 class App extends StatelessWidget {
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
+  static final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
   static ValueNotifier<RoutingConfig>? routingConfig;
 
   // singleton be avoid recreate after hot reload.
@@ -52,6 +54,7 @@ class App extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp.router(
           routerConfig: router!,
+          scaffoldMessengerKey: scaffoldMessengerKey,
           onGenerateTitle: (context) {
             // According to document, it should followed when system changed language.
             // https://docs.flutter.dev/development/accessibility-and-localization/internationalization#specifying-the-apps-supportedlocales-parameter

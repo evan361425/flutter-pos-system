@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/route_buttons.dart';
@@ -36,7 +37,8 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       );
     }
 
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
         child: ListenableBuilder(
@@ -94,10 +96,8 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
   }
 
   Widget _buildActions() {
-    return Material(
-      elevation: 1.0,
-      borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-      child: Tutorial(
+    return ButtonGroup(buttons: [
+      Tutorial(
         id: 'stock.replenishment',
         title: S.stockReplenishmentTutorialTitle,
         message: S.stockReplenishmentTutorialContent,
@@ -109,7 +109,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
           popTrueShowSuccess: true,
           label: S.stockReplenishmentButton,
         ),
-      ),
-    );
+      )
+    ]);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/single_row_warp.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
@@ -129,6 +130,7 @@ class _ProductListView extends StatelessWidget {
           borderRadius: BorderRadius.horizontal(right: Radius.circular(8)),
         ),
       ),
+      // TODO: use AnimatedIcon
       child: MenuAnchor(
         controller: controller,
         childFocusNode: focusNode,
@@ -146,13 +148,7 @@ class _ProductListView extends StatelessWidget {
               focusNode: focusNode,
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
-              onPressed: () {
-                if (controller.isOpen) {
-                  controller.close();
-                } else {
-                  controller.open();
-                }
-              },
+              onPressed: controller.toggle,
               icon: viewNotifier.value.icon,
             );
           },

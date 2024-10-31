@@ -234,7 +234,7 @@ class GoogleSheetExporter extends DataExporter {
     Log.ger('get_data start', _logCode);
     final result = await sheetsApi?.spreadsheets.values.get(
       spreadsheet.id,
-      // TODO: if neededColumns are better than 26, this must change
+      // TODO: if neededColumns are greater than 26, this must change
       "'$sheetTitle'!A:${String.fromCharCode(64 + neededColumns)}",
       majorDimension: 'ROWS',
       $fields: 'values',

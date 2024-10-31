@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/item_loader.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderLoader extends StatefulWidget {

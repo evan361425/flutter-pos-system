@@ -28,7 +28,7 @@ void main() {
           routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const OrderAttributePage(),
+              builder: (_, __) => const Scaffold(body: OrderAttributePage()),
             ),
             ...Routes.getDesiredRoute(0).routes,
           ]),
@@ -97,7 +97,7 @@ void main() {
           routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const OrderAttributePage(),
+              builder: (_, __) => const Scaffold(body: OrderAttributePage()),
             ),
             ...Routes.getDesiredRoute(0).routes,
           ]),

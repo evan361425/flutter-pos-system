@@ -1,6 +1,5 @@
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 class OrderFormatter {

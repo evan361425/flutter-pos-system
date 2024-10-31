@@ -3,9 +3,9 @@ import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 

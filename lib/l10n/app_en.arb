@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-09-17T01:42:01.939663Z",
+  "@@last_modified": "2024-10-31T05:54:38.163931Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -205,6 +205,78 @@
   "stockQuantityNameErrorRepeat": "Quantity name already exists",
   "stockQuantityProportionLabel": "Default Ratio",
   "stockQuantityProportionHelper": "Applied when this quantity is used for an ingredient.\n\nFor example:\nif this quantity is \"Large\" and the default ratio is \"1.5\",\nand there's a product \"Cheeseburger\" with the ingredient \"Cheese,\"\nwhich uses \"2\" units of cheese per burger,\nwhen adding this quantity,\nthe quantity of \"Cheese\" will automatically be set to \"3\" (2 * 1.5).\n\nIf set to \"1,\" there's no effect.\n\nIf set to \"0,\" the ingredient won't be used.",
+  "printerTitle": "Printer Management",
+  "printerDescription": "Bluetooth Connection, Printer Settings",
+  "printerTitleCreate": "Add Printer",
+  "printerTitleUpdate": "Edit Printer",
+  "printerTitleSettings": "Format Settings",
+  "printerBtnConnect": "Connect",
+  "printerBtnDisconnect": "Disconnect",
+  "printerBtnTestPrint": "Test Print",
+  "printerBtnRetry": "Re-Connect",
+  "printerBtnPrint": "Print",
+  "printerStatusSuccess": "Printer connected",
+  "printerStatusConnecting": "Connecting",
+  "printerStatusStandby": "Not connected",
+  "printerStatusPrinted": "Print complete",
+  "printerStatusName": "{name, select, good{All Good} writeFailed{Last Print Failed} paperNotFound{Paper Not Found} tooHot{Printer Overheated} lowBattery{Low Battery} printing{Printing} unknown{Unknown} other{UNKNOWN}}",
+  "printerSignalName": "{name, select, good{Good} normal{Normal} weak{Weak} other{UNKNOWN}}",
+  "printerScanIng": "Scanning for Bluetooth Devices...",
+  "printerScanCount": "{count, plural, =1{{count} Device Found} other{{count} Devices Found}}",
+  "@printerScanCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compactLong"
+      }
+    }
+  },
+  "printerScanRetry": "Re-scan",
+  "printerScanNotFound": "Not Found?",
+  "printerErrorNotSelect": "No device selected",
+  "printerErrorNotSupportTitle": "Device Not Compatible",
+  "printerErrorNotSupportContent": "This device is currently unsupported.\n\n[Contact Us](mailto:evanlu361425@gmail.com) for assistance.",
+  "printerErrorBluetoothOff": "Bluetooth is off",
+  "printerErrorDisconnected": "Printer is disconnected",
+  "printerErrorTimeout": "Connection timeout",
+  "printerErrorCanceled": "Connection request interrupted",
+  "printerErrorTimeoutMore": "Try the following:\n• Check if the device is powered on (usually will flash)\n• Ensure the device is within range\n• Restart Bluetooth",
+  "printerNameLabel": "Printer Name",
+  "printerNameHint": "e.g., Kitchen's Printer",
+  "printerNameHelper": "Location: {address}",
+  "@printerNameHelper": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "printerAutoConnLabel": "Auto-Connect",
+  "printerAutoConnHelper": "Automatically connect when entering the order page",
+  "printerMetaConnected": "Connected",
+  "printerMetaExist": "Existing, cannot add",
+  "printerMetaHelper": "Enable Bluetooth and keep the printer nearby",
+  "printerSettingsTitle": "Printer Format Settings",
+  "printerSettingsPaddingLabel": "Narrow Spacing",
+  "printerSettingsPaddingHelper": "Reduces paper between receipts; need caution when tearing",
+  "printerSettingsMore": "More Settings Coming Soon!",
+  "printerReceiptTitle": "Receipt",
+  "printerReceiptColumnName": "Item",
+  "printerReceiptColumnPrice": "Unit",
+  "printerReceiptColumnCount": "Quantity",
+  "printerReceiptColumnTotal": "Subtotal",
+  "printerReceiptColumnTime": "Time",
+  "printerReceiptDiscountLabel": "Discount",
+  "printerReceiptDiscountOrigin": "Origin",
+  "printerReceiptTotal": "Total",
+  "printerReceiptPaid": "Paid",
+  "printerReceiptPrice": "Price",
+  "printerReceiptChange": "Change",
+  "printerInfoTitle": "Printer Information",
+  "printerInfoName": "Name",
+  "printerInfoAddress": "Location",
+  "printerInfoSignal": "Signal",
+  "printerInfoStatus": "Status",
   "transitTitle": "Data Transfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
   "transitMethodTitle": "Please Select Transfer Method",
@@ -958,7 +1030,7 @@
   "@actSuccess": {
     "description": "Action executed successfully and displayed on the Snackbar."
   },
-  "actError": "Unknown error occurred.",
+  "actError": "Error",
   "@actError": {
     "description": "Error message displayed on the Snackbar when an error occurs."
   },
@@ -994,7 +1066,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printer{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
   "dialogDeletionTitle": "Delete Confirmation",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1183,7 +1255,7 @@
   "orderAttributeModeDivider": "Customer Setting Mode",
   "orderAttributeModeName": "{name, select, statOnly{Normal} changePrice{Price Change} changeDiscount{Discount} other{UNKNOWN}}",
   "@orderAttributeModeName": {
-    "description": "name"
+    "description": "Customer setting mode name"
   },
   "orderAttributeModeHelper": "{name, select, statOnly{Normal setting, selecting won't affect the order price.} changePrice{Selecting this setting may affect the order price.\nFor example: Takeout +$30, Eco Cup -$5.} changeDiscount{Selecting this setting will affect the total price based on the discount.\nFor example: Dine-in +10% service charge, Friends & Family Discount -10%.} other{UNKNOWN}}",
   "@orderAttributeModeHelper": {
@@ -1573,6 +1645,16 @@
   "orderBtn": "Order",
   "orderTutorialTitle": "Ordering!",
   "orderTutorialContent": "Once you have set up your menu, you can start ordering!\nLet's tap and go see what's available!\n",
+  "orderTutorialPrinterBtnTitle": "Printer Status Change",
+  "orderTutorialPrinterBtnContent": "Printer status has changed, please check.",
+  "orderSnackbarPrinterDisconnected": "Printer \"{name}\" disconnected",
+  "@orderSnackbarPrinterDisconnected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "orderSnackbarCashierNotEnough": "Insufficient cash in the cashier!",
   "orderSnackbarCashierUsingSmallMoney": "Using smaller denominations to give change",
   "orderSnackbarCashierUsingSmallMoneyHelper": "When giving change to customers, if the cashier doesn't have the appropriate denominations, this message will appear.\n\nFor example, if the total is $65 and the customer pays $100, the change should be $35.\nIf the cashier only has two $10 bills and more than three $5 bills, this message will appear.\n\nTo avoid this prompt:\n• Go to the changer page and top up various denominations.\n• Go to the [settings page]({link}) to disable related prompts from the cashier.",
@@ -1625,6 +1707,10 @@
     "description": "Product list display mode"
   },
   "orderProductListNoIngredient": "No ingredients",
+  "orderPrinterDividerUnused": "Unused",
+  "orderPrinterDividerConnecting": "Connecting",
+  "orderPrinterDividerConnected": "Connected",
+  "orderPrinterErrorCreateReceipt": "Unable to generate receipt",
   "orderCartActionBulkify": "Bulk Actions",
   "orderCartActionToggle": "Toggle",
   "orderCartActionSelectAll": "Select All",

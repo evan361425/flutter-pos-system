@@ -1,11 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:possystem/helpers/formatter/formatter.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 
 const _reDig = r' *-?\d+\.?\d*';

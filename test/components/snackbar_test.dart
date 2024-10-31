@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 
 import '../test_helpers/translator.dart';
@@ -14,9 +15,9 @@ void main() {
             return TextButton(
                 onPressed: () {
                   showMoreInfoSnackBar(
-                    context,
                     'message',
                     const Text('info'),
+                    context: context,
                   );
                 },
                 child: const Text('btn'));
@@ -34,6 +35,22 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('info'), findsOneWidget);
+    });
+
+    test('prettier error', () async {
+      Future<void> buildError(int index) {
+        return Future.error(BluetoothException(BluetoothExceptionFrom.android, 'test', index, 'message'));
+      }
+
+      await showSnackbarWhenFutureError(Future.error(BluetoothOffException()), 'test');
+      await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.timeout.index), 'test');
+      await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.deviceIsDisconnected.index), 'test');
+      await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.serviceNotFound.index), 'test');
+      await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.adapterIsOff.index), 'test');
+      await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.androidOnly.index), 'test');
+      await showSnackbarWhenStreamError(Stream.fromFuture(buildError(BluetoothExceptionCode.androidOnly.index)), 'test',
+              callback: () {})
+          .drain();
     });
   });
 

@@ -33,6 +33,15 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
             title: 'Debug',
             subtitle: 'For developer only',
           ),
+        OrderAttrTutorial(
+          child: _buildRouteTile(
+            id: 'orderAttributes',
+            icon: Icons.assignment_ind_outlined,
+            route: Routes.orderAttr,
+            title: S.orderAttributeTitle,
+            subtitle: S.orderAttributeDescription,
+          ),
+        ),
         MenuTutorial(
           child: _buildRouteTile(
             id: 'menu',
@@ -43,20 +52,19 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
           ),
         ),
         _buildRouteTile(
+          id: 'printers',
+          icon: Icons.print_outlined,
+          route: Routes.printer,
+          title: S.printerTitle,
+          subtitle: S.printerDescription,
+          beta: true,
+        ),
+        _buildRouteTile(
           id: 'transit',
           icon: Icons.upload_file_outlined,
           route: Routes.transit,
           title: S.transitTitle,
           subtitle: S.transitDescription,
-        ),
-        OrderAttrTutorial(
-          child: _buildRouteTile(
-            id: 'orderAttributes',
-            icon: Icons.assignment_ind_outlined,
-            route: Routes.orderAttr,
-            title: S.orderAttributeTitle,
-            subtitle: S.orderAttributeDescription,
-          ),
         ),
         _buildRouteTile(
           id: 'stockQuantities',
@@ -93,13 +101,20 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
     required String route,
     required String title,
     required String subtitle,
+    bool beta = false,
   }) {
     return ListTile(
       key: Key('home.$id'),
       leading: Icon(icon),
       trailing: const Icon(Icons.navigate_next_outlined),
       onTap: () => context.goNamed(route),
-      title: Text(title),
+      title: beta
+          ? Row(children: [
+              Text(title),
+              const SizedBox(width: 8),
+              const Badge(label: Text('Beta')),
+            ])
+          : Text(title),
       subtitle: Text(subtitle),
     );
   }

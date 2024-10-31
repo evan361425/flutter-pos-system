@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -53,9 +52,6 @@ class Replenishment extends Model<ReplenishmentObject> with ModelStorage<Repleni
         ))
           Stock.instance.getItem(entry.key)!: entry.value,
       };
-
-  @override
-  set repository(Repository repo) {}
 
   Future<void> apply() => Stock.instance.applyAmounts(data);
 

@@ -57,6 +57,9 @@ class OrderObject extends _Object {
   /// Price that cause by order attributes, [price] minus [productsPrice].
   num get attributesPrice => price - productsPrice;
 
+  /// Given change, [paid] minus [price].
+  num get change => paid - price;
+
   /// Get [products] as [CartProduct].
   ///
   /// Help to restore from stash.

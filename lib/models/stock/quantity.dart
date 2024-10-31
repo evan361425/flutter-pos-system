@@ -1,6 +1,5 @@
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/stock_object.dart';
-import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/services/storage.dart';
 
@@ -39,9 +38,6 @@ class Quantity extends Model<QuantityObject> with ModelStorage<QuantityObject>, 
 
   @override
   Quantities get repository => Quantities.instance;
-
-  @override
-  set repository(Repository repo) {}
 
   @override
   QuantityObject toObject() => QuantityObject(

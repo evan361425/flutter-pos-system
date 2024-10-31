@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/settings/currency_setting.dart';
 import 'package:uuid/uuid.dart';
 
 class Util {
@@ -39,10 +40,14 @@ class Util {
   static Widget Function(
     BuildContext context,
     AsyncSnapshot<T> snapshot,
-  ) handleSnapshot<T>(Widget Function(BuildContext context, T? data) builder) {
+  ) handleSnapshot<T>(
+    Widget Function(BuildContext context, T? data) builder, {
+    void Function(Object)? onError,
+  }) {
     return (BuildContext context, AsyncSnapshot<T> snapshot) {
       final error = snapshot.error;
       if (error != null) {
+        onError?.call(error);
         return Center(child: Text(error.toString()));
       }
 
@@ -84,5 +89,51 @@ extension RangeFormat on DateTimeRange {
 
     final fe = end.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
     return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
+  }
+}
+
+extension MenuControllerToggle on MenuController {
+  void toggle() {
+    if (isOpen) {
+      close();
+    } else {
+      open();
+    }
+  }
+}
+
+extension IntOrDouble on num {
+  /// If it has decimal, show it, else show as int.
+  String toShortString() {
+    final rounded = round();
+    if (this == rounded) {
+      return rounded.toString();
+    }
+
+    return toStringAsFixed(2);
+  }
+
+  /// Parse value to int or double string, decided by [CurrencySetting.isInt]
+  String toCurrency() {
+    return CurrencySetting.instance.formatter.format(toCurrencyNum());
+  }
+
+  /// Without any `intl` format
+  String toCurrencyLong() {
+    if (CurrencySetting.instance.isInt) {
+      return round().toString();
+    }
+
+    // if it has decimal, show it, else show int
+    final rounded = round();
+    if (this == rounded) {
+      return rounded.toString();
+    }
+
+    return toString();
+  }
+
+  num toCurrencyNum() {
+    return CurrencySetting.instance.isInt ? round() : this;
   }
 }

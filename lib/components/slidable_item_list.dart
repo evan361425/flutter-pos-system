@@ -32,7 +32,8 @@ class SlidableItemList<T, Action> extends StatelessWidget {
               child: leading!,
             ),
           Row(children: [
-            Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
+            if (hintText != '')
+              Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
             if (action != null)
               Padding(
                 padding: const EdgeInsets.only(right: kHorizontalSpacing),
@@ -71,26 +72,33 @@ class SlidableItemDelegate<T, U> {
   /// Required when using [showActions].
   final U? deleteValue;
 
-  SlidableItemDelegate({
-    required this.items,
-    required this.tileBuilder,
-    required this.handleDelete,
-    this.deleteValue,
-    this.warningContentBuilder,
-    this.actionBuilder,
-    this.handleAction,
-  });
+  final bool disableSlide;
+
+  SlidableItemDelegate(
+      {required this.items,
+      required this.tileBuilder,
+      required this.handleDelete,
+      this.deleteValue,
+      this.warningContentBuilder,
+      this.actionBuilder,
+      this.handleAction,
+      this.disableSlide = false});
 
   Widget build(T item, int index) {
+    final child = tileBuilder(
+      item,
+      index,
+      (BuildContext context) => ([BuildContext? ctx]) => showActions(ctx ?? context, item),
+    );
+    if (disableSlide) {
+      return child;
+    }
+
     return SlideToDelete(
       item: item,
       deleteCallback: () => handleDelete(item),
       warningContentBuilder: (ctx) => warningContentBuilder?.call(ctx, item),
-      child: tileBuilder(
-        item,
-        index,
-        (BuildContext context) => ([BuildContext? ctx]) => showActions(ctx ?? context, item),
-      ),
+      child: child,
     );
   }
 

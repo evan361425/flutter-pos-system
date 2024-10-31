@@ -5,11 +5,13 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/order/cart_product.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -21,7 +23,6 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/settings/checkout_warning.dart';
-import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
@@ -35,6 +36,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Page', () {
     void prepareData() {
+      Printers();
       Stock().replaceItems({
         'i-1': Ingredient(id: 'i-1', name: 'i-1'),
         'i-2': Ingredient(id: 'i-2', name: 'i-2'),

@@ -4,8 +4,9 @@ import 'package:possystem/constants/constant.dart';
 
 mixin ItemModal<T extends StatefulWidget> on State<T> {
   final formKey = GlobalKey<FormState>();
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-  bool isSaving = false;
+  bool _isSaving = false;
 
   String get title;
 
@@ -18,6 +19,8 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         onPressed: () => handleSubmit(),
         child: Text(MaterialLocalizations.of(context).saveButtonLabel),
       ),
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      floatingActionButton: buildFloatingActionButton(),
       content: Form(
         key: formKey,
         child: Column(
@@ -33,6 +36,9 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   /// Fields in form
   List<Widget> buildFormFields();
 
+  /// Build floating action button if needed
+  Widget? buildFloatingActionButton() => null;
+
   /// Handle submission from input field (e.g. onFieldSubmitted)
   void handleFieldSubmit(String _) {
     handleSubmit();
@@ -40,9 +46,15 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   /// Handle user submission
   Future<void> handleSubmit() async {
-    if (isSaving || !_validate()) return;
+    if (_isSaving || !_validate()) return;
 
-    await updateItem();
+    _isSaving = true;
+
+    try {
+      await updateItem();
+    } finally {
+      _isSaving = false;
+    }
   }
 
   /// Update item implementation, called when the form is valid
@@ -52,10 +64,6 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     if (formKey.currentState?.validate() != true) {
       return false;
     }
-
-    setState(() {
-      isSaving = true;
-    });
 
     return true;
   }

@@ -38,7 +38,12 @@ jobs:
 
       # Get flutter dependencies.
       - name: Install dependencies
-        run: flutter pub get
+        env:
+          GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
+        run: |
+          echo "https://oauth:$GH_READ_PAT@github.com" > ~/.git-credentials
+          git config --global credential.helper store
+          flutter pub get
 
       # Statically analyze the Dart code for any errors.
       - name: Linter

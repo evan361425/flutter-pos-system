@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -43,6 +44,7 @@ void main() {
     }
 
     List<OrderObject> prepareOrders({required DateTime now}) {
+      Printers();
       Menu().replaceItems({
         'c-1': Catalog(id: 'c-1', name: 'c-1')
           ..replaceItems({
