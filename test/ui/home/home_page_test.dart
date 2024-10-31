@@ -112,7 +112,7 @@ void main() {
           await navAndCheck('more_header.order_attrs', 'order_attributes_page', only: Device.mobile);
           await navAndCheck('home.debug', 'debug.list', icon: Icons.bug_report_outlined);
           await navAndCheck('home.menu', 'menu_page', icon: Icons.collections_outlined);
-          await navAndCheck('home.printers', 'printers_page', icon: Icons.print_outlined);
+          await navAndCheck('home.printers', 'printers_page', drag: true, icon: Icons.print_outlined);
           await navAndCheck('home.transit', 'transit.google_sheet', icon: Icons.local_shipping_outlined);
           await navAndCheck('home.stockQuantities', 'quantities_page', drag: true, icon: Icons.exposure_outlined);
           await navAndCheck('home.orderAttributes', 'order_attributes_page', icon: Icons.assignment_ind_outlined);

@@ -26,6 +26,11 @@ class PrinterView extends StatefulWidget {
     this.onLogPress,
   });
 
+  /// Need this for complete testing
+  /// see: https://github.com/flutter/flutter/issues/50783
+  @visibleForTesting
+  static Future<List<ConvertibleImage>?>? preparingImage;
+
   @override
   State<PrinterView> createState() => _PrinterViewState();
 }
@@ -203,7 +208,7 @@ class _PrinterViewState extends State<PrinterView> {
   void startPrint() async {
     final progress = ValueNotifier<double?>(null);
     final controller = ImageableController(key: GlobalKey());
-    showAdaptiveDialog(
+    await showAdaptiveDialog(
       context: context,
       builder: (context) {
         return ResponsiveDialog(
@@ -236,9 +241,11 @@ class _PrinterViewState extends State<PrinterView> {
               ),
               ValueListenableBuilder(
                 valueListenable: progress,
-                builder: (context, value, _) => value == null
-                    ? const SizedBox.shrink()
-                    : _Backdrop(child: CircularProgressIndicator.adaptive(value: value)),
+                builder: (context, value, _) {
+                  return value == null
+                      ? const SizedBox.shrink()
+                      : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
+                },
               ),
             ]),
           ),
@@ -290,7 +297,8 @@ class _PrintButton extends StatelessWidget {
       // disable the button
       progress.value = 0;
 
-      final data = await controller.toImage(widths: [printer.provider.manufactory.widthBits]);
+      final future = PrinterView.preparingImage = controller.toImage(widths: [printer.provider.manufactory.widthBits]);
+      final data = await future;
       if (data != null && context.mounted) {
         final image = data.first.toGrayScale().toBitMap().bytes;
         showSnackbarWhenStreamError(

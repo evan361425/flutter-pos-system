@@ -32,7 +32,7 @@ class PrinterPage extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           ButtonGroup(buttons: [
             RouteIconButton(
-              key: const Key('printer.format'),
+              key: const Key('printer.settings'),
               route: Routes.printerSettings,
               icon: const Icon(Icons.settings),
               label: S.printerTitleSettings,

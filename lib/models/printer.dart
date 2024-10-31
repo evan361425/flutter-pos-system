@@ -201,7 +201,7 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   Stream<double> draw(Uint8List image) {
     Log.out('start', 'printer_draw');
 
-    return p.draw(image);
+    return p.draw(image, density: Printers.instance.density);
   }
 
   /// Connected printer has a higher priority

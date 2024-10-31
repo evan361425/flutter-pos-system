@@ -48,13 +48,11 @@ Stream<T> showSnackbarWhenStreamError<T>(
   GlobalKey<ScaffoldMessengerState>? key,
   VoidCallback? callback,
 }) {
-  stream.handleError((err) {
+  return stream.handleError((err) {
     _prettierError(err);
     Log.err(err, code, err is Error ? err.stackTrace : null);
     callback?.call();
   });
-
-  return stream;
 }
 
 Future<T?> showSnackbarWhenFutureError<T>(

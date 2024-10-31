@@ -9,6 +9,7 @@ import 'package:possystem/models/printer.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
+import 'package:possystem/ui/printer/widgets/printer_view.dart';
 
 import '../../mocks/mock_bluetooth.dart';
 import '../../mocks/mock_bluetooth.mocks.dart';
@@ -89,7 +90,7 @@ void main() {
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('printer.format')), findsOneWidget);
+      expect(find.byKey(const Key('printer.settings')), findsOneWidget);
       expect(find.text('MX11'), findsOneWidget);
       verify(storage.set(
         any,
@@ -183,9 +184,57 @@ void main() {
       expect(find.text(S.printerMetaHelper), findsOneWidget);
     });
 
-    testWidgets("Test print", (tester) async {});
+    testWidgets("Test print", (tester) async {
+      final printer = Printer(id: 'id', name: 'name', address: 'address');
+      final controller = StreamController<double>();
+      final p = MockPrinter();
+      when(p.connected).thenReturn(true);
+      when(p.draw(any, density: anyNamed('density'))).thenAnswer((_) => controller.stream);
 
-    testWidgets("Settings", (tester) async {});
+      Printers.instance.replaceItems({'id': printer..p = p});
+
+      await tester.pumpWidget(buildApp());
+
+      await tester.tap(find.text(S.printerBtnTestPrint));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerBtnPrint));
+      await tester.pumpAndSettle();
+      await tester.runAsync(() => PrinterView.preparingImage!);
+
+      controller.add(0.5);
+      await tester.pumpAndSettle();
+
+      // tap should not work when printing
+      await tester.tapAt(tester.getCenter(find.text(S.printerBtnPrint)));
+
+      controller.add(0.8);
+      await tester.pump();
+      controller.add(1);
+      await tester.pumpAndSettle();
+
+      verify(p.draw(any, density: anyNamed('density'))).called(1);
+    });
+
+    testWidgets("Settings", (tester) async {
+      Printers.instance.replaceItems({'id': Printer(id: 'id', name: 'name', address: 'address')});
+
+      await tester.pumpWidget(buildApp());
+
+      await tester.tap(find.byKey(const Key('printer.settings')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(S.printerSettingsPaddingLabel));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('printer.settings')), findsOneWidget);
+      verify(storage.set(any, {
+        'setting': {'density': 1}
+      })).called(1);
+      expect(Printers.instance.density, PrinterDensity.tight);
+    });
   });
 
   setUpAll(() {
