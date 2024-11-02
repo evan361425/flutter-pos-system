@@ -27,7 +27,7 @@ test-coverage: ## Run tests with coverage
 	@genhtml coverage/lcov.info -o coverage/html
 	@open coverage/html/index.html
 
-##@ Build
+##@ Bump
 .PHONY: bump-dev
 bump-dev: ## Bump development version
 	@current=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f1); \

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/constants/constant.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
@@ -70,7 +71,7 @@ class App extends StatelessWidget {
 
             return localizations.appTitle;
           },
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: !isProd,
 
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
