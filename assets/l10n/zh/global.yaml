@@ -14,7 +14,7 @@ title:
   cashier: 收銀
   settings: 設定
   menu: 菜單
-  printer: 出單機
+  printers: 出單機
   transit: 資料轉移
   orderAttributes: 顧客設定
   stockQuantities: 份量

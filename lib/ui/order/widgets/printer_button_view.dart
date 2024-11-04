@@ -34,6 +34,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         .toList();
 
     final menuChildren = <Widget>[
+      if (printers.isEmpty) Center(child: Text(S.orderPrinterEmpty)),
       if (connected.isNotEmpty) Center(child: HintText(S.orderPrinterDividerConnected)),
       for (final printer in connected)
         MenuItemButton(

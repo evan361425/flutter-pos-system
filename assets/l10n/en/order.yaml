@@ -60,6 +60,7 @@ productList:
     - Product list display mode
   noIngredient: No ingredients
 printer:
+  empty: No printers set yet
   divider:
     unused: Unused
     connecting: Connecting

@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/launcher.dart';
 
-final _regex = RegExp(r'\[([^\]]+)\]\((https?:\/\/[^\)]+)\)');
+final _regex = RegExp(r'\[([^\]]+)\]\((https?:\/\/|mailto:)([^\)]+)\)');
 
 class Linkify extends StatelessWidget {
   final Iterable<LinkifyData> data;
@@ -19,7 +19,7 @@ class Linkify extends StatelessWidget {
   ///   at new Linkify.fromString(linkify.dart:15)
   ///   at Tutorial.build(tutorial.dart:107)
   /// ```
-  factory Linkify.fromString(String text, {TextAlign? textAlign, String? id}) {
+  factory Linkify.fromString(String text, {TextAlign? textAlign}) {
     return Linkify(_parseText(text), textAlign: textAlign);
   }
 
@@ -71,7 +71,7 @@ Iterable<LinkifyData> _parseText(String text) sync* {
     }
 
     yield LinkifyData(text.substring(0, match.start));
-    yield LinkifyData(match.group(1)!, match.group(2));
+    yield LinkifyData(match.group(1)!, match.group(2)! + match.group(3)!);
     text = text.substring(match.end);
   } while (text.isNotEmpty);
 }

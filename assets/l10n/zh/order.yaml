@@ -44,6 +44,7 @@ productList:
       list: 列表
   noIngredient: 無設定成分
 printer:
+  empty: 尚未設定出單機
   divider:
     unused: 未使用
     connecting: 連線中

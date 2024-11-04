@@ -108,9 +108,9 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         if (device.connected) S.printerMetaConnected,
         if (exist) S.printerMetaExist,
       ]),
-      textColor: exist ? Colors.grey : null,
-      trailing: exist ? null : const Icon(Icons.add),
-      onTap: exist ? null : () => selectDevice(device),
+      selected: !exist,
+      enabled: !exist,
+      onTap: () => selectDevice(device),
     );
   }
 

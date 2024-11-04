@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-10-31T05:54:38.189274Z",
+  "@@last_modified": "2024-11-04T00:09:29.169409Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -1066,7 +1066,14 @@
       }
     }
   },
-  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} printer{出單機} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} printers{出單機} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
+  "@title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dialogDeletionTitle": "刪除確認通知",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1707,6 +1714,7 @@
     "description": "Product list display mode"
   },
   "orderProductListNoIngredient": "無設定成分",
+  "orderPrinterEmpty": "尚未設定出單機",
   "orderPrinterDividerUnused": "未使用",
   "orderPrinterDividerConnecting": "連線中",
   "orderPrinterDividerConnected": "已連線",

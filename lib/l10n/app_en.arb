@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-10-31T05:54:38.163931Z",
+  "@@last_modified": "2024-11-04T00:09:29.146263Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -1066,7 +1066,14 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printer{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printers{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
+  "@title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dialogDeletionTitle": "Delete Confirmation",
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
@@ -1707,6 +1714,7 @@
     "description": "Product list display mode"
   },
   "orderProductListNoIngredient": "No ingredients",
+  "orderPrinterEmpty": "No printers set yet",
   "orderPrinterDividerUnused": "Unused",
   "orderPrinterDividerConnecting": "Connecting",
   "orderPrinterDividerConnected": "Connected",

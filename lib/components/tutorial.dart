@@ -110,7 +110,7 @@ class Tutorial extends StatelessWidget {
           child: Column(children: [
             if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
             const SizedBox(height: 16),
-            Linkify.fromString(message, id: id),
+            Linkify.fromString(message),
             if (below != null) below!,
           ]),
         ),

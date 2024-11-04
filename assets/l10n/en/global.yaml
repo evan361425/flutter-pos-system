@@ -31,13 +31,14 @@ title:
   cashier: Cashier
   settings: Settings
   menu: Menu
-  printer: Printer
+  printers: Printer
   transit: Data Transfer
   orderAttributes: Customer Settings
   stockQuantities: Quantities
   elf: Suggestions
   more: More
   debug: Debug
+- name:
 dialog:
   deletionTitle:
   - Delete Confirmation
