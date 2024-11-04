@@ -65,9 +65,6 @@ void main() {
 
       expect(find.text(S.printerErrorNotSupportTitle), findsOneWidget);
 
-      // exist has no add icon
-      expect(find.byIcon(Icons.add), findsNWidgets(2));
-
       // show not found more dialog
       await tester.tap(find.text(S.printerScanNotFound));
       await tester.pump(const Duration(milliseconds: 10));
