@@ -1,0 +1,31 @@
+🚀 New Features
+• Added support for multiple languages.
+• Introduced a new dark mode.
+• Implemented a new search algorithm.
+
+🐛 Bug Fixes
+• Fixed a bug where the app would crash on startup.
+• Resolved an issue where users were unable to log in.
+• Fixed a bug that caused the app to freeze.
+
+✨ Improvements
+• Improved the overall performance of the app.
+• Updated the user interface.
+• Enhanced the user experience.
+
+
+🚀 新功能
+• 新增多語言支援。
+• 推出新的深色模式。
+• 實作新的搜尋演算法。
+
+🐛 問題修復
+• 修復了應用程式在啟動時崩潰的問題。
+• 解決了使用者無法登入的問題。
+• 修復了導致應用程式凍結的錯誤。
+
+✨ 改進
+• 提升應用程式的整體效能。
+• 更新使用者介面。
+• 強化使用者體驗。
+

@@ -1,0 +1,3 @@
+🚀 Features
+
+• Support bluetooth printers #212 : evan361425
