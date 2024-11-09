@@ -39,6 +39,10 @@ dependencies:
       url: https://github.com/evan361425/flutter-pos-packages
       ref: master
       path: packages/bluetooth
+  flutter_blue_plus:
+    git:
+      url: https://github.com/evan361425/flutter_blue_plus
+      ref: uint8
 
   # google services
   googleapis: ^13.2.0
