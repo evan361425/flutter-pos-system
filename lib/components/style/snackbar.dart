@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:possystem/components/linkify.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -103,7 +104,12 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
 
 void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key}) {
   void show(String msg, [String? more]) {
-    showMoreInfoSnackBar(msg, more == null ? null : Text(more), context: context, key: key);
+    showMoreInfoSnackBar(
+      msg,
+      more == null ? null : Linkify.fromString(more),
+      context: context,
+      key: key,
+    );
   }
 
   if (e is BluetoothOffException) {
@@ -131,10 +137,11 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
     }
 
     if ([
-      BluetoothExceptionCode.adapterIsOff.index,
-      BluetoothExceptionCode.connectionCanceled.index,
-      BluetoothExceptionCode.userRejected.index,
-    ].contains(e.code)) {
+          BluetoothExceptionCode.adapterIsOff.index,
+          BluetoothExceptionCode.connectionCanceled.index,
+          BluetoothExceptionCode.userRejected.index,
+        ].contains(e.code) ||
+        e.description == 'ANDROID_SPECIFIC_ERROR') {
       return show(S.printerErrorCanceled);
     }
 

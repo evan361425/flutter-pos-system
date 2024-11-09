@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -200,7 +201,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       Log.ger('non recognition ${device.name}', 'printer_modal_select');
       showMoreInfoSnackBar(
         S.printerErrorNotSupportTitle,
-        Text(S.printerErrorNotSupportContent),
+        Linkify.fromString(S.printerErrorNotSupportContent),
         key: scaffoldMessengerKey,
       );
       return;

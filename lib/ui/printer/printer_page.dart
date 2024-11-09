@@ -27,43 +27,41 @@ class PrinterPage extends StatelessWidget {
       return const _EmptyBody();
     }
 
-    return Column(
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          ButtonGroup(buttons: [
-            RouteIconButton(
-              key: const Key('printer.settings'),
-              route: Routes.printerSettings,
-              icon: const Icon(Icons.settings),
-              label: S.printerTitleSettings,
-            ),
-          ]),
-          const SizedBox(width: kHorizontalSpacing),
-        ]),
-        const SizedBox(height: kInternalSpacing),
-        SlidableItemList(
-          hintText: '', // disabling hint text, no need to show count
-          leading: Row(children: [
-            Expanded(
-              child: RouteElevatedIconButton(
-                key: const Key('printer.create'),
-                route: Routes.printerCreate,
-                icon: const Icon(KIcons.add),
-                label: S.printerTitleCreate,
-              ),
-            ),
-          ]),
-          delegate: SlidableItemDelegate(
-            disableSlide: true,
-            items: Printers.instance.itemList,
-            tileBuilder: (printer, _, actorBuilder) => _Tile(printer, actorBuilder),
-            handleDelete: (printer) => printer.remove(),
-            deleteValue: 0,
-            warningContentBuilder: (_, printer) => Text(S.dialogDeletionContent(printer.name, '')),
+    return ListView(children: [
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        ButtonGroup(buttons: [
+          RouteIconButton(
+            key: const Key('printer.settings'),
+            route: Routes.printerSettings,
+            icon: const Icon(Icons.settings),
+            label: S.printerTitleSettings,
           ),
+        ]),
+        const SizedBox(width: kHorizontalSpacing),
+      ]),
+      const SizedBox(height: kInternalSpacing),
+      SlidableItemList(
+        hintText: '', // disabling hint text, no need to show count
+        leading: Row(children: [
+          Expanded(
+            child: RouteElevatedIconButton(
+              key: const Key('printer.create'),
+              route: Routes.printerCreate,
+              icon: const Icon(KIcons.add),
+              label: S.printerTitleCreate,
+            ),
+          ),
+        ]),
+        delegate: SlidableItemDelegate(
+          disableSlide: true,
+          items: Printers.instance.itemList,
+          tileBuilder: (printer, _, actorBuilder) => _Tile(printer, actorBuilder),
+          handleDelete: (printer) => printer.remove(),
+          deleteValue: 0,
+          warningContentBuilder: (_, printer) => Text(S.dialogDeletionContent(printer.name, '')),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 }
 

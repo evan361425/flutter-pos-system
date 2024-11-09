@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/imageable_container.dart';
+import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/util.dart';
@@ -196,7 +198,7 @@ class _PrinterViewState extends State<PrinterView> {
     if (success == false && mounted) {
       showMoreInfoSnackBar(
         S.printerErrorNotSupportTitle,
-        Text(S.printerErrorNotSupportContent),
+        Linkify.fromString(S.printerErrorNotSupportContent),
         context: context,
       );
     }
@@ -205,66 +207,57 @@ class _PrinterViewState extends State<PrinterView> {
   void startPrint() async {
     final progress = ValueNotifier<double?>(null);
     final controller = ImageableManger.instance.create();
-    await showAdaptiveDialog(
+    final done = await showAdaptiveDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog.adaptive(
-          title: Text(S.printerBtnTestPrint),
-          contentPadding: const EdgeInsets.all(0),
-          actions: [
-            PopButton(
-              key: const Key('pop'),
-              title: MaterialLocalizations.of(context).cancelButtonLabel,
-            ),
-            _PrintButton(progress: progress, controller: controller, printer: widget.printer),
-          ],
-          content: Stack(children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 400, minWidth: 500),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 24.0,
-                  top: 16,
-                  right: 24.0,
-                  bottom: 24.0,
-                ),
-                child: PrinterReceiptView(
-                  controller: controller,
-                  order: OrderObject(
-                    createdAt: DateTime.now(),
-                    price: 300,
-                    paid: 500,
-                    products: [
-                      OrderProductObject(
-                        productName: S.menuExampleProductCheeseBurger,
-                        count: 2,
-                        singlePrice: 60,
-                        originalPrice: 120,
-                        isDiscount: true,
-                      ),
-                      OrderProductObject(
-                        productName: S.menuExampleProductHamBurger,
-                        count: 1,
-                        singlePrice: 180,
-                        originalPrice: 180,
-                      ),
-                    ],
+      builder: (context) => ResponsiveDialog(
+        title: Text(S.printerBtnTestPrint),
+        action: _PrintButton(
+          progress: progress,
+          controller: controller,
+          printer: widget.printer,
+        ),
+        content: Stack(alignment: Alignment.center, children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+            child: PrinterReceiptView(
+              controller: controller,
+              order: OrderObject(
+                createdAt: DateTime.now(),
+                price: 300,
+                paid: 500,
+                products: [
+                  OrderProductObject(
+                    productName: S.menuExampleProductCheeseBurger,
+                    count: 2,
+                    singlePrice: 60,
+                    originalPrice: 120,
+                    isDiscount: true,
                   ),
-                ),
+                  OrderProductObject(
+                    productName: S.menuExampleProductHamBurger,
+                    count: 1,
+                    singlePrice: 180,
+                    originalPrice: 180,
+                  ),
+                ],
               ),
             ),
-            ValueListenableBuilder(
-              valueListenable: progress,
-              builder: (context, value, _) {
-                return value == null
-                    ? const SizedBox.shrink()
-                    : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
-              },
-            ),
-          ]),
-        );
-      },
+          ),
+          ValueListenableBuilder(
+            valueListenable: progress,
+            builder: (context, value, _) {
+              return value == null
+                  ? const SizedBox.shrink()
+                  : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
+            },
+          ),
+        ]),
+      ),
     );
+
+    if (done == true && mounted) {
+      showSnackBar(S.printerStatusPrinted, context: context);
+    }
   }
 }
 
@@ -302,7 +295,9 @@ class _PrintButton extends StatelessWidget {
     void handleDone() {
       if (progress.value != null) {
         reset();
-        showSnackBar(S.printerStatusPrinted, context: context);
+        if (context.mounted && context.canPop()) {
+          context.pop(true);
+        }
       }
     }
 
@@ -319,13 +314,7 @@ class _PrintButton extends StatelessWidget {
           'printer_test',
           context: context,
           callback: reset,
-        ).listen((value) {
-          if (value == 1) {
-            handleDone();
-          }
-
-          progress.value = value;
-        }, onDone: handleDone);
+        ).listen((value) => progress.value = value, onDone: handleDone);
       }
     }
 
