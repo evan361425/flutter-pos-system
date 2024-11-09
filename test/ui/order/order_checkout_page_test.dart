@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -28,6 +31,8 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/mock_bluetooth.dart';
+import '../../mocks/mock_bluetooth.mocks.dart';
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../mocks/mock_storage.dart';
@@ -194,7 +199,7 @@ void main() {
     }
 
     for (final device in [Device.mobile, Device.desktop]) {
-      group(device.name, () {
+      group('mobile', () {
         testWidgets('Order without any product', (tester) async {
           deviceAs(device, tester);
           Cart.instance = Cart();
@@ -208,9 +213,24 @@ void main() {
           expect(find.byKey(const Key('order.details.confirm')), findsNothing);
         });
 
-        testWidgets('Order without attributes', (tester) async {
+        testWidgets('Order without attributes but with printer', (tester) async {
+          final printer = MockPrinter();
+          final manufactory = MockPrinterManufactory();
+          final btDevice = MockBluetoothDevice();
           deviceAs(device, tester);
+          prepareImageable(Future.value([ConvertibleImage(Uint8List(32), width: 8)]));
           CurrencySetting.instance.isInt = false;
+          Printers.instance.replaceItems({
+            '1': Printer(id: '1', name: '1')..p = printer,
+          });
+          when(printer.connected).thenReturn(true);
+          when(printer.manufactory).thenReturn(manufactory);
+          when(printer.statusStream).thenAnswer((_) => Stream.value(PrinterStatus.good));
+          when(printer.draw(any, density: anyNamed('density'))).thenAnswer((_) => Stream.value(1.0));
+          when(printer.device).thenReturn(btDevice);
+          when(manufactory.widthBits).thenReturn(8);
+          when(btDevice.createSignalStream()).thenAnswer((_) => Stream.value(BluetoothSignal.normal));
+
           await tester.pumpWidget(buildApp());
 
           await tester.tap(find.byKey(const Key('order.checkout')));
@@ -353,6 +373,7 @@ void main() {
                 data['i-2.currentAmount'] == 97 &&
                 !data.containsKey('i-2.updatedAt');
           }))));
+          verify(printer.draw(any, density: anyNamed('density'))).called(1);
 
           if (device == Device.desktop) {
             // FIXME: I've no idea why this error happened

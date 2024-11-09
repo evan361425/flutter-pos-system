@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -106,6 +107,10 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
   }
 
   if (e is BluetoothOffException) {
+    return show(S.printerErrorBluetoothOff);
+  }
+
+  if (e is PlatformException && e.code == 'connect' && e.message?.contains('bluetooth') == true) {
     return show(S.printerErrorBluetoothOff);
   }
 

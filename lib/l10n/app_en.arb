@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-11-04T00:09:29.146263Z",
+  "@@last_modified": "2024-11-09T02:58:51.549087Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -263,8 +263,8 @@
   "printerReceiptTitle": "Receipt",
   "printerReceiptColumnName": "Item",
   "printerReceiptColumnPrice": "Unit",
-  "printerReceiptColumnCount": "Quantity",
-  "printerReceiptColumnTotal": "Subtotal",
+  "printerReceiptColumnCount": "Qty",
+  "printerReceiptColumnTotal": "Sub.",
   "printerReceiptColumnTime": "Time",
   "printerReceiptDiscountLabel": "Discount",
   "printerReceiptDiscountOrigin": "Origin",

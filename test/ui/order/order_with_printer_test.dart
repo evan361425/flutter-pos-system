@@ -57,6 +57,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
+
+      statusController.add(PrinterStatus.printing);
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
     testWidgets('disconnect and connect back by dialog', (WidgetTester tester) async {
@@ -107,8 +113,14 @@ void main() {
         home: Scaffold(
           body: Builder(builder: (context) {
             return TextButton(
-              onPressed: () {
-                Printers.instance.checkout(context: context, order: OrderObject(createdAt: DateTime.now()));
+              onPressed: () async {
+                final receipts = await Printers.instance.generateReceipts(
+                  context: context,
+                  order: OrderObject(createdAt: DateTime.now()),
+                );
+                if (receipts != null) {
+                  Printers.instance.printReceipts(receipts);
+                }
               },
               child: const Text('tap me'),
             );
@@ -195,8 +207,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('2: test error'), findsOneWidget);
-      verify(p1.draw(Uint8List.fromList([0]))).called(1);
-      verify(p2.draw(Uint8List.fromList([255, 255]))).called(1);
+      verify(p1.draw(Uint8List.fromList([255]))).called(1);
+      verify(p2.draw(Uint8List.fromList([0, 0]))).called(1);
     });
 
     tearDown(resetImageable);

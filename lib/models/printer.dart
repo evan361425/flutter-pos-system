@@ -90,24 +90,23 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     notifyListeners();
   }
 
-  /// Checkout the order and print the receipt.
+  /// Generate receipt in pixel format.
   ///
-  /// Return void to avoid breaking checkout flow.
-  /// Only do things if there is any printer connected.
-  void checkout({required BuildContext context, required OrderObject order}) async {
+  /// Separate the print action to another function, so we can first pop the
+  /// dialog and then print the receipt in the background.
+  Future<List<ConvertibleImage>?> generateReceipts({
+    required BuildContext context,
+    required OrderObject order,
+  }) {
     if (!Printers.instance.hasConnected) {
-      return;
+      return Future.value(null);
     }
 
-    final images = await CheckoutReceiptDialog.show(context, order, wantedPixelsWidths);
-    if (images == null) {
-      return;
-    }
-
-    await printReceipt(images);
+    return CheckoutReceiptDialog.show(context, order, wantedPixelsWidths);
   }
 
-  Future<void> printReceipt(List<ConvertibleImage> images) async {
+  /// Allow background print.
+  void printReceipts(List<ConvertibleImage> images) async {
     final errors = <Object>[];
     final stackTraces = <StackTrace>[];
 

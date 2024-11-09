@@ -62,7 +62,6 @@ class ImageableController {
   /// - [asPng] is true, the image will be in PNG format, otherwise, it will be in raw RGBA format
   /// - [widths] tells how many pixels in a row, can provide multiple values to get multiple images
   Future<List<ConvertibleImage>?> toImage({
-    bool asPng = false,
     required List<int> widths,
   }) async {
     // Delay is required. See Issue https://github.com/flutter/flutter/issues/22308
@@ -76,7 +75,7 @@ class ImageableController {
     final result = <ConvertibleImage>[];
     for (final w in widths) {
       final image = await boundary.toImage(pixelRatio: w / boundary.paintBounds.width);
-      final byteData = await image.toByteData(format: asPng ? ImageByteFormat.png : ImageByteFormat.rawRgba);
+      final byteData = await image.toByteData(format: ImageByteFormat.rawRgba);
       result.add(ConvertibleImage(byteData!.buffer.asUint8List(), width: w));
       Log.out('generate image with width: $w', 'imageable_container');
 
@@ -117,17 +116,16 @@ class ConvertibleImage {
     final result = Uint8List(bytes.length ~/ 8);
     for (var i = 0; i < bytes.length; i++) {
       // convert to binary image
-      if (bytes[i] > 0) {
+      final write = invert
+          ? bytes[i] > 0 // black
+          : bytes[i] == 0; // white
+      if (write) {
         if (mirrored) {
           result[i ~/ 8] |= 1 << (i % 8);
         } else {
           result[i ~/ 8] |= 1 << (7 - i % 8);
         }
       }
-    }
-
-    if (invert) {
-      return ConvertibleImage(Uint8List.fromList(result.map((e) => ~e).toList()), width: width);
     }
 
     return ConvertibleImage(result, width: width);

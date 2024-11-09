@@ -123,7 +123,10 @@ class Cart extends ChangeNotifier {
     Log.ger(name, 'order_paid');
     final data = toObject(paid: paid);
 
-    Printers.instance.checkout(context: context, order: data);
+    final receipt = await Printers.instance.generateReceipts(context: context, order: data);
+    if (receipt != null) {
+      Printers.instance.printReceipts(receipt);
+    }
 
     await Seller.instance.push(data);
     await Stock.instance.order(data);

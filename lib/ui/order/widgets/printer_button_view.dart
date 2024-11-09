@@ -67,12 +67,14 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
           final s = statusRecords.values.map((e) => e.value).reduce((prev, e) => e.priority > prev.priority ? e : prev);
           icon = s.priority < 1
               ? const Icon(Icons.print_outlined)
-              : Tutorial(
-                  id: 'order.printer_status',
-                  title: S.orderTutorialPrinterBtnTitle,
-                  message: S.orderTutorialPrinterBtnContent,
-                  child: statusIcons[s]!,
-                );
+              : s == PrinterStatus.printing
+                  ? statusIcons[s]!
+                  : Tutorial(
+                      id: 'order.printer_status',
+                      title: S.orderTutorialPrinterBtnTitle,
+                      message: S.orderTutorialPrinterBtnContent,
+                      child: statusIcons[s]!,
+                    );
         } else if (connecting.isEmpty) {
           icon = const Icon(Icons.print_disabled_outlined);
         } else {

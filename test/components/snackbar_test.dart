@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -43,6 +44,8 @@ void main() {
       }
 
       await showSnackbarWhenFutureError(Future.error(BluetoothOffException()), 'test');
+      await showSnackbarWhenFutureError(
+          Future.error(PlatformException(code: 'connect', message: 'bluetooth must turning on')), 'test');
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.timeout.index), 'test');
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.deviceIsDisconnected.index), 'test');
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.serviceNotFound.index), 'test');

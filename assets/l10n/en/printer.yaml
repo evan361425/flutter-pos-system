@@ -79,8 +79,8 @@ receipt:
   column:
     name: Item
     price: Unit
-    count: Quantity
-    total: Subtotal
+    count: Qty
+    total: Sub.
     time: Time
   discount:
     label: Discount

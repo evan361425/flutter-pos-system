@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/util.dart';
@@ -101,8 +101,9 @@ class _PrinterViewState extends State<PrinterView> {
                 );
               },
             ),
-            const SizedBox(width: 4),
-          ])
+            const SizedBox(width: 8.0),
+          ]),
+          const SizedBox(height: 4),
         ],
       )),
     );
@@ -126,8 +127,9 @@ class _PrinterViewState extends State<PrinterView> {
               onPressed: connect,
               child: Text(S.printerBtnConnect),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: 8.0),
           ]),
+          const SizedBox(height: 4.0),
         ],
       )),
     );
@@ -206,45 +208,60 @@ class _PrinterViewState extends State<PrinterView> {
     await showAdaptiveDialog(
       context: context,
       builder: (context) {
-        return ResponsiveDialog(
+        return AlertDialog.adaptive(
           title: Text(S.printerBtnTestPrint),
-          action: _PrintButton(progress: progress, controller: controller, printer: widget.printer),
-          content: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-            child: Stack(children: [
-              PrinterReceiptView(
-                controller: controller,
-                order: OrderObject(
-                  createdAt: DateTime.now(),
-                  price: 300,
-                  paid: 500,
-                  products: [
-                    OrderProductObject(
-                      productName: S.menuExampleProductCheeseBurger,
-                      count: 2,
-                      singlePrice: 60,
-                      originalPrice: 120,
-                      isDiscount: true,
-                    ),
-                    OrderProductObject(
-                      productName: S.menuExampleProductHamBurger,
-                      count: 1,
-                      singlePrice: 180,
-                      originalPrice: 180,
-                    ),
-                  ],
+          contentPadding: const EdgeInsets.all(0),
+          actions: [
+            PopButton(
+              key: const Key('pop'),
+              title: MaterialLocalizations.of(context).cancelButtonLabel,
+            ),
+            _PrintButton(progress: progress, controller: controller, printer: widget.printer),
+          ],
+          content: Stack(children: [
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 400, minWidth: 500),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 24.0,
+                  top: 16,
+                  right: 24.0,
+                  bottom: 24.0,
+                ),
+                child: PrinterReceiptView(
+                  controller: controller,
+                  order: OrderObject(
+                    createdAt: DateTime.now(),
+                    price: 300,
+                    paid: 500,
+                    products: [
+                      OrderProductObject(
+                        productName: S.menuExampleProductCheeseBurger,
+                        count: 2,
+                        singlePrice: 60,
+                        originalPrice: 120,
+                        isDiscount: true,
+                      ),
+                      OrderProductObject(
+                        productName: S.menuExampleProductHamBurger,
+                        count: 1,
+                        singlePrice: 180,
+                        originalPrice: 180,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              ValueListenableBuilder(
-                valueListenable: progress,
-                builder: (context, value, _) {
-                  return value == null
-                      ? const SizedBox.shrink()
-                      : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
-                },
-              ),
-            ]),
-          ),
+            ),
+            ValueListenableBuilder(
+              valueListenable: progress,
+              builder: (context, value, _) {
+                return value == null
+                    ? const SizedBox.shrink()
+                    : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
+              },
+            ),
+          ]),
         );
       },
     );
