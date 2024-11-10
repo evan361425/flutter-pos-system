@@ -1,6 +1,5 @@
 {
   "@@locale": "en",
-  "@@last_modified": "2024-11-09T02:58:51.549087Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "Settings",
   "settingVersion": "Version: {version}",
@@ -262,12 +261,14 @@
   "printerSettingsMore": "More Settings Coming Soon!",
   "printerReceiptTitle": "Receipt",
   "printerReceiptColumnName": "Item",
-  "printerReceiptColumnPrice": "Unit",
-  "printerReceiptColumnCount": "Qty",
-  "printerReceiptColumnTotal": "Sub.",
+  "printerReceiptColumnPrice": "U/P",
+  "printerReceiptColumnCount": "QTY",
+  "printerReceiptColumnTotal": "TOT",
   "printerReceiptColumnTime": "Time",
   "printerReceiptDiscountLabel": "Discount",
   "printerReceiptDiscountOrigin": "Origin",
+  "printerReceiptAddOnsLabel": "Add-Ons",
+  "printerReceiptAddOnsAdjustment": "ADJ",
   "printerReceiptTotal": "Total",
   "printerReceiptPaid": "Paid",
   "printerReceiptPrice": "Price",
@@ -1323,40 +1324,6 @@
   },
   "orderAttributeValueEmpty": "No price impact",
   "orderAttributeValueFree": "Free",
-  "orderAttributeValueDiscountIncrease": "Increase to {value} times",
-  "@orderAttributeValueDiscountIncrease": {
-    "placeholders": {
-      "value": {
-        "type": "num",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "orderAttributeValueDiscountDecrease": "Decrease to {value} times",
-  "@orderAttributeValueDiscountDecrease": {
-    "placeholders": {
-      "value": {
-        "type": "num",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "orderAttributeValuePriceIncrease": "Increase by {value} dollars",
-  "@orderAttributeValuePriceIncrease": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "orderAttributeValuePriceDecrease": "Decrease by {value} dollars",
-  "@orderAttributeValuePriceDecrease": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
   "menuTitle": "Menu",
   "menuSubtitle": "Categories, Products",
   "menuTutorialTitle": "Create Your Menu",

@@ -19,33 +19,31 @@ class PrinterInfoDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(S.printerInfoTitle),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      scrollable: true,
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        ListTile(
+          title: Text(S.printerInfoName),
+          leading: const Icon(Icons.text_fields),
+          subtitle: Text(printer.name),
+        ),
+        ListTile(
+          title: Text(S.printerInfoAddress),
+          leading: const Icon(Icons.location_on),
+          subtitle: Text(printer.address),
+        ),
+        if (signal != null)
           ListTile(
-            title: Text(S.printerInfoName),
-            leading: const Icon(Icons.text_fields),
-            subtitle: Text(printer.name),
+            title: Text(S.printerInfoSignal),
+            leading: signalIcons[signal],
+            subtitle: Text(S.printerSignalName(signal!.name)),
           ),
+        if (status != null)
           ListTile(
-            title: Text(S.printerInfoAddress),
-            leading: const Icon(Icons.location_on),
-            subtitle: Text(printer.address),
+            title: Text(S.printerInfoStatus),
+            leading: statusIcons[status],
+            subtitle: Text(S.printerStatusName(status!.name)),
           ),
-          if (signal != null)
-            ListTile(
-              title: Text(S.printerInfoSignal),
-              leading: signalIcons[signal],
-              subtitle: Text(S.printerSignalName(signal!.name)),
-            ),
-          if (status != null)
-            ListTile(
-              title: Text(S.printerInfoStatus),
-              leading: statusIcons[status],
-              subtitle: Text(S.printerStatusName(status!.name)),
-            ),
-        ],
-      ),
+      ]),
       actions: [
         PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
         ElevatedButton(

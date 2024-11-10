@@ -78,6 +78,9 @@ receipt:
   discount:
     label: 折扣
     origin: 原單價
+  addOns:
+    label: 附加
+    adjustment: 調整金額
   total: 總價
   paid: 付額
   price: 總價

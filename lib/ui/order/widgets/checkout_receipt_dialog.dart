@@ -51,33 +51,31 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
       contentPadding: const EdgeInsets.all(0),
-      content: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 24.0,
-              top: 16,
-              right: 24.0,
-              bottom: 24.0,
-            ),
-            child: PrinterReceiptView(
-              controller: controller,
-              order: widget.order,
-            ),
+      content: Stack(alignment: Alignment.center, children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 24.0,
+            top: 16,
+            right: 24.0,
+            bottom: 24.0,
           ),
-          Positioned.fill(
-            child: AbsorbPointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.35),
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: const Center(child: CircularProgressIndicator.adaptive()),
+          child: PrinterReceiptView(
+            controller: controller,
+            order: widget.order,
+          ),
+        ),
+        Positioned.fill(
+          child: AbsorbPointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.35),
+                borderRadius: BorderRadius.circular(28),
               ),
+              child: const Center(child: CircularProgressIndicator.adaptive()),
             ),
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 

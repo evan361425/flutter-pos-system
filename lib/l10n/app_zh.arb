@@ -1,6 +1,5 @@
 {
   "@@locale": "zh",
-  "@@last_modified": "2024-11-09T02:58:51.627553Z",
   "@@author": "Lu Shueh Chou",
   "settingTab": "設定",
   "settingVersion": "版本：{version}",
@@ -268,6 +267,8 @@
   "printerReceiptColumnTime": "時間",
   "printerReceiptDiscountLabel": "折扣",
   "printerReceiptDiscountOrigin": "原單價",
+  "printerReceiptAddOnsLabel": "附加",
+  "printerReceiptAddOnsAdjustment": "調整金額",
   "printerReceiptTotal": "總價",
   "printerReceiptPaid": "付額",
   "printerReceiptPrice": "總價",
@@ -1323,40 +1324,6 @@
   },
   "orderAttributeValueEmpty": "不影響價錢",
   "orderAttributeValueFree": "免費",
-  "orderAttributeValueDiscountIncrease": "增加至 {value} 倍",
-  "@orderAttributeValueDiscountIncrease": {
-    "placeholders": {
-      "value": {
-        "type": "num",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "orderAttributeValueDiscountDecrease": "減少至 {value} 倍",
-  "@orderAttributeValueDiscountDecrease": {
-    "placeholders": {
-      "value": {
-        "type": "num",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "orderAttributeValuePriceIncrease": "增加 {value} 元",
-  "@orderAttributeValuePriceIncrease": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "orderAttributeValuePriceDecrease": "減少 {value} 元",
-  "@orderAttributeValuePriceDecrease": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
   "menuTitle": "菜單",
   "menuSubtitle": "產品種類、產品",
   "menuTutorialTitle": "建立屬於你的菜單",

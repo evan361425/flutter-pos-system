@@ -10,26 +10,22 @@ class OrderAttributeValueWidget {
       return null;
     }
 
-    final name = _name(mode, value);
+    final name = string(mode, value);
     return name == '' ? HintText(S.orderAttributeValueEmpty) : Text(name);
   }
 
-  static String _name(OrderAttributeMode mode, num value) {
+  static String string(OrderAttributeMode mode, num value) {
     final modeValue = value;
     if (mode == OrderAttributeMode.changeDiscount) {
-      final value = modeValue.toInt() / 100;
-      return value == 0
-          ? S.orderAttributeValueFree
-          : value >= 1
-              ? S.orderAttributeValueDiscountIncrease(value)
-              : S.orderAttributeValueDiscountDecrease(value);
+      final value = modeValue.toInt();
+      return value == 0 ? S.orderAttributeValueFree : 'x $value%';
     } else {
       final value = modeValue.toCurrency();
       return modeValue == 0
           ? ''
           : modeValue > 0
-              ? S.orderAttributeValuePriceIncrease(value)
-              : S.orderAttributeValuePriceDecrease(value);
+              ? '+ \$$value'
+              : '- \$$value';
     }
   }
 }

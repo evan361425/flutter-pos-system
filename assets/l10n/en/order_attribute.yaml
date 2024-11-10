@@ -109,17 +109,3 @@ option:
 value:  # Options can have values, this is the text for `OrderAttributeValue`
   empty: No price impact
   free: Free
-  discount:
-    increase:
-    - Increase to {value} times
-    - value: {type: num, format: decimalPattern}
-    decrease:
-    - Decrease to {value} times
-    - value: {type: num, format: decimalPattern}
-  price:
-    increase:
-    - Increase by {value} dollars
-    - value:
-    decrease:
-    - Decrease by {value} dollars
-    - value:

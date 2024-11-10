@@ -86,25 +86,6 @@ jobs:
 
       - name: Push to GitHub
         run: |
-          file='android/fastlane/metadata/android/%s/changelogs/${{ needs.check-version.outputs.build_code }}.txt'
-          printf "Source file: $file\n" "en-US"
-
-          printf '%s\n' "$(cat <<EOF
-          ${{ needs.get-release.outputs.changelog }}
-          EOF
-          )" > $(printf "$file" "en-US")
-          bash android/fastlane/translate-changelog.sh "$file" '${{ secrets.GOOGLE_AI_API_KEY }}'
-          
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add --all
-          git commit . -m "doc: changelog for ${{ needs.check-version.outputs.tag }}"
-          git push
-
-          # Replace the tag to reference the most recent commit
-          git tag -f ${{ needs.check-version.outputs.tag }}
-          git push -f origin --tags
-
           # Update release tag name for later deploy to playstore
           curl -X PATCH \
             -H 'Accept: application/vnd.github.v3+json' \

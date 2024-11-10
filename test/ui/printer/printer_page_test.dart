@@ -212,8 +212,11 @@ void main() {
       await tester.pump();
       controller.add(1);
       await tester.pumpAndSettle();
+      await controller.close();
+      await tester.pumpAndSettle();
 
       verify(p.draw(any, density: anyNamed('density'))).called(1);
+      expect(find.text(S.printerStatusPrinted), findsOneWidget);
     });
 
     testWidgets("Settings", (tester) async {

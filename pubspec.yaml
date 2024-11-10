@@ -122,4 +122,5 @@ arb_glue:
   author: Lu Shueh Chou
   fileTemplate: 'app_{lang}.arb'
   base: en
+  lastModified: false
   verbose: true

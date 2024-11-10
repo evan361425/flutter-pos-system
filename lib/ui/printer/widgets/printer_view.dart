@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/translator.dart';
@@ -80,7 +81,7 @@ class _PrinterViewState extends State<PrinterView> {
               label: Text(S.printerBtnTestPrint),
               icon: const Icon(Icons.print),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: 8.0),
             MenuAnchor(
               menuChildren: [
                 MenuItemButton(
@@ -209,22 +210,38 @@ class _PrinterViewState extends State<PrinterView> {
     final controller = ImageableManger.instance.create();
     final done = await showAdaptiveDialog(
       context: context,
-      builder: (context) => ResponsiveDialog(
+      builder: (context) => AlertDialog.adaptive(
         title: Text(S.printerBtnTestPrint),
-        action: _PrintButton(
-          progress: progress,
-          controller: controller,
-          printer: widget.printer,
-        ),
+        contentPadding: const EdgeInsets.all(0),
+        actions: [
+          PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+          _PrintButton(
+            progress: progress,
+            controller: controller,
+            printer: widget.printer,
+          ),
+        ],
         content: Stack(alignment: Alignment.center, children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+            padding: const EdgeInsets.only(
+              left: 24.0,
+              top: 16,
+              right: 24.0,
+              bottom: 24.0,
+            ),
             child: PrinterReceiptView(
               controller: controller,
               order: OrderObject(
                 createdAt: DateTime.now(),
                 price: 300,
                 paid: 500,
+                attributes: [
+                  OrderSelectedAttributeObject(
+                    optionName: S.orderAttributeExamplePlaceDineIn,
+                    mode: OrderAttributeMode.changeDiscount,
+                    modeValue: 10,
+                  ),
+                ],
                 products: [
                   OrderProductObject(
                     productName: S.menuExampleProductCheeseBurger,

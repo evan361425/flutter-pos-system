@@ -92,9 +92,3 @@ option:
 value:
   empty: 不影響價錢
   free: 免費
-  discount:
-    increase: 增加至 {value} 倍
-    decrease: 減少至 {value} 倍
-  price:
-    increase: 增加 {value} 元
-    decrease: 減少 {value} 元

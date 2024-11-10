@@ -66,7 +66,10 @@ bump: ## Bump beta version
 	code=$$(($$code + 1)); \
 	sed -i.bk '5s/version: .*/version: '$$version+$$code'/' pubspec.yaml; \
 	rm pubspec.yaml.bk; \
-	git add pubspec.yaml; \
+	bash scripts/bump-after.sh v$$version $$code \
+	read -p "Are you satisfied with the changes? (y/n): " confirm; \
+	if [[ $$confirm != "y" ]]; then exit 1; fi; \
+	git add .; \
 	git commit -m "chore: bump to $$version+$$code"; \
 	git tag "v$$version"; \
 	git push; \

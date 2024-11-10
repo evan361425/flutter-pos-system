@@ -78,13 +78,16 @@ receipt:
   title: Receipt
   column:
     name: Item
-    price: Unit
-    count: Qty
-    total: Sub.
+    price: U/P
+    count: QTY
+    total: TOT
     time: Time
   discount:
     label: Discount
     origin: Origin
+  addOns:
+    label: Add-Ons
+    adjustment: Adj
   total: Total
   paid: Paid
   price: Price

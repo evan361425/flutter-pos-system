@@ -24,17 +24,14 @@ class ImageableContainer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing, vertical: kTopSpacing),
         child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: DefaultTextStyle(
-              style: const TextStyle(color: Color(0xFF424242)),
-              child: RepaintBoundary(
-                key: controller.key,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: children,
-                ),
+          child: DefaultTextStyle(
+            style: const TextStyle(color: Color(0xFF424242), overflow: TextOverflow.clip),
+            child: RepaintBoundary(
+              key: controller.key,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: children,
               ),
             ),
           ),
