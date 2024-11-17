@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/settings/setting.dart';
 
@@ -19,8 +21,13 @@ class CollectEventsSetting extends Setting<bool> {
   }
 
   @override
-  Future<void> updateRemotely(bool data) {
+  Future<void> updateRemotely(bool data) async {
     Log.allowSendEvents = data;
-    return service.set<bool>(key, data);
+
+    // Do it first to make testing easier, because the rest future will not
+    // complete.
+    await service.set<bool>(key, data);
+    await FirebaseInAppMessaging.instance.setAutomaticDataCollectionEnabled(data);
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(data);
   }
 }

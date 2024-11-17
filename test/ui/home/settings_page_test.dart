@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -14,10 +15,11 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
 import '../../services/auth_test.mocks.dart';
+import '../../test_helpers/firebase_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
-  group('Features Page', () {
+  group('Settings Page', () {
     Widget buildApp() {
       return ChangeNotifierProvider.value(
         value: SettingsProvider.instance..initialize(),
@@ -142,6 +144,8 @@ void main() {
     });
 
     testWidgets('switch collect_events', (tester) async {
+      setupFirebaseAnalyticsMocks();
+      await Firebase.initializeApp();
       await tester.pumpWidget(buildApp());
 
       final finder = find.byKey(const Key('feature.collect_events'));

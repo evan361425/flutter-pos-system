@@ -52,7 +52,7 @@ void main() async {
       if (kDebugMode) {
         await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
         await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-        await FirebaseInAppMessaging.instance.setMessagesSuppressed(false);
+        await FirebaseInAppMessaging.instance.setMessagesSuppressed(true);
       }
 
       await Database.instance.initialize(logWhenQuery: isLocalTest);
