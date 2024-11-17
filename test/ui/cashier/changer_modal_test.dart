@@ -151,6 +151,13 @@ void main() {
           await tester.pumpAndSettle();
           // change count should also fired target reset
           await setCountUnit('source', unit: '10');
+
+          await tester.enterText(findByK('source.count'), 'abc');
+          await tester.tap(find.byKey(const Key('changer.apply')));
+          await tester.pumpAndSettle();
+
+          expect(find.text(S.invalidIntegerType(S.cashierChangerCustomCountLabel)), findsOneWidget);
+
           await tester.enterText(findByK('source.count'), '4');
           await tester.pumpAndSettle();
 

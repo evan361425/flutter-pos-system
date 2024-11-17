@@ -207,6 +207,11 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
       return false;
     }
 
+    if (formKey.currentState?.validate() != true) {
+      return false;
+    }
+
+    // this will trigger onSaved and set up the value
     formKey.currentState?.save();
 
     final count = int.parse(sourceCount.text);
