@@ -18,9 +18,14 @@ class CheckoutAttributeView extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kFABSpacing),
       child: Column(children: [
+        _buildNote(context),
         for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
       ]),
     );
+  }
+
+  Widget _buildNote(BuildContext context) {
+    return const SizedBox.shrink();
   }
 }
 

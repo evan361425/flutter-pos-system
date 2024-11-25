@@ -55,4 +55,7 @@ const dbMigrationUp = <int, List<String>>{
     '''CREATE INDEX idx_order_ingredients_created_at ON `order_ingredients` (createdAt);''',
     '''CREATE INDEX idx_order_attributes_created_at ON `order_attributes` (createdAt);''',
   ],
+  9: <String>[
+    'ALTER TABLE `order_records` ADD COLUMN `note` BLOB DEFAULT "";',
+  ],
 };
