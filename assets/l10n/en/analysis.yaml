@@ -21,6 +21,10 @@ history:
         You can export multi-day orders in the "Transit" page.
   orderList:
     meta:
+      id:
+      - 'ID: {id}'
+      - Order ID for specific order in the order list.
+      - id:
       price:
       - 'Price: {price}'
       - Price of specific orders in the order list.
@@ -34,7 +38,10 @@ history:
       - Net profit for specific orders in the order list.
       - profit: {type: num, format: compactCurrency, symbol: '$'}
   order:
-    title: Order Details
+    title:
+    - 'ID: {id}'
+    - Order ID for specific order in the order detailed page.
+    - id:
     notFound: No relevant orders found
     deleteDialog:
     - |-

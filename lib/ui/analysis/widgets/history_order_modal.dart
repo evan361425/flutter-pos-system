@@ -28,7 +28,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveDialog(
-      title: Text(S.analysisHistoryOrderTitle),
+      title: Text(S.analysisHistoryOrderTitle(widget.orderId.toString())),
       scrollable: false,
       content: FutureBuilder<OrderObject?>(
         future: Seller.instance.getOrder(widget.orderId),

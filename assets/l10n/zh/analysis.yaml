@@ -21,11 +21,12 @@ history:
         你可以到「資料轉移」去匯出多日訂單。
   orderList:
     meta:
+      id: 編號：{id}
       price: 售價：{price}
       paid: 付額：{paid}
       profit: 淨利：{profit}
   order:
-    title: 訂單詳情
+    title: 編號：{id}
     notFound: 找不到相關訂單
     deleteDialog: |-
       確定要刪除 {name} 的訂單嗎？

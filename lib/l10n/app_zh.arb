@@ -1844,6 +1844,15 @@
   "analysisHistoryExportBtn": "匯出",
   "analysisHistoryExportTutorialTitle": "訂單資料匯出",
   "analysisHistoryExportTutorialContent": "把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「資料轉移」去匯出多日訂單。",
+  "analysisHistoryOrderListMetaId": "編號：{id}",
+  "@analysisHistoryOrderListMetaId": {
+    "description": "Order ID for specific order in the order list.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "analysisHistoryOrderListMetaPrice": "售價：{price}",
   "@analysisHistoryOrderListMetaPrice": {
     "description": "Price of specific orders in the order list.",
@@ -1883,7 +1892,15 @@
       }
     }
   },
-  "analysisHistoryOrderTitle": "訂單詳情",
+  "analysisHistoryOrderTitle": "編號：{id}",
+  "@analysisHistoryOrderTitle": {
+    "description": "Order ID for specific order in the order detailed page.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "analysisHistoryOrderNotFound": "找不到相關訂單",
   "analysisHistoryOrderDeleteDialog": "確定要刪除 {name} 的訂單嗎？\n將不會復原收銀機和庫存資料。\n此動作無法復原。",
   "@analysisHistoryOrderDeleteDialog": {

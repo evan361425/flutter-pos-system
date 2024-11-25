@@ -268,7 +268,7 @@
   "printerReceiptDiscountLabel": "Discount",
   "printerReceiptDiscountOrigin": "Origin",
   "printerReceiptAddOnsLabel": "Add-Ons",
-  "printerReceiptAddOnsAdjustment": "ADJ",
+  "printerReceiptAddOnsAdjustment": "Adj",
   "printerReceiptTotal": "Total",
   "printerReceiptPaid": "Paid",
   "printerReceiptPrice": "Price",
@@ -1844,6 +1844,15 @@
   "analysisHistoryExportBtn": "Export",
   "analysisHistoryExportTutorialTitle": "Export Orders Data",
   "analysisHistoryExportTutorialContent": "Export orders externally for further analysis or backup.\nYou can export multi-day orders in the \"Transit\" page.",
+  "analysisHistoryOrderListMetaId": "ID: {id}",
+  "@analysisHistoryOrderListMetaId": {
+    "description": "Order ID for specific order in the order list.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "analysisHistoryOrderListMetaPrice": "Price: {price}",
   "@analysisHistoryOrderListMetaPrice": {
     "description": "Price of specific orders in the order list.",
@@ -1883,7 +1892,15 @@
       }
     }
   },
-  "analysisHistoryOrderTitle": "Order Details",
+  "analysisHistoryOrderTitle": "ID: {id}",
+  "@analysisHistoryOrderTitle": {
+    "description": "Order ID for specific order in the order detailed page.",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "analysisHistoryOrderNotFound": "No relevant orders found",
   "analysisHistoryOrderDeleteDialog": "Are you sure you want to delete the order for {name}?\nCash register and inventory data cannot be recovered.\nThis action cannot be undone.",
   "@analysisHistoryOrderDeleteDialog": {
