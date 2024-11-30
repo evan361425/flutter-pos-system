@@ -7,7 +7,6 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cart.dart';
-import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/checkout/checkout_cashier_calculator.dart';
 import 'package:possystem/ui/order/checkout/checkout_cashier_snapshot.dart';
@@ -30,8 +29,6 @@ class _OrderCheckoutPageState extends State<OrderCheckoutPage> {
 
   final ValueNotifier<int> viewIndex = ValueNotifier(0);
 
-  final bool hasAttr = OrderAttributes.instance.hasNotEmptyItems;
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraint) {
@@ -40,13 +37,11 @@ class _OrderCheckoutPageState extends State<OrderCheckoutPage> {
               paid: paid,
               price: price,
               viewIndex: viewIndex,
-              hasAttr: hasAttr,
             )
           : _Desktop(
               paid: paid,
               price: price,
               viewIndex: viewIndex,
-              hasAttr: hasAttr,
             );
     });
   }
@@ -75,13 +70,10 @@ class _Mobile extends StatefulWidget {
 
   final ValueNotifier<int> viewIndex;
 
-  final bool hasAttr;
-
   const _Mobile({
     required this.paid,
     required this.price,
     required this.viewIndex,
-    required this.hasAttr,
   });
 
   @override
@@ -110,7 +102,7 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
         bottom: TabBar(
           controller: _controller,
           tabs: [
-            if (widget.hasAttr) Tab(key: const Key('order.details.attr'), text: S.orderCheckoutAttributeTab),
+            Tab(key: const Key('order.details.attr'), text: S.orderCheckoutAttributeTab),
             Tab(key: const Key('order.details.order'), text: S.orderCheckoutDetailsTab),
             Tab(key: const Key('order.details.stashed'), text: S.orderCheckoutStashTab),
           ],
@@ -123,7 +115,7 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
   Widget _buildBody() {
     if (Cart.instance.isEmpty) {
       return TabBarView(controller: _controller, children: [
-        if (widget.hasAttr) CheckoutAttributeView(price: widget.price),
+        CheckoutAttributeView(price: widget.price),
         Center(child: HintText(S.orderCheckoutEmptyCart)),
         const StashedOrderListView(),
       ]);
@@ -134,7 +126,7 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
         child: GestureDetector(
           onTap: () => draggableController?.reset(),
           child: TabBarView(controller: _controller, children: [
-            if (widget.hasAttr) CheckoutAttributeView(price: widget.price),
+            CheckoutAttributeView(price: widget.price),
             ValueListenableBuilder(
               valueListenable: widget.paid,
               builder: (context, value, child) => OrderObjectView(
@@ -185,7 +177,7 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
 
     _controller = TabController(
       initialIndex: widget.viewIndex.value,
-      length: widget.hasAttr ? 3 : 2,
+      length: 3,
       vsync: this,
     );
     _controller.addListener(() {
@@ -207,13 +199,10 @@ class _Desktop extends StatelessWidget {
 
   final ValueNotifier<int> viewIndex;
 
-  final bool hasAttr;
-
   const _Desktop({
     required this.paid,
     required this.price,
     required this.viewIndex,
-    required this.hasAttr,
   });
 
   @override
@@ -285,34 +274,34 @@ class _Desktop extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final idx = viewIndex.value - (hasAttr ? 1 : 0);
-    switch (idx) {
-      case -1: // has attribute and viewIndex is 0
-        return CheckoutAttributeView(price: price);
-      case 0:
-        if (Cart.instance.isEmpty) {
-          return Center(child: HintText(S.orderCheckoutEmptyCart));
-        }
-        return ValueListenableBuilder(
-          valueListenable: paid,
-          builder: (context, value, child) => OrderObjectView(
-            order: Cart.instance.toObject(paid: value),
-          ),
-        );
-      default:
-        return const StashedOrderListView();
+    if (viewIndex.value == 0) {
+      return CheckoutAttributeView(price: price);
     }
+
+    if (viewIndex.value == 1) {
+      if (Cart.instance.isEmpty) {
+        return Center(child: HintText(S.orderCheckoutEmptyCart));
+      }
+
+      return ValueListenableBuilder(
+        valueListenable: paid,
+        builder: (context, value, child) => OrderObjectView(
+          order: Cart.instance.toObject(paid: value),
+        ),
+      );
+    }
+
+    return const StashedOrderListView();
   }
 
   Widget _buildSwitcher() {
-    int idx = 0;
     return SegmentedButton<int>(
       selected: {viewIndex.value},
       onSelectionChanged: (value) => viewIndex.value = value.first,
       segments: [
-        if (hasAttr) ButtonSegment(value: idx++, label: Text(S.orderCheckoutAttributeTab)),
-        ButtonSegment(value: idx++, label: Text(S.orderCheckoutDetailsTab)),
-        ButtonSegment(value: idx++, label: Text(S.orderCheckoutStashTab)),
+        ButtonSegment(value: 0, label: Text(S.orderCheckoutAttributeTab)),
+        ButtonSegment(value: 1, label: Text(S.orderCheckoutDetailsTab)),
+        ButtonSegment(value: 2, label: Text(S.orderCheckoutStashTab)),
       ],
     );
   }

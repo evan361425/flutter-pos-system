@@ -16,8 +16,6 @@ class OrderAttributes extends ChangeNotifier
     instance = this;
   }
 
-  bool get hasNotEmptyItems => items.any((item) => item.isNotEmpty);
-
   List<OrderAttribute> get notEmptyItems => itemList.where((item) => item.isNotEmpty).toList();
 
   @override

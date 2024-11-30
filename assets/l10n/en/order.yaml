@@ -69,7 +69,7 @@ printer:
     createReceipt: Unable to generate receipt
 cart:
   action:
-    bulkify: Bulk Actions
+    bulk: Bulk Actions
     toggle: Toggle
     selectAll: Select All
     discount: Discount
@@ -185,6 +185,7 @@ objectView:
   cost: Cost
   profit: Profit
   paid: Paid
+  note: Note
   divider:
     attribute: Customer Settings
     product: Product Information

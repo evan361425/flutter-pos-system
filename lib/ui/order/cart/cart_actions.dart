@@ -19,7 +19,7 @@ class CartActions extends StatelessWidget {
         ),
       ),
       onPressed: () => showActions(context),
-      child: Text(S.orderCartActionBulkify),
+      child: Text(S.orderCartActionBulk),
     );
   }
 

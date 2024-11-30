@@ -199,7 +199,7 @@ void main() {
     }
 
     for (final device in [Device.mobile, Device.desktop]) {
-      group('mobile', () {
+      group(device, () {
         testWidgets('Order without any product', (tester) async {
           deviceAs(device, tester);
           Cart.instance = Cart();
@@ -208,6 +208,9 @@ void main() {
           await tester.pumpWidget(buildApp());
 
           await tester.tap(find.byKey(const Key('order.checkout')));
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.text(S.orderCheckoutDetailsTab));
           await tester.pumpAndSettle();
 
           expect(find.byKey(const Key('order.details.confirm')), findsNothing);
@@ -236,7 +239,10 @@ void main() {
           await tester.tap(find.byKey(const Key('order.checkout')));
           await tester.pumpAndSettle();
 
-          expect(find.text('p-1'), findsOneWidget);
+          expect(find.byKey(const Key('order.attr_note')), findsOneWidget);
+
+          await tester.tap(find.text(S.orderCheckoutDetailsTab));
+          await tester.pumpAndSettle();
 
           expect(Cart.instance.price, equals(28));
           expect(find.byKey(const Key('cashier.snapshot.28')), findsOneWidget);
@@ -384,6 +390,7 @@ void main() {
         testWidgets('Order with attributes', (tester) async {
           deviceAs(device, tester);
           prepareOrderAttributes();
+          Cart.instance.note = 'note';
 
           await tester.pumpWidget(buildApp());
 
@@ -392,6 +399,10 @@ void main() {
 
           await tester.tap(find.byKey(const Key('order.attr.oa-1.oao-1')));
           await tester.tap(find.byKey(const Key('order.attr.oa-2.oao-3')));
+
+          final note = find.byKey(const Key('order.attr_note')).first.evaluate().first.widget as TextField;
+          expect(note.controller!.text, equals('note'));
+          await tester.enterText(find.byKey(const Key('order.attr_note')), 'new note');
 
           await tester.tap(find.text(S.orderCheckoutDetailsTab));
           await tester.pumpAndSettle();
@@ -405,6 +416,7 @@ void main() {
             cost: 5,
             productsPrice: 28,
             productsCount: 2,
+            note: 'new note',
             createdAt: now,
             products: const [
               OrderProductObject(

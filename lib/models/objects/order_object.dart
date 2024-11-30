@@ -23,6 +23,9 @@ class OrderObject extends _Object {
   /// The price of order, all products' price and order attribute's price.
   final num price;
 
+  /// Note for the order.
+  final String note;
+
   /// The count of products.
   final int productsCount;
 
@@ -44,6 +47,7 @@ class OrderObject extends _Object {
     this.paid = 0,
     this.cost = 0,
     this.price = 0,
+    this.note = '',
     this.productsCount = 0,
     this.productsPrice = 0,
     this.attributes = const [],
@@ -105,6 +109,7 @@ class OrderObject extends _Object {
       'price': price,
       'cost': cost,
       'revenue': profit,
+      'note': note,
       'productsPrice': productsPrice,
       'productsCount': productsCount,
       'attributesPrice': attributesPrice,
@@ -115,6 +120,7 @@ class OrderObject extends _Object {
   @override
   Map<String, Object?> toStashMap() {
     return {
+      'note': note,
       'encodedProducts': jsonEncode(products.map((e) => e.toStashMap()).toList()),
       'encodedAttributes': jsonEncode(attributes.map((e) => e.toStashMap()).toList()),
       'createdAt': Util.toUTC(now: createdAt),
@@ -134,6 +140,7 @@ class OrderObject extends _Object {
       paid: order['paid'] as num? ?? 0,
       cost: order['cost'] as num? ?? 0,
       price: order['price'] as num? ?? 0,
+      note: order['note'] as String? ?? '',
       productsCount: order['productsCount'] as int? ?? 0,
       productsPrice: order['productsPrice'] as num? ?? 0,
       products: [
@@ -153,6 +160,7 @@ class OrderObject extends _Object {
 
     return OrderObject(
       id: data['id'] as int?,
+      note: data['note'] as String? ?? '',
       attributes: attributes.map((e) => OrderSelectedAttributeObject.fromStashMap(e)).toList(),
       products: products.map((e) => OrderProductObject.fromStashMap(e)).toList(),
       createdAt: Util.fromUTC(data['createdAt'] as int? ?? 0),

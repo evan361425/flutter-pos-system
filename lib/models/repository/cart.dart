@@ -41,6 +41,9 @@ class Cart extends ChangeNotifier {
   /// Current selected product if and only if all selected products are same.
   final ValueNotifier<CartProduct?> selectedProduct = ValueNotifier(null);
 
+  /// Note for the order.
+  String note = '';
+
   /// Current selected product index.
   int selectedIndex = -1;
 
@@ -105,6 +108,11 @@ class Cart extends ChangeNotifier {
   /// because remove it will choose default one after checkout.
   void chooseAttribute(String attrId, String optionId) {
     attributes[attrId] = optionId;
+  }
+
+  /// Update the note of the order.
+  void updateNote(String value) {
+    note = value;
   }
 
   /// Finish the order and get paid.
@@ -275,6 +283,7 @@ class Cart extends ChangeNotifier {
     products.clear();
     attributes.clear();
     selectedProduct.value = null;
+    note = '';
 
     notifyListeners();
   }
@@ -311,6 +320,7 @@ class Cart extends ChangeNotifier {
       price: price,
       productsCount: productCount,
       productsPrice: productsPrice,
+      note: note,
       products: products.map<OrderProductObject>((e) => e.toObject()).toList(),
       attributes: selectedAttributeOptions.map((e) => OrderSelectedAttributeObject.fromModel(e)).toList(),
       createdAt: timer(),
