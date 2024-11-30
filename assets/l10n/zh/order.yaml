@@ -53,7 +53,7 @@ printer:
     createReceipt: 無法產生出單資料
 cart:
   action:
-    bulkify: 批量操作
+    bulk: 批量操作
     toggle: 反選
     selectAll: 全選
     discount: 打折
@@ -120,6 +120,9 @@ checkout:
         name: 訂單
   attribute:
     tab: 顧客設定
+    note:
+      title: 備註
+      hint: 一些關於此訂單的說明
   details:
     tab: 訂單細項
     calculator:
@@ -141,6 +144,7 @@ objectView:
   cost: 成本
   profit: 淨利
   paid: 付額
+  note: 備註
   divider:
     attribute: 顧客設定
     product: 產品資訊

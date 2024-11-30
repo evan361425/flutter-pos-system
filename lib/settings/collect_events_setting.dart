@@ -27,7 +27,9 @@ class CollectEventsSetting extends Setting<bool> {
     // Do it first to make testing easier, because the rest future will not
     // complete.
     await service.set<bool>(key, data);
-    await FirebaseInAppMessaging.instance.setAutomaticDataCollectionEnabled(data);
-    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(data);
+    await Future.wait([
+      FirebaseInAppMessaging.instance.setAutomaticDataCollectionEnabled(data),
+      FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(data),
+    ]);
   }
 }

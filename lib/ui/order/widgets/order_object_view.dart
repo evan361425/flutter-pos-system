@@ -5,6 +5,7 @@ import 'package:possystem/components/style/head_tail_tile.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/text_divider.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -64,10 +65,34 @@ class OrderObjectView extends StatelessWidget {
             ],
           );
 
+    final Widget noteWidget;
+    if (order.note.isEmpty) {
+      noteWidget = const SizedBox.shrink();
+    } else {
+      noteWidget = Card(
+        margin: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(S.orderObjectViewNote, style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: kInternalSpacing),
+                Text(order.note),
+              ]),
+            ),
+          ),
+        ),
+      );
+    }
+
     return SingleChildScrollView(
       child: Column(children: [
         priceWidget,
         attrWidget,
+        noteWidget,
         TextDivider(label: S.orderObjectViewDividerProduct),
         HintText(S.totalCount(order.productsCount)),
         for (final product in order.products) _ProductTile(product),

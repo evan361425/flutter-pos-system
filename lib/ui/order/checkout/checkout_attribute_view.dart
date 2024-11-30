@@ -4,6 +4,7 @@ import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
+import 'package:possystem/translator.dart';
 
 class CheckoutAttributeView extends StatelessWidget {
   final ValueNotifier<num> price;
@@ -15,10 +16,28 @@ class CheckoutAttributeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final noteField = TextField(
+      key: const Key('order.attr_note'),
+      controller: TextEditingController(text: Cart.instance.note),
+      textInputAction: TextInputAction.done,
+      decoration: InputDecoration(
+        hintText: S.orderCheckoutAttributeNoteHint,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
+      keyboardType: TextInputType.multiline,
+      maxLength: 200,
+      minLines: 2,
+      maxLines: 5,
+      onChanged: Cart.instance.updateNote,
+    );
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kFABSpacing),
-      child: Column(children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
+        Text(S.orderCheckoutAttributeNoteTitle, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: kInternalSpacing),
+        noteField,
       ]),
     );
   }
@@ -43,7 +62,7 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Text(
         widget.attribute.name,
-        style: Theme.of(context).textTheme.headlineSmall,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
       const SizedBox(height: kInternalSpacing),
       Padding(
