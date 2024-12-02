@@ -50,6 +50,5 @@ for lang in langs:
         )
         x_offset += im.size[0] + space
 
-    new_im.save(
-        os.path.join(pp(f"../docs/images/index-introduction{lang["suffix"]}.png"))
-    )
+    suffix = lang["suffix"]
+    new_im.save(os.path.join(pp(f"../docs/images/index-introduction{suffix}.png")))
