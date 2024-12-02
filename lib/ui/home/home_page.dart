@@ -48,21 +48,13 @@ class _WithTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: _FAB(),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              floating: true,
-              title: Text(S.appTitle),
-              centerTitle: true,
-              flexibleSpace: const _FlexibleSpace(),
-              // disable shadow after scrolled
-              // scrolledUnderElevation: 0,
-            ),
-          ];
-        },
-        body: shell,
+      appBar: AppBar(
+        title: Text(S.appTitle),
+        centerTitle: true,
+        flexibleSpace: const _FlexibleSpace(),
+        excludeHeaderSemantics: true,
       ),
+      body: shell,
       bottomNavigationBar: NavigationBar(
         selectedIndex: min(shell.currentIndex, 3),
         onDestinationSelected: (index) {

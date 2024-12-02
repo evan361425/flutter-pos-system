@@ -14,12 +14,14 @@ langs = [
 
 for lang in langs:
     folder = lang["folder"]
-    folder = pp(f"../android/fastlane/metadata/android/{folder}/images/phoneScreenshots")
+    folder = pp(
+        f"../android/fastlane/metadata/android/{folder}/images/phoneScreenshots"
+    )
     space = 60
 
     images = [
         Image.open(f"{folder}/{x}")
-        for x in ["1_analysis_chart.png", "4_order_action.png", "7_stock.png"]
+        for x in ["1_analysis_chart.png", "4_order_action.png", "7_inventory.png"]
     ]
     widths, heights = zip(*(i.size for i in images))
 
@@ -48,4 +50,6 @@ for lang in langs:
         )
         x_offset += im.size[0] + space
 
-    new_im.save(os.path.join(pp(f"../docs/images/index-introduction{lang["suffix"]}.png")))
+    new_im.save(
+        os.path.join(pp(f"../docs/images/index-introduction{lang["suffix"]}.png"))
+    )
