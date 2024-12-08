@@ -16,13 +16,18 @@ An open-source Flutter app designed for small restaurants and businesses.
 
 Key features of this POS system:
 
+- Inventory system: Monitor and manage ingredient inventory.
+- Customer information: Capture customer demographics (e.g., age, gender) for analytics.
+- Cash register: Simplify daily balance calculations.
+- Transit: Export and backup orders, menus, and other data for external use.
+- Analytics: Create custom line charts and pie charts for analysis.
+- Printer: Print receipts via Bluetooth connection.
+
+Design Principles:
+
 - Offline usage: Use the system even without an internet connection.
 - Privacy-focused: No personal data is stored remotely, only on your device.
-- Inventory system: Track your ingredient inventory.
-- Customer information: Record customer details like age and gender for analysis.
-- Cash register: Easily calculate daily balances and track cash on hand.
-- Export and backup: Export orders, menus, and other data outside the app.
-- Analytics: Create custom line charts and pie charts for analysis.
+- Responsive Width Design.
 
 ## Download
 

@@ -93,7 +93,10 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
     return SliverPadding(
       padding: const EdgeInsets.only(bottom: kFABSpacing),
       sliver: SliverGrid.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: col),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: col,
+          mainAxisExtent: 376,
+        ),
         itemCount: items.length + 1,
         itemBuilder: (context, index) {
           if (index == items.length) {

@@ -28,13 +28,13 @@ example:
     lettuce: 萵苣
     tomato: 番茄
     bun: 麵包
-    chili: 醬料
+    chili: 辣醬
     ham: 火腿
-    cola: 可樂罐
+    cola: 可樂
     coffee: 濾掛咖啡包
-    fries: 薯條（300g）
-    straw: 吸管（根）
-    plasticBag: 塑膠袋（個）
+    fries: 薯條
+    straw: 吸管
+    plasticBag: 塑膠袋
   quantity:
     small: 少量
     large: 增量
