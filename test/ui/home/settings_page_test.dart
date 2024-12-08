@@ -10,7 +10,7 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/settings_provider.dart';
 import 'package:possystem/translator.dart';
-import 'package:provider/provider.dart';
+import 'package:possystem/ui/home/settings_page.dart';
 
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
@@ -21,21 +21,17 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Settings Page', () {
     Widget buildApp() {
-      return ChangeNotifierProvider.value(
-        value: SettingsProvider.instance..initialize(),
-        builder: (_, __) => MaterialApp.router(
-          locale: LanguageSetting.instance.language.locale,
-          routerConfig: GoRouter(
-            initialLocation: '${Routes.base}/_/settings',
-            navigatorKey: Routes.rootNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (ctx, state) => const Text('Home'),
-              ),
-              ...Routes.getDesiredRoute(0).routes,
-            ],
-          ),
+      return MaterialApp.router(
+        locale: LanguageSetting.instance.language.locale,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const Scaffold(body: SettingsPage()),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ],
         ),
       );
     }
@@ -88,6 +84,8 @@ void main() {
       await tester.tap(find.byKey(const Key('feature.theme')));
       await tester.pumpAndSettle();
 
+      when(cache.get('theme')).thenReturn(ThemeMode.dark.index);
+
       await tester.tap(find.text(S.settingThemeName('dark')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pop')));
@@ -105,6 +103,8 @@ void main() {
       await tester.tap(find.byKey(const Key('feature.language')));
       await tester.pumpAndSettle();
 
+      when(cache.get('language')).thenReturn('zh_TW');
+
       await tester.tap(find.text('繁體中文'));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pop')));
@@ -121,6 +121,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('feature.checkout_warning')));
       await tester.pumpAndSettle();
+
+      when(cache.get('feat.cashierWarning')).thenReturn(1);
 
       await tester.tap(find.text(S.settingCheckoutWarningName('onlyNotEnough')));
       await tester.pumpAndSettle();
@@ -177,6 +179,8 @@ void main() {
         buildNumber: 'd',
         buildSignature: 'e',
       );
+      when(cache.get(any)).thenReturn(null);
+      SettingsProvider.instance.initialize();
     });
   });
 }

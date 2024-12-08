@@ -1,4 +1,4 @@
 ## 🚀 Features
 
-- allow add notes when ordering
-- display order ID in records
+• allow add notes when ordering
+• display order ID in records

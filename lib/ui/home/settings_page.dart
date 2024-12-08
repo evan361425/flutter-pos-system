@@ -70,53 +70,78 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ),
-        ListTile(
-          key: const Key('feature.theme'),
-          leading: const Icon(Icons.palette_outlined),
-          title: Text(S.settingThemeTitle),
-          subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
-          trailing: const Icon(Icons.navigate_next_outlined),
-          onTap: () => navigateTo(Feature.theme),
+        ListenableBuilder(
+          listenable: ThemeSetting.instance,
+          builder: (context, _) {
+            return ListTile(
+              key: const Key('feature.theme'),
+              leading: const Icon(Icons.palette_outlined),
+              title: Text(S.settingThemeTitle),
+              subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
+              trailing: const Icon(Icons.navigate_next_outlined),
+              onTap: () => navigateTo(Feature.theme),
+            );
+          },
         ),
-        ListTile(
-          key: const Key('feature.language'),
-          leading: const Icon(Icons.language_outlined),
-          title: Text(S.settingLanguageTitle),
-          subtitle: Text(LanguageSetting.instance.language.title),
-          trailing: const Icon(Icons.navigate_next_outlined),
-          onTap: () => navigateTo(Feature.language),
-        ),
-        const Divider(),
-        ListTile(
-          key: const Key('feature.checkout_warning'),
-          leading: const Icon(Icons.store_mall_directory_outlined),
-          title: Text(S.settingCheckoutWarningTitle),
-          subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
-          trailing: const Icon(Icons.navigate_next_outlined),
-          onTap: () => navigateTo(Feature.checkoutWarning),
-        ),
-        ListTile(
-          leading: const Icon(Icons.remove_red_eye_outlined),
-          title: Text(S.settingOrderAwakeningTitle),
-          subtitle: Text(S.settingOrderAwakeningDescription),
-          trailing: FeatureSwitch(
-            key: const Key('feature.order_awakening'),
-            autofocus: focus == 'orderAwakening',
-            value: OrderAwakeningSetting.instance.value,
-            onChanged: (value) => OrderAwakeningSetting.instance.update(value),
-          ),
+        ListenableBuilder(
+          listenable: LanguageSetting.instance,
+          builder: (context, _) {
+            return ListTile(
+              key: const Key('feature.language'),
+              leading: const Icon(Icons.language_outlined),
+              title: Text(S.settingLanguageTitle),
+              subtitle: Text(LanguageSetting.instance.language.title),
+              trailing: const Icon(Icons.navigate_next_outlined),
+              onTap: () => navigateTo(Feature.language),
+            );
+          },
         ),
         const Divider(),
-        ListTile(
-          leading: const Icon(Icons.report_outlined),
-          title: Text(S.settingReportTitle),
-          subtitle: Text(S.settingReportDescription),
-          trailing: FeatureSwitch(
-            key: const Key('feature.collect_events'),
-            autofocus: focus == 'collectEvents',
-            value: CollectEventsSetting.instance.value,
-            onChanged: (value) => CollectEventsSetting.instance.update(value),
-          ),
+        ListenableBuilder(
+          listenable: CheckoutWarningSetting.instance,
+          builder: (context, _) {
+            return ListTile(
+              key: const Key('feature.checkout_warning'),
+              leading: const Icon(Icons.store_mall_directory_outlined),
+              title: Text(S.settingCheckoutWarningTitle),
+              subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
+              trailing: const Icon(Icons.navigate_next_outlined),
+              onTap: () => navigateTo(Feature.checkoutWarning),
+            );
+          },
+        ),
+        ListenableBuilder(
+          listenable: OrderAwakeningSetting.instance,
+          builder: (context, _) {
+            return ListTile(
+              leading: const Icon(Icons.remove_red_eye_outlined),
+              title: Text(S.settingOrderAwakeningTitle),
+              subtitle: Text(S.settingOrderAwakeningDescription),
+              trailing: FeatureSwitch(
+                key: const Key('feature.order_awakening'),
+                autofocus: focus == 'orderAwakening',
+                value: OrderAwakeningSetting.instance.value,
+                onChanged: (value) => OrderAwakeningSetting.instance.update(value),
+              ),
+            );
+          },
+        ),
+        const Divider(),
+        ListenableBuilder(
+          listenable: CollectEventsSetting.instance,
+          builder: (context, _) {
+            return ListTile(
+              leading: const Icon(Icons.report_outlined),
+              title: Text(S.settingReportTitle),
+              subtitle: Text(S.settingReportDescription),
+              trailing: FeatureSwitch(
+                key: const Key('feature.collect_events'),
+                autofocus: focus == 'collectEvents',
+                value: CollectEventsSetting.instance.value,
+                onChanged: (value) => CollectEventsSetting.instance.update(value),
+              ),
+            );
+          },
         ),
         const SizedBox(height: kFABSpacing),
       ],
