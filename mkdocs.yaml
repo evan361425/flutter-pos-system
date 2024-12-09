@@ -21,13 +21,14 @@ nav:
 
 theme:
   name: material
-  language: "zh"
+  language: "en"
   features:
   - search.suggest
   - search.highlight
   - navigation.tabs
   - navigation.tabs.sticky
   - content.code.annotate
+  - content.code.copy
   favicon: images/favicon.ico
   logo: images/logo.png
   palette:
@@ -37,14 +38,14 @@ theme:
     accent: light-blue
     toggle:
       icon: material/weather-sunny
-      name: 黑夜降臨
+      name: Dark Mode
   - media: "(prefers-color-scheme: dark)"
     scheme: slate
     primary: blue-grey
     accent: deep orange
     toggle:
       icon: material/weather-night
-      name: 白日昇起
+      name: Light Mode
 
 markdown_extensions:
 # 展開用：??? info "title"
@@ -64,6 +65,8 @@ markdown_extensions:
 # 設定腳註
 # [^1]: Description
 - footnotes
+# 允許 nested links，詳見：https://github.com/mkdocs/mkdocs/issues/545
+- mdx_truly_sane_lists
 
 extra:
   analytics:

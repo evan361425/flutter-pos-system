@@ -8,7 +8,7 @@
 
 - `/android/<any-name>.jks`，這是用來存放你的鑰匙的，確保你就是這個應用程式的擁有者，你可以這樣產生：
 
-```bash
+```bash title="設定好你的 my-jks.jks"
 # 假設 <any-name> 為 my-jks
 keytool -genkey -v -keystore android/app/my-jks.jks \
   -alias possystem \
@@ -25,7 +25,7 @@ keytool -genkey -v -keystore android/app/my-jks.jks \
   - `storeFile=my-jks.jks`
   - `storePassword=possystem`
 
-```bash
+```bash title="設定好你的 key.properties"
 printf "keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s" \
   'possystem' \
   'possystem' \
@@ -37,7 +37,7 @@ printf "keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s" \
   你可以到 [Firebase Console](https://console.firebase.google.com/) 去產生，
   但是記得要在 *專案設定* 裡面去設定剛剛產生的金鑰 SHA 憑證指紋，你可以這樣輸出：
 
-```bash
+```bash title="取得你的 fingerprint"
 $ keytool -list -keystore android/app/my-jks.jks --storepass possystem
 Keystore type: PKCS12
 Keystore provider: SUN
@@ -49,8 +49,9 @@ Certificate fingerprint (SHA-256): 6F:14:57:54:CC:26:0A:4C:70:E3:28:1D:CE:D0:73:
 ```
 
 - 最後請更改 `/lib/firebase_compatible_options.dart` 裡面最下面的 `androidDebug` 設定。
-  你可以 `dart pub global activate flutterfire_cli` 安裝指令套件後 `flutterfire configure`，
-  然後把產生的檔案的設定資訊複製到 `firebase_compatible_options.dart` 中。
+  1. 安裝指令套件：`dart pub global activate flutterfire_cli`；
+  2. 產生指定設定檔：`flutterfire configure`；
+  3. 把產生的檔案的設定資訊複製到 `firebase_compatible_options.dart`。
 
 ## 測試
 

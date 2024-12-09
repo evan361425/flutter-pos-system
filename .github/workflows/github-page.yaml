@@ -38,6 +38,7 @@ jobs:
           pip install mkdocs-material
           pip install mkdocs-git-revision-date-plugin
           pip install mkdocs-static-i18n
+          pip install mdx_truly_sane_lists
 
       - name: Build
         if: ${{ github.ref != 'refs/heads/master' }}
