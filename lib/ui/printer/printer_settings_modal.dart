@@ -4,6 +4,7 @@ import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 
 class PrinterSettingsModal extends StatefulWidget {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 
 class PrinterInfoDialog extends StatelessWidget {

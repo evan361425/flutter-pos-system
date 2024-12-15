@@ -34,11 +34,10 @@ dependencies:
   sembast: ^3.7.5  # 24, 10-05
   shared_preferences: ^2.3.2
   http: ^1.2.2
-  bluetooth:
+  packages:
     git:
       url: https://github.com/evan361425/flutter-pos-packages
       ref: master
-      path: packages/bluetooth
   flutter_blue_plus:
     git:
       url: https://github.com/evan361425/flutter_blue_plus

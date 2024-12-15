@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:bluetooth/bluetooth.dart' as bt;
 import 'package:flutter/material.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:packages/bluetooth.dart' as bt;
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/services/bluetooth.dart';
 

@@ -1,6 +1,12 @@
 # 本地端開發
 
-正常程式碼開發只需要：
+因為一些隱私權問題，我們建置了私有工具 `flutter-pos-packages`，
+在開始開發前，必須先替換成模擬工具：
+
+    sed -i.bk 's/flutter-pos-packages$/flutter-pos-packages-mock/' pubspec.yaml
+    rm -f pubspec.yaml.bk
+
+接著
 
     flutter pub get
 

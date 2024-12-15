@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:bluetooth/bluetooth.dart' as bt;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:packages/bluetooth.dart' as bt;
 import 'package:possystem/app.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -12,13 +12,11 @@ import 'package:possystem/models/model.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/ui/order/widgets/checkout_receipt_dialog.dart';
 
 typedef BluetoothDevice = bt.BluetoothDevice;
-typedef BluetoothSignal = bt.BluetoothSignal;
-typedef PrinterStatus = bt.PrinterStatus;
-typedef PrinterDensity = bt.PrinterDensity;
 typedef PrinterManufactory = bt.PrinterManufactory;
 
 class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorage<Printer> {

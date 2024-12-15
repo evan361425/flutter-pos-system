@@ -3,10 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:possystem/services/storage.dart' as _i2;
+import 'package:possystem/services/storage.dart' as _i3;
+import 'package:sembast/sembast_io.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -21,8 +22,18 @@ import 'package:possystem/services/storage.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeStorageSanitizedData_0 extends _i1.SmartFake implements _i2.StorageSanitizedData {
-  _FakeStorageSanitizedData_0(
+class _FakeDatabase_0 extends _i1.SmartFake implements _i2.Database {
+  _FakeDatabase_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeStorageSanitizedData_1 extends _i1.SmartFake implements _i3.StorageSanitizedData {
+  _FakeStorageSanitizedData_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -34,13 +45,22 @@ class _FakeStorageSanitizedData_0 extends _i1.SmartFake implements _i2.StorageSa
 /// A class which mocks [Storage].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStorage extends _i1.Mock implements _i2.Storage {
+class MockStorage extends _i1.Mock implements _i3.Storage {
   MockStorage() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  set db(dynamic _db) => super.noSuchMethod(
+  _i2.Database get db => (super.noSuchMethod(
+        Invocation.getter(#db),
+        returnValue: _FakeDatabase_0(
+          this,
+          Invocation.getter(#db),
+        ),
+      ) as _i2.Database);
+
+  @override
+  set db(_i2.Database? _db) => super.noSuchMethod(
         Invocation.setter(
           #db,
           _db,
@@ -49,8 +69,8 @@ class MockStorage extends _i1.Mock implements _i2.Storage {
       );
 
   @override
-  _i3.Future<void> add(
-    _i2.Stores? storeId,
+  _i4.Future<void> add(
+    _i3.Stores? storeId,
     String? recordId,
     Map<String, Object?>? data,
   ) =>
@@ -63,13 +83,13 @@ class MockStorage extends _i1.Mock implements _i2.Storage {
             data,
           ],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<Map<String, Object?>> get(
-    _i2.Stores? storeId, [
+  _i4.Future<Map<String, Object?>> get(
+    _i3.Stores? storeId, [
     String? record,
   ]) =>
       (super.noSuchMethod(
@@ -80,24 +100,24 @@ class MockStorage extends _i1.Mock implements _i2.Storage {
             record,
           ],
         ),
-        returnValue: _i3.Future<Map<String, Object?>>.value(<String, Object?>{}),
-      ) as _i3.Future<Map<String, Object?>>);
+        returnValue: _i4.Future<Map<String, Object?>>.value(<String, Object?>{}),
+      ) as _i4.Future<Map<String, Object?>>);
 
   @override
-  _i3.Future<void> initialize({_i2.StorageOpener? opener}) => (super.noSuchMethod(
+  _i4.Future<void> initialize({_i3.StorageOpener? opener}) => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
           {#opener: opener},
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<void> reset(
-    _i2.Stores? storeId, [
-    _i3.Future<void> Function(String)? del,
+  _i4.Future<void> reset(
+    _i3.Stores? storeId, [
+    _i4.Future<void> Function(String)? del,
   ]) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -107,28 +127,28 @@ class MockStorage extends _i1.Mock implements _i2.Storage {
             del,
           ],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i2.StorageSanitizedData sanitize(Map<String, Object?>? data) => (super.noSuchMethod(
+  _i3.StorageSanitizedData sanitize(Map<String, Object?>? data) => (super.noSuchMethod(
         Invocation.method(
           #sanitize,
           [data],
         ),
-        returnValue: _FakeStorageSanitizedData_0(
+        returnValue: _FakeStorageSanitizedData_1(
           this,
           Invocation.method(
             #sanitize,
             [data],
           ),
         ),
-      ) as _i2.StorageSanitizedData);
+      ) as _i3.StorageSanitizedData);
 
   @override
-  _i3.Future<void> set(
-    _i2.Stores? storeId,
+  _i4.Future<void> set(
+    _i3.Stores? storeId,
     Map<String, Object?>? data,
   ) =>
       (super.noSuchMethod(
@@ -139,13 +159,13 @@ class MockStorage extends _i1.Mock implements _i2.Storage {
             data,
           ],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<void> setAll(
-    _i2.Stores? storeId,
+  _i4.Future<void> setAll(
+    _i3.Stores? storeId,
     Map<String, Object?>? data,
   ) =>
       (super.noSuchMethod(
@@ -156,7 +176,7 @@ class MockStorage extends _i1.Mock implements _i2.Storage {
             data,
           ],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }

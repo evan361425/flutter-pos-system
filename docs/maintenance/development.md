@@ -1,10 +1,18 @@
 # Local Development
 
-For regular code development, simply run:
+We build private package `flutter-pos-packages` for privacy reasons.
+Before regular code development, we must first update the package name to
+`flutter-pos-packages-mock` to make installation works.
+
+    sed -i.bk 's/flutter-pos-packages$/flutter-pos-packages-mock/' pubspec.yaml
+    rm -f pubspec.yaml.bk
+
+Then:
 
     flutter pub get
 
-This will install the necessary dependencies. However, if you want to build the application, you need three things:
+Now you have all dependencies installed.
+However, if you want to build the application, you need three things:
 
 - `/android/<any-name>.jks`: This is for storing your keys to ensure ownership
   of the application. You can generate it with:

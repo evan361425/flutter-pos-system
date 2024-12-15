@@ -7,6 +7,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
 

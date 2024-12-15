@@ -7,6 +7,7 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/widgets/printer_info_dialog.dart';
 
