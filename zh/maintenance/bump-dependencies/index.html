@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#更新相依套件" class="md-skip">
           跳转至
         </a>
       
@@ -582,7 +582,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#如何查找哪些套件需要更新" class="md-nav__link">
     <span class="md-ellipsis">
       如何查找哪些套件需要更新
     </span>
@@ -591,7 +591,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#如何升級" class="md-nav__link">
     <span class="md-ellipsis">
       如何升級
     </span>
@@ -600,7 +600,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#更新之後" class="md-nav__link">
     <span class="md-ellipsis">
       更新之後
     </span>
@@ -759,7 +759,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#如何查找哪些套件需要更新" class="md-nav__link">
     <span class="md-ellipsis">
       如何查找哪些套件需要更新
     </span>
@@ -768,7 +768,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#如何升級" class="md-nav__link">
     <span class="md-ellipsis">
       如何升級
     </span>
@@ -777,7 +777,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#更新之後" class="md-nav__link">
     <span class="md-ellipsis">
       更新之後
     </span>
@@ -803,14 +803,14 @@
   
 
 
-<h1 id="_1">更新相依套件<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="更新相依套件">更新相依套件<a class="headerlink" href="#更新相依套件" title="Permanent link">&para;</a></h1>
 <p>分三種：</p>
 <ul>
 <li>dependencies，直接依賴的套件</li>
 <li>dev_dependencies，開發環境依賴的套件</li>
 <li>transitive，依賴套件的依賴套件</li>
 </ul>
-<h2 id="_2">如何查找哪些套件需要更新<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="如何查找哪些套件需要更新">如何查找哪些套件需要更新<a class="headerlink" href="#如何查找哪些套件需要更新" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>make<span class="w"> </span>outdated
 Showing<span class="w"> </span>outdated<span class="w"> </span>packages.
 <span class="o">[</span>*<span class="o">]</span><span class="w"> </span>indicates<span class="w"> </span>versions<span class="w"> </span>that<span class="w"> </span>are<span class="w"> </span>not<span class="w"> </span>the<span class="w"> </span>latest<span class="w"> </span>available.
@@ -830,12 +830,12 @@ dev_package<span class="w">    </span>*1.0.0<span class="w">    </span>*1.0.0<sp
 <li><code>Resolvable</code> 代表在和現有環境（主要是 dart/flutter 版本）不衝突的情況下可升級的最高版本</li>
 <li><code>Latest</code> 代表這個套件目前最新的版本</li>
 </ul>
-<h2 id="_3">如何升級<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="如何升級">如何升級<a class="headerlink" href="#如何升級" title="Permanent link">&para;</a></h2>
 <p>根據上面得到想要升級的版本後</p>
 <div class="highlight"><pre><span></span><code>flutter pub upgrade some_package
 </code></pre></div>
 <p>這樣的方式可以同時升級 Transitive 的套件。</p>
-<h2 id="_4">更新之後<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="更新之後">更新之後<a class="headerlink" href="#更新之後" title="Permanent link">&para;</a></h2>
 <p>請記得重新跑一次 Mock，因為新版本的套件可能會有新的 API：</p>
 <div class="highlight"><pre><span></span><code>make mock
 </code></pre></div>
@@ -873,7 +873,11 @@ dev_package<span class="w">    </span>*1.0.0<span class="w">    </span>*1.0.0<sp
 
 
 
-
+<script src="https://giscus.app/client.js" data-repo="evan361425/flutter-pos-system"
+  data-repo-id="MDEwOlJlcG9zaXRvcnkzMjYzMTMwOTY=" data-category="Announcements" data-category-id="DIC_kwDOE3MkiM4CAUfE"
+  data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom"
+  data-theme="preferred_color_scheme" data-lang="en" data-loading="lazy" crossorigin="anonymous" async>
+  </script>
                 
               </article>
             </div>
