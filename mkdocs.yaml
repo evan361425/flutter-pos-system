@@ -22,6 +22,7 @@ nav:
 theme:
   name: material
   language: "en"
+  custom_dir: docs/overrides
   features:
   - search.suggest
   - search.highlight
@@ -56,6 +57,10 @@ markdown_extensions:
     # 增加 anchor
     permalink: true
     toc_depth: 3
+    # 重新命名
+    slugify: !!python/object/apply:pymdownx.slugs.slugify
+      kwds:
+        case: lower
 # 允許增加 tooltip，於 MD 檔下方中增加下列說明
 # *[Text]: Description
 - abbr
