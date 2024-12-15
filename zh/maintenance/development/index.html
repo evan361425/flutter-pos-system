@@ -768,7 +768,12 @@
 
 
 <h1 id="_1">本地端開發<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>正常程式碼開發只需要：</p>
+<p>因為一些隱私權問題，我們建置了私有工具 <code>flutter-pos-packages</code>，
+在開始開發前，必須先替換成模擬工具：</p>
+<div class="highlight"><pre><span></span><code>sed -i.bk &#39;s/flutter-pos-packages$/flutter-pos-packages-mock/&#39; pubspec.yaml
+rm -f pubspec.yaml.bk
+</code></pre></div>
+<p>接著</p>
 <div class="highlight"><pre><span></span><code>flutter pub get
 </code></pre></div>
 <p>就可以安裝你需要的東西了，但如果你想要建置應用程式，你需要三個東西：</p>
@@ -854,7 +859,7 @@ Certificate<span class="w"> </span>fingerprint<span class="w"> </span><span clas
     <span class="md-icon" title="最后更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    2024-12-09
+    2024-12-15
   </span>
 
     
