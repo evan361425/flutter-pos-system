@@ -262,6 +262,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.7"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "365c771ac3b0e58845f39ec6deebc76e3276aa9922b0cc60840712094d9047ac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.10"
   extension_google_sign_in_as_googleapis_auth:
     dependency: "direct main"
     description:
@@ -1433,51 +1441,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.2.5"
-  wakelock:
+  wakelock_plus:
     dependency: "direct main"
     description:
-      path: wakelock
-      ref: main
-      resolved-ref: b4ff7266f510e7f75f11db03cd37a75964d83e05
-      url: "https://github.com/evan361425/wakelock"
-    source: git
-    version: "0.6.2"
-  wakelock_macos:
+      name: wakelock_plus
+      sha256: "36c88af0b930121941345306d259ec4cc4ecca3b151c02e3a9e71aede83c615e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.10"
+  wakelock_plus_platform_interface:
     dependency: transitive
     description:
-      path: wakelock_macos
-      ref: main
-      resolved-ref: b4ff7266f510e7f75f11db03cd37a75964d83e05
-      url: "https://github.com/evan361425/wakelock"
-    source: git
-    version: "0.4.0"
-  wakelock_platform_interface:
-    dependency: transitive
-    description:
-      path: wakelock_platform_interface
-      ref: main
-      resolved-ref: b4ff7266f510e7f75f11db03cd37a75964d83e05
-      url: "https://github.com/evan361425/wakelock"
-    source: git
-    version: "0.3.0"
-  wakelock_web:
-    dependency: transitive
-    description:
-      path: wakelock_web
-      ref: main
-      resolved-ref: b4ff7266f510e7f75f11db03cd37a75964d83e05
-      url: "https://github.com/evan361425/wakelock"
-    source: git
-    version: "0.4.0"
-  wakelock_windows:
-    dependency: transitive
-    description:
-      path: wakelock_windows
-      ref: main
-      resolved-ref: b4ff7266f510e7f75f11db03cd37a75964d83e05
-      url: "https://github.com/evan361425/wakelock"
-    source: git
-    version: "0.2.2"
+      name: wakelock_plus_platform_interface
+      sha256: "70e780bc99796e1db82fe764b1e7dcb89a86f1e5b3afb1db354de50f2e41eb7a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   watcher:
     dependency: transitive
     description:

@@ -34,11 +34,13 @@ Design Principles:
 - **Android**: Download from [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem).
 - **iOS**: Coming soon.
 
-## Contribute
+## Develop & Contribute
 
 Want to help make POS System even better? We'd love your help!
 POS System is an open-source project that's built one contribution at a time.
-Check out the [documentation](https://evan361425.github.io/flutter-pos-system/about/contribute/)
+Check out [Development](https://evan361425.github.io/flutter-pos-system/maintenance/development/)
+to prepare your environment to build and test POS System.
+Check out [Contributing](https://evan361425.github.io/flutter-pos-system/about/contribute/)
 to learn how you can make POS System better!
 
 ## Learn More
