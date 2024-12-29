@@ -39,7 +39,7 @@ android {
     applicationId "com.evanlu.possystem"
     // default: flutter.minSdkVersion
     // but firebase auth requires 23
-    minSdkVersion flutter.minSdkVersion
+    minSdkVersion 23
     targetSdkVersion flutter.targetSdkVersion
     multiDexEnabled true
     versionCode flutterVersionCode.toInteger()
