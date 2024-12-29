@@ -21,13 +21,13 @@ abstract class Setting<T> extends ChangeNotifier {
   Future<void> update(T data) async {
     if (value == data) return;
 
-    Log.ger('$logKey start', 'user_setting', data.toString());
+    Log.ger('user_setting', {'key': logKey, 'value': data.toString()});
     value = data;
 
     notifyListeners();
 
     await updateRemotely(data);
-    Log.ger('$logKey finish', 'user_setting', data.toString());
+    Log.out('finish setting', 'user_setting');
   }
 
   Future<void> updateRemotely(T data);

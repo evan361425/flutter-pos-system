@@ -265,7 +265,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
   }
 
   Future<void> _update(GoogleSpreadsheet? other) async {
-    Log.ger('change start', 'gs_export', other.toString());
+    Log.ger('gs_select', {'spreadsheet': other?.id});
     if (mounted) {
       setState(() => spreadsheet = other);
     }

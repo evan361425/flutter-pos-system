@@ -115,13 +115,13 @@ class Database {
       options: OpenDatabaseOptions(
         version: latestVersion,
         onCreate: (db, latestVer) async {
-          Log.ger('0 $latestVer', 'db_initialize');
+          Log.ger('create_db', {'latestVer': latestVer});
           for (var ver = 1; ver <= latestVer; ver++) {
             await execMigration(db, ver);
           }
         },
         onUpgrade: (db, oldVer, newVer) async {
-          Log.ger('$oldVer $newVer', 'db_initialize');
+          Log.ger('upgrade_db', {'newVer': newVer, 'oldVer': oldVer});
           for (var ver = oldVer + 1; ver <= newVer; ver++) {
             await execMigration(db, ver);
             await execMigrationAction(db, ver);
@@ -201,7 +201,7 @@ class Database {
     final action = dbMigrationActions[ver];
 
     if (action != null) {
-      Log.ger('start $ver', 'db_migration');
+      Log.out('start at: $ver', 'db_migration');
       try {
         await action(db);
       } catch (e, stack) {

@@ -7,6 +7,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/debug/debug_page.dart';
 import 'package:possystem/helpers/breakpoint.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -129,7 +130,7 @@ class Routes {
               GoRoute(
                 name: Routes.others,
                 path: '_',
-                builder: (ctx, state) => const MobileMoreView(),
+                builder: (ctx, state) => _l(const MobileMoreView(), state),
                 routes: [
                   if (!isProd) _debugRoute(inShell: false),
                   _menuRoute(inShell: false),
@@ -181,7 +182,7 @@ class Routes {
   // ==================== Routes in main navigation ====================
 
   static Page<dynamic> _analBuilder(BuildContext ctx, GoRouterState state) =>
-      const NoTransitionPage(child: AnalysisView());
+      NoTransitionPage(child: _l(const AnalysisView(), state));
   static final _analysisRoute = GoRoute(
     name: anal,
     path: 'anal',
@@ -192,13 +193,13 @@ class Routes {
           name: chartCreate,
           path: 'create',
           parentNavigatorKey: rootNavigatorKey,
-          pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChartModal()),
+          pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ChartModal(), state)),
         ),
         GoRoute(
           name: chartReorder,
           path: 'reorder',
           parentNavigatorKey: rootNavigatorKey,
-          pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChartReorder()),
+          pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ChartReorder(), state)),
         ),
         GoRoute(
           path: 'a/:id',
@@ -211,7 +212,7 @@ class Routes {
               parentNavigatorKey: rootNavigatorKey,
               pageBuilder: (ctx, state) {
                 final chart = Analysis.instance.getItem(state.pathParameters['id']!)!;
-                return MaterialDialogPage(child: ChartModal(chart: chart));
+                return MaterialDialogPage(child: _l(ChartModal(chart: chart), state));
               },
             ),
           ],
@@ -222,14 +223,14 @@ class Routes {
   static final _stockRoute = GoRoute(
     name: stock,
     path: 'stock',
-    pageBuilder: (ctx, state) => const NoTransitionPage(child: StockView()),
+    pageBuilder: (ctx, state) => NoTransitionPage(child: _l(const StockView(), state)),
     routes: [
       _createPrefixRoute(path: 'ingr', prefix: 'stock', routes: [
         GoRoute(
           name: stockIngrCreate,
           path: 'create',
           parentNavigatorKey: rootNavigatorKey,
-          pageBuilder: (ctx, state) => const MaterialDialogPage(child: StockIngredientModal()),
+          pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const StockIngredientModal(), state)),
         ),
         GoRoute(
           path: 'a/:id',
@@ -242,7 +243,7 @@ class Routes {
               parentNavigatorKey: rootNavigatorKey,
               pageBuilder: (ctx, state) {
                 final ingr = Stock.instance.getItem(state.pathParameters['id']!)!;
-                return MaterialDialogPage(child: StockIngredientModal(ingredient: ingr));
+                return MaterialDialogPage(child: _l(StockIngredientModal(ingredient: ingr), state));
               },
             ),
             GoRoute(
@@ -251,7 +252,7 @@ class Routes {
               parentNavigatorKey: rootNavigatorKey,
               pageBuilder: (ctx, state) {
                 final ingr = Stock.instance.getItem(state.pathParameters['id']!)!;
-                return MaterialDialogPage(child: StockIngredientRestockModal(ingredient: ingr));
+                return MaterialDialogPage(child: _l(StockIngredientRestockModal(ingredient: ingr), state));
               },
             ),
           ],
@@ -261,13 +262,13 @@ class Routes {
         name: stockRepl,
         path: 'repl',
         parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (ctx, state) => const MaterialDialogPage(child: ReplenishmentPage()),
+        pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ReplenishmentPage(), state)),
         routes: [
           GoRoute(
             name: stockReplCreate,
             path: 'create',
             parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => const MaterialDialogPage(child: ReplenishmentModal()),
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ReplenishmentModal(), state)),
           ),
           GoRoute(
             path: 'a/:id',
@@ -280,7 +281,7 @@ class Routes {
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) {
                   final repl = Replenisher.instance.getItem(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: ReplenishmentModal(replenishment: repl));
+                  return MaterialDialogPage(child: _l(ReplenishmentModal(replenishment: repl), state));
                 },
               ),
               GoRoute(
@@ -289,7 +290,7 @@ class Routes {
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) {
                   final repl = Replenisher.instance.getItem(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: ReplenishmentPreviewPage(repl));
+                  return MaterialDialogPage(child: _l(ReplenishmentPreviewPage(repl), state));
                 },
               ),
             ],
@@ -301,19 +302,19 @@ class Routes {
   static final _cashierRoute = GoRoute(
     name: cashier,
     path: 'cashier',
-    pageBuilder: (ctx, state) => const NoTransitionPage(child: CashierView()),
+    pageBuilder: (ctx, state) => NoTransitionPage(child: _l(const CashierView(), state)),
     routes: [
       GoRoute(
         name: cashierChanger,
         path: 'changer',
         parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (ctx, state) => const MaterialDialogPage(child: ChangerModal()),
+        pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ChangerModal(), state)),
       ),
       GoRoute(
         name: cashierSurplus,
         path: 'surplus',
         parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (ctx, state) => const MaterialDialogPage(child: CashierSurplus()),
+        pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const CashierSurplus(), state)),
       ),
     ],
   );
@@ -321,10 +322,7 @@ class Routes {
         name: orderAttr,
         path: '${(inShell ? '_/' : '')}order_attr',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(
-          const OrderAttributePage(),
-          S.orderAttributeTitle,
-        ),
+        builder: (ctx, state) => _w(_l(const OrderAttributePage(), state), S.orderAttributeTitle),
         routes: [
           GoRoute(
             name: orderAttrCreate,
@@ -335,7 +333,7 @@ class Routes {
               final oa = id == null ? null : OrderAttributes.instance.getItem(id);
 
               if (oa == null) {
-                return const MaterialDialogPage(child: OrderAttributeModal());
+                return MaterialDialogPage(child: _l(const OrderAttributeModal(), state));
               }
               return MaterialDialogPage(child: OrderAttributeOptionModal(oa));
             },
@@ -344,7 +342,7 @@ class Routes {
             name: orderAttrReorder,
             path: 'reorder',
             parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => const MaterialDialogPage(child: OrderAttributeReorder()),
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const OrderAttributeReorder(), state)),
           ),
           GoRoute(
             path: 'a/:id',
@@ -360,13 +358,13 @@ class Routes {
                   final oid = state.uri.queryParameters['oid'];
                   final oa = OrderAttributes.instance.getItem(id)!;
 
-                  return MaterialDialogPage(
-                    child: oid == null
-                        // edit order attr
-                        ? OrderAttributeModal(attribute: oa)
-                        // edit order attr option
-                        : OrderAttributeOptionModal(oa, option: oa.getItem(oid)),
-                  );
+                  final child = oid == null
+                      // edit order attr
+                      ? OrderAttributeModal(attribute: oa)
+                      // edit order attr option
+                      : OrderAttributeOptionModal(oa, option: oa.getItem(oid));
+
+                  return MaterialDialogPage(child: _l(child, state));
                 },
               ),
               GoRoute(
@@ -375,7 +373,7 @@ class Routes {
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) {
                   final oa = OrderAttributes.instance.getItem(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: OrderAttributeOptionReorder(attribute: oa));
+                  return MaterialDialogPage(child: _l(OrderAttributeOptionReorder(attribute: oa), state));
                 },
               ),
             ],
@@ -390,7 +388,8 @@ class Routes {
           final id = state.uri.queryParameters['id'];
           final mode = state.uri.queryParameters['mode'];
           final catalog = id != null ? Menu.instance.getItem(id) : null;
-          return MenuPage(catalog: catalog, productOnly: mode == 'products');
+
+          return _l(MenuPage(catalog: catalog, productOnly: mode == 'products'), state);
         },
         routes: [
           _createPrefixRoute(path: 'catalog', prefix: 'menu', routes: [
@@ -403,16 +402,16 @@ class Routes {
                 final c = id == null ? null : Menu.instance.getItem(id);
 
                 if (c == null) {
-                  return const MaterialDialogPage(child: CatalogModal());
+                  return MaterialDialogPage(child: _l(const CatalogModal(), state));
                 }
-                return MaterialDialogPage(child: ProductModal(catalog: c));
+                return MaterialDialogPage(child: _l(ProductModal(catalog: c), state));
               },
             ),
             GoRoute(
               name: menuCatalogReorder,
               path: 'reorder',
               parentNavigatorKey: rootNavigatorKey,
-              pageBuilder: (ctx, state) => const MaterialDialogPage(child: CatalogReorder()),
+              pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const CatalogReorder(), state)),
             ),
             GoRoute(
               path: 'a/:id',
@@ -425,7 +424,7 @@ class Routes {
                   parentNavigatorKey: rootNavigatorKey,
                   pageBuilder: (ctx, state) {
                     final catalog = Menu.instance.getItem(state.pathParameters['id'] ?? '');
-                    return MaterialDialogPage(child: CatalogModal(catalog: catalog));
+                    return MaterialDialogPage(child: _l(CatalogModal(catalog: catalog), state));
                   },
                 ),
                 GoRoute(
@@ -434,7 +433,7 @@ class Routes {
                   parentNavigatorKey: rootNavigatorKey,
                   pageBuilder: (ctx, state) {
                     final catalog = Menu.instance.getItem(state.pathParameters['id']!)!;
-                    return MaterialDialogPage(child: ProductReorder(catalog));
+                    return MaterialDialogPage(child: _l(ProductReorder(catalog), state));
                   },
                 ),
               ],
@@ -447,7 +446,7 @@ class Routes {
             redirect: _redirectIfMissed(path: 'menu', hasItem: (id) => Menu.instance.getProduct(id) != null),
             pageBuilder: (ctx, state) {
               final product = Menu.instance.getProduct(state.pathParameters['id']!)!;
-              return MaterialDialogPage(child: ProductPage(product: product));
+              return MaterialDialogPage(child: _l(ProductPage(product: product), state));
             },
             routes: [
               GoRoute(
@@ -456,7 +455,7 @@ class Routes {
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) {
                   final product = Menu.instance.getProduct(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: ProductModal(product: product, catalog: product.catalog));
+                  return MaterialDialogPage(child: _l(ProductModal(product: product, catalog: product.catalog), state));
                 },
               ),
               GoRoute(
@@ -469,11 +468,11 @@ class Routes {
                   final ingr = p.getItem(state.uri.queryParameters['iid'] ?? '');
                   final qid = state.uri.queryParameters['qid'];
                   if (ingr == null || qid == null) {
-                    return MaterialDialogPage(child: ProductIngredientModal(product: p, ingredient: ingr));
+                    return MaterialDialogPage(child: _l(ProductIngredientModal(product: p, ingredient: ingr), state));
                   }
 
                   final qua = ingr.getItem(qid);
-                  return MaterialDialogPage(child: ProductQuantityModal(quantity: qua, ingredient: ingr));
+                  return MaterialDialogPage(child: _l(ProductQuantityModal(quantity: qua, ingredient: ingr), state));
                 },
               ),
               GoRoute(
@@ -482,7 +481,7 @@ class Routes {
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) {
                   final ingr = Menu.instance.getProduct(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: ProductIngredientReorder(ingr));
+                  return MaterialDialogPage(child: _l(ProductIngredientReorder(ingr), state));
                 },
               ),
             ],
@@ -493,19 +492,19 @@ class Routes {
         name: printer,
         path: '${(inShell ? '_/' : '')}printer',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(const PrinterPage(), S.printerTitle),
+        builder: (ctx, state) => _w(_l(const PrinterPage(), state), S.printerTitle),
         routes: [
           GoRoute(
             name: printerCreate,
             path: 'create',
             parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => const MaterialDialogPage(child: PrinterModal()),
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterModal(), state)),
           ),
           GoRoute(
             name: printerSettings,
             path: 'settings',
             parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => const MaterialDialogPage(child: PrinterSettingsModal()),
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsModal(), state)),
           ),
           GoRoute(
             path: 'a/:id',
@@ -518,7 +517,7 @@ class Routes {
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) {
                   final p = Printers.instance.getItem(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: PrinterModal(printer: p));
+                  return MaterialDialogPage(child: _l(PrinterModal(printer: p), state));
                 },
               ),
             ],
@@ -529,13 +528,13 @@ class Routes {
         name: quantities,
         path: '${(inShell ? '_/' : '')}quantities',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(const QuantitiesPage(), S.stockQuantityTitle),
+        builder: (ctx, state) => _w(_l(const QuantitiesPage(), state), S.stockQuantityTitle),
         routes: [
           GoRoute(
             name: quantityCreate,
             path: 'create',
             parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => const MaterialDialogPage(child: StockQuantityModal()),
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const StockQuantityModal(), state)),
           ),
           GoRoute(
             path: 'a/:id',
@@ -548,7 +547,7 @@ class Routes {
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) {
                   final qua = Quantities.instance.getItem(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: StockQuantityModal(quantity: qua));
+                  return MaterialDialogPage(child: _l(StockQuantityModal(quantity: qua), state));
                 },
               ),
             ],
@@ -559,7 +558,7 @@ class Routes {
         name: transit,
         path: '${(inShell ? '_/' : '')}transit',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(const TransitPage(), S.transitTitle),
+        builder: (ctx, state) => _w(_l(const TransitPage(), state), S.transitTitle),
         routes: [
           GoRoute(
             name: transitStation,
@@ -578,10 +577,9 @@ class Routes {
               );
               final range = _parseRange(state.uri.queryParameters['range']);
 
-              return TransitStation(
-                method: method,
-                catalog: type,
-                range: range,
+              return _l(
+                TransitStation(method: method, catalog: type, range: range),
+                state,
               );
             },
           ),
@@ -591,14 +589,14 @@ class Routes {
         name: elf,
         path: '${(inShell ? '_/' : '')}elf',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(const ElfPage(), S.settingElfTitle),
+        builder: (ctx, state) => _w(_l(const ElfPage(), state), S.settingElfTitle),
       );
   static GoRoute _settingsRoute({required bool inShell}) => GoRoute(
         name: settings,
         path: '${(inShell ? '_/' : '')}settings',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => _wrapPageByHomeMode(
-          SettingsPage(focus: state.uri.queryParameters['f']),
+        builder: (ctx, state) => _w(
+          _l(SettingsPage(focus: state.uri.queryParameters['f']), state),
           S.settingFeatureTitle,
         ),
         routes: [
@@ -609,7 +607,7 @@ class Routes {
             builder: (ctx, state) {
               final f = state.pathParameters['feature'];
               final feature = Feature.values.firstWhereOrNull((e) => e.name == f) ?? Feature.theme;
-              return ItemListScaffold(feature: feature);
+              return _l(ItemListScaffold(feature: feature), state);
             },
           ),
         ],
@@ -618,7 +616,7 @@ class Routes {
         name: 'debug',
         path: '${(inShell ? '_/' : '')}debug',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
-        builder: (ctx, state) => const DebugPage(),
+        builder: (ctx, state) => _l(const DebugPage(), state),
       );
 
   // ==================== Other routes ====================
@@ -627,25 +625,25 @@ class Routes {
     GoRoute(
       name: order,
       path: 'order',
-      builder: (ctx, state) => const OrderPage(),
+      builder: (ctx, state) => _l(const OrderPage(), state),
       routes: [
         GoRoute(
           name: orderCheckout,
           path: 'details',
-          builder: (ctx, state) => const OrderCheckoutPage(),
+          builder: (ctx, state) => _l(const OrderCheckoutPage(), state),
         ),
       ],
     ),
     GoRoute(
       name: history,
       path: 'history',
-      builder: (ctx, state) => const HistoryPage(),
+      builder: (ctx, state) => _l(const HistoryPage(), state),
       routes: [
         GoRoute(
           name: historyOrder,
           path: 'order/:id',
           pageBuilder: (ctx, state) => MaterialDialogPage(
-            child: HistoryOrderModal(int.tryParse(state.pathParameters['id'] ?? '0') ?? 0),
+            child: _l(HistoryOrderModal(int.tryParse(state.pathParameters['id'] ?? '0') ?? 0), state),
           ),
         )
       ],
@@ -653,7 +651,7 @@ class Routes {
     GoRoute(
       name: imageGallery,
       path: 'imageGallery',
-      pageBuilder: (ctx, state) => const MaterialDialogPage(child: ImageGalleryPage()),
+      pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ImageGalleryPage(), state)),
     ),
   ];
 
@@ -735,7 +733,32 @@ String? Function(BuildContext, GoRouterState) _redirectIfMissed({
   };
 }
 
-Widget _wrapPageByHomeMode(Widget child, String title) {
+GoRoute _createPrefixRoute({
+  required String path,
+  required String prefix,
+  required List<RouteBase> routes,
+}) {
+  return GoRoute(
+    path: path,
+    redirect: (context, state) {
+      return state.uri.path == '${Routes.base}/$prefix/$path' ? '${Routes.base}/$prefix' : null;
+    },
+    routes: routes,
+  );
+}
+
+/// Log the screen view to Firebase Analytics
+Widget _l(Widget w, GoRouterState state) {
+  Log.ger('screen_view', {
+    'screen_class': w.runtimeType.toString(),
+    'screen_name': state.name,
+  });
+
+  return w;
+}
+
+/// Wrap the widget for mobile view
+Widget _w(Widget child, String title) {
   child = Align(
     alignment: Alignment.topCenter,
     child: ConstrainedBox(
@@ -752,20 +775,6 @@ Widget _wrapPageByHomeMode(Widget child, String title) {
   }
 
   return child;
-}
-
-GoRoute _createPrefixRoute({
-  required String path,
-  required String prefix,
-  required List<RouteBase> routes,
-}) {
-  return GoRoute(
-    path: path,
-    redirect: (context, state) {
-      return state.uri.path == '${Routes.base}/$prefix/$path' ? '${Routes.base}/$prefix' : null;
-    },
-    routes: routes,
-  );
 }
 
 enum HomeMode {

@@ -13,22 +13,25 @@ class Log {
   }
 
   static void ger(
-    String action,
-    String code, [
-    String? message,
+    String event, [
+    Map<String, Object?>? parameters,
     @visibleForTesting bool forceSend = false,
-  ]) {
-    assert(!code.contains('.'));
-    if (message != null) {
-      developer.log('$action - $message', name: code);
-    } else {
-      developer.log(action, name: code);
-    }
+  ]) async {
+    assert(!event.contains('.'), 'should not contain "."');
+    final message = parameters?.entries.map((e) => '${e.key}=${e.value}').join(' ');
+    developer.log(message ?? '', name: event);
 
     if (forceSend || allowSendEvents) {
-      FirebaseAnalytics.instance.logEvent(
-        name: '${code}_$action',
-        parameters: message != null ? {'message': message} : null,
+      final Map<String, Object> filtered = <String, Object>{};
+      parameters?.forEach((String key, Object? value) {
+        if (value != null) {
+          filtered[key] = value;
+        }
+      });
+
+      await FirebaseAnalytics.instance.logEvent(
+        name: event,
+        parameters: filtered,
       );
     }
   }
@@ -39,10 +42,9 @@ class Log {
     StackTrace? stackTrace,
     @visibleForTesting bool forceSend = false,
   ]) {
-    assert(!code.contains('.'));
     assert(() {
       errorCount++;
-      return true;
+      return !code.contains('.');
     }());
     developer.log(
       error.toString(),

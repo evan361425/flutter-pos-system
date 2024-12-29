@@ -213,7 +213,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       // Default name is uuid v4, prefix with [0-9A-F]
       // to avoid conflict with origin one we add 'g' prefix
       final dst = XFile.fs.path.join(baseDir.path, 'g$name');
-      Log.ger('save_image', 'start', dst);
+      Log.ger('save_image', {'path': dst});
 
       // avator first, avoid different with origin one
       await ImageDumper.instance.resize(image, '$dst-avator', width: 120);

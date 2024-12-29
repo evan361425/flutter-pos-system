@@ -33,7 +33,7 @@ class GoogleSheetExporter extends DataExporter {
     List<String> sheetTitles,
   ) async {
     final sheetsApi = await getSheetsApi(true);
-    Log.ger('add_spreadsheet start', _logCode);
+    Log.out('add_spreadsheet start', _logCode);
     final result = await sheetsApi?.spreadsheets.create(
       gs.Spreadsheet(
         properties: gs.SpreadsheetProperties(title: title),
@@ -43,11 +43,11 @@ class GoogleSheetExporter extends DataExporter {
     );
 
     if (result?.spreadsheetId == null) {
-      Log.ger('add_spreadsheet miss', _logCode);
+      Log.out('add_spreadsheet miss', _logCode);
       return null;
     }
 
-    Log.ger('add_spreadsheet success', _logCode);
+    Log.out('add_spreadsheet success', _logCode);
     return GoogleSpreadsheet(
       id: result!.spreadsheetId!,
       name: title,
@@ -58,7 +58,7 @@ class GoogleSheetExporter extends DataExporter {
 
   Future<GoogleSpreadsheet?> getSpreadsheet(String id) async {
     final sheetsApi = await getSheetsApi(false);
-    Log.ger('get_spreadsheet start', _logCode);
+    Log.out('get_spreadsheet start', _logCode);
     final res = await sheetsApi?.spreadsheets.get(
       id,
       includeGridData: false,
@@ -66,11 +66,11 @@ class GoogleSheetExporter extends DataExporter {
     );
 
     if (res?.properties?.title == null) {
-      Log.ger('get_spreadsheet miss', _logCode);
+      Log.out('get_spreadsheet miss', _logCode);
       return null;
     }
 
-    Log.ger('get_spreadsheet done', _logCode);
+    Log.out('get_spreadsheet done', _logCode);
     return GoogleSpreadsheet(
       id: id,
       name: res!.properties!.title!,
@@ -93,7 +93,7 @@ class GoogleSheetExporter extends DataExporter {
     ];
 
     final sheetApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('add_sheets start ${titles.length}', _logCode);
+    Log.out('add_sheets start ${titles.length}', _logCode);
     final result = await sheetApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheet.id,
@@ -101,11 +101,11 @@ class GoogleSheetExporter extends DataExporter {
 
     final replies = result?.replies;
     if (replies == null || replies.any((reply) => reply.addSheet?.properties?.sheetId == null)) {
-      Log.ger('add_sheets miss', _logCode);
+      Log.out('add_sheets miss', _logCode);
       return null;
     }
 
-    Log.ger('add_sheets success', _logCode);
+    Log.out('add_sheets success', _logCode);
     return replies
         .map((reply) => GoogleSheetProperties(reply.addSheet!.properties!.sheetId!, reply.addSheet!.properties!.title!))
         .toList();
@@ -115,14 +115,14 @@ class GoogleSheetExporter extends DataExporter {
     GoogleSpreadsheet spreadsheet,
   ) async {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('get_sheets start', _logCode);
+    Log.out('get_sheets start', _logCode);
     final res = await sheetsApi?.spreadsheets.get(
       spreadsheet.id,
       includeGridData: false,
       $fields: 'sheets(properties(sheetId,title))',
     );
 
-    Log.ger('get_sheets done', _logCode);
+    Log.out('get_sheets done', _logCode);
     return GoogleSheetProperties.fromSheet(res?.sheets);
   }
 
@@ -161,7 +161,7 @@ class GoogleSheetExporter extends DataExporter {
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     final types = sheets.map((e) => e.typeName).join(' ');
-    Log.ger('update_sheet $types', _logCode);
+    Log.out('update_sheet $types', _logCode);
     await sheetsApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
       spreadsheet.id,
@@ -190,7 +190,7 @@ class GoogleSheetExporter extends DataExporter {
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     final types = sheets.map((e) => e.typeName).join(' ');
-    Log.ger('append_values $types', _logCode);
+    Log.out('append_values $types', _logCode);
     await sheetsApi?.spreadsheets.values.batchUpdate(
       gs.BatchUpdateValuesRequest(
         includeValuesInResponse: false,
@@ -209,7 +209,7 @@ class GoogleSheetExporter extends DataExporter {
     Iterable<List<Object>> data,
   ) async {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('append_values ${sheet.typeName}', _logCode);
+    Log.out('append_values ${sheet.typeName}', _logCode);
     await sheetsApi?.spreadsheets.values.append(
       gs.ValueRange(
         majorDimension: 'ROWS',
@@ -231,7 +231,7 @@ class GoogleSheetExporter extends DataExporter {
     required int neededColumns,
   }) async {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.ger('get_data start', _logCode);
+    Log.out('get_data start', _logCode);
     final result = await sheetsApi?.spreadsheets.values.get(
       spreadsheet.id,
       // TODO: if neededColumns are greater than 26, this must change

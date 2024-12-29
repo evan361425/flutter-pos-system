@@ -198,7 +198,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   Future<void> selectDevice(BluetoothDevice device) async {
     final provider = PrinterProvider.tryGuess(device.name);
     if (provider == null) {
-      Log.ger('non recognition ${device.name}', 'printer_modal_select');
+      Log.ger('invalid_printer', {'device': device.name});
       showMoreInfoSnackBar(
         S.printerErrorNotSupportTitle,
         Linkify.fromString(S.printerErrorNotSupportContent),
@@ -208,6 +208,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     }
 
     // advertise name is the default name
+    Log.ger('select_printer', {'device': device.name, 'provider': provider.name});
     nameController.text = device.name;
     printer = Printer(
       name: device.name,

@@ -127,7 +127,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     GoogleSpreadsheet ss,
     Map<SheetType, GoogleSheetProperties> kv,
   ) async {
-    Log.ger('export ready', 'gs_export', ss.id);
+    Log.ger('gs_export', {'spreadsheet': ss.id, 'target': kv.keys.map((e) => e.name).join(',')});
     const formatter = GoogleSheetFormatter();
 
     // cache the sheet names
@@ -147,7 +147,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
       prepared.keys.map((key) => formatter.getHeader(key)),
     );
 
-    Log.ger('export finish', 'gs_export');
+    Log.out('export finish', 'gs_export');
     if (mounted) {
       showSnackBar(
         S.actSuccess,

@@ -28,6 +28,7 @@ dependencies:
   firebase_auth: ^4.20.0
   firebase_crashlytics: ^3.5.7
   firebase_in_app_messaging: ^0.7.5+7
+  firebase_performance: ^0.9.4+7
 
   # services
   sqflite: ^2.4.0  # 24, 10-07
@@ -45,7 +46,7 @@ dependencies:
 
   # google services
   googleapis: ^13.2.0
-  google_sign_in: ^6.2.1
+  google_sign_in: ^6.2.2
   extension_google_sign_in_as_googleapis_auth: ^2.0.12
 
   # components

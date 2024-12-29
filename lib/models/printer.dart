@@ -77,7 +77,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   }
 
   Future<void> saveProperties() async {
-    Log.ger('update repo start', storageStore.name, toString());
+    Log.ger('update_printers', {'type': storageStore.name, 'density': density.index});
 
     await Storage.instance.set(storageStore, {
       'setting': {
@@ -192,14 +192,14 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
 
   /// Connect printer
   Future<bool> connect() {
-    Log.ger('start', 'printer_connect');
+    Log.ger('connect_printer');
 
     return p.connect();
   }
 
   /// Disconnect printer, it is ok if not connected
   Future<void> disconnect() {
-    Log.ger('start', 'printer_disconnect');
+    Log.ger('disconnect_printer');
 
     return p.disconnect();
   }

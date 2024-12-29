@@ -9,7 +9,7 @@ class LauncherSnackbarAction extends SnackBarAction {
     required String link,
     required String logCode,
   }) : super(onPressed: () {
-          Log.ger('snackbar launch', logCode, link);
+          Log.ger('launch_snackbar_action', {'code': logCode, 'link': link});
           Launcher.launch(link).ignore();
         });
 }

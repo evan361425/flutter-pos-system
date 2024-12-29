@@ -128,7 +128,7 @@ class Cart extends ChangeNotifier {
 
     if (paid < price) return CheckoutStatus.paidNotEnough;
 
-    Log.ger(name, 'order_paid');
+    Log.ger('begin_order_checkout', {'name': name, 'paid': paid, 'price': price});
     final data = toObject(paid: paid);
 
     final receipt = await Printers.instance.generateReceipts(context: context, order: data);
@@ -172,7 +172,7 @@ class Cart extends ChangeNotifier {
     final able = !Cart.instance.isEmpty;
 
     if (able) {
-      Log.ger('start', 'order_stash');
+      Log.ger('begin_order_stash');
 
       await StashedOrders.instance.stash(toObject());
 
@@ -184,7 +184,7 @@ class Cart extends ChangeNotifier {
 
   /// Restore the order.
   void restore(OrderObject order) {
-    Log.ger('start', 'order_cart_restore');
+    Log.ger('begin_order_restore');
 
     products
       ..clear()

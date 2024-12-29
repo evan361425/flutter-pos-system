@@ -159,7 +159,7 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
         .toList();
 
     if (data.isNotEmpty) {
-      Log.ger('reorder start', items.first.logName, data.length.toString());
+      Log.ger('reorder_items', {'type': items.first.logName, 'length': data.length});
       await saveBatch(data);
 
       notifyItems();
@@ -206,7 +206,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
       prepareItem();
 
       if (versionChanged) {
-        Log.ger('upgrade start', storageStore.name, _items.toString());
+        Log.ger('upgrade_items', {'type': storageStore.name, 'length': _items.length});
         await Storage.instance.setAll(storageStore, {
           for (final item in _items.values) item.prefix: item.toObject().toMap(),
         });
@@ -225,7 +225,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveItem(T item) {
-    Log.ger('add start', storageStore.name, item.toString());
+    Log.ger('add_item', {'type': storageStore.name, 'name': item.toString()});
 
     final data = item.toObject().toMap();
     return repoType == RepositoryStorageType.pureRepo

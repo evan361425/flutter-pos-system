@@ -125,7 +125,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
   void _connectWantedPrinters() async {
     if (connecting.isNotEmpty) {
-      Log.ger('connecting ${connecting.length} printers', 'order_printer_connect');
+      Log.ger('connect_order_printer', {'length': connecting.length});
       await Future.wait([
         // [toList] create new list which avoid concurrent modification of the original list
         for (final printer in connecting.toList())
@@ -138,7 +138,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
       // if failed, remove all connecting printers
       if (connecting.where((e) => !e.connected).isNotEmpty && mounted) {
-        Log.ger('failed to connect ${connecting.length} printers', 'order_printer_connect');
+        Log.ger('order_printer_failed', {'length': connecting.length});
         setState(connecting.clear);
       }
     }
@@ -158,7 +158,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         });
         connected.removeWhere((e) {
           if (!e.connected) {
-            Log.ger('printer ${e.name}(${e.address}) disconnected', 'order_printer_disconnect');
+            Log.out('printer ${e.name}(${e.address}) disconnected', 'connect_order_printer');
             showSnackBar(S.orderSnackbarPrinterDisconnected(e.name), context: context);
             signalRecords.remove(e.id)?.stream.cancel();
             statusRecords.remove(e.id)?.stream.cancel();
@@ -174,7 +174,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
   void _addConnected(Iterable<Printer> printers) {
     for (final printer in printers) {
-      Log.ger('printer ${printer.name}(${printer.address}) connected', 'order_printer_connect');
+      Log.out('connect_order_printer', 'printer ${printer.name}(${printer.address}) connected');
       connected.add(printer);
 
       signalRecords[printer.id] = _Record(BluetoothSignal.normal, _listenSignal(printer));

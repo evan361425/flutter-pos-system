@@ -1,8 +1,8 @@
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
-import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:possystem/helpers/logger.dart';
 
 class Auth {
@@ -26,9 +26,9 @@ class Auth {
 
     final newScopes = scopes.toSet().difference(_service.scopes.toSet());
     if (newScopes.isNotEmpty) {
-      Log.ger('scopes start', 'auth_google', newScopes.join(','));
+      Log.ger('login_scope', {'scopes': newScopes.join(',')});
       if (await _service.requestScopes(newScopes.toList())) {
-        Log.ger('scopes success', 'auth_google');
+        Log.out('scopes success', 'login_scope');
         _service.scopes.addAll(newScopes);
       }
     }
@@ -45,18 +45,18 @@ class Auth {
   }
 
   Future<bool> signIn() async {
-    Log.ger('start', 'auth_signin');
+    Log.ger('login', {'loginMethod': 'google'});
     // Trigger the authentication flow
     final GoogleSignInAccount? user = await _service.signIn();
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? auth = await user?.authentication;
     if (auth == null) {
-      Log.ger('empty', 'auth_signin');
+      Log.out('empty result', 'login');
       return false;
     }
 
-    Log.ger('allow', 'auth_signin');
+    Log.out('allow authentication', 'login');
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: auth.accessToken,

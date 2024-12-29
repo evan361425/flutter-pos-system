@@ -27,9 +27,6 @@ class SignInButton extends StatelessWidget {
       stream: Auth.instance.authStateChanges(),
       builder: (context, snapshot) {
         User user = User(user: snapshot.data);
-        // if (kDebugMode) {
-        //   user = User(displayName: 'Test');
-        // }
 
         // User is not signed in
         if (user.notSignedIn) {
@@ -162,10 +159,12 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
     try {
       success = await Auth.instance.signIn();
     } catch (e, stack) {
-      Log.err(e, 'auth_signin', stack);
-      setState(() {
-        error = e is firebase.FirebaseAuthException ? e.message : e.toString();
-      });
+      Log.err(e, 'login', stack);
+      if (mounted) {
+        setState(() {
+          error = e is firebase.FirebaseAuthException ? e.message : e.toString();
+        });
+      }
     } finally {
       if (mounted && !success) setState(() => isLoading = false);
     }

@@ -122,7 +122,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
       widget.rangeNotifier.value.start,
       widget.rangeNotifier.value.end,
     );
-    Log.ger('ready', 'gs_export_order', ss.id);
+    Log.ger('gs_export', {'spreadsheet': ss.id, 'target': 'order'});
 
     final data = prepared.keys.map(chooseFormatter).map((method) => orders.expand((order) => method(order)));
 
@@ -144,7 +144,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
       }
     }
 
-    Log.ger('export finish', 'gs_export');
+    Log.out('export finish', 'gs_export');
     if (mounted) {
       showSnackBar(
         S.actSuccess,

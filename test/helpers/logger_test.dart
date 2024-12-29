@@ -20,7 +20,7 @@ void main() {
       final analytics = setupFirebaseAnalyticsMocks();
       await Firebase.initializeApp();
 
-      Log.ger('hi', 'there', 'world', true);
+      Log.ger('hi', {'test': '1', 'key': 2}, true);
       await tester.pumpAndSettle();
 
       expect(analytics['methods']![0], equals('Analytics#logEvent'));

@@ -171,10 +171,12 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _handleSelected(Catalog catalog) {
-    setState(() {
-      selected = catalog;
-    });
-    _pageSlideTo(1);
+    if (mounted) {
+      setState(() {
+        selected = catalog;
+      });
+      _pageSlideTo(1);
+    }
   }
 
   Future<void> _handleCatalogCreate() async {

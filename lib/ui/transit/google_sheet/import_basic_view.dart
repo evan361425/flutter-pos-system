@@ -194,8 +194,8 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     GoogleSheetProperties sheet,
     bool needPreview,
   ) async {
+    Log.ger('gs_import', {'spreadsheet': ss.id, 'sheet': sheet.title});
     // step 1
-    Log.ger('ready', 'gs_import', sheet.title);
     final source = await _requestData(able, ss, sheet);
     if (source == null) {
       if (mounted) {
@@ -209,7 +209,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     }
 
     // step 2
-    Log.ger('received', 'gs_import', source.length.toString());
+    Log.out('received data length: ${source.length}', 'gs_import');
     await _cacheSheetName(able.name, sheet);
 
     bool? approved = true;
@@ -224,7 +224,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     }
 
     // step 3
-    Log.ger('parsing', 'gs_import', able.name);
+    Log.out('parsing table: ${able.name}', 'gs_import');
     await Formatter.finishFormat(able, approved);
 
     return approved ?? false;
