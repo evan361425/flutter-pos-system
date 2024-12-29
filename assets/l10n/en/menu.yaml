@@ -40,9 +40,6 @@ example:
     large: Large
     none: None
 catalog:
-  headerInfo:
-  - Categories
-  - Displayed on the upper rectangle in homepage
   emptyBody: |-
     Similar products will be grouped under categories,
     making ordering convenient, such as:

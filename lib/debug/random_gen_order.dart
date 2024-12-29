@@ -154,7 +154,7 @@ class _SettingPageState extends State<_SettingPage> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
-        child: Column(children: [
+        child: Column(spacing: 8, children: [
           TextFormField(
             key: const Key('rgo.count'),
             controller: _countController,
@@ -167,7 +167,6 @@ class _SettingPageState extends State<_SettingPage> {
             maxLength: 5,
             validator: Validator.positiveInt('Count', maximum: 9999, minimum: 1),
           ),
-          const SizedBox(height: 8.0),
           InkWell(
             key: const Key('rgo.date_range'),
             onTap: selectDates,

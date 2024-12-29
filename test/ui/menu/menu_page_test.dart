@@ -9,6 +9,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -328,6 +329,7 @@ void main() {
         providers: [
           ChangeNotifierProvider<Menu>.value(value: Menu.instance),
           ChangeNotifierProvider<OrderAttributes>.value(value: OrderAttributes.instance),
+          ChangeNotifierProvider.value(value: Printers()),
         ],
         child: MaterialApp.router(
           theme: AppThemes.lightTheme,

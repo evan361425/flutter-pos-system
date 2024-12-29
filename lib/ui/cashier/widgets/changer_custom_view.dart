@@ -261,9 +261,8 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   }
 
   Widget _wrapInRow(Widget a, Widget b, [Widget? c]) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, spacing: kInternalSpacing, children: [
       Flexible(flex: 1, child: a),
-      const SizedBox(width: kInternalSpacing),
       Flexible(flex: 1, child: b),
       if (c != null) c,
     ]);

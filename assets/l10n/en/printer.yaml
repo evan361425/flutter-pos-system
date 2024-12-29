@@ -1,6 +1,9 @@
 $prefix: printer
 title: Printer Management
 description: Bluetooth Connection, Printer Settings
+headerInfo:
+- Printers
+- Displayed on the upper in mobile view
 _title:
   $prefix: title
   create: Add Printer

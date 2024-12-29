@@ -1,9 +1,15 @@
 // ignore: depend_on_referenced_packages
+import 'package:firebase_analytics_platform_interface/firebase_analytics_platform_interface.dart';
+// ignore: depend_on_referenced_packages
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 // ignore: depend_on_referenced_packages
-import 'package:firebase_crashlytics_platform_interface/firebase_crashlytics_platform_interface.dart';
+import 'package:firebase_core_platform_interface/src/pigeon/messages.pigeon.dart';
 // ignore: depend_on_referenced_packages
-import 'package:firebase_analytics_platform_interface/firebase_analytics_platform_interface.dart';
+import 'package:firebase_core_platform_interface/src/pigeon/mocks.dart';
+// ignore: depend_on_referenced_packages
+import 'package:firebase_core_platform_interface/src/pigeon/test_api.dart';
+// ignore: depend_on_referenced_packages
+import 'package:firebase_crashlytics_platform_interface/firebase_crashlytics_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // https://github.com/FirebaseExtended/flutterfire/blob/master/packages/firebase_auth/firebase_auth/test/mock.dart

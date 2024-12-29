@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -27,6 +28,7 @@ void main() {
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: Seller.instance),
+          ChangeNotifierProvider.value(value: Printers()),
         ],
         builder: (_, __) => MaterialApp.router(
           themeMode: themeMode,

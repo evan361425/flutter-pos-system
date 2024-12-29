@@ -288,7 +288,7 @@ class _Backdrop extends StatelessWidget {
     return Positioned.fill(
       child: AbsorbPointer(
         child: DecoratedBox(
-          decoration: BoxDecoration(color: Colors.black.withOpacity(0.35)),
+          decoration: BoxDecoration(color: Colors.black.withAlpha(89)),
           child: Center(child: child),
         ),
       ),

@@ -206,6 +206,10 @@
   "stockQuantityProportionHelper": "當產品成分使用此份量時，預設替該成分增加的比例。\n\n例如：此份量為「多量」預設份量為「1.5」，\n今有一產品「起司漢堡」的成分「起司」，每份漢堡會使用「2」單位的起司，\n當增加此份量時，則會自動替「起司」設定為「3」（2 * 1.5）的份量。\n\n若設為「1」則無任何影響。\n\n若設為「0」則代表將不會使用此成分",
   "printerTitle": "出單機管理",
   "printerDescription": "藍牙連線、出單設定",
+  "printerHeaderInfo": "出單機",
+  "@printerHeaderInfo": {
+    "description": "Displayed on the upper in mobile view"
+  },
   "printerTitleCreate": "新增出單機",
   "printerTitleUpdate": "編輯出單機",
   "printerTitleSettings": "設定格式",
@@ -1357,10 +1361,6 @@
   "menuExampleQuantitySmall": "少量",
   "menuExampleQuantityLarge": "增量",
   "menuExampleQuantityNone": "無",
-  "menuCatalogHeaderInfo": "種類",
-  "@menuCatalogHeaderInfo": {
-    "description": "Displayed on the upper rectangle in homepage"
-  },
   "menuCatalogEmptyBody": "我們會把相似「產品」放在「產品種類」中，\n到時候點餐會比較方便，例如：\n• 「起司漢堡」、「蔬菜漢堡」整合進「漢堡」\n• 「塑膠袋」、「環保杯」整合進「其他」",
   "menuCatalogTitleCreate": "新增產品種類",
   "@menuCatalogTitleCreate": {

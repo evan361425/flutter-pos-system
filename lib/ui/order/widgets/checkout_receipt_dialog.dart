@@ -68,7 +68,7 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
           child: AbsorbPointer(
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.35),
+                color: Colors.black.withAlpha(89),
                 borderRadius: BorderRadius.circular(28),
               ),
               child: const Center(child: CircularProgressIndicator.adaptive()),

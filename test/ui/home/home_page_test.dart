@@ -107,8 +107,8 @@ void main() {
             await tester.pumpAndSettle();
           }
 
-          await navAndCheck('more_header.menu1', 'menu_page', only: Device.mobile);
-          await navAndCheck('more_header.menu2', 'menu_page', only: Device.mobile);
+          await navAndCheck('more_header.products', 'menu_page', only: Device.mobile);
+          await navAndCheck('more_header.printers', 'printers_page', only: Device.mobile);
           await navAndCheck('more_header.order_attrs', 'order_attributes_page', only: Device.mobile);
           await navAndCheck('home.debug', 'debug.list', icon: Icons.bug_report_outlined);
           await navAndCheck('home.menu', 'menu_page', icon: Icons.collections_outlined);
@@ -147,6 +147,7 @@ void main() {
             ChangeNotifierProvider.value(value: Quantities()),
             ChangeNotifierProvider.value(value: OrderAttributes()),
             ChangeNotifierProvider.value(value: Analysis()),
+            ChangeNotifierProvider.value(value: Printers()),
           ],
           child: MaterialApp.router(
             routerConfig: GoRouter(

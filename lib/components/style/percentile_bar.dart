@@ -39,7 +39,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
             return LinearProgressIndicator(
               value: _controller.value,
               valueColor: _colorAnimation,
-              backgroundColor: _colorAnimation.value?.withOpacity(0.2),
+              backgroundColor: _colorAnimation.value?.withAlpha(51),
               semanticsLabel: S.semanticsPercentileBar(_curveAnimation.value),
             );
           },

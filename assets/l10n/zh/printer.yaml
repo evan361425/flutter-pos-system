@@ -1,6 +1,7 @@
 $prefix: printer
 title: 出單機管理
 description: 藍牙連線、出單設定
+headerInfo: 出單機
 _title:
   $prefix: title
   create: 新增出單機

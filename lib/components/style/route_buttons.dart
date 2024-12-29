@@ -82,14 +82,12 @@ class RouteIconButton extends StatelessWidget {
 
     final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
     return bp <= Breakpoint.medium
-        ? Column(children: [
+        ? Column(spacing: 4, children: [
             icon,
-            const SizedBox(height: 4),
             Text(label),
           ])
-        : Row(children: [
+        : Row(spacing: 4, children: [
             icon,
-            const SizedBox(width: 4),
             Text(label),
           ]);
   }

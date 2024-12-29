@@ -4,6 +4,7 @@ import 'package:possystem/components/style/footer.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/routes.dart';
@@ -126,6 +127,7 @@ class _HeaderInfoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menu = context.watch<Menu>();
+    final printers = context.watch<Printers>();
     final attrs = context.watch<OrderAttributes>();
 
     return SizedBox(
@@ -136,7 +138,7 @@ class _HeaderInfoList extends StatelessWidget {
         shrinkWrap: true,
         children: [
           _buildItem(
-            id: 'menu1',
+            id: 'products',
             context: context,
             title: menu.items.fold<int>(0, (v, e) => e.length + v),
             subtitle: S.menuProductHeaderInfo,
@@ -145,11 +147,11 @@ class _HeaderInfoList extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           _buildItem(
-            id: 'menu2',
+            id: 'printers',
             context: context,
-            title: menu.length,
-            subtitle: S.menuCatalogHeaderInfo,
-            route: Routes.menu,
+            title: printers.length,
+            subtitle: S.printerHeaderInfo,
+            route: Routes.printer,
           ),
           const SizedBox(width: 16),
           _buildItem(

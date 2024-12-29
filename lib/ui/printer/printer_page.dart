@@ -136,7 +136,7 @@ class _EmptyBody extends StatelessWidget {
       Positioned.fill(
         child: ClipPath(
           clipper: _Wave1(),
-          child: ColoredBox(color: theme.scaffoldBackgroundColor.withOpacity(0.4), child: const SizedBox.expand()),
+          child: ColoredBox(color: theme.scaffoldBackgroundColor.withAlpha(102), child: const SizedBox.expand()),
         ),
       ),
       Positioned.fill(

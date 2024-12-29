@@ -87,9 +87,8 @@ class _ProductPageState extends State<ProductPage> {
       ),
       const SizedBox(width: kInternalLargeSpacing),
       Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: kInternalSpacing, children: [
           Text(widget.product.name, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: kInternalSpacing),
           _buildMetadata(),
         ]),
       ),

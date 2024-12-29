@@ -106,7 +106,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                   child: CircularProgressIndicator(
                     value: metric.profit / goal!.profit,
                     color: Colors.pink,
-                    backgroundColor: Colors.grey.withOpacity(0.2),
+                    backgroundColor: Colors.grey.withAlpha(51),
                     strokeWidth: 20,
                   ),
                 ),

@@ -206,6 +206,10 @@
   "stockQuantityProportionHelper": "Applied when this quantity is used for an ingredient.\n\nFor example:\nif this quantity is \"Large\" and the default ratio is \"1.5\",\nand there's a product \"Cheeseburger\" with the ingredient \"Cheese,\"\nwhich uses \"2\" units of cheese per burger,\nwhen adding this quantity,\nthe quantity of \"Cheese\" will automatically be set to \"3\" (2 * 1.5).\n\nIf set to \"1,\" there's no effect.\n\nIf set to \"0,\" the ingredient won't be used.",
   "printerTitle": "Printer Management",
   "printerDescription": "Bluetooth Connection, Printer Settings",
+  "printerHeaderInfo": "Printers",
+  "@printerHeaderInfo": {
+    "description": "Displayed on the upper in mobile view"
+  },
   "printerTitleCreate": "Add Printer",
   "printerTitleUpdate": "Edit Printer",
   "printerTitleSettings": "Format Settings",
@@ -1357,10 +1361,6 @@
   "menuExampleQuantitySmall": "Small",
   "menuExampleQuantityLarge": "Large",
   "menuExampleQuantityNone": "None",
-  "menuCatalogHeaderInfo": "Categories",
-  "@menuCatalogHeaderInfo": {
-    "description": "Displayed on the upper rectangle in homepage"
-  },
   "menuCatalogEmptyBody": "Similar products will be grouped under categories,\nmaking ordering convenient, such as:\n• \"Cheese Burger\", \"Veggie Burger\" > \"Burgers\"\n• \"Plastic Bag\", \"Eco Cup\" > \"Others\"",
   "menuCatalogTitleCreate": "Add Category",
   "@menuCatalogTitleCreate": {
