@@ -241,8 +241,8 @@
   "printerErrorNotSupportContent": "This device is currently unsupported.\n\n[Contact Us](mailto:evanlu361425@gmail.com) for assistance.",
   "printerErrorBluetoothOff": "Bluetooth is off",
   "printerErrorDisconnected": "Printer is disconnected",
-  "printerErrorTimeout": "Connection timeout",
-  "printerErrorCanceled": "Connection request interrupted",
+  "printerErrorTimeout": "Printer connection timeout",
+  "printerErrorCanceled": "Printer connection request interrupted",
   "printerErrorTimeoutMore": "Try the following:\n• Check if the device is powered on (usually will flash)\n• Ensure the device is within range\n• Restart Bluetooth",
   "printerNameLabel": "Printer Name",
   "printerNameHint": "e.g., Kitchen's Printer",
@@ -1621,6 +1621,14 @@
   "orderTutorialContent": "Once you have set up your menu, you can start ordering!\nLet's tap and go see what's available!\n",
   "orderTutorialPrinterBtnTitle": "Printer Status Change",
   "orderTutorialPrinterBtnContent": "Printer status has changed, please check.",
+  "orderSnackbarPrinterConnected": "Printer connected: {names}",
+  "@orderSnackbarPrinterConnected": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
   "orderSnackbarPrinterDisconnected": "Printer \"{name}\" disconnected",
   "@orderSnackbarPrinterDisconnected": {
     "placeholders": {

@@ -126,6 +126,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
   void _connectWantedPrinters() async {
     if (connecting.isNotEmpty) {
       Log.ger('connect_order_printer', {'length': connecting.length});
+      final names = connecting.map((e) => e.name).join(', ');
       await Future.wait([
         // [toList] create new list which avoid concurrent modification of the original list
         for (final printer in connecting.toList())
@@ -137,9 +138,15 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
       ]);
 
       // if failed, remove all connecting printers
-      if (connecting.where((e) => !e.connected).isNotEmpty && mounted) {
-        Log.ger('order_printer_failed', {'length': connecting.length});
-        setState(connecting.clear);
+      if (connecting.where((e) => !e.connected).isNotEmpty) {
+        if (mounted) {
+          Log.ger('order_printer_failed', {'length': connecting.length});
+          setState(connecting.clear);
+        }
+      } else {
+        if (mounted) {
+          showSnackBar(S.orderSnackbarPrinterConnected(names), context: context);
+        }
       }
     }
   }

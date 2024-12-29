@@ -176,7 +176,7 @@
   "stockReplenishmentIngredientsHelper": "點選以設定不同成分欲採購的量",
   "stockReplenishmentIngredientAmountHint": "設定增加／減少的量",
   "stockQuantityTitle": "份量",
-  "stockQuantityDescription": "半糖、微糖等。",
+  "stockQuantityDescription": "半糖、微糖等",
   "stockQuantityTitleCreate": "新增份量",
   "stockQuantityTitleUpdate": "編輯份量",
   "stockQuantityEmptyBody": "份量可以快速調整成分的量，例如：\n半糖、微糖。",
@@ -241,8 +241,8 @@
   "printerErrorNotSupportContent": "目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得協助。",
   "printerErrorBluetoothOff": "藍牙未開啟",
   "printerErrorDisconnected": "出單機已斷線",
-  "printerErrorTimeout": "連線逾時",
-  "printerErrorCanceled": "連線請求被中斷",
+  "printerErrorTimeout": "出單機連線逾時",
+  "printerErrorCanceled": "出單機連線請求被中斷",
   "printerErrorTimeoutMore": "可以嘗試以下操作：\n• 確認裝置是否開啟（通常裝置會閃爍）\n• 確認裝置是否在範圍內\n• 重新開啟藍牙",
   "printerNameLabel": "出單機名稱",
   "printerNameHint": "例如：廚房的出單機",
@@ -1621,6 +1621,14 @@
   "orderTutorialContent": "一旦設定好菜單，就可以開始點餐囉\n讓我們趕緊進去看看有什麼吧！\n",
   "orderTutorialPrinterBtnTitle": "出單機異動",
   "orderTutorialPrinterBtnContent": "出單機狀態出現異動，請查看。",
+  "orderSnackbarPrinterConnected": "出單機連線成功：{names}",
+  "@orderSnackbarPrinterConnected": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
   "orderSnackbarPrinterDisconnected": "出單機「{name}」斷線",
   "@orderSnackbarPrinterDisconnected": {
     "placeholders": {

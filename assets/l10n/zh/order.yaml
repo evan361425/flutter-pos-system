@@ -11,6 +11,7 @@ tutorial:
     content: 出單機狀態出現異動，請查看。
 snackbar:
   printer:
+    connected: 出單機連線成功：{names}
     disconnected: 出單機「{name}」斷線
   cashier:
     notEnough: 收銀機錢不夠找囉！

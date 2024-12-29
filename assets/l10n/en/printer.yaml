@@ -51,8 +51,8 @@ error:
       [Contact Us](mailto:evanlu361425@gmail.com) for assistance.
   bluetoothOff: Bluetooth is off
   disconnected: Printer is disconnected
-  timeout: Connection timeout
-  canceled: Connection request interrupted
+  timeout: Printer connection timeout
+  canceled: Printer connection request interrupted
   timeoutMore: |-
     Try the following:
     • Check if the device is powered on (usually will flash)

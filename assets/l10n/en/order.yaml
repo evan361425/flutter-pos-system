@@ -11,6 +11,9 @@ tutorial:
     content: Printer status has changed, please check.
 snackbar:
   printer:
+    connected:
+    - 'Printer connected: {names}'
+    - names:
     disconnected:
     - 'Printer "{name}" disconnected'
     - name:

@@ -76,8 +76,8 @@ bump: ## Bump beta version
 	git push --tags
 
 ##@ Tools
-.PHONY: mock
-mock: ## Mock dependencies
+.PHONY: build-mock
+build-mock: ## Mock dependencies
 	dart run build_runner build --delete-conflicting-outputs
 	dart format --line-length 120 .
 

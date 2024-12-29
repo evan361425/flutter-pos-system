@@ -88,7 +88,7 @@ replenishment:
     hint: 設定增加／減少的量
 quantity:
   title: 份量
-  description: 半糖、微糖等。
+  description: 半糖、微糖等
   _title:
     $prefix: title
     create: 新增份量

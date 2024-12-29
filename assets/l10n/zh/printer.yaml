@@ -44,8 +44,8 @@ error:
       目前尚未支援此裝置，你可以[聯絡我們](mailto:evanlu361425@gmail.com)以取得協助。
   bluetoothOff: 藍牙未開啟
   disconnected: 出單機已斷線
-  timeout: 連線逾時
-  canceled: 連線請求被中斷
+  timeout: 出單機連線逾時
+  canceled: 出單機連線請求被中斷
   timeoutMore: |-
     可以嘗試以下操作：
     • 確認裝置是否開啟（通常裝置會閃爍）
