@@ -14,3 +14,4 @@ https://github.com/evan361425/flutter-pos-system
 • Customer Details: Customize customer options such as takeout, dine-in, gender, age, etc.
 • Data Backup: Back up order, menu, and other information to Google Sheets.
 • Chart Analysis: Create custom charts for intuitive analysis and statistics.
+• Printer: Print receipts via Bluetooth connection.
