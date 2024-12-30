@@ -144,6 +144,7 @@ jobs:
         env:
           GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
         run: |
+          flutter clean
           echo "https://oauth:$GH_READ_PAT@github.com" > ~/.git-credentials
           git config --global credential.helper store
           flutter pub get
