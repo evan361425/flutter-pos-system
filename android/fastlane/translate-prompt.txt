@@ -2,4 +2,5 @@ You are an AI assistant that help translate the following product changelog from
 You should only use text format not markdown.
 Ensuring that each bullet point maintains the same prefix `•` and each title remains the origin emoji, for example `🚀`.
 You should not give me any other information or anything explanation.
-Thank you.
+Here is the changelog:
+%s

@@ -33,7 +33,7 @@ function trim_string() {
 }
 
 function main() {
-  local changelogFile="$1" googleApiKey="$2" languages="
+  local changelogFile="$1" googleApiKey="$2" changelog languages="
 zh-TW Traditional Chinese
 "
   
@@ -45,29 +45,28 @@ zh-TW Traditional Chinese
       continue
     fi
 
-    local langCode langName prompt changelog response
+    local langCode langName prompt body resp
     langCode="$(echo "$lang" | cut -d' ' -f1)"
     langName="$(echo "$lang" | cut -d' ' -f2-)"
     echo "===== Translating changelog to $langName ($langCode)..."
 
-    prompt="$(printf "$(cat android/fastlane/translate-prompt.txt)" "$langName")"
-    response="ok"
+    prompt="$(printf "$(cat android/fastlane/translate-prompt.txt)" "$langName" "$changelog")"
+    body="$(jq -n \
+        --arg prompt "$prompt" \
+        '{contents: [
+          {parts: [{text: $prompt}]}
+        ]}')"
 
-    curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=$googleApiKey" \
+    resp="$(curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=$googleApiKey" \
       -H 'Content-Type: application/json' \
       -X POST \
       -s \
-      -d "$(jq -n \
-        --arg prompt "$prompt" \
-        --arg response "$response" \
-        --arg changelog "$changelog" \
-        '{contents: [
-          {role: "user", parts: [{text: $prompt}]},
-          {role: "model", parts: [{text: $response}]},
-          {role: "user", parts: [{text: $changelog}]}
-        ]}')" \
+      -d "$body" \
       | jq -r '.candidates[0].content.parts[0].text' \
-      | tee "$(printf "$changelogFile" "$langCode")"
+      | tr -d '\r')"
+    
+    echo "$resp"
+    printf "%s" "$resp" > "$(printf "$changelogFile" "$langCode")"
   done <<< "$languages"
 }
 

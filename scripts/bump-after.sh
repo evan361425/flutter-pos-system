@@ -30,13 +30,15 @@ function get_key() {
 }
 
 function main() {
-  local tag=$1 buildCode=$2 release body tmpl
+  local tag=$1 buildCode=$2 release tmpl
   tmpl="android/fastlane/metadata/android/%s/changelogs/$buildCode.txt"
   
   release=$(find_release "$tag")
-  body="$(trim_last_newline "$(echo "$release" | jq -r .body)")"
 
-  printf '%s' "$body" > "$(printf "$tmpl" "en-US")"
+  trim_last_newline "$(echo "$release" | jq -r .body)" \
+    | tr -d '\r' \
+    | sed 's/## //g' \
+    > "$(printf "$tmpl" "en-US")"
 
   bash android/fastlane/translate-changelog.sh "$tmpl" "$(get_key)"
 }
