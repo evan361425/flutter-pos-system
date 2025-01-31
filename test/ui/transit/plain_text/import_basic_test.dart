@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 
 import '../../../mocks/mock_storage.dart';
@@ -33,10 +33,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-        find.byKey(const Key('import_text')),
+        find.byKey(const Key('transit.pt_text')),
         'some-text',
       );
-      await tester.tap(find.byKey(const Key('import_btn')));
+      await tester.tap(find.byKey(const Key('transit.pt_preview')));
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitPTImportErrorNotFound), findsOneWidget);
@@ -50,10 +50,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.byKey(const Key('import_text')),
+          find.byKey(const Key('transit.pt_text')),
           '${S.transitPTFormatModelQuantitiesHeader(1)}\n\n'
           '${S.transitPTFormatModelQuantitiesQuantity('1', 'q1', '1')}');
-      await tester.tap(find.byKey(const Key('import_btn')));
+      await tester.tap(find.byKey(const Key('transit.pt_preview')));
       await tester.pumpAndSettle();
 
       // allow import

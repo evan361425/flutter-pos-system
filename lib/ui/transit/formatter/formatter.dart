@@ -34,7 +34,8 @@ abstract class Formatter<T> {
     List<List<Object?>> rows,
   ) {
     final transformer = getTransformer(able);
-    final parsed = transformer.parseRows(rows);
+    final data = rows.map((row) => row.map((e) => e.toString().trim()).toList()).toList();
+    final parsed = transformer.parseRows(data);
 
     final formatter = getFormatter(able);
     final result = <FormattedItem<U>>[];
@@ -147,17 +148,17 @@ abstract class ModelFormatter<T extends Repository, U extends Model> {
   U format(List<String> row, int index);
 }
 
-abstract class ModelTransformer<T extends Repository> {
+abstract class ModelTransformer<T extends Repository, U> {
   final T target;
 
   const ModelTransformer(this.target);
 
-  List<Object> getHeader();
+  List<U> getHeader();
 
-  List<List<Object>> getRows();
+  List<List<U>> getRows();
 
-  List<List<String>> parseRows(List<List<Object?>> rows) {
-    return rows.map((row) => row.map((e) => e.toString().trim()).toList()).toList();
+  List<List<String>> parseRows(List<List<String>> rows) {
+    return rows;
   }
 }
 

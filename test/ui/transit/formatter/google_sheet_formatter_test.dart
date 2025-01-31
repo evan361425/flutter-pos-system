@@ -1,6 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
-import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -16,8 +14,10 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/formatter/google_sheet_formatter.dart';
 
-import '../../test_helpers/translator.dart';
+import '../../../test_helpers/translator.dart';
 
 void main() {
   group('Google Sheet Formatter', () {

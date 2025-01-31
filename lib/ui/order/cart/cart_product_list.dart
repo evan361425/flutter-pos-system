@@ -107,7 +107,7 @@ class _CartProductListTile extends StatelessWidget {
     final product = context.watch<CartProduct>();
     final color = product.isSelected ? Theme.of(context).primaryColorLight : Colors.transparent;
 
-    final leading = Checkbox(
+    final leading = Checkbox.adaptive(
       key: Key('cart.product.$index.select'),
       value: product.isSelected,
       onChanged: (checked) {

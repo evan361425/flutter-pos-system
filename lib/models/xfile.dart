@@ -1,5 +1,6 @@
 import 'package:file/file.dart';
 import 'package:file/local.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class XFile {
@@ -25,5 +26,16 @@ class XFile {
 
   static Future<String> getRootPath() async {
     return fs is LocalFileSystem ? (await getApplicationDocumentsDirectory()).path : '';
+  }
+
+  static Future<Stream<List<int>>?> pick({
+    List<String> allowedExtensions = const ['csv', 'txt'],
+  }) async {
+    final result = await FilePicker.platform.pickFiles(
+      withReadStream: true,
+      allowedExtensions: allowedExtensions,
+    );
+
+    return result?.files.firstOrNull?.readStream;
   }
 }

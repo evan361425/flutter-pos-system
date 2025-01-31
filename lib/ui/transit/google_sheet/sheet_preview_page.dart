@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 
 class SheetPreviewPage extends StatelessWidget {
   final SheetPreviewerDataTableSource source;

@@ -95,7 +95,7 @@ class _ProductPageState extends State<ProductPage> {
       _buildActionButton(),
     ]);
 
-    final dialog = AlertDialog(
+    final dialog = AlertDialog.adaptive(
       contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
       scrollable: true,
       content: ConstrainedBox(

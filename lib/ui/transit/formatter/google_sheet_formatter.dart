@@ -1,5 +1,3 @@
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -7,6 +5,8 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 
 class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
   const GoogleSheetFormatter();
@@ -28,7 +28,7 @@ class GoogleSheetFormatter extends Formatter<GoogleSheetCellData> {
   }
 }
 
-class _MenuTransformer extends ModelTransformer<Menu> {
+class _MenuTransformer extends ModelTransformer<Menu, GoogleSheetCellData> {
   const _MenuTransformer(super.target);
 
   @override
@@ -64,7 +64,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
   }
 }
 
-class _StockTransformer extends ModelTransformer<Stock> {
+class _StockTransformer extends ModelTransformer<Stock, GoogleSheetCellData> {
   const _StockTransformer(super.target);
 
   @override
@@ -88,7 +88,7 @@ class _StockTransformer extends ModelTransformer<Stock> {
       .toList();
 }
 
-class _QuantitiesTransformer extends ModelTransformer<Quantities> {
+class _QuantitiesTransformer extends ModelTransformer<Quantities, GoogleSheetCellData> {
   const _QuantitiesTransformer(super.target);
 
   @override
@@ -106,7 +106,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
       .toList();
 }
 
-class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
+class _ReplenisherTransformer extends ModelTransformer<Replenisher, GoogleSheetCellData> {
   const _ReplenisherTransformer(super.target);
 
   @override
@@ -127,7 +127,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
       }).toList();
 }
 
-class _OATransformer extends ModelTransformer<OrderAttributes> {
+class _OATransformer extends ModelTransformer<OrderAttributes, GoogleSheetCellData> {
   const _OATransformer(super.target);
 
   @override

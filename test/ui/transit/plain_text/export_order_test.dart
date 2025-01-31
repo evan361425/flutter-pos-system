@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
 import 'package:possystem/ui/transit/plain_text/views.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 

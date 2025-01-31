@@ -130,7 +130,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                     child: SizedBox(
                       width: size,
                       height: size,
-                      child: CircularProgressIndicator(
+                      child: CircularProgressIndicator.adaptive(
                         value: size,
                         strokeWidth: borderWidth * 2,
                       ),

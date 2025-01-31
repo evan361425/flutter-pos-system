@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/loading_wrapper.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/helpers/exporter/data_exporter.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/data_exporter.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 
+import 'csv/views.dart' as csv;
+import 'excel/views.dart' as excel;
 import 'google_sheet/views.dart' as gs;
 import 'plain_text/views.dart' as pt;
 
@@ -16,6 +18,8 @@ enum TransitCatalog {
 
 enum TransitMethod {
   googleSheet,
+  excel,
+  csv,
   plainText,
 }
 
@@ -133,35 +137,42 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
   }
 
   Widget _buildScreen(_Combination combination) {
+    final range = ValueNotifier(widget.range ?? Util.getDateRange());
     switch (widget.method) {
       case TransitMethod.googleSheet:
         final exporter = (widget.exporter ?? GoogleSheetExporter()) as GoogleSheetExporter;
         switch (combination) {
           case _Combination.exportBasic:
-            return gs.ExportBasicView(
-              exporter: exporter,
-              notifier: stateNotifier,
-            );
+            return gs.ExportBasicView(exporter: exporter, notifier: stateNotifier);
           case _Combination.exportOrder:
-            return gs.ExportOrderView(
-              exporter: exporter,
-              statusNotifier: stateNotifier,
-              rangeNotifier: ValueNotifier(widget.range ?? Util.getDateRange()),
-            );
+            return gs.ExportOrderView(exporter: exporter, statusNotifier: stateNotifier, rangeNotifier: range);
           case _Combination.importBasic:
-            return gs.ImportBasicView(
-              exporter: exporter,
-              notifier: stateNotifier,
-            );
+            return gs.ImportBasicView(exporter: exporter, notifier: stateNotifier);
+        }
+      case TransitMethod.excel:
+        switch (combination) {
+          case _Combination.exportBasic:
+            return const excel.ExportBasicView();
+          case _Combination.exportOrder:
+            return excel.ExportOrderView(notifier: range);
+          case _Combination.importBasic:
+            return const excel.ImportBasicView();
+        }
+      case TransitMethod.csv:
+        switch (combination) {
+          case _Combination.exportBasic:
+            return const csv.ExportBasicView();
+          case _Combination.exportOrder:
+            return csv.ExportOrderView(notifier: range);
+          case _Combination.importBasic:
+            return const csv.ImportBasicView();
         }
       case TransitMethod.plainText:
         switch (combination) {
           case _Combination.exportBasic:
             return const pt.ExportBasicView();
           case _Combination.exportOrder:
-            return pt.ExportOrderView(
-              notifier: ValueNotifier(widget.range ?? Util.getDateRange()),
-            );
+            return pt.ExportOrderView(notifier: range);
           case _Combination.importBasic:
             return const pt.ImportBasicView();
         }

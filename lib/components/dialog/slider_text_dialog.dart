@@ -86,7 +86,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
           textInputAction: TextInputAction.done,
         ),
         if (withSlider)
-          Slider(
+          Slider.adaptive(
             value: sliderValue.value,
             max: sliderMax,
             min: widget.min,

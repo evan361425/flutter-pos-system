@@ -5,10 +5,10 @@ import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 
 final _sheetUrlRegex = RegExp(r'/spreadsheets/d/([a-zA-Z0-9-_]{15,})/');
 final _sheetIdRegex = RegExp(r'^([a-zA-Z0-9-_]{15,})$');
@@ -230,7 +230,7 @@ class SpreadsheetSelectorState extends State<SpreadsheetSelector> {
           header: CachedNetworkImage(
             imageUrl: _sheetTutorial,
             progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(value: downloadProgress.progress),
+                CircularProgressIndicator.adaptive(value: downloadProgress.progress),
           ),
           initialValue: spreadsheet?.id,
           decoration: InputDecoration(

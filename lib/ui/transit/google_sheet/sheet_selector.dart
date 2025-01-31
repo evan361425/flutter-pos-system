@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 
 class SheetSelector extends StatefulWidget {
   final GoogleSheetProperties? defaultValue;

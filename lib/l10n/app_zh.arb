@@ -285,7 +285,7 @@
   "transitTitle": "資料轉移",
   "transitDescription": "匯入、匯出店家資訊和訂單",
   "transitMethodTitle": "請選擇欲轉移的方式",
-  "transitMethodName": "{name, select, googleSheet{Google 試算表} plainText{純文字} other{UNKNOWN}}",
+  "transitMethodName": "{name, select, googleSheet{Google 試算表} plainText{純文字} excel{Excel 檔案} csv{CSV 檔案} other{UNKNOWN}}",
   "@transitMethodName": {
     "placeholders": {
       "name": {
@@ -1030,6 +1030,10 @@
       }
     }
   },
+  "transitExcelDescription": "Excel 可以離線匯出和匯入，容易與 Google 試算表和 Microsoft Excel 整合。",
+  "transitCSVDescription": "用逗號分隔的列表，輕量級的匯出和匯入資料，幾乎兼容所有軟體。",
+  "transitCSVShareBtn": "分享",
+  "transitCSVShareSuccess": "匯出成功",
   "appTitle": "POS 系統",
   "actSuccess": "執行成功",
   "@actSuccess": {

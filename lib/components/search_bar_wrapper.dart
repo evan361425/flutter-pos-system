@@ -68,7 +68,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
             },
       viewHintText: widget.hintText,
       viewBuilder: (suggestions) =>
-          suggestions.isEmpty ? const Center(child: CircularProgressIndicator()) : suggestions.first,
+          suggestions.isEmpty ? const Center(child: CircularProgressIndicator.adaptive()) : suggestions.first,
       suggestionsBuilder: (context, controller) async {
         if (controller.text.isEmpty) {
           return [buildItems(context, widget.initData)];

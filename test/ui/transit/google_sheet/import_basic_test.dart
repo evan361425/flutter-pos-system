@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:mockito/mockito.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -16,6 +15,7 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 
 import '../../../mocks/mock_auth.dart';

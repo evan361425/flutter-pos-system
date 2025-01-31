@@ -38,7 +38,7 @@ class ResponsiveDialog extends StatelessWidget {
               height: fixedSizeOnDialog!.height == 0 ? null : fixedSizeOnDialog!.height,
               child: content,
             );
-      final dialog = AlertDialog(
+      final dialog = AlertDialog.adaptive(
         title: title,
         contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
         scrollable: scrollable,

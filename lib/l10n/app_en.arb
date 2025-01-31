@@ -285,7 +285,7 @@
   "transitTitle": "Data Transfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
   "transitMethodTitle": "Please Select Transfer Method",
-  "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} other{UNKNOWN}}",
+  "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} excel{Excel} CSV{CSV} other{UNKNOWN}}",
   "@transitMethodName": {
     "placeholders": {
       "name": {
@@ -1030,6 +1030,10 @@
       }
     }
   },
+  "transitExcelDescription": "Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.",
+  "transitCSVDescription": "Commas Separate Values, lightweight to export and import data, compatible with most software.",
+  "transitCSVShareBtn": "Share",
+  "transitCSVShareSuccess": "Exported successfully.",
   "appTitle": "POS System",
   "actSuccess": "Successful!",
   "@actSuccess": {

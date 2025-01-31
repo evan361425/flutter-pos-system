@@ -47,12 +47,14 @@ dependencies:
 
   # components
   table_calendar: 3.1.2  # 24, 12-12
-  syncfusion_flutter_charts: ^28.1.36
+  syncfusion_flutter_charts: ^28.1.41
+  syncfusion_flutter_xlsio: ^28.1.41
   spotlight_ant: ^1.4.3
 
   # image
-  image: ^4.5.2
+  image: ^4.3.0  # wait for syncfusion_flutter_xlsio to support archive 4
   image_picker: ^1.1.2
+  file_picker: ^8.1.7
   image_cropper: ^8.1.0
   cached_network_image: ^3.4.0  # 24, 08-13, downgrade for firebase
   flutter_svg: ^2.0.16  # 24, 11-26
@@ -70,6 +72,7 @@ dependencies:
   package_info_plus: ^8.1.2  # 24, 12-12
   visibility_detector: ^0.4.0+2  # 23, 03-09
   cupertino_icons: ^1.0.8  # This is for google-package which use it in some case
+  share_plus: ^10.1.4  # 25, 01-14
 
 dev_dependencies:
   flutter_test:

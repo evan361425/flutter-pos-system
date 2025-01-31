@@ -6,6 +6,8 @@ method:
   name:
   - googleSheet: Google Sheets
     plainText: Plain Text
+    excel: Excel
+    CSV: CSV
   - name:
 catalog:
   name:
@@ -497,7 +499,7 @@ PT:
         - =0: 'it will not adjust inventory'
           other: 'it will adjust the inventory of {count} ingredients'
         - count: {type: int, mode: plural}
-      oa: # order attribute
+      oa:  # order attribute
         meta:
           oa:
           - '{count} customer attributes'
@@ -524,3 +526,11 @@ PT:
         modeValue:
         - option value is {value}
         - value: {type: num, format: decimalPattern}
+excel:
+  description: Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.
+CSV:
+  description: Commas Separate Values, lightweight to export and import data, compatible with most software.
+  share:
+    btn: Share
+    success: Exported successfully.
+

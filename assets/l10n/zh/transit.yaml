@@ -6,7 +6,9 @@ method:
   name:
   - googleSheet: Google 試算表
     plainText: 純文字
-catalog: # 資料的分類
+    excel: Excel 檔案
+    csv: CSV 檔案
+catalog:  # 資料的分類
   name:
   - order: 訂單記錄
     model: 店家資訊
@@ -218,7 +220,7 @@ GS:
         name: 成分
         quantity: 份量
         amount: 數量
-    expandable: # 資料放在不只一個資料表，透過多個資料表來分類
+    expandable:  # 資料放在不只一個資料表，透過多個資料表來分類
       hint: 詳見下欄
   error:
     createSpreadsheet: 無法建立試算表
@@ -343,7 +345,7 @@ PT:
         replenishmentDetails:
         - =0: '它並不會調整庫存'
           other: 它會調整{count}種成份的庫存
-      oa: # order attribute
+      oa:  # order attribute
         meta:
           oa: '{count} 種顧客屬性'
         header: 共設定 {count} 種顧客屬性。
@@ -354,4 +356,10 @@ PT:
           other: 它有 {count} 個選項
         defaultOption: 預設
         modeValue: 選項的值為 {value}
-
+excel:
+  description: Excel 可以離線匯出和匯入，容易與 Google 試算表和 Microsoft Excel 整合。
+CSV:
+  description: 用逗號分隔的列表，輕量級的匯出和匯入資料，幾乎兼容所有軟體。
+  share:
+    btn: 分享
+    success: 匯出成功

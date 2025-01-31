@@ -28,7 +28,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
       child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
         const SizedBox(height: 16.0),
         Card(
-          key: const Key('transit.pt_preview'),
+          key: const Key('import_btn'),
           margin: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ListTile(
             title: Text(S.transitImportPreviewTitle),
@@ -43,7 +43,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: TextField(
-            key: const Key('transit.pt_text'),
+            key: const Key('import_text'),
             controller: controller,
             keyboardType: TextInputType.multiline,
             minLines: 3,

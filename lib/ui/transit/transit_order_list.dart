@@ -136,7 +136,7 @@ class TransitOrderList extends StatelessWidget {
 
   Widget _buildWarningDialog(BuildContext context, int size, int level) {
     const style = TextStyle(fontWeight: FontWeight.bold);
-    return AlertDialog(
+    return AlertDialog.adaptive(
       actions: [
         PopButton(title: MaterialLocalizations.of(context).okButtonLabel),
       ],

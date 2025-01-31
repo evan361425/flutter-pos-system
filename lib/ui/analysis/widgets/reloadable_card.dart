@@ -157,7 +157,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
             child: SizedBox(
               height: 20,
               width: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
             ),
           ),
         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 
 import 'ingredient_preview_page.dart';
 import 'order_attribute_preview_page.dart';

@@ -57,7 +57,7 @@ class Util {
             height: 20,
             width: 20,
             child: Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
             ),
           ),
         );
@@ -105,7 +105,7 @@ extension MenuControllerToggle on MenuController {
 extension IntOrDouble on num {
   /// If it has decimal, show it, else show as int.
   String toShortString() {
-    final rounded = round();
+    final rounded = toInt();
     if (this == rounded) {
       return rounded.toString();
     }

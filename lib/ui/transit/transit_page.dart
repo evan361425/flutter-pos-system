@@ -34,14 +34,31 @@ class _TransitPageState extends State<TransitPage> {
         key: const Key('transit.google_sheet'),
         leading: CircleAvatar(
           radius: 24,
-          child: SvgPicture.asset(
-            'assets/google_sheet_icon.svg',
-            width: 24,
-          ),
+          child: SvgPicture.asset('assets/google_sheet_icon.svg', width: 24),
         ),
         title: Text(S.transitMethodName(TransitMethod.googleSheet.name)),
         subtitle: Text(S.transitGSDescription),
         onTap: () => _goToStation(context, TransitMethod.googleSheet),
+      ),
+      ListTile(
+        key: const Key('transit.excel'),
+        leading: CircleAvatar(
+          radius: 24,
+          child: SvgPicture.asset('assets/excel_icon.svg', width: 24),
+        ),
+        title: Text(S.transitMethodName(TransitMethod.excel.name)),
+        subtitle: Text(S.transitExcelDescription),
+        onTap: () => _goToStation(context, TransitMethod.excel),
+      ),
+      ListTile(
+        key: const Key('transit.csv'),
+        leading: const CircleAvatar(
+          radius: 24,
+          child: Text('CSV'),
+        ),
+        title: Text(S.transitMethodName(TransitMethod.csv.name)),
+        subtitle: Text(S.transitCSVDescription),
+        onTap: () => _goToStation(context, TransitMethod.csv),
       ),
       ListTile(
         key: const Key('transit.plain_text'),

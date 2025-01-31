@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
@@ -7,6 +6,7 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 
 const _reDig = r' *-?\d+\.?\d*';
 const _reInt = r'[0-9 ]+';
@@ -48,7 +48,7 @@ class PlainTextFormatter extends Formatter<String> {
   }
 }
 
-class _MenuTransformer extends ModelTransformer<Menu> {
+class _MenuTransformer extends ModelTransformer<Menu, String> {
   const _MenuTransformer(super.target);
 
   static const ingredientDelimiter = '；';
@@ -111,7 +111,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
   }
 
   @override
-  List<List<String>> parseRows(List<List<Object?>> rows) {
+  List<List<String>> parseRows(List<List<String>> rows) {
     final reCatalog = RegExp(
       _rePre +
           S.transitPTFormatModelMenuCatalog(
@@ -152,9 +152,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
     );
 
     final lines = rows[0]
-        .expand(
-          (e) => e.toString().split('\n').map((e) => e.trim()),
-        )
+        .expand((e) => e.split('\n').map((e) => e.trim())) // split by line
         .where((e) => e.isNotEmpty);
     final result = <List<String>>[];
     String catalog = '', product = '', price = '', cost = '';
@@ -218,7 +216,7 @@ class _MenuTransformer extends ModelTransformer<Menu> {
   }
 }
 
-class _StockTransformer extends ModelTransformer<Stock> {
+class _StockTransformer extends ModelTransformer<Stock, String> {
   const _StockTransformer(super.target);
 
   @override
@@ -289,7 +287,7 @@ class _StockTransformer extends ModelTransformer<Stock> {
   }
 }
 
-class _QuantitiesTransformer extends ModelTransformer<Quantities> {
+class _QuantitiesTransformer extends ModelTransformer<Quantities, String> {
   const _QuantitiesTransformer(super.target);
 
   @override
@@ -338,7 +336,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities> {
   }
 }
 
-class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
+class _ReplenisherTransformer extends ModelTransformer<Replenisher, String> {
   const _ReplenisherTransformer(super.target);
 
   static const ingredientDelimiter = '：';
@@ -401,7 +399,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher> {
   }
 }
 
-class _OATransformer extends ModelTransformer<OrderAttributes> {
+class _OATransformer extends ModelTransformer<OrderAttributes, String> {
   const _OATransformer(super.target);
 
   @override
