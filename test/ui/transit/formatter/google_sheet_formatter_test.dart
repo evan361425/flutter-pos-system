@@ -38,7 +38,7 @@ void main() {
   + q1,1,1,1
 ''';
 
-        final items = formatter.format<Product>(Formattable.menu, [
+        final items = formatter.format<Product>(FormattableModel.menu, [
           ['A', 'pB', 1, 1, '- i0'],
           ['B', 'pA', 1, 1, 'from-format\n +\n-i'],
           ['C', 'pA', 1, 1],
@@ -192,7 +192,7 @@ void main() {
       test('format', () {
         const formatter = GoogleSheetFormatter();
 
-        final items = formatter.format<Ingredient>(Formattable.stock, [
+        final items = formatter.format<Ingredient>(FormattableModel.stock, [
           ['i1', 2, 3],
           ['i1'],
           [],
@@ -231,7 +231,7 @@ void main() {
       test('format', () {
         const formatter = GoogleSheetFormatter();
 
-        final items = formatter.format<Quantity>(Formattable.quantities, [
+        final items = formatter.format<Quantity>(FormattableModel.quantities, [
           ['q1', 2],
           ['q1'],
           [],
@@ -271,7 +271,7 @@ void main() {
         const formatter = GoogleSheetFormatter();
         const r1Data = '- i1,20\n- i2,-5';
 
-        final items = formatter.format<Replenishment>(Formattable.replenisher, [
+        final items = formatter.format<Replenishment>(FormattableModel.replenisher, [
           ['r1', r1Data],
           ['r1'],
           [],
@@ -318,7 +318,7 @@ void main() {
         const formatter = GoogleSheetFormatter();
         const c1Data = '- co1,true\n- co2,,5';
 
-        final items = formatter.format<OrderAttribute>(Formattable.orderAttr, [
+        final items = formatter.format<OrderAttribute>(FormattableModel.orderAttr, [
           ['c1', S.orderAttributeModeName('changeDiscount'), c1Data],
           ['c1', '', '- co1,20'],
           ['c2'],

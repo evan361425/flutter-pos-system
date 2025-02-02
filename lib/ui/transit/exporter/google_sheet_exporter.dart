@@ -1,6 +1,7 @@
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 
 import 'data_exporter.dart';
 
@@ -357,33 +358,36 @@ class GoogleSheetProperties {
   int get hashCode => id.hashCode ^ title.hashCode;
 }
 
-class GoogleSheetCellData {
-  final gs.ExtendedValue value;
+class GoogleSheetCellData extends CellData {
+  final gs.ExtendedValue gsValue;
 
   final gs.CellFormat? format;
 
-  final String? note;
-
-  /// If this is not null, the cell will be a dropdown list.
-  final List<String>? options;
-
   GoogleSheetCellData({
-    String? formulaValue,
-    num? numberValue,
-    String? stringValue,
-    bool isBold = false,
-    this.note,
-    this.options,
-  })  : value = gs.ExtendedValue(
-          formulaValue: formulaValue,
-          numberValue: numberValue?.toDouble(),
-          stringValue: stringValue,
+    super.string,
+    super.number,
+    super.isBold,
+    super.note,
+    super.options,
+  })  : gsValue = gs.ExtendedValue(
+          numberValue: number?.toDouble(),
+          stringValue: string,
         ),
-        format = isBold ? gs.CellFormat(textFormat: gs.TextFormat(bold: true)) : null;
+        format = isBold == true ? gs.CellFormat(textFormat: gs.TextFormat(bold: true)) : null;
+
+  factory GoogleSheetCellData.fromCellData(CellData cell) {
+    return GoogleSheetCellData(
+      string: cell.string,
+      number: cell.number,
+      isBold: cell.isBold,
+      note: cell.note,
+      options: cell.options,
+    );
+  }
 
   gs.CellData toGoogleFormat() {
     return gs.CellData(
-      userEnteredValue: value,
+      userEnteredValue: gsValue,
       userEnteredFormat: format,
       dataValidation: options == null
           ? null
@@ -395,11 +399,6 @@ class GoogleSheetCellData {
             ),
       note: note,
     );
-  }
-
-  @override
-  String toString() {
-    return value.stringValue ?? value.numberValue?.toString() ?? '';
   }
 }
 

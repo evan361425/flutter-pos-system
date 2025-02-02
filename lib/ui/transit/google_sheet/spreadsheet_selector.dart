@@ -9,6 +9,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 
 final _sheetUrlRegex = RegExp(r'/spreadsheets/d/([a-zA-Z0-9-_]{15,})/');
 final _sheetIdRegex = RegExp(r'^([a-zA-Z0-9-_]{15,})$');
@@ -397,5 +398,18 @@ enum SheetType {
   order,
   orderDetailsAttr,
   orderDetailsProduct,
-  orderDetailsIngredient,
+  orderDetailsIngredient;
+
+  FormattableOrder get orderFormattable {
+    switch (this) {
+      case orderDetailsAttr:
+        return FormattableOrder.attr;
+      case orderDetailsProduct:
+        return FormattableOrder.product;
+      case orderDetailsIngredient:
+        return FormattableOrder.ingredient;
+      default:
+        return FormattableOrder.basic;
+    }
+  }
 }

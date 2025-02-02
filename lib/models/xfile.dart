@@ -29,11 +29,12 @@ class XFile {
   }
 
   static Future<Stream<List<int>>?> pick({
-    List<String> allowedExtensions = const ['csv', 'txt'],
+    required List<String> extensions,
   }) async {
     final result = await FilePicker.platform.pickFiles(
       withReadStream: true,
-      allowedExtensions: allowedExtensions,
+      allowedExtensions: extensions,
+      type: FileType.custom,
     );
 
     return result?.files.firstOrNull?.readStream;

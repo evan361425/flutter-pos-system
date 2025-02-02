@@ -1,65 +1,66 @@
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 
 class OrderFormatter {
-  static List<List<Object>> formatOrder(OrderObject order) {
+  static List<List<CellData>> formatBasic(OrderObject order) {
     return [
       [
-        Util.toUTC(now: order.createdAt),
-        order.createdAt.toIso8601String(),
-        order.price,
-        order.productsPrice,
-        order.paid,
-        order.cost,
-        order.profit,
-        order.productsCount,
-        order.products.length,
+        CellData(number: Util.toUTC(now: order.createdAt)),
+        CellData(string: order.createdAt.toIso8601String()),
+        CellData(number: order.price),
+        CellData(number: order.productsPrice),
+        CellData(number: order.paid),
+        CellData(number: order.cost),
+        CellData(number: order.profit),
+        CellData(number: order.productsCount),
+        CellData(number: order.products.length),
       ]
     ];
   }
 
-  static List<List<Object>> formatOrderDetailsAttr(OrderObject order) {
+  static List<List<CellData>> formatAttr(OrderObject order) {
     return [
       for (final attr in order.attributes)
         [
-          Util.toUTC(now: order.createdAt),
-          attr.name,
-          attr.optionName,
+          CellData(number: Util.toUTC(now: order.createdAt)),
+          CellData(string: attr.name),
+          CellData(string: attr.optionName),
         ],
     ];
   }
 
-  static List<List<Object>> formatOrderDetailsProduct(OrderObject order) {
+  static List<List<CellData>> formatProduct(OrderObject order) {
     return [
       for (final product in order.products)
         [
-          Util.toUTC(now: order.createdAt),
-          product.productName,
-          product.catalogName,
-          product.count,
-          product.singlePrice.toCurrencyNum(),
-          product.singleCost.toCurrencyNum(),
-          product.originalPrice.toCurrencyNum(),
+          CellData(number: Util.toUTC(now: order.createdAt)),
+          CellData(string: product.productName),
+          CellData(string: product.catalogName),
+          CellData(number: product.count),
+          CellData(number: product.singlePrice.toCurrencyNum()),
+          CellData(number: product.singleCost.toCurrencyNum()),
+          CellData(number: product.originalPrice.toCurrencyNum()),
         ],
     ];
   }
 
-  static List<List<Object>> formatOrderDetailsIngredient(OrderObject order) {
+  static List<List<CellData>> formatIngredient(OrderObject order) {
     final createdAt = order.createdAt.millisecondsSinceEpoch ~/ 1000;
     return [
       for (final product in order.products)
         for (final ing in product.ingredients)
           [
-            createdAt,
-            ing.ingredientName,
-            ing.quantityName ?? '',
-            ing.amount,
+            CellData(number: createdAt),
+            CellData(string: ing.ingredientName),
+            CellData(string: ing.quantityName ?? ''),
+            CellData(number: ing.amount),
           ],
     ];
   }
 
-  static List<String> get orderHeaders => [
+  static List<String> get basicHeaders => [
         S.transitGSOrderHeaderTs,
         S.transitGSOrderHeaderTime,
         S.transitGSOrderHeaderPrice,
@@ -72,18 +73,18 @@ class OrderFormatter {
       ];
 
   /// Order's attributes at which index, 0-index
-  static const orderDetailsAttrIndex = 8;
+  static const attrPosition = 8;
 
   /// Order's products detail at which index, 0-index
-  static const orderDetailsProductIndex = 9;
+  static const productPosition = 9;
 
-  static List<String> get orderDetailsAttrHeaders => [
+  static List<String> get attrHeaders => [
         S.transitGSOrderAttributeHeaderTs,
         S.transitGSOrderAttributeHeaderName,
         S.transitGSOrderAttributeHeaderOption,
       ];
 
-  static List<String> get orderDetailsProductHeaders => [
+  static List<String> get productHeaders => [
         S.transitGSOrderProductHeaderTs,
         S.transitGSOrderProductHeaderName,
         S.transitGSOrderProductHeaderCatalog,
@@ -94,9 +95,9 @@ class OrderFormatter {
       ];
 
   /// Order's ingredients detail at which index, 0-index
-  static const orderDetailsIngredientIndex = 6;
+  static const ingredientPosition = 6;
 
-  static List<String> get orderDetailsIngredientHeaders => [
+  static List<String> get ingredientHeaders => [
         S.transitGSOrderIngredientHeaderTs,
         S.transitGSOrderIngredientHeaderName,
         S.transitGSOrderIngredientHeaderQuantity,

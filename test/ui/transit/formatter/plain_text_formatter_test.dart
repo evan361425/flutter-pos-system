@@ -23,7 +23,7 @@ import '../../../test_helpers/translator.dart';
 void main() {
   group('Plain Text Formatter', () {
     List<FormattedItem<T>> format<T extends Model>(
-      Formattable able,
+      FormattableModel able,
       String expected,
     ) {
       const formatter = PlainTextFormatter();
@@ -32,7 +32,7 @@ void main() {
 
       final lines = text.trim().split('\n');
 
-      final guessed = formatter.whichFormattable(lines.removeAt(0));
+      final guessed = formatter.findFormattable(lines.removeAt(0));
       return formatter.format<T>(guessed!, [lines]);
     }
 
@@ -103,7 +103,7 @@ void main() {
       }
 
       final items = format<Product>(
-        Formattable.menu,
+        FormattableModel.menu,
         'This menu has 3 categories, 4 products.\n'
         '\n'
         'Category 1 is called A and it has 3 products.\n'
@@ -153,7 +153,7 @@ void main() {
       });
 
       final items = format<Ingredient>(
-        Formattable.stock,
+        FormattableModel.stock,
         'The inventory has 4 ingredients in total.\n'
         '\n'
         'Ingredient at 1 is called i1, with 0 amount.\n'
@@ -178,7 +178,7 @@ void main() {
       });
 
       final items = format<Quantity>(
-        Formattable.quantities,
+        FormattableModel.quantities,
         '4 quantities have been set.\n'
         '\n'
         'Quantity at 1 is called q1, which defaults to multiplying ingredient quantity by 1.\n'
@@ -214,7 +214,7 @@ void main() {
       });
 
       final items = format<Replenishment>(
-        Formattable.replenisher,
+        FormattableModel.replenisher,
         '2 replenishment methods have been set.\n'
         '\n'
         'Replenishment method at 1 is called r1, it will not adjust inventory.\n'
@@ -281,7 +281,7 @@ void main() {
       }
 
       final items = format<OrderAttribute>(
-        Formattable.orderAttr,
+        FormattableModel.orderAttr,
         '3 customer attributes have been set.\n'
         '\n'
         'Attribute at 1 is called c1, belongs to Price Change type, it has 3 options：o1、o2（default）、o3（option value is 20）.\n'
@@ -297,7 +297,7 @@ void main() {
 
     test('unable to found which formattable', () {
       const formatter = PlainTextFormatter();
-      expect(formatter.whichFormattable('some-text'), equals(null));
+      expect(formatter.findFormattable('some-text'), equals(null));
     });
 
     setUpAll(() {

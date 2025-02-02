@@ -7,16 +7,14 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 import 'package:possystem/ui/transit/transit_order_list.dart';
 import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
-import 'order_formatter.dart';
 import 'order_setting_page.dart';
-import 'order_table.dart';
 import 'spreadsheet_selector.dart';
 
 const _cacheKey = 'exporter_order_google_sheet';
@@ -124,7 +122,11 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     );
     Log.ger('gs_export', {'spreadsheet': ss.id, 'target': 'order'});
 
-    final data = prepared.keys.map(chooseFormatter).map((method) => orders.expand((order) => method(order)));
+    final data = prepared.keys.map((e) => e.orderFormattable).map((able) => orders.expand((order) {
+          return able.formatRows(order).map((l) {
+            return l.map((v) => v.value).toList();
+          });
+        }));
 
     if (properties.isOverwrite) {
       widget.statusNotifier.value = S.transitGSProgressStatusOverwriteOrders;
@@ -132,7 +134,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
         ss,
         prepared.values,
         data,
-        prepared.keys.map((key) => chooseHeaders(key)),
+        prepared.keys.map((key) => key.orderFormattable.formatHeader()),
       );
     } else {
       final it = data.iterator;
@@ -171,32 +173,6 @@ class _ExportOrderViewState extends State<ExportOrderView> {
       setState(() {
         properties = other;
       });
-    }
-  }
-
-  static List<List<Object>> Function(OrderObject) chooseFormatter(SheetType type) {
-    switch (type) {
-      case SheetType.orderDetailsAttr:
-        return OrderFormatter.formatOrderDetailsAttr;
-      case SheetType.orderDetailsProduct:
-        return OrderFormatter.formatOrderDetailsProduct;
-      case SheetType.orderDetailsIngredient:
-        return OrderFormatter.formatOrderDetailsIngredient;
-      default:
-        return OrderFormatter.formatOrder;
-    }
-  }
-
-  static List<String> chooseHeaders(SheetType type) {
-    switch (type) {
-      case SheetType.orderDetailsAttr:
-        return OrderFormatter.orderDetailsAttrHeaders;
-      case SheetType.orderDetailsProduct:
-        return OrderFormatter.orderDetailsProductHeaders;
-      case SheetType.orderDetailsIngredient:
-        return OrderFormatter.orderDetailsIngredientHeaders;
-      default:
-        return OrderFormatter.orderHeaders;
     }
   }
 

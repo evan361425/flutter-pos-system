@@ -8,9 +8,10 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/formatter/field_formatter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
-import 'package:possystem/ui/transit/formatter/google_sheet_formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 import 'sheet_preview_page.dart';
 import 'sheet_selector.dart';
@@ -34,12 +35,12 @@ class ImportBasicView extends StatefulWidget {
 }
 
 class _ImportBasicViewState extends State<ImportBasicView> {
-  final sheets = <Formattable, GlobalKey<SheetSelectorState>>{
-    Formattable.menu: GlobalKey<SheetSelectorState>(),
-    Formattable.stock: GlobalKey<SheetSelectorState>(),
-    Formattable.quantities: GlobalKey<SheetSelectorState>(),
-    Formattable.replenisher: GlobalKey<SheetSelectorState>(),
-    Formattable.orderAttr: GlobalKey<SheetSelectorState>(),
+  final sheets = <FormattableModel, GlobalKey<SheetSelectorState>>{
+    FormattableModel.menu: GlobalKey<SheetSelectorState>(),
+    FormattableModel.stock: GlobalKey<SheetSelectorState>(),
+    FormattableModel.quantities: GlobalKey<SheetSelectorState>(),
+    FormattableModel.replenisher: GlobalKey<SheetSelectorState>(),
+    FormattableModel.orderAttr: GlobalKey<SheetSelectorState>(),
   };
 
   final selector = GlobalKey<SpreadsheetSelectorState>();
@@ -127,7 +128,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     }
   }
 
-  Future<void> import(Formattable? type) async {
+  Future<void> import(FormattableModel? type) async {
     final ss = selector.currentState?.spreadsheet;
     if (ss == null) {
       showSnackBar(S.transitGSErrorImportEmptySpreadsheet, context: context);
@@ -158,7 +159,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   /// After verifying the basic data, start importing.
   Future<void> _importSheets(
     GoogleSpreadsheet ss,
-    List<MapEntry<Formattable, GoogleSheetProperties>> ableSheets,
+    List<MapEntry<FormattableModel, GoogleSheetProperties>> ableSheets,
   ) async {
     final needPreview = ableSheets.length == 1;
     for (final entry in ableSheets) {
@@ -190,7 +191,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   /// 3. Parse data and import
   Future<bool> _importData(
     GoogleSpreadsheet ss,
-    Formattable able,
+    FormattableModel able,
     GoogleSheetProperties sheet,
     bool needPreview,
   ) async {
@@ -212,35 +213,35 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     Log.out('received data length: ${source.length}', 'gs_import');
     await _cacheSheetName(able.name, sheet);
 
-    bool? approved = true;
+    bool? allowed = true;
     if (needPreview) {
-      approved = await _previewSheetData(able, source);
-      if (approved != true) return false;
+      allowed = await _previewSheetData(able, source);
+      if (allowed != true) return false;
 
-      approved = await _previewBeforeMerge(able, source);
+      allowed = await _previewBeforeMerge(able, source);
     } else {
       // merge to stage only (without preview)
-      const GoogleSheetFormatter().format(able, source);
+      findFieldFormatter(able).format(source);
     }
 
     // step 3
     Log.out('parsing table: ${able.name}', 'gs_import');
-    await Formatter.finishFormat(able, approved);
+    await able.finishPreview(allowed);
 
-    return approved ?? false;
+    return allowed ?? false;
   }
 
   /// Request the data from the sheet.
   Future<List<List<Object?>>?> _requestData(
-    Formattable able,
+    FormattableModel able,
     GoogleSpreadsheet ss,
     GoogleSheetProperties sheet,
   ) async {
     widget.notifier.value = S.transitGSProgressStatusVerifyUser;
     await widget.exporter.auth();
 
-    const formatter = GoogleSheetFormatter();
-    final neededColumns = formatter.getHeader(able).length;
+    final formatter = findFieldFormatter(able);
+    final neededColumns = formatter.getHeader().length;
     final sheetData = await widget.exporter.getSheetData(
       ss,
       sheet.title,
@@ -257,15 +258,15 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   }
 
   Future<bool?> _previewSheetData(
-    Formattable able,
+    FormattableModel able,
     List<List<Object?>> source,
   ) async {
-    const formatter = GoogleSheetFormatter();
+    final formatter = findFieldFormatter(able);
     final result = await showAdaptiveDialog(
       context: context,
       builder: (context) => SheetPreviewPage(
-        source: SheetPreviewerDataTableSource(source),
-        header: formatter.getHeader(able),
+        source: ModelDataTableSource(source),
+        header: formatter.getHeader(),
         title: S.transitModelName(able.name),
         action: TextButton(
           onPressed: () => Navigator.of(context).pop(true),
@@ -278,13 +279,13 @@ class _ImportBasicViewState extends State<ImportBasicView> {
   }
 
   Future<bool?> _previewBeforeMerge(
-    Formattable able,
+    FormattableModel able,
     List<List<Object?>> source,
   ) {
-    const formatter = GoogleSheetFormatter();
-    final formatted = formatter.format(able, source);
+    final formatter = findFieldFormatter(able);
+    final formatted = formatter.format(source);
 
-    return PreviewPage.show(context, able, formatted);
+    return PreviewPage.show(context, able: able, items: formatted);
   }
 
   GoogleSheetProperties? _getSheetName(String label) {

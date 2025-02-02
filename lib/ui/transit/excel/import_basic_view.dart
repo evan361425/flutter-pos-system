@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/icons.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
+import 'package:possystem/ui/transit/exporter/excel_exporter.dart';
+import 'package:possystem/ui/transit/formatter/field_formatter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 class ImportBasicView extends StatefulWidget {
-  final PlainTextExporter exporter;
+  final ExcelExporter exporter;
+  final ValueNotifier<String> stateNotifier;
 
   const ImportBasicView({
     super.key,
-    this.exporter = const PlainTextExporter(),
+    this.exporter = const ExcelExporter(),
+    required this.stateNotifier,
   });
 
   @override
@@ -19,44 +23,18 @@ class ImportBasicView extends StatefulWidget {
 }
 
 class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAliveClientMixin {
-  final TextEditingController controller = TextEditingController();
+  final ValueNotifier<FormattableModel> model = ValueNotifier(FormattableModel.menu);
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        const SizedBox(height: 16.0),
-        Card(
-          key: const Key('import_btn'),
-          margin: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: ListTile(
-            title: Text(S.transitImportPreviewTitle),
-            trailing: const Icon(KIcons.preview),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            ),
-            onTap: importData,
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: TextField(
-            key: const Key('import_text'),
-            controller: controller,
-            keyboardType: TextInputType.multiline,
-            minLines: 3,
-            maxLines: 6,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(
-                borderSide: BorderSide(width: 5.0),
-              ),
-              hintText: S.transitPTImportHint,
-              helperText: S.transitPTImportHelper,
-              helperMaxLines: 2,
-            ),
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(children: [
+        ModelPicker(
+          selected: model,
+          onTap: _import,
+          icon: const Icon(Icons.file_upload_sharp, semanticLabel: '選擇檔案'),
         ),
       ]),
     );
@@ -65,22 +43,46 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
   @override
   bool get wantKeepAlive => true;
 
-  void importData() async {
-    final lines = controller.text.trim().split('\n');
-    final first = lines.isEmpty ? '' : lines.removeAt(0);
-    final able = widget.exporter.formatter.whichFormattable(first);
+  void _import(FormattableModel able) async {
+    if (widget.stateNotifier.value != '_start') {
+      try {
+        widget.stateNotifier.value = '_start';
+        final success = await showSnackbarWhenFutureError(
+          _startImport(able),
+          'excel_import_failed',
+          context: context,
+        );
 
-    if (able == null) {
-      showSnackBar(S.transitPTImportErrorNotFound, context: context);
-      return;
+        if (mounted && success == true) {
+          showSnackBar(S.actSuccess, context: context);
+        }
+      } finally {
+        widget.stateNotifier.value = '_finish';
+      }
+    }
+  }
+
+  Future<bool?> _startImport(FormattableModel able) async {
+    final stream = await XFile.pick(extensions: const ['xlsx', 'xls']);
+    if (stream == null) {
+      if (mounted) {
+        showSnackBar('檔案取得失敗', context: context);
+      }
+
+      return false;
     }
 
-    final formatted = widget.exporter.formatter.format(able, [lines]);
-    final allow = await PreviewPage.show(context, able, formatted);
-    await Formatter.finishFormat(able, allow);
-
-    if (mounted && allow == true) {
-      showSnackBar(S.actSuccess, context: context);
+    final data = await widget.exporter.import(stream);
+    bool? result;
+    if (mounted) {
+      result = await PreviewPage.show(
+        context,
+        able: able,
+        items: findFieldFormatter(able).format(data),
+        commitAfter: true,
+      );
     }
+
+    return result;
   }
 }

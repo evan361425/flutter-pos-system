@@ -8,8 +8,9 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/formatter/field_formatter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
-import 'package:possystem/ui/transit/formatter/google_sheet_formatter.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 import 'sheet_namer.dart';
 import 'sheet_preview_page.dart';
@@ -82,12 +83,12 @@ class _ExportBasicViewState extends State<ExportBasicView> {
       SheetType.orderAttr,
     ].map((e) {
       final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ?? S.transitModelName(e.name);
-      final data = Formatter.getTarget(Formatter.nameToFormattable(e.name));
+      final repo = FormattableModel.find(e.name).toRepository();
 
       return SheetNamerProperties(
         e,
         name: name,
-        checked: data.isNotEmpty,
+        checked: repo.isNotEmpty,
         hints: spreadsheet?.sheets.map((e) => e.title),
       );
     }).toList();
@@ -105,13 +106,13 @@ class _ExportBasicViewState extends State<ExportBasicView> {
   }
 
   void previewData(SheetType type) {
-    const formatter = GoogleSheetFormatter();
-    final able = Formatter.nameToFormattable(type.name);
+    final able = FormattableModel.find(type.name);
+    final formatter = findFieldFormatter(able);
     showAdaptiveDialog(
       context: context,
       builder: (_) => SheetPreviewPage(
-        source: SheetPreviewerDataTableSource(formatter.getRows(able)),
-        header: formatter.getHeader(able),
+        source: ModelDataTableSource(formatter.getRows()),
+        header: formatter.getHeader(),
         title: S.transitModelName(able.name),
       ),
     );
@@ -128,24 +129,27 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     Map<SheetType, GoogleSheetProperties> kv,
   ) async {
     Log.ger('gs_export', {'spreadsheet': ss.id, 'target': kv.keys.map((e) => e.name).join(',')});
-    const formatter = GoogleSheetFormatter();
 
     // cache the sheet names
     final prepared = kv.map((key, value) => MapEntry(
-          Formattable.values.firstWhere((e) => e.name == key.name),
+          FormattableModel.values.firstWhere((e) => e.name == key.name),
           value,
         ));
     for (final e in prepared.entries) {
       await _cacheSheetName(e.key.name, e.value.title);
     }
 
+    // prepare data
+    final data = <Iterable<Iterable<GoogleSheetCellData>>>[];
+    final headers = <Iterable<GoogleSheetCellData>>[];
+    for (final able in prepared.keys) {
+      final formatter = findFieldFormatter(able);
+      data.add(formatter.getRows().map((e) => e.map((v) => GoogleSheetCellData.fromCellData(v))));
+      headers.add(formatter.getHeader().map((e) => GoogleSheetCellData.fromCellData(e)));
+    }
+
     // go
-    await widget.exporter.updateSheet(
-      ss,
-      prepared.values,
-      prepared.keys.map((key) => formatter.getRows(key)),
-      prepared.keys.map((key) => formatter.getHeader(key)),
-    );
+    await widget.exporter.updateSheet(ss, prepared.values, data, headers);
 
     Log.out('export finish', 'gs_export');
     if (mounted) {

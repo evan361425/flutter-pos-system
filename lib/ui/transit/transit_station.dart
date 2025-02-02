@@ -152,25 +152,25 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
       case TransitMethod.excel:
         switch (combination) {
           case _Combination.exportBasic:
-            return const excel.ExportBasicView();
+            return excel.ExportBasicView(stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return excel.ExportOrderView(notifier: range);
+            return excel.ExportOrderView(stateNotifier: stateNotifier, notifier: range);
           case _Combination.importBasic:
-            return const excel.ImportBasicView();
+            return excel.ImportBasicView(stateNotifier: stateNotifier);
         }
       case TransitMethod.csv:
         switch (combination) {
           case _Combination.exportBasic:
-            return const csv.ExportBasicView();
+            return csv.ExportBasicView(stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return csv.ExportOrderView(notifier: range);
+            return csv.ExportOrderView(notifier: range, stateNotifier: stateNotifier);
           case _Combination.importBasic:
-            return const csv.ImportBasicView();
+            return csv.ImportBasicView(stateNotifier: stateNotifier);
         }
       case TransitMethod.plainText:
         switch (combination) {
           case _Combination.exportBasic:
-            return const pt.ExportBasicView();
+            return pt.ExportBasicView(stateNotifier: stateNotifier);
           case _Combination.exportOrder:
             return pt.ExportOrderView(notifier: range);
           case _Combination.importBasic:

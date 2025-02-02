@@ -5,12 +5,12 @@ import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
 import 'data_exporter.dart';
 
 class PlainTextExporter extends DataExporter {
-  final PlainTextFormatter formatter;
+  const PlainTextExporter();
 
-  const PlainTextExporter({this.formatter = const PlainTextFormatter()});
+  Future<void> export(FormattableModel able) {
+    final rows = findPlainTextFormatter(able).getRows();
+    final text = rows.map((row) => row.join('\n')).join('\n\n');
 
-  Future<void> export(Formattable able) {
-    final text = formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
     return exportToClipboard(text);
   }
 

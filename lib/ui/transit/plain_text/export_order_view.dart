@@ -10,10 +10,12 @@ import 'package:possystem/ui/transit/transit_order_range.dart';
 
 class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
+  final PlainTextExporter exporter;
 
   const ExportOrderView({
     super.key,
     required this.notifier,
+    this.exporter = const PlainTextExporter(),
   });
 
   @override
@@ -60,7 +62,6 @@ class ExportOrderView extends StatelessWidget {
       notifier.value.end,
     );
 
-    const exporter = PlainTextExporter();
     await exporter.exportToClipboard(orders
         .map((o) => [
               S.transitOrderItemTitle(o.createdAt),

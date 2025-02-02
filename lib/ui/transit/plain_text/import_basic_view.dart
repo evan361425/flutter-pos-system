@@ -2,17 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
-import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 
 class ImportBasicView extends StatefulWidget {
-  final PlainTextExporter exporter;
-
-  const ImportBasicView({
-    super.key,
-    this.exporter = const PlainTextExporter(),
-  });
+  const ImportBasicView({super.key});
 
   @override
   State<ImportBasicView> createState() => _ImportBasicViewState();
@@ -68,19 +62,18 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
   void importData() async {
     final lines = controller.text.trim().split('\n');
     final first = lines.isEmpty ? '' : lines.removeAt(0);
-    final able = widget.exporter.formatter.whichFormattable(first);
+    final able = findPlainTextFormattable(first);
 
     if (able == null) {
       showSnackBar(S.transitPTImportErrorNotFound, context: context);
       return;
     }
 
-    final formatted = widget.exporter.formatter.format(able, [lines]);
-    final allow = await PreviewPage.show(context, able, formatted);
-    await Formatter.finishFormat(able, allow);
-
-    if (mounted && allow == true) {
-      showSnackBar(S.actSuccess, context: context);
-    }
+    await PreviewPage.show(
+      context,
+      able: able,
+      items: findPlainTextFormatter(able).format([lines]),
+      commitAfter: true,
+    );
   }
 }

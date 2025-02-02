@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -12,44 +13,39 @@ const _reDig = r' *-?\d+\.?\d*';
 const _reInt = r'[0-9 ]+';
 const _rePre = r'^';
 
-class PlainTextFormatter extends Formatter<String> {
-  const PlainTextFormatter();
-
-  @override
-  ModelTransformer getTransformer(Formattable able) {
-    switch (able) {
-      case Formattable.menu:
-        return _MenuTransformer(Menu.instance);
-      case Formattable.stock:
-        return _StockTransformer(Stock.instance);
-      case Formattable.quantities:
-        return _QuantitiesTransformer(Quantities.instance);
-      case Formattable.replenisher:
-        return _ReplenisherTransformer(Replenisher.instance);
-      case Formattable.orderAttr:
-        return _OATransformer(OrderAttributes.instance);
-    }
-  }
-
-  Formattable? whichFormattable(String line) {
-    if (line.startsWith(S.transitPTFormatModelMenuHeaderPrefix)) {
-      return Formattable.menu;
-    } else if (line.startsWith(S.transitPTFormatModelStockHeaderPrefix)) {
-      return Formattable.stock;
-    } else if (line.endsWith(S.transitPTFormatModelQuantitiesHeaderSuffix)) {
-      return Formattable.quantities;
-    } else if (line.endsWith(S.transitPTFormatModelReplenisherHeaderSuffix)) {
-      return Formattable.replenisher;
-    } else if (line.endsWith(S.transitPTFormatModelOaHeaderSuffix)) {
-      return Formattable.orderAttr;
-    }
-
-    return null;
+ModelFormatter<Repository, String> findPlainTextFormatter(FormattableModel able) {
+  switch (able) {
+    case FormattableModel.menu:
+      return _MenuFormatter(Menu.instance, able.toParser());
+    case FormattableModel.stock:
+      return _StockFormatter(Stock.instance, able.toParser());
+    case FormattableModel.quantities:
+      return _QuantitiesFormatter(Quantities.instance, able.toParser());
+    case FormattableModel.replenisher:
+      return _ReplenisherFormatter(Replenisher.instance, able.toParser());
+    case FormattableModel.orderAttr:
+      return _OAFormatter(OrderAttributes.instance, able.toParser());
   }
 }
 
-class _MenuTransformer extends ModelTransformer<Menu, String> {
-  const _MenuTransformer(super.target);
+FormattableModel? findPlainTextFormattable(String line) {
+  if (line.startsWith(S.transitPTFormatModelMenuHeaderPrefix)) {
+    return FormattableModel.menu;
+  } else if (line.startsWith(S.transitPTFormatModelStockHeaderPrefix)) {
+    return FormattableModel.stock;
+  } else if (line.endsWith(S.transitPTFormatModelQuantitiesHeaderSuffix)) {
+    return FormattableModel.quantities;
+  } else if (line.endsWith(S.transitPTFormatModelReplenisherHeaderSuffix)) {
+    return FormattableModel.replenisher;
+  } else if (line.endsWith(S.transitPTFormatModelOaHeaderSuffix)) {
+    return FormattableModel.orderAttr;
+  }
+
+  return null;
+}
+
+class _MenuFormatter extends ModelFormatter<Menu, String> {
+  const _MenuFormatter(super.target, super.parser);
 
   static const ingredientDelimiter = '；';
   static const quantityPrefix = '：';
@@ -111,7 +107,7 @@ class _MenuTransformer extends ModelTransformer<Menu, String> {
   }
 
   @override
-  List<List<String>> parseRows(List<List<String>> rows) {
+  List<List<String>> transformRows(List<List<String>> rows) {
     final reCatalog = RegExp(
       _rePre +
           S.transitPTFormatModelMenuCatalog(
@@ -216,8 +212,8 @@ class _MenuTransformer extends ModelTransformer<Menu, String> {
   }
 }
 
-class _StockTransformer extends ModelTransformer<Stock, String> {
-  const _StockTransformer(super.target);
+class _StockFormatter extends ModelFormatter<Stock, String> {
+  const _StockFormatter(super.target, super.parser);
 
   @override
   List<String> getHeader() => [S.transitPTFormatModelStockMetaIngredient(target.length)];
@@ -249,7 +245,7 @@ class _StockTransformer extends ModelTransformer<Stock, String> {
   }
 
   @override
-  List<List<String>> parseRows(List<List<Object?>> rows) {
+  List<List<String>> transformRows(List<List<Object?>> rows) {
     final reBase = RegExp(_rePre +
         S.transitPTFormatModelStockIngredient(
           _reInt,
@@ -287,8 +283,8 @@ class _StockTransformer extends ModelTransformer<Stock, String> {
   }
 }
 
-class _QuantitiesTransformer extends ModelTransformer<Quantities, String> {
-  const _QuantitiesTransformer(super.target);
+class _QuantitiesFormatter extends ModelFormatter<Quantities, String> {
+  const _QuantitiesFormatter(super.target, super.parser);
 
   @override
   List<String> getHeader() => [S.transitPTFormatModelQuantitiesMetaQuantity(target.length)];
@@ -311,7 +307,7 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities, String> {
   }
 
   @override
-  List<List<String>> parseRows(List<List<Object?>> rows) {
+  List<List<String>> transformRows(List<List<Object?>> rows) {
     final re = RegExp(
       _rePre +
           S.transitPTFormatModelQuantitiesQuantity(
@@ -336,8 +332,8 @@ class _QuantitiesTransformer extends ModelTransformer<Quantities, String> {
   }
 }
 
-class _ReplenisherTransformer extends ModelTransformer<Replenisher, String> {
-  const _ReplenisherTransformer(super.target);
+class _ReplenisherFormatter extends ModelFormatter<Replenisher, String> {
+  const _ReplenisherFormatter(super.target, super.parser);
 
   static const ingredientDelimiter = '：';
 
@@ -363,7 +359,7 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher, String> {
   }
 
   @override
-  List<List<String>> parseRows(List<List<Object?>> rows) {
+  List<List<String>> transformRows(List<List<Object?>> rows) {
     final reBase = RegExp(
       _rePre +
           S.transitPTFormatModelReplenisherReplenishment(
@@ -399,8 +395,8 @@ class _ReplenisherTransformer extends ModelTransformer<Replenisher, String> {
   }
 }
 
-class _OATransformer extends ModelTransformer<OrderAttributes, String> {
-  const _OATransformer(super.target);
+class _OAFormatter extends ModelFormatter<OrderAttributes, String> {
+  const _OAFormatter(super.target, super.parser);
 
   @override
   List<String> getHeader() => [S.transitPTFormatModelOaMetaOa(target.length)];
@@ -431,7 +427,7 @@ class _OATransformer extends ModelTransformer<OrderAttributes, String> {
   }
 
   @override
-  List<List<String>> parseRows(List<List<Object?>> rows) {
+  List<List<String>> transformRows(List<List<Object?>> rows) {
     final reOA = RegExp(_rePre +
         S.transitPTFormatModelOaOa(
           _reInt,

@@ -211,7 +211,7 @@ class Database {
   }
 
   static Future<String> getRootPath() async {
-    final paths = (await XFile.getRootPath()).split('/')
+    final paths = (await XFile.getRootPath()).split(XFile.fs.path.separator)
       ..removeLast()
       ..add('databases');
     return '${paths.join('/')}/pos_system.sqlite';

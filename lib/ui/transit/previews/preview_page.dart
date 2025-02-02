@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
@@ -20,27 +21,38 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   });
 
   static Future<bool?> show(
-    BuildContext context,
-    Formattable able,
-    List<FormattedItem> items,
-  ) {
-    return showAdaptiveDialog<bool?>(
+    BuildContext context, {
+    required FormattableModel able,
+    required List<FormattedItem> items,
+    bool commitAfter = false,
+  }) async {
+    final allow = await showAdaptiveDialog<bool?>(
       context: context,
       builder: (context) {
         switch (able) {
-          case Formattable.menu:
+          case FormattableModel.menu:
             return ProductPreviewPage(items: items);
-          case Formattable.orderAttr:
+          case FormattableModel.orderAttr:
             return OrderAttributePreviewPage(items: items);
-          case Formattable.quantities:
+          case FormattableModel.quantities:
             return QuantityPreviewPage(items: items);
-          case Formattable.stock:
+          case FormattableModel.stock:
             return IngredientPreviewPage(items: items);
-          case Formattable.replenisher:
+          case FormattableModel.replenisher:
             return ReplenishmentPreviewPage(items: items);
         }
       },
     );
+
+    if (commitAfter) {
+      await able.finishPreview(allow);
+
+      if (context.mounted && allow == true) {
+        showSnackBar(S.actSuccess, context: context);
+      }
+    }
+
+    return allow;
   }
 
   @override
