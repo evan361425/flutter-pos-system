@@ -5,6 +5,7 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/data_exporter.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 import 'csv/views.dart' as csv;
 import 'excel/views.dart' as excel;
@@ -31,7 +32,7 @@ class TransitStation extends StatefulWidget {
   final DateTimeRange? range;
 
   @visibleForTesting
-  final ValueNotifier<String>? notifier;
+  final TransitStateNotifier? notifier;
 
   @visibleForTesting
   final DataExporter? exporter;
@@ -53,7 +54,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
   final loading = GlobalKey<LoadingWrapperState>();
 
   /// This is used to display the "in progress" information to avoid interruption during export.
-  late final ValueNotifier<String> stateNotifier;
+  late final TransitStateNotifier stateNotifier;
 
   late final TabController tabController;
 
@@ -81,7 +82,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
       }
     });
 
-    stateNotifier = widget.notifier ?? ValueNotifier('');
+    stateNotifier = widget.notifier ?? TransitStateNotifier();
     stateNotifier.addListener(() {
       switch (stateNotifier.value) {
         case '_start':
@@ -137,24 +138,24 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
   }
 
   Widget _buildScreen(_Combination combination) {
-    final range = ValueNotifier(widget.range ?? Util.getDateRange());
+    final ranger = ValueNotifier(widget.range ?? Util.getDateRange());
     switch (widget.method) {
       case TransitMethod.googleSheet:
         final exporter = (widget.exporter ?? GoogleSheetExporter()) as GoogleSheetExporter;
         switch (combination) {
           case _Combination.exportBasic:
-            return gs.ExportBasicView(exporter: exporter, notifier: stateNotifier);
+            return gs.ExportBasicView(exporter: exporter, stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return gs.ExportOrderView(exporter: exporter, statusNotifier: stateNotifier, rangeNotifier: range);
+            return gs.ExportOrderView(exporter: exporter, stateNotifier: stateNotifier, ranger: ranger);
           case _Combination.importBasic:
-            return gs.ImportBasicView(exporter: exporter, notifier: stateNotifier);
+            return gs.ImportBasicView(exporter: exporter, stateNotifier: stateNotifier);
         }
       case TransitMethod.excel:
         switch (combination) {
           case _Combination.exportBasic:
             return excel.ExportBasicView(stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return excel.ExportOrderView(stateNotifier: stateNotifier, notifier: range);
+            return excel.ExportOrderView(stateNotifier: stateNotifier, ranger: ranger);
           case _Combination.importBasic:
             return excel.ImportBasicView(stateNotifier: stateNotifier);
         }
@@ -163,7 +164,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
           case _Combination.exportBasic:
             return csv.ExportBasicView(stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return csv.ExportOrderView(notifier: range, stateNotifier: stateNotifier);
+            return csv.ExportOrderView(stateNotifier: stateNotifier, ranger: ranger);
           case _Combination.importBasic:
             return csv.ImportBasicView(stateNotifier: stateNotifier);
         }
@@ -172,9 +173,9 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
           case _Combination.exportBasic:
             return pt.ExportBasicView(stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return pt.ExportOrderView(notifier: range);
+            return pt.ExportOrderView(stateNotifier: stateNotifier, ranger: ranger);
           case _Combination.importBasic:
-            return const pt.ImportBasicView();
+            return pt.ImportBasicView(stateNotifier: stateNotifier);
         }
     }
   }

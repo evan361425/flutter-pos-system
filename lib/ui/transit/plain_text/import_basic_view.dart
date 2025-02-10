@@ -4,9 +4,15 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 class ImportBasicView extends StatefulWidget {
-  const ImportBasicView({super.key});
+  final TransitStateNotifier stateNotifier;
+
+  const ImportBasicView({
+    super.key,
+    required this.stateNotifier,
+  });
 
   @override
   State<ImportBasicView> createState() => _ImportBasicViewState();
@@ -30,7 +36,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
             ),
-            onTap: importData,
+            onTap: _import,
           ),
         ),
         const SizedBox(height: 16.0),
@@ -59,7 +65,15 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
   @override
   bool get wantKeepAlive => true;
 
-  void importData() async {
+  void _import() {
+    widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
+          _startImport(),
+          'pt_import_failed',
+          context: context,
+        ));
+  }
+
+  Future<void> _startImport() async {
     final lines = controller.text.trim().split('\n');
     final first = lines.isEmpty ? '' : lines.removeAt(0);
     final able = findPlainTextFormattable(first);
@@ -75,5 +89,8 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
       items: findPlainTextFormatter(able).format([lines]),
       commitAfter: true,
     );
+
+    // ignore: use_build_context_synchronously
+    showSnackBar(S.transitPTCopySuccess, context: context);
   }
 }

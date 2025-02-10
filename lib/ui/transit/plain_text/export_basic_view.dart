@@ -8,7 +8,7 @@ import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportBasicView extends StatefulWidget {
-  final ValueNotifier<String> stateNotifier;
+  final TransitStateNotifier stateNotifier;
   final PlainTextExporter exporter;
 
   const ExportBasicView({
@@ -32,6 +32,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
         child: ModelPicker(
           selected: model,
           onTap: _copy,
+          allowAll: false,
           icon: Icon(Icons.copy_outlined, semanticLabel: S.transitPTCopyBtn),
         ),
       ),
@@ -93,22 +94,17 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     ]);
   }
 
-  void _copy(FormattableModel able) {
-    try {
-      if (widget.stateNotifier.value != '_start') {
-        widget.stateNotifier.value = '_start';
-        showSnackbarWhenFutureError(
-          widget.exporter.export(able),
-          'pt_export_failed',
-          context: context,
-        ).then((value) {
-          if (mounted) {
-            showSnackBar(S.transitPTCopySuccess, context: context);
-          }
-        });
-      }
-    } finally {
-      widget.stateNotifier.value = '_finish';
-    }
+  void _copy(FormattableModel? able) {
+    widget.stateNotifier.exec(
+      () => showSnackbarWhenFutureError(
+        widget.exporter.export(able!),
+        'pt_export_failed',
+        context: context,
+      ).then((value) {
+        if (mounted) {
+          showSnackBar(S.transitPTCopySuccess, context: context);
+        }
+      }),
+    );
   }
 }

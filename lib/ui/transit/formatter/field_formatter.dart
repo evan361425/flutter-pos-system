@@ -8,6 +8,14 @@ import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 
+List<List<CellData>> getAllFormattedFieldHeaders(FormattableModel? able) {
+  return (able?.toList() ?? FormattableModel.values).map((able) => findFieldFormatter(able).getHeader()).toList();
+}
+
+List<List<List<CellData>>> getAllFormattedFieldData(FormattableModel? able) {
+  return (able?.toList() ?? FormattableModel.values).map((able) => findFieldFormatter(able).getRows()).toList();
+}
+
 ModelFormatter<Repository, CellData> findFieldFormatter(FormattableModel able) {
   switch (able) {
     case FormattableModel.menu:

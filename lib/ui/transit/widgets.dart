@@ -7,6 +7,31 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/order_formatter.dart';
 
+class TransitStateNotifier extends ValueNotifier<String> {
+  TransitStateNotifier() : super('_finish');
+
+  bool get isProgressing => value != '_finish';
+
+  void startProgress() {
+    value = '_start';
+  }
+
+  void finishProgress() {
+    value = '_finish';
+  }
+
+  void exec(VoidCallback callback) {
+    if (!isProgressing) {
+      try {
+        startProgress();
+        callback();
+      } finally {
+        finishProgress();
+      }
+    }
+  }
+}
+
 class ModelDataTable extends StatelessWidget {
   final List<String> headers;
   final ModelDataTableSource source;
@@ -74,15 +99,19 @@ class ModelDataTableSource extends DataTableSource {
 
 class ModelPicker extends StatefulWidget {
   /// Null means select all
-  final ValueNotifier<FormattableModel> selected;
-  final void Function(FormattableModel) onTap;
+  final ValueNotifier<FormattableModel?> selected;
+  final void Function(FormattableModel?) onTap;
   final Icon icon;
+  final bool allowAll;
+  final String? allWarning;
 
   const ModelPicker({
     super.key,
     required this.selected,
     required this.onTap,
     required this.icon,
+    this.allowAll = true,
+    this.allWarning,
   });
 
   @override
@@ -92,9 +121,9 @@ class ModelPicker extends StatefulWidget {
 class _ModelPickerState extends State<ModelPicker> {
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
+    final row = Row(children: [
       Expanded(
-        child: DropdownButtonFormField<FormattableModel>(
+        child: DropdownButtonFormField<FormattableModel?>(
           key: const Key('transit.model_picker'),
           value: widget.selected.value,
           decoration: const InputDecoration(
@@ -102,11 +131,17 @@ class _ModelPickerState extends State<ModelPicker> {
             floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
           onChanged: (value) {
-            if (value != null && mounted) {
+            if (mounted) {
               setState(() => widget.selected.value = value);
             }
           },
           items: [
+            if (widget.allowAll)
+              const DropdownMenuItem(
+                key: Key('transit.model_picker._all'),
+                value: null,
+                child: Text('全部'),
+              ),
             for (final able in FormattableModel.values)
               DropdownMenuItem(
                 key: Key('transit.model_picker.${able.name}'),
@@ -122,6 +157,16 @@ class _ModelPickerState extends State<ModelPicker> {
         icon: widget.icon,
       ),
     ]);
+
+    if (widget.allWarning != null) {
+      return Column(children: [
+        row,
+        const SizedBox(height: 4),
+        HintText(widget.allWarning!),
+      ]);
+    }
+
+    return row;
   }
 }
 

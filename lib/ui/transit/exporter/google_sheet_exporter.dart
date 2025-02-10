@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/auth.dart';
@@ -57,6 +58,7 @@ class GoogleSheetExporter extends DataExporter {
     );
   }
 
+  /// Find the spreadsheet by the given id.
   Future<GoogleSpreadsheet?> getSpreadsheet(String id) async {
     final sheetsApi = await getSheetsApi(false);
     Log.out('get_spreadsheet start', _logCode);
@@ -305,6 +307,18 @@ class GoogleSpreadsheet {
 
   String toLink() {
     return 'https://docs.google.com/spreadsheets/d/$id/edit';
+  }
+
+  /// Merge the given sheets into the current sheets which is compared by id.
+  void merge(List<GoogleSheetProperties> others) {
+    final diff = others.where((sheet) => sheets.firstWhereOrNull((e) => e.id == sheet.id) == null);
+
+    sheets.addAll(diff);
+  }
+
+  /// Check if the given sheets' title all in the current sheets.
+  bool containsAll(Set<String> sheets) {
+    return this.sheets.map((e) => e.title).toSet().containsAll(sheets);
   }
 
   @override

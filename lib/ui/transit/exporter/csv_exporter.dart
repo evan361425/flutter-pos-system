@@ -9,35 +9,19 @@ import 'data_exporter.dart';
 class CSVExporter extends DataExporter {
   const CSVExporter();
 
-  Future<List<List<String>>> import(Stream<List<int>> stream) async {
+  Future<List<List<String>>> import(List<int> input) async {
     final result = <List<String>>[];
-    final buffer = StringBuffer();
-    String left = '';
+    final string = String.fromCharCodes(input);
 
-    int index = 0;
-    safeSplit(String line) {
-      try {
-        index++;
-        return split(line);
-      } catch (e) {
-        Log.out('parse csv failed at line $index: ${e.toString()}', 'csv');
-        return [line];
+    for (final (lineNo, line) in string.split('\n').indexed) {
+      if (line.isNotEmpty) {
+        try {
+          result.add(split(line));
+        } catch (e) {
+          Log.out('parse csv failed at line $lineNo: ${e.toString()}', 'csv');
+          result.add([line]);
+        }
       }
-    }
-
-    await for (final data in stream) {
-      buffer.write(String.fromCharCodes(data));
-      final lines = (left + buffer.toString()).split('\n');
-      left = lines.removeLast();
-      buffer.clear();
-
-      for (final line in lines.where((e) => e.isNotEmpty)) {
-        result.add(safeSplit(line));
-      }
-    }
-
-    if (left.isNotEmpty) {
-      result.add(safeSplit(left));
     }
 
     return result;

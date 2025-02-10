@@ -270,6 +270,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
+  excel:
+    dependency: "direct main"
+    description:
+      name: excel
+      sha256: "1a15327dcad260d5db21d1f6e04f04838109b39a2f6a84ea486ceda36e468780"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.6"
   extension_google_sign_in_as_googleapis_auth:
     dependency: "direct main"
     description:
@@ -787,14 +803,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  jiffy:
-    dependency: transitive
-    description:
-      name: jiffy
-      sha256: "1c1b86459969ff9f32dc5b0ffe392f1e08181e66396cf9dd8fa7c90552a691af"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.3.2"
   js:
     dependency: transitive
     description:
@@ -1318,22 +1326,6 @@ packages:
     description:
       name: syncfusion_flutter_core
       sha256: "324e6d370de025e5594c60fa60665efa700f34009c2b7859d05e843c357cd5c8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "28.1.41"
-  syncfusion_flutter_xlsio:
-    dependency: "direct main"
-    description:
-      name: syncfusion_flutter_xlsio
-      sha256: cdd97b71abf4450eebd7b48f0b9f47e5809821feb31bbc446bbe91c05781c7a5
-      url: "https://pub.dev"
-    source: hosted
-    version: "28.1.41"
-  syncfusion_officecore:
-    dependency: transitive
-    description:
-      name: syncfusion_officecore
-      sha256: "83e0a89d56da066c42c18adfe2f5a62e6e66cf7cef9daba38d69036680c1c9e1"
       url: "https://pub.dev"
     source: hosted
     version: "28.1.41"

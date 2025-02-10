@@ -10,7 +10,7 @@ import 'package:possystem/ui/transit/widgets.dart';
 
 class ImportBasicView extends StatefulWidget {
   final CSVExporter exporter;
-  final ValueNotifier<String> stateNotifier;
+  final TransitStateNotifier stateNotifier;
 
   const ImportBasicView({
     super.key,
@@ -34,6 +34,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
         ModelPicker(
           selected: model,
           onTap: _import,
+          allowAll: false,
           icon: const Icon(Icons.file_upload_sharp, semanticLabel: '選擇檔案'),
         ),
       ]),
@@ -43,28 +44,21 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
   @override
   bool get wantKeepAlive => true;
 
-  void _import(FormattableModel able) async {
-    if (widget.stateNotifier.value != '_start') {
-      try {
-        widget.stateNotifier.value = '_start';
-        final success = await showSnackbarWhenFutureError(
-          _startImport(able),
+  void _import(FormattableModel? able) async {
+    widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
+          _startImport(able!),
           'csv_import_failed',
           context: context,
-        );
-
-        if (mounted && success == true) {
-          showSnackBar(S.actSuccess, context: context);
-        }
-      } finally {
-        widget.stateNotifier.value = '_finish';
-      }
-    }
+        ).then((success) {
+          if (success == true && mounted) {
+            showSnackBar(S.actSuccess, context: context);
+          }
+        }));
   }
 
   Future<bool?> _startImport(FormattableModel able) async {
-    final stream = await XFile.pick(extensions: const ['csv', 'txt']);
-    if (stream == null) {
+    final input = await XFile.pick(extensions: const ['csv', 'txt']);
+    if (input == null) {
       if (mounted) {
         showSnackBar('檔案取得失敗', context: context);
       }
@@ -72,7 +66,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
       return false;
     }
 
-    final data = await widget.exporter.import(stream);
+    final data = await widget.exporter.import(input);
     bool? result;
     if (mounted) {
       result = await PreviewPage.show(

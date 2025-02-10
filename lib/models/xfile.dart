@@ -28,15 +28,16 @@ class XFile {
     return fs is LocalFileSystem ? (await getApplicationDocumentsDirectory()).path : '';
   }
 
-  static Future<Stream<List<int>>?> pick({
+  static Future<List<int>?> pick({
     required List<String> extensions,
   }) async {
-    final result = await FilePicker.platform.pickFiles(
+    final file = await FilePicker.platform.pickFiles(
       withReadStream: true,
       allowedExtensions: extensions,
       type: FileType.custom,
     );
 
-    return result?.files.firstOrNull?.readStream;
+    final data = await file?.files.firstOrNull?.readStream?.toList();
+    return data?.reduce((a, b) => a + b);
   }
 }

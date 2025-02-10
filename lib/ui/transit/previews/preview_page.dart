@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
@@ -47,9 +46,9 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     if (commitAfter) {
       await able.finishPreview(allow);
 
-      if (context.mounted && allow == true) {
-        showSnackBar(S.actSuccess, context: context);
-      }
+      // if (context.mounted && allow == true) {
+      //   showSnackBar(S.actSuccess, context: context);
+      // }
     }
 
     return allow;

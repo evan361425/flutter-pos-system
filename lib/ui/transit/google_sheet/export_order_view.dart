@@ -20,16 +20,16 @@ import 'spreadsheet_selector.dart';
 const _cacheKey = 'exporter_order_google_sheet';
 
 class ExportOrderView extends StatefulWidget {
-  final ValueNotifier<DateTimeRange> rangeNotifier;
+  final ValueNotifier<DateTimeRange> ranger;
 
-  final ValueNotifier<String> statusNotifier;
+  final ValueNotifier<String> stateNotifier;
 
   final GoogleSheetExporter exporter;
 
   const ExportOrderView({
     super.key,
-    required this.rangeNotifier,
-    required this.statusNotifier,
+    required this.ranger,
+    required this.stateNotifier,
     required this.exporter,
   });
 
@@ -44,7 +44,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   @override
   Widget build(BuildContext context) {
     return TransitOrderList(
-      notifier: widget.rangeNotifier,
+      notifier: widget.ranger,
       formatOrder: (order) => OrderTable(order: order),
       memoryPredictor: memoryPredictor,
       warning: S.transitGSOrderMetaMemoryWarning,
@@ -55,7 +55,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
             child: SignInButton(
               signedInWidget: SpreadsheetSelector(
                 key: selector,
-                notifier: widget.statusNotifier,
+                notifier: widget.stateNotifier,
                 exporter: widget.exporter,
                 cacheKey: _cacheKey,
                 existLabel: S.transitGSSpreadsheetExportExistLabel,
@@ -69,7 +69,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
               ),
             ),
           ),
-          TransitOrderRange(notifier: widget.rangeNotifier),
+          TransitOrderRange(notifier: widget.ranger),
           ListTile(
             key: const Key('edit_sheets'),
             title: Text(S.transitGSOrderSettingTitle),
@@ -102,7 +102,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   }
 
   Map<SheetType, String> requiredSheetTitles() {
-    final prefix = properties.withPrefix ? '${widget.rangeNotifier.value.formatCompact(S.localeName)} ' : '';
+    final prefix = properties.withPrefix ? '${widget.ranger.value.formatCompact(S.localeName)} ' : '';
 
     return {
       for (final sheet in properties.requiredSheets)
@@ -115,10 +115,10 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     GoogleSpreadsheet ss,
     Map<SheetType, GoogleSheetProperties> prepared,
   ) async {
-    widget.statusNotifier.value = S.transitGSProgressStatusFetchLocalOrders;
+    widget.stateNotifier.value = S.transitGSProgressStatusFetchLocalOrders;
     final orders = await Seller.instance.getDetailedOrders(
-      widget.rangeNotifier.value.start,
-      widget.rangeNotifier.value.end,
+      widget.ranger.value.start,
+      widget.ranger.value.end,
     );
     Log.ger('gs_export', {'spreadsheet': ss.id, 'target': 'order'});
 
@@ -129,7 +129,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
         }));
 
     if (properties.isOverwrite) {
-      widget.statusNotifier.value = S.transitGSProgressStatusOverwriteOrders;
+      widget.stateNotifier.value = S.transitGSProgressStatusOverwriteOrders;
       await widget.exporter.updateSheetValues(
         ss,
         prepared.values,
@@ -141,7 +141,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
       for (final entry in prepared.entries) {
         it.moveNext();
         final name = S.transitModelName(entry.key.name);
-        widget.statusNotifier.value = S.transitGSProgressStatusAppendOrders(name);
+        widget.stateNotifier.value = S.transitGSProgressStatusAppendOrders(name);
         await widget.exporter.appendSheetValues(ss, entry.value, it.current);
       }
     }

@@ -21,6 +21,20 @@ enum FormattableModel {
     return FormattableModel.values.firstWhere((e) => e.name == name);
   }
 
+  static List<String> get allL10nNames => FormattableModel.values.map((e) => e.l10nName).toList();
+
+  String get l10nName => S.transitModelName(name);
+
+  /// Useful to do null fallback with [FormattableModel.values]
+  ///
+  /// Example:
+  /// ```dart
+  /// final model = able?.l10nNames ?? FormattableModel.values.map((e) => e.l10nName).toList();
+  /// ```
+  List<String> toL10nNames() => [l10nName];
+
+  List<FormattableModel> toList() => [this];
+
   /// Parse row (list of string) to specific [Model]
   ModelParser toParser() {
     switch (this) {

@@ -8,7 +8,7 @@ import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportBasicView extends StatefulWidget {
   final CSVExporter exporter;
-  final ValueNotifier<String> stateNotifier;
+  final TransitStateNotifier stateNotifier;
 
   const ExportBasicView({
     super.key,
@@ -21,7 +21,7 @@ class ExportBasicView extends StatefulWidget {
 }
 
 class _ExportBasicViewState extends State<ExportBasicView> {
-  final ValueNotifier<FormattableModel> model = ValueNotifier(FormattableModel.menu);
+  final ValueNotifier<FormattableModel?> model = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +41,8 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     ]);
   }
 
-  Widget _buildView(BuildContext context, FormattableModel able, Widget? child) {
-    final formatter = findFieldFormatter(able);
+  Widget _buildView(BuildContext context, FormattableModel? able, Widget? child) {
+    final formatter = findFieldFormatter(able ?? FormattableModel.menu);
     final headers = formatter.getHeader();
     return ModelDataTable(
       headers: headers.map((e) => e.toString()).toList(),
@@ -51,25 +51,20 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     );
   }
 
-  void _export(FormattableModel able) async {
-    if (widget.stateNotifier.value != '_start') {
-      try {
-        widget.stateNotifier.value = '_start';
+  void _export(FormattableModel? able) async {
+    widget.stateNotifier.exec(() async {
+      final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
+      final data = getAllFormattedFieldData(able);
 
-        final formatter = findFieldFormatter(able);
-        final rows = formatter.getRows().map((e) => e.map((v) => v.toString()));
-        final result = await showSnackbarWhenFutureError(
-          widget.exporter.export([S.transitModelName(able.name)], [rows]),
-          'csv_export_failed',
-          context: context,
-        );
-
+      return showSnackbarWhenFutureError(
+        widget.exporter.export(names, data.map((e) => e.map((r) => r.map((c) => c.toString()))).toList()),
+        'csv_export_failed',
+        context: context,
+      ).then((result) {
         if (mounted && result == true) {
           showSnackBar(S.transitCSVShareSuccess, context: context);
         }
-      } finally {
-        widget.stateNotifier.value = '_finish';
-      }
-    }
+      });
+    });
   }
 }

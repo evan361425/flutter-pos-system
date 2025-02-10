@@ -8,7 +8,7 @@ import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportBasicView extends StatefulWidget {
   final ExcelExporter exporter;
-  final ValueNotifier<String> stateNotifier;
+  final TransitStateNotifier stateNotifier;
 
   const ExportBasicView({
     super.key,
@@ -21,7 +21,7 @@ class ExportBasicView extends StatefulWidget {
 }
 
 class _ExportBasicViewState extends State<ExportBasicView> {
-  final ValueNotifier<FormattableModel> model = ValueNotifier(FormattableModel.menu);
+  final ValueNotifier<FormattableModel?> model = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +41,8 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     ]);
   }
 
-  Widget _buildView(BuildContext context, FormattableModel able, Widget? child) {
-    final formatter = findFieldFormatter(able);
+  Widget _buildView(BuildContext context, FormattableModel? able, Widget? child) {
+    final formatter = findFieldFormatter(able ?? FormattableModel.menu);
     final headers = formatter.getHeader();
     return ModelDataTable(
       headers: headers.map((e) => e.toString()).toList(),
@@ -51,25 +51,20 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     );
   }
 
-  void _export(FormattableModel able) async {
-    if (widget.stateNotifier.value != '_start') {
-      try {
-        widget.stateNotifier.value = '_start';
-
-        final formatter = findFieldFormatter(able);
-        final rows = formatter.getRows();
-        final result = await showSnackbarWhenFutureError(
-          widget.exporter.export([S.transitModelName(able.name)], [rows]),
-          'excel_export_failed',
-          context: context,
-        );
-
-        if (mounted && result == true) {
-          showSnackBar(S.transitCSVShareSuccess, context: context);
+  void _export(FormattableModel? able) async {
+    widget.stateNotifier.exec(() async {
+      final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
+      final data = getAllFormattedFieldData(able);
+      return showSnackbarWhenFutureError(
+        widget.exporter.export(names, data),
+        'excel_export_failed',
+        context: context,
+      ).then((success) {
+        if (success == true) {
+          // ignore: use_build_context_synchronously
+          showSnackBar(S.transitPTCopySuccess, context: context);
         }
-      } finally {
-        widget.stateNotifier.value = '_finish';
-      }
-    }
+      });
+    });
   }
 }

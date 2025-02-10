@@ -10,7 +10,7 @@ import 'package:possystem/ui/transit/widgets.dart';
 
 class ImportBasicView extends StatefulWidget {
   final ExcelExporter exporter;
-  final ValueNotifier<String> stateNotifier;
+  final TransitStateNotifier stateNotifier;
 
   const ImportBasicView({
     super.key,
@@ -35,6 +35,7 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
           selected: model,
           onTap: _import,
           icon: const Icon(Icons.file_upload_sharp, semanticLabel: '選擇檔案'),
+          allWarning: S.transitGSSpreadsheetImportAllHint,
         ),
       ]),
     );
@@ -43,46 +44,70 @@ class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAli
   @override
   bool get wantKeepAlive => true;
 
-  void _import(FormattableModel able) async {
-    if (widget.stateNotifier.value != '_start') {
-      try {
-        widget.stateNotifier.value = '_start';
-        final success = await showSnackbarWhenFutureError(
-          _startImport(able),
-          'excel_import_failed',
-          context: context,
-        );
-
-        if (mounted && success == true) {
+  void _import(FormattableModel? able) {
+    widget.stateNotifier.exec(
+      () => showSnackbarWhenFutureError(
+        _startImport(able),
+        'excel_import_failed',
+        context: context,
+      ).then((success) {
+        if (success == true) {
+          // ignore: use_build_context_synchronously
           showSnackBar(S.actSuccess, context: context);
         }
-      } finally {
-        widget.stateNotifier.value = '_finish';
-      }
-    }
+      }),
+    );
   }
 
-  Future<bool?> _startImport(FormattableModel able) async {
-    final stream = await XFile.pick(extensions: const ['xlsx', 'xls']);
-    if (stream == null) {
-      if (mounted) {
-        showSnackBar('檔案取得失敗', context: context);
-      }
-
+  Future<bool?> _startImport(FormattableModel? able) async {
+    final input = await XFile.pick(extensions: const ['xlsx', 'xls']);
+    if (input == null) {
+      // ignore: use_build_context_synchronously
+      showSnackBar('檔案取得失敗', context: context);
       return false;
     }
 
-    final data = await widget.exporter.import(stream);
-    bool? result;
-    if (mounted) {
-      result = await PreviewPage.show(
-        context,
-        able: able,
-        items: findFieldFormatter(able).format(data),
-        commitAfter: true,
-      );
+    final excel = widget.exporter.decode(input);
+
+    // import specific sheet
+    if (able != null) {
+      final data = widget.exporter.import(excel, able.l10nName);
+      if (data == null) {
+        // ignore: use_build_context_synchronously
+        showSnackBar('Excel 檔中找不到資料表：${able.l10nName}', context: context);
+        return false;
+      }
+
+      bool? result;
+      if (mounted) {
+        result = await PreviewPage.show(
+          context,
+          able: able,
+          items: findFieldFormatter(able).format(data),
+          commitAfter: true,
+        );
+      }
+      return result;
     }
 
-    return result;
+    // import all
+    var missedSheets = <String>[];
+    await Future.wait(FormattableModel.values.map((e) {
+      final data = widget.exporter.import(excel, e.l10nName);
+      if (data == null) {
+        missedSheets.add(e.l10nName);
+        return Future.value();
+      }
+
+      findFieldFormatter(e).format(data);
+      return e.finishPreview(true);
+    }));
+
+    if (missedSheets.isNotEmpty) {
+      // ignore: use_build_context_synchronously
+      showSnackBar('Excel 檔中找不到資料表：${missedSheets.join(', ')}', context: context);
+    }
+
+    return missedSheets.isEmpty;
   }
 }

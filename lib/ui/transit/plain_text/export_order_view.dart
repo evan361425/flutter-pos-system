@@ -7,21 +7,24 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
 import 'package:possystem/ui/transit/transit_order_list.dart';
 import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> notifier;
+  final ValueNotifier<DateTimeRange> ranger;
+  final TransitStateNotifier stateNotifier;
   final PlainTextExporter exporter;
 
   const ExportOrderView({
     super.key,
-    required this.notifier,
+    required this.ranger,
+    required this.stateNotifier,
     this.exporter = const PlainTextExporter(),
   });
 
   @override
   Widget build(BuildContext context) {
     return TransitOrderList(
-      notifier: notifier,
+      notifier: ranger,
       formatOrder: (order) => Text(formatOrder(order)),
       memoryPredictor: memoryPredictor,
       leading: Column(
@@ -37,29 +40,31 @@ class ExportOrderView extends StatelessWidget {
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
               ),
-              onTap: () {
-                showSnackbarWhenFutureError(
-                  export(),
-                  'pt_export_failed',
-                  context: context,
-                ).then((value) {
-                  if (context.mounted) {
-                    showSnackBar(S.transitPTCopySuccess, context: context);
-                  }
-                });
-              },
+              onTap: () => _export(context),
             ),
           ),
-          TransitOrderRange(notifier: notifier),
+          TransitOrderRange(notifier: ranger),
         ],
       ),
     );
   }
 
-  Future<void> export() async {
+  void _export(BuildContext context) {
+    stateNotifier.exec(() => showSnackbarWhenFutureError(
+          _startExport(),
+          'pt_export_failed',
+          context: context,
+        ).then((value) {
+          if (context.mounted) {
+            showSnackBar(S.transitPTCopySuccess, context: context);
+          }
+        }));
+  }
+
+  Future<void> _startExport() async {
     final orders = await Seller.instance.getDetailedOrders(
-      notifier.value.start,
-      notifier.value.end,
+      ranger.value.start,
+      ranger.value.end,
     );
 
     await exporter.exportToClipboard(orders

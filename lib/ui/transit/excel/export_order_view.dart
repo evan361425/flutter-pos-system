@@ -9,13 +9,13 @@ import 'package:possystem/ui/transit/transit_order_range.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> notifier;
-  final ValueNotifier<String> stateNotifier;
+  final ValueNotifier<DateTimeRange> ranger;
+  final TransitStateNotifier stateNotifier;
   final ExcelExporter exporter;
 
   const ExportOrderView({
     super.key,
-    required this.notifier,
+    required this.ranger,
     required this.stateNotifier,
     this.exporter = const ExcelExporter(),
   });
@@ -23,7 +23,7 @@ class ExportOrderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TransitOrderList(
-      notifier: notifier,
+      notifier: ranger,
       formatOrder: (order) => OrderTable(order: order),
       memoryPredictor: _memoryPredictor,
       leading: Column(
@@ -39,38 +39,34 @@ class ExportOrderView extends StatelessWidget {
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
               ),
-              onTap: () => _share(context),
+              onTap: () => _export(context),
             ),
           ),
-          TransitOrderRange(notifier: notifier),
+          TransitOrderRange(notifier: ranger),
         ],
       ),
     );
   }
 
-  Future<void> _share(BuildContext context) async {
-    if (stateNotifier.value != '_start') {
-      try {
-        stateNotifier.value = '_start';
-        await showSnackbarWhenFutureError(
-          _startShare(),
-          'excel_export_failed',
-          context: context,
-        ).then((value) {
-          if (context.mounted) {
-            showSnackBar(S.transitPTCopySuccess, context: context);
-          }
-        });
-      } finally {
-        stateNotifier.value = '_finish';
-      }
-    }
+  Future<void> _export(BuildContext context) async {
+    stateNotifier.exec(
+      () => showSnackbarWhenFutureError(
+        _startExport(),
+        'excel_export_failed',
+        context: context,
+      ).then((success) {
+        if (success == true) {
+          // ignore: use_build_context_synchronously
+          showSnackBar(S.transitCSVShareSuccess, context: context);
+        }
+      }),
+    );
   }
 
-  Future<void> _startShare() async {
+  Future<bool> _startExport() async {
     final orders = await Seller.instance.getDetailedOrders(
-      notifier.value.start,
-      notifier.value.end,
+      ranger.value.start,
+      ranger.value.end,
     );
 
     final names = <String>[];
@@ -83,7 +79,7 @@ class ExportOrderView extends StatelessWidget {
       ]);
     }
 
-    await exporter.export(names, data);
+    return exporter.export(names, data);
   }
 
   /// Offset are headers
