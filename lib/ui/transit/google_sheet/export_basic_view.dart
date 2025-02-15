@@ -113,7 +113,7 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     }
 
     // Step 3
-    Log.ger('gs_export', {'spreadsheet': ss.id, 'sheets': ss.sheets.map((e) => e.title).toList()});
+    Log.ger('gs_export', {'spreadsheet': ss.id, 'sheets': names});
     final data = getAllFormattedFieldData(able);
     final headers = getAllFormattedFieldHeaders(able);
 

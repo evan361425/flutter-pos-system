@@ -12,8 +12,8 @@ final _sheetIdRegex = RegExp(r'^([a-zA-Z0-9-_]{15,})$');
 const _sheetTutorial =
     "https://raw.githubusercontent.com/evan361425/flutter-pos-system/master/assets/web/tutorial-gs-copy-url.gif";
 
-const exportCacheKey = 'importer_google_sheet';
-const importCacheKey = 'exporter_google_sheet';
+const exportCacheKey = 'exporter_google_sheet';
+const importCacheKey = 'importer_google_sheet';
 
 /// Prepare the spreadsheet for exporting.
 ///

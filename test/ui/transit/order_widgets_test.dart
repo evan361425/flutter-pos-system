@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/transit_order_list.dart';
+import 'package:possystem/ui/transit/order_widgets.dart';
 
 import '../../mocks/mock_database.dart';
 import '../../test_helpers/order_setter.dart';

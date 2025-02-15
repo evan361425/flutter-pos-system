@@ -5,6 +5,7 @@ import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/data_exporter.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/order_widgets.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
 import 'csv/views.dart' as csv;
@@ -146,7 +147,12 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
           case _Combination.exportBasic:
             return gs.ExportBasicView(exporter: exporter, stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return gs.ExportOrderView(exporter: exporter, stateNotifier: stateNotifier, ranger: ranger);
+            return gs.ExportOrderView(
+              exporter: exporter,
+              stateNotifier: stateNotifier,
+              ranger: ranger,
+              properties: ValueNotifier<OrderSpreadsheetProperties>(OrderSpreadsheetProperties.fromCache()),
+            );
           case _Combination.importBasic:
             return gs.ImportBasicView(exporter: exporter, stateNotifier: stateNotifier);
         }
@@ -155,7 +161,11 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
           case _Combination.exportBasic:
             return excel.ExportBasicView(stateNotifier: stateNotifier);
           case _Combination.exportOrder:
-            return excel.ExportOrderView(stateNotifier: stateNotifier, ranger: ranger);
+            return excel.ExportOrderView(
+              stateNotifier: stateNotifier,
+              ranger: ranger,
+              properties: ValueNotifier<OrderSpreadsheetProperties>(OrderSpreadsheetProperties.fromCache()),
+            );
           case _Combination.importBasic:
             return excel.ImportBasicView(stateNotifier: stateNotifier);
         }

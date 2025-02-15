@@ -4,12 +4,12 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/excel_exporter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
-import 'package:possystem/ui/transit/transit_order_list.dart';
-import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/order_widgets.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
+  final ValueNotifier<OrderSpreadsheetProperties> properties;
   final TransitStateNotifier stateNotifier;
   final ExcelExporter exporter;
 
@@ -17,6 +17,7 @@ class ExportOrderView extends StatelessWidget {
     super.key,
     required this.ranger,
     required this.stateNotifier,
+    required this.properties,
     this.exporter = const ExcelExporter(),
   });
 
@@ -26,24 +27,13 @@ class ExportOrderView extends StatelessWidget {
       notifier: ranger,
       formatOrder: (order) => OrderTable(order: order),
       memoryPredictor: _memoryPredictor,
-      leading: Column(
-        children: [
-          const SizedBox(height: 16.0),
-          Card(
-            key: const Key('export_btn'),
-            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListTile(
-              title: Text(S.transitPTCopyBtn),
-              subtitle: Text(S.transitPTCopyWarning),
-              trailing: const Icon(Icons.share_outlined),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              ),
-              onTap: () => _export(context),
-            ),
-          ),
-          TransitOrderRange(notifier: ranger),
-        ],
+      leading: TransitOrderExportHead(
+        title: S.transitCSVShareBtn,
+        subtitle: S.transitPTCopyWarning,
+        trailing: const Icon(Icons.share_outlined),
+        ranger: ranger,
+        properties: properties,
+        onTap: _export,
       ),
     );
   }

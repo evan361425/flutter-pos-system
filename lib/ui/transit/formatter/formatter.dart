@@ -85,6 +85,8 @@ enum FormattableOrder {
 
   const FormattableOrder(this.l10nName);
 
+  String get l10nValue => S.transitModelName(l10nName);
+
   List<List<CellData>> formatRows(OrderObject order) {
     switch (this) {
       case FormattableOrder.attr:

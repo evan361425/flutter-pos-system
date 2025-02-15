@@ -5,8 +5,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
-import 'package:possystem/ui/transit/transit_order_list.dart';
-import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/order_widgets.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportOrderView extends StatelessWidget {
@@ -27,24 +26,12 @@ class ExportOrderView extends StatelessWidget {
       notifier: ranger,
       formatOrder: (order) => Text(formatOrder(order)),
       memoryPredictor: memoryPredictor,
-      leading: Column(
-        children: [
-          const SizedBox(height: 16.0),
-          Card(
-            key: const Key('export_btn'),
-            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListTile(
-              title: Text(S.transitPTCopyBtn),
-              subtitle: Text(S.transitPTCopyWarning),
-              trailing: const Icon(Icons.copy_outlined),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              ),
-              onTap: () => _export(context),
-            ),
-          ),
-          TransitOrderRange(notifier: ranger),
-        ],
+      leading: TransitOrderExportHead(
+        title: S.transitCSVShareBtn,
+        subtitle: S.transitPTCopyWarning,
+        trailing: const Icon(Icons.copy_outlined),
+        ranger: ranger,
+        onTap: _export,
       ),
     );
   }
