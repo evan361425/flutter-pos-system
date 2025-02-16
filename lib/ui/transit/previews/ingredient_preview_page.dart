@@ -8,7 +8,10 @@ import 'preview_page.dart';
 class IngredientPreviewPage extends PreviewPage<Ingredient> {
   const IngredientPreviewPage({
     super.key,
+    required super.able,
     required super.items,
+    required super.onDone,
+    required super.progress,
   });
 
   @override

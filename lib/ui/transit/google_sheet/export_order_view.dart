@@ -13,7 +13,7 @@ import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportOrderView extends StatefulWidget {
   final ValueNotifier<DateTimeRange> ranger;
-  final ValueNotifier<OrderSpreadsheetProperties> properties;
+  final ValueNotifier<TransitOrderSettings> settings;
   final TransitStateNotifier stateNotifier;
   final GoogleSheetExporter exporter;
 
@@ -21,7 +21,7 @@ class ExportOrderView extends StatefulWidget {
     super.key,
     required this.ranger,
     required this.stateNotifier,
-    required this.properties,
+    required this.settings,
     required this.exporter,
   });
 
@@ -33,19 +33,18 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   @override
   Widget build(BuildContext context) {
     return TransitOrderList(
-      notifier: widget.ranger,
-      formatOrder: (order) => OrderTable(order: order),
+      ranger: widget.ranger,
       memoryPredictor: memoryPredictor,
       warning: S.transitGSOrderMetaMemoryWarning,
       leading: Padding(
         padding: const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
         child: SignInButton(
-          signedInWidget: TransitOrderExportHead(
+          signedInWidget: TransitOrderHead(
             title: '網路匯出',
             subtitle: '注意，由於 Google 的限流，有時會無法成功送出，需多次嘗試。\n建議大資料可以透過 Excel 或 CSV 匯出。',
-            trailing: const Icon(Icons.upload_file_outlined),
+            trailing: const Icon(Icons.cloud_upload_sharp),
             ranger: widget.ranger,
-            properties: widget.properties,
+            properties: widget.settings,
             onTap: _export,
           ),
         ),
@@ -95,7 +94,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     }
 
     // Step 2
-    final sheetTitles = widget.properties.value.parseTitles(widget.ranger.value);
+    final sheetTitles = widget.settings.value.parseTitles(widget.ranger.value);
     final ables = sheetTitles.keys.toList();
     final titles = sheetTitles.values.toList();
     final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
@@ -125,7 +124,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
           });
         }));
 
-    if (widget.properties.value.isOverwrite) {
+    if (widget.settings.value.isOverwrite) {
       widget.stateNotifier.value = S.transitGSProgressStatusOverwriteOrders;
       await widget.exporter.updateSheetValues(
         ss,

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/excel_exporter.dart';
 import 'package:possystem/ui/transit/formatter/field_formatter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportBasicView extends StatefulWidget {
+class ExportBasicView extends StatelessWidget {
   final ExcelExporter exporter;
   final TransitStateNotifier stateNotifier;
 
@@ -17,31 +16,17 @@ class ExportBasicView extends StatefulWidget {
   });
 
   @override
-  State<ExportBasicView> createState() => _ExportBasicViewState();
-}
-
-class _ExportBasicViewState extends State<ExportBasicView> {
-  final ValueNotifier<FormattableModel?> model = ValueNotifier(null);
-
-  @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ModelPicker(
-          selected: model,
-          onTap: _export,
-          icon: Icon(Icons.share_outlined, semanticLabel: S.transitCSVShareBtn),
-        ),
-      ),
-      const SizedBox(height: 16.0),
-      Expanded(
-        child: ValueListenableBuilder(valueListenable: model, builder: _buildView),
-      ),
-    ]);
+    return ExportView(
+      icon: Icon(Icons.share_outlined, semanticLabel: '分享'),
+      stateNotifier: stateNotifier,
+      allowAll: true,
+      onExport: _export,
+      buildModel: _buildModel,
+    );
   }
 
-  Widget _buildView(BuildContext context, FormattableModel? able, Widget? child) {
+  Widget _buildModel(BuildContext context, FormattableModel? able) {
     final formatter = findFieldFormatter(able ?? FormattableModel.menu);
     final headers = formatter.getHeader();
     return ModelDataTable(
@@ -51,20 +36,13 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     );
   }
 
-  void _export(FormattableModel? able) async {
-    widget.stateNotifier.exec(() async {
-      final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
-      final data = getAllFormattedFieldData(able);
-      return showSnackbarWhenFutureError(
-        widget.exporter.export(names, data),
-        'excel_export_failed',
-        context: context,
-      ).then((success) {
-        if (success == true) {
-          // ignore: use_build_context_synchronously
-          showSnackBar(S.transitPTCopySuccess, context: context);
-        }
-      });
-    });
+  Future<void> _export(BuildContext context, FormattableModel? able) async {
+    final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
+    final data = getAllFormattedFieldData(able);
+
+    final ok = await exporter.export(names, data);
+    if (context.mounted && ok) {
+      showSnackBar('成功匯出 Excel 資料', context: context);
+    }
   }
 }

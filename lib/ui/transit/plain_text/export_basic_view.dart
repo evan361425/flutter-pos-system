@@ -7,7 +7,7 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportBasicView extends StatefulWidget {
+class ExportBasicView extends StatelessWidget {
   final TransitStateNotifier stateNotifier;
   final PlainTextExporter exporter;
 
@@ -18,37 +18,18 @@ class ExportBasicView extends StatefulWidget {
   });
 
   @override
-  State<ExportBasicView> createState() => _ExportBasicViewState();
-}
-
-class _ExportBasicViewState extends State<ExportBasicView> {
-  final ValueNotifier<FormattableModel> model = ValueNotifier(FormattableModel.menu);
-
-  @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ModelPicker(
-          selected: model,
-          onTap: _copy,
-          allowAll: false,
-          icon: Icon(Icons.copy_outlined, semanticLabel: S.transitPTCopyBtn),
-        ),
-      ),
-      const SizedBox(height: 16.0),
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: ValueListenableBuilder(valueListenable: model, builder: _buildView),
-        ),
-      ),
-      const SizedBox(height: 16.0),
-    ]);
+    return ExportView(
+      icon: Icon(Icons.copy_outlined, semanticLabel: '複製'),
+      stateNotifier: stateNotifier,
+      allowAll: false,
+      onExport: _export,
+      buildModel: _buildModel,
+    );
   }
 
-  Widget _buildView(BuildContext context, FormattableModel able, Widget? child) {
-    final formatter = findPlainTextFormatter(able);
+  Widget _buildModel(BuildContext context, FormattableModel? able) {
+    final formatter = findPlainTextFormatter(able!);
     final rows = formatter.getRows();
 
     return Column(children: [
@@ -94,17 +75,11 @@ class _ExportBasicViewState extends State<ExportBasicView> {
     ]);
   }
 
-  void _copy(FormattableModel? able) {
-    widget.stateNotifier.exec(
-      () => showSnackbarWhenFutureError(
-        widget.exporter.export(able!),
-        'pt_export_failed',
-        context: context,
-      ).then((value) {
-        if (mounted) {
-          showSnackBar(S.transitPTCopySuccess, context: context);
-        }
-      }),
-    );
+  Future<void> _export(BuildContext context, FormattableModel? able) async {
+    await exporter.export(able!);
+
+    if (context.mounted) {
+      showSnackBar(S.transitPTCopySuccess, context: context);
+    }
   }
 }

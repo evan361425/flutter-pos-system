@@ -23,10 +23,10 @@ class ExportOrderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TransitOrderList(
-      notifier: ranger,
-      formatOrder: (order) => Text(formatOrder(order)),
+      ranger: ranger,
+      orderViewBuilder: (order) => Text(formatOrder(order)),
       memoryPredictor: memoryPredictor,
-      leading: TransitOrderExportHead(
+      leading: TransitOrderHead(
         title: S.transitCSVShareBtn,
         subtitle: S.transitPTCopyWarning,
         trailing: const Icon(Icons.copy_outlined),

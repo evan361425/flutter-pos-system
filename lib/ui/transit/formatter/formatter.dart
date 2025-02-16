@@ -21,6 +21,12 @@ enum FormattableModel {
     return FormattableModel.values.firstWhere((e) => e.name == name);
   }
 
+  static void abort() {
+    for (var e in FormattableModel.values) {
+      e.toRepository().abortStaged();
+    }
+  }
+
   static List<String> get allL10nNames => FormattableModel.values.map((e) => e.l10nName).toList();
 
   String get l10nName => S.transitModelName(name);
@@ -63,14 +69,6 @@ enum FormattableModel {
         return Replenisher.instance;
       case FormattableModel.orderAttr:
         return OrderAttributes.instance;
-    }
-  }
-
-  Future<void> finishPreview(bool? willCommit) async {
-    if (willCommit == true) {
-      await toRepository().commitStaged();
-    } else {
-      toRepository().abortStaged();
     }
   }
 }

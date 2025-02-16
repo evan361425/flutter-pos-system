@@ -8,7 +8,7 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ImportBasicView extends StatefulWidget {
+class ImportBasicView extends StatelessWidget {
   final CSVExporter exporter;
   final TransitStateNotifier stateNotifier;
 
@@ -19,64 +19,30 @@ class ImportBasicView extends StatefulWidget {
   });
 
   @override
-  State<ImportBasicView> createState() => _ImportBasicViewState();
-}
-
-class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAliveClientMixin {
-  final ValueNotifier<FormattableModel> model = ValueNotifier(FormattableModel.menu);
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(children: [
-        ModelPicker(
-          selected: model,
-          onTap: _import,
-          allowAll: false,
-          icon: const Icon(Icons.file_upload_sharp, semanticLabel: '選擇檔案'),
-        ),
-      ]),
+    return ImportView(
+      icon: const Icon(Icons.file_present_sharp, semanticLabel: '選擇檔案'),
+      stateNotifier: stateNotifier,
+      onLoad: _load,
+      onDone: _done,
+      allowAll: false,
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
-
-  void _import(FormattableModel? able) async {
-    widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
-          _startImport(able!),
-          'csv_import_failed',
-          context: context,
-        ).then((success) {
-          if (success == true && mounted) {
-            showSnackBar(S.actSuccess, context: context);
-          }
-        }));
-  }
-
-  Future<bool?> _startImport(FormattableModel able) async {
+  Future<PreviewFormatter?> _load(BuildContext context, ValueNotifier<FormattableModel?> _) async {
     final input = await XFile.pick(extensions: const ['csv', 'txt']);
     if (input == null) {
-      if (mounted) {
-        showSnackBar('檔案取得失敗', context: context);
-      }
+      // ignore: use_build_context_synchronously
+      showSnackBar('檔案取得失敗', context: context);
 
-      return false;
+      return null;
     }
 
-    final data = await widget.exporter.import(input);
-    bool? result;
-    if (mounted) {
-      result = await PreviewPage.show(
-        context,
-        able: able,
-        items: findFieldFormatter(able).format(data),
-        commitAfter: true,
-      );
-    }
+    final data = await exporter.import(input);
+    return (FormattableModel able) => findFieldFormatter(able).format(data);
+  }
 
-    return result;
+  void _done(BuildContext context) {
+    showSnackBar(S.actSuccess, context: context);
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/info_popup.dart';
-import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
-import 'package:possystem/ui/transit/formatter/order_formatter.dart';
+import 'package:possystem/ui/transit/previews/preview_page.dart';
 
 class TransitStateNotifier extends ValueNotifier<String> {
   TransitStateNotifier() : super('_finish');
@@ -29,6 +29,157 @@ class TransitStateNotifier extends ValueNotifier<String> {
         finishProgress();
       }
     }
+  }
+}
+
+/// It will use [AutomaticKeepAliveClientMixin] to avoid rebuild preview data.
+class ImportView extends StatefulWidget {
+  final Widget? header;
+  final Icon icon;
+  final TransitStateNotifier stateNotifier;
+  final Future<PreviewFormatter?> Function(BuildContext context, ValueNotifier<FormattableModel?> able) onLoad;
+  final PreviewOnDone onDone;
+
+  /// Allow all data type to be imported.
+  ///
+  /// For example, in CSV import, it is not allowed to import all data type.
+  final bool allowAll;
+
+  const ImportView({
+    super.key,
+    this.header,
+    required this.icon,
+    required this.stateNotifier,
+    required this.onLoad,
+    required this.onDone,
+    this.allowAll = false,
+  });
+
+  @override
+  State<ImportView> createState() => _ImportViewState();
+}
+
+class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMixin {
+  final ValueNotifier<FormattableModel?> model = ValueNotifier(FormattableModel.menu);
+  final ValueNotifier<PreviewFormatter?> formatter = ValueNotifier(null);
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    Widget header;
+    if (widget.header != null) {
+      header = Row(spacing: kInternalSpacing, children: [
+        widget.header!,
+        IconButton.filled(
+          onPressed: () => _onLoad(null),
+          icon: widget.icon,
+        ),
+      ]);
+    } else {
+      header = _ModelPicker(
+        selected: model,
+        onTap: _onLoad,
+        allowAll: widget.allowAll,
+        icon: widget.icon,
+      );
+    }
+
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+        child: header,
+      ),
+      const Divider(),
+      Expanded(
+        child: ValueListenableBuilder(
+          valueListenable: formatter,
+          builder: (context, f, child) {
+            if (f == null) {
+              return const Center(child: HintText('請選擇資料類型來進行匯入'));
+            }
+
+            return PreviewPage.buildTabBarView(
+              ables: model.value?.toList() ?? FormattableModel.values,
+              formatter: f,
+              onDone: widget.onDone,
+            );
+          },
+        ),
+      ),
+    ]);
+  }
+
+  void _onLoad(FormattableModel? able) {
+    widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
+          widget.onLoad(context, model).then((v) => formatter.value = v),
+          'transit_load',
+          context: context,
+        ));
+  }
+}
+
+class ExportView extends StatefulWidget {
+  final Icon icon;
+  final TransitStateNotifier stateNotifier;
+  final Future<void> Function(BuildContext context, FormattableModel? able) onExport;
+  final Widget Function(BuildContext context, FormattableModel? able) buildModel;
+
+  /// Allow all data type to be imported.
+  ///
+  /// For example, in CSV import, it is not allowed to import all data type.
+  final bool allowAll;
+
+  const ExportView({
+    super.key,
+    required this.icon,
+    required this.stateNotifier,
+    required this.onExport,
+    required this.buildModel,
+    this.allowAll = false,
+  });
+
+  @override
+  State<ExportView> createState() => _ExportViewState();
+}
+
+class _ExportViewState extends State<ExportView> {
+  final ValueNotifier<FormattableModel?> model = ValueNotifier(FormattableModel.menu);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+        child: _ModelPicker(
+          selected: model,
+          onTap: _onExport,
+          icon: widget.icon,
+          allowAll: widget.allowAll,
+        ),
+      ),
+      const Divider(),
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+          child: ValueListenableBuilder(
+            valueListenable: model,
+            builder: (context, able, _) => widget.buildModel(context, able),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  void _onExport(FormattableModel? able) {
+    widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
+          widget.onExport(context, able),
+          'transit_export',
+          context: context,
+        ));
   }
 }
 
@@ -97,31 +248,28 @@ class ModelDataTableSource extends DataTableSource {
   int get selectedRowCount => 0;
 }
 
-class ModelPicker extends StatefulWidget {
+class _ModelPicker extends StatefulWidget {
   /// Null means select all
   final ValueNotifier<FormattableModel?> selected;
   final void Function(FormattableModel?) onTap;
   final Icon icon;
   final bool allowAll;
-  final String? allWarning;
 
-  const ModelPicker({
-    super.key,
+  const _ModelPicker({
     required this.selected,
     required this.onTap,
     required this.icon,
     this.allowAll = true,
-    this.allWarning,
   });
 
   @override
-  State<ModelPicker> createState() => _ModelPickerState();
+  State<_ModelPicker> createState() => _ModelPickerState();
 }
 
-class _ModelPickerState extends State<ModelPicker> {
+class _ModelPickerState extends State<_ModelPicker> {
   @override
   Widget build(BuildContext context) {
-    final row = Row(children: [
+    return Row(children: [
       Expanded(
         child: DropdownButtonFormField<FormattableModel?>(
           key: const Key('transit.model_picker'),
@@ -157,121 +305,5 @@ class _ModelPickerState extends State<ModelPicker> {
         icon: widget.icon,
       ),
     ]);
-
-    if (widget.allWarning != null) {
-      return Column(children: [
-        row,
-        const SizedBox(height: 4),
-        HintText(widget.allWarning!),
-      ]);
-    }
-
-    return row;
-  }
-}
-
-class OrderTable extends StatefulWidget {
-  final OrderObject order;
-
-  const OrderTable({
-    super.key,
-    required this.order,
-  });
-
-  @override
-  State<OrderTable> createState() => _OrderTableState();
-}
-
-class _OrderTableState extends State<OrderTable> {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SimpleTable(
-          headers: OrderFormatter.basicHeaders,
-          data: OrderFormatter.formatBasic(widget.order),
-          expandableIndexes: const [
-            OrderFormatter.attrPosition,
-            OrderFormatter.productPosition,
-          ],
-        ),
-        TextDivider(label: S.transitGSOrderAttributeTitle),
-        SimpleTable(
-          headers: OrderFormatter.attrHeaders,
-          data: OrderFormatter.formatAttr(widget.order),
-        ),
-        TextDivider(label: S.transitGSOrderProductTitle),
-        SimpleTable(
-          headers: OrderFormatter.productHeaders,
-          data: OrderFormatter.formatProduct(widget.order),
-          expandableIndexes: const [OrderFormatter.ingredientPosition],
-        ),
-        TextDivider(label: S.transitGSOrderIngredientTitle),
-        SimpleTable(
-          headers: OrderFormatter.ingredientHeaders,
-          data: OrderFormatter.formatIngredient(widget.order),
-        ),
-      ]),
-    );
-  }
-}
-
-class SimpleTable extends StatelessWidget {
-  final Iterable<String> headers;
-
-  final Iterable<Iterable<Object>> data;
-
-  final List<int> expandableIndexes;
-
-  const SimpleTable({
-    super.key,
-    required this.headers,
-    required this.data,
-    this.expandableIndexes = const [],
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Table(
-        defaultColumnWidth: const IntrinsicColumnWidth(),
-        border: TableBorder.all(borderRadius: BorderRadius.circular(4.0)),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: [
-          TableRow(children: [
-            for (final header in headers)
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  header.toString(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-          ]),
-          for (final row in data)
-            TableRow(
-              children: _rowWidgets(row).toList(),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Iterable<Widget> _rowWidgets(Iterable<Object> row) sync* {
-    int index = 0;
-    for (final cell in row) {
-      final idxOf = expandableIndexes.indexOf(index++);
-      yield Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: idxOf != -1
-            ? HintText(S.transitGSOrderExpandableHint)
-            : Text(
-                cell.toString(),
-                textAlign: cell is String ? TextAlign.end : TextAlign.start,
-                style: const TextStyle(fontStyle: FontStyle.italic),
-              ),
-      );
-    }
   }
 }

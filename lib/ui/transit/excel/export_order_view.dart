@@ -9,7 +9,7 @@ import 'package:possystem/ui/transit/widgets.dart';
 
 class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
-  final ValueNotifier<OrderSpreadsheetProperties> properties;
+  final ValueNotifier<TransitOrderSettings> settings;
   final TransitStateNotifier stateNotifier;
   final ExcelExporter exporter;
 
@@ -17,22 +17,21 @@ class ExportOrderView extends StatelessWidget {
     super.key,
     required this.ranger,
     required this.stateNotifier,
-    required this.properties,
+    required this.settings,
     this.exporter = const ExcelExporter(),
   });
 
   @override
   Widget build(BuildContext context) {
     return TransitOrderList(
-      notifier: ranger,
-      formatOrder: (order) => OrderTable(order: order),
+      ranger: ranger,
       memoryPredictor: _memoryPredictor,
-      leading: TransitOrderExportHead(
+      leading: TransitOrderHead(
         title: S.transitCSVShareBtn,
         subtitle: S.transitPTCopyWarning,
         trailing: const Icon(Icons.share_outlined),
         ranger: ranger,
-        properties: properties,
+        properties: settings,
         onTap: _export,
       ),
     );

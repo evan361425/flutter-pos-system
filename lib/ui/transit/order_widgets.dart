@@ -19,110 +19,7 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
-
-class TransitOrderExportHead extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Icon trailing;
-  final ValueNotifier<DateTimeRange> ranger;
-  final ValueNotifier<OrderSpreadsheetProperties>? properties;
-  final EdgeInsets margin;
-  final void Function(BuildContext context) onTap;
-
-  const TransitOrderExportHead({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.trailing,
-    required this.ranger,
-    this.properties,
-    this.margin = const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      Card(
-        key: const Key('transit.order_export'),
-        margin: margin,
-        child: ListTile(
-          title: Text(title),
-          subtitle: Text(subtitle),
-          trailing: trailing,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          ),
-          onTap: () => onTap(context),
-        ),
-      ),
-      _OrderRange(notifier: ranger),
-      if (properties != null)
-        ValueListenableBuilder(
-          valueListenable: properties!,
-          builder: (context, p, _) {
-            return ListTile(
-              key: const Key('transit.order_meta'),
-              title: Text(S.transitGSOrderSettingTitle),
-              subtitle: MetaBlock.withString(context, [
-                S.transitGSOrderMetaOverwrite(p.isOverwrite.toString()),
-                S.transitGSOrderMetaTitlePrefix(p.withPrefix.toString()),
-              ]),
-              trailing: const SizedBox(
-                height: double.infinity,
-                child: Icon(KIcons.edit),
-              ),
-              onTap: () => _showMetaSetting(context),
-            );
-          },
-        ),
-    ]);
-  }
-
-  void _showMetaSetting(BuildContext context) async {
-    final other = await showAdaptiveDialog<OrderSpreadsheetProperties>(
-      context: context,
-      builder: (context) => _OrderSettingPage(properties: properties!.value),
-    );
-
-    if (other != null && context.mounted) {
-      properties!.value = other;
-    }
-  }
-}
-
-class OrderSpreadsheetProperties {
-  /// Whether to overwrite the data in the form, default is true
-  final bool isOverwrite;
-
-  /// Whether the form name is prefixed with the date, default is true
-  final bool withPrefix;
-
-  const OrderSpreadsheetProperties({
-    required this.isOverwrite,
-    required this.withPrefix,
-  });
-
-  factory OrderSpreadsheetProperties.fromCache() {
-    return OrderSpreadsheetProperties(
-      isOverwrite: Cache.instance.get<bool>('$_cacheKey.isOverwrite') ?? true,
-      withPrefix: Cache.instance.get<bool>('$_cacheKey.withPrefix') ?? true,
-    );
-  }
-
-  Map<FormattableOrder, String> parseTitles(DateTimeRange range) {
-    final prefix = withPrefix ? '${range.formatCompact(S.localeName)} ' : '';
-
-    return {
-      for (final e in FormattableOrder.values) e: '$prefix${e.l10nValue}',
-    };
-  }
-
-  Future<void> cache() async {
-    await Cache.instance.set<bool>('$_cacheKey.isOverwrite', isOverwrite);
-    await Cache.instance.set<bool>('$_cacheKey.withPrefix', withPrefix);
-  }
-}
+import 'package:possystem/ui/transit/formatter/order_formatter.dart';
 
 enum ExportMemoryLevel {
   ok,
@@ -131,22 +28,26 @@ enum ExportMemoryLevel {
 }
 
 class TransitOrderList extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> notifier;
+  final ValueNotifier<DateTimeRange> ranger;
 
-  final Widget Function(OrderObject) formatOrder;
+  /// Widget to show the order detail, if null, will show as a table.
+  final Widget Function(OrderObject)? orderViewBuilder;
 
+  /// Calculate the memory size of the order list, return the size in bytes.
   final int Function(OrderMetrics) memoryPredictor;
 
+  /// Additional warning message to show in the memory info dialog.
   final String? warning;
 
+  /// Leading widget of the list.
   final Widget leading;
 
   const TransitOrderList({
     super.key,
-    required this.notifier,
-    required this.formatOrder,
+    required this.ranger,
     required this.memoryPredictor,
     required this.leading,
+    this.orderViewBuilder,
     this.warning,
   });
 
@@ -154,7 +55,7 @@ class TransitOrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return OrderLoader(
       leading: leading,
-      ranger: notifier,
+      ranger: ranger,
       countingAll: true,
       emptyChild: Column(children: [
         leading,
@@ -241,7 +142,7 @@ class TransitOrderList extends StatelessWidget {
               return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: formatOrder(detailedOrder),
+                  child: orderViewBuilder?.call(detailedOrder) ?? _OrderTable(detailedOrder),
                 ),
               ]);
             },
@@ -320,6 +221,110 @@ class TransitOrderList extends StatelessWidget {
   }
 }
 
+class TransitOrderHead extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Icon trailing;
+  final ValueNotifier<DateTimeRange> ranger;
+  final ValueNotifier<TransitOrderSettings>? properties;
+  final EdgeInsets margin;
+  final void Function(BuildContext context) onTap;
+
+  const TransitOrderHead({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.trailing,
+    required this.ranger,
+    this.properties,
+    this.margin = const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Card(
+        key: const Key('transit.order_export'),
+        margin: margin,
+        child: ListTile(
+          title: Text(title),
+          subtitle: Text(subtitle),
+          trailing: trailing,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          onTap: () => onTap(context),
+        ),
+      ),
+      _OrderRange(notifier: ranger),
+      if (properties != null)
+        ValueListenableBuilder(
+          valueListenable: properties!,
+          builder: (context, p, _) {
+            return ListTile(
+              key: const Key('transit.order_meta'),
+              title: Text(S.transitGSOrderSettingTitle),
+              subtitle: MetaBlock.withString(context, [
+                S.transitGSOrderMetaOverwrite(p.isOverwrite.toString()),
+                S.transitGSOrderMetaTitlePrefix(p.withPrefix.toString()),
+              ]),
+              trailing: const SizedBox(
+                height: double.infinity,
+                child: Icon(KIcons.edit),
+              ),
+              onTap: () => _showMetaSetting(context),
+            );
+          },
+        ),
+    ]);
+  }
+
+  void _showMetaSetting(BuildContext context) async {
+    final other = await showAdaptiveDialog<TransitOrderSettings>(
+      context: context,
+      builder: (context) => _OrderSettingPage(properties: properties!.value),
+    );
+
+    if (other != null && context.mounted) {
+      properties!.value = other;
+    }
+  }
+}
+
+class TransitOrderSettings {
+  /// Whether to overwrite the data in the form, default is true
+  final bool isOverwrite;
+
+  /// Whether the form name is prefixed with the date, default is true
+  final bool withPrefix;
+
+  const TransitOrderSettings({
+    required this.isOverwrite,
+    required this.withPrefix,
+  });
+
+  factory TransitOrderSettings.fromCache() {
+    return TransitOrderSettings(
+      isOverwrite: Cache.instance.get<bool>('$_cacheKey.isOverwrite') ?? true,
+      withPrefix: Cache.instance.get<bool>('$_cacheKey.withPrefix') ?? true,
+    );
+  }
+
+  Map<FormattableOrder, String> parseTitles(DateTimeRange range) {
+    final prefix = withPrefix ? '${range.formatCompact(S.localeName)} ' : '';
+
+    return {
+      for (final e in FormattableOrder.values) e: '$prefix${e.l10nValue}',
+    };
+  }
+
+  Future<void> cache() async {
+    await Cache.instance.set<bool>('$_cacheKey.isOverwrite', isOverwrite);
+    await Cache.instance.set<bool>('$_cacheKey.withPrefix', withPrefix);
+  }
+}
+
 class _OrderRange extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
@@ -358,10 +363,112 @@ class _OrderRangeState extends State<_OrderRange> {
   }
 }
 
+class _OrderTable extends StatefulWidget {
+  final OrderObject order;
+
+  const _OrderTable(this.order);
+
+  @override
+  State<_OrderTable> createState() => _OrderTableState();
+}
+
+class _OrderTableState extends State<_OrderTable> {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _SimpleTable(
+          headers: OrderFormatter.basicHeaders,
+          data: OrderFormatter.formatBasic(widget.order),
+          expandableIndexes: const [
+            OrderFormatter.attrPosition,
+            OrderFormatter.productPosition,
+          ],
+        ),
+        TextDivider(label: S.transitGSOrderAttributeTitle),
+        _SimpleTable(
+          headers: OrderFormatter.attrHeaders,
+          data: OrderFormatter.formatAttr(widget.order),
+        ),
+        TextDivider(label: S.transitGSOrderProductTitle),
+        _SimpleTable(
+          headers: OrderFormatter.productHeaders,
+          data: OrderFormatter.formatProduct(widget.order),
+          expandableIndexes: const [OrderFormatter.ingredientPosition],
+        ),
+        TextDivider(label: S.transitGSOrderIngredientTitle),
+        _SimpleTable(
+          headers: OrderFormatter.ingredientHeaders,
+          data: OrderFormatter.formatIngredient(widget.order),
+        ),
+      ]),
+    );
+  }
+}
+
+class _SimpleTable extends StatelessWidget {
+  final Iterable<String> headers;
+
+  final Iterable<Iterable<Object>> data;
+
+  final List<int> expandableIndexes;
+
+  const _SimpleTable({
+    required this.headers,
+    required this.data,
+    this.expandableIndexes = const [],
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Table(
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        border: TableBorder.all(borderRadius: BorderRadius.circular(4.0)),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: [
+          TableRow(children: [
+            for (final header in headers)
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  header.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+          ]),
+          for (final row in data)
+            TableRow(
+              children: _rowWidgets(row).toList(),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Iterable<Widget> _rowWidgets(Iterable<Object> row) sync* {
+    int index = 0;
+    for (final cell in row) {
+      final idxOf = expandableIndexes.indexOf(index++);
+      yield Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: idxOf != -1
+            ? HintText(S.transitGSOrderExpandableHint)
+            : Text(
+                cell.toString(),
+                textAlign: cell is String ? TextAlign.end : TextAlign.start,
+                style: const TextStyle(fontStyle: FontStyle.italic),
+              ),
+      );
+    }
+  }
+}
+
 const _cacheKey = 'exporter_order_meta';
 
 class _OrderSettingPage extends StatefulWidget {
-  final OrderSpreadsheetProperties properties;
+  final TransitOrderSettings properties;
 
   const _OrderSettingPage({required this.properties});
 
@@ -422,7 +529,7 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
 
   @override
   Future<void> updateItem() async {
-    final properties = OrderSpreadsheetProperties(
+    final properties = TransitOrderSettings(
       isOverwrite: isOverwrite,
       withPrefix: withPrefix,
     );

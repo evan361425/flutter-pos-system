@@ -9,7 +9,10 @@ import 'preview_page.dart';
 class ReplenishmentPreviewPage extends PreviewPage<Replenishment> {
   const ReplenishmentPreviewPage({
     super.key,
+    required super.able,
     required super.items,
+    required super.onDone,
+    required super.progress,
   });
 
   @override

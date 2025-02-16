@@ -14,8 +14,8 @@ void main() {
       final range = DateTimeRange(start: yesterday, end: DateTime.now());
       final widget = TransitOrderList(
         leading: const Text(''),
-        notifier: ValueNotifier(range),
-        formatOrder: (o) => const Text('hi'),
+        ranger: ValueNotifier(range),
+        orderViewBuilder: (o) => const Text('hi'),
         memoryPredictor: (m) => m.revenue.toInt(),
         warning: 'hi there',
       );

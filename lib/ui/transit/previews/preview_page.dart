@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
@@ -11,71 +12,131 @@ import 'product_preview_page.dart';
 import 'quantity_preview_page.dart';
 import 'replenishment_preview_page.dart';
 
+typedef PreviewFormatter = List<FormattedItem>? Function(FormattableModel);
+typedef PreviewOnDone = void Function(BuildContext);
+
 abstract class PreviewPage<T extends Model> extends StatelessWidget {
+  final FormattableModel able;
   final List<FormattedItem> items;
+  final PreviewOnDone onDone;
+  final Map<FormattableModel, ValueNotifier<bool>>? progress;
 
   const PreviewPage({
     super.key,
+    required this.able,
     required this.items,
+    required this.onDone,
+    this.progress,
   });
 
-  static Future<bool?> show(
-    BuildContext context, {
-    required FormattableModel able,
-    required List<FormattedItem> items,
-    bool commitAfter = false,
-  }) async {
-    final allow = await showAdaptiveDialog<bool?>(
-      context: context,
-      builder: (context) {
-        switch (able) {
-          case FormattableModel.menu:
-            return ProductPreviewPage(items: items);
-          case FormattableModel.orderAttr:
-            return OrderAttributePreviewPage(items: items);
-          case FormattableModel.quantities:
-            return QuantityPreviewPage(items: items);
-          case FormattableModel.stock:
-            return IngredientPreviewPage(items: items);
-          case FormattableModel.replenisher:
-            return ReplenishmentPreviewPage(items: items);
-        }
-      },
-    );
+  static Widget buildTabBarView({
+    required List<FormattableModel> ables,
+    required PreviewFormatter formatter,
+    required PreviewOnDone onDone,
+  }) {
+    Widget builder(FormattableModel able, Map<FormattableModel, ValueNotifier<bool>>? progress) {
+      final items = formatter(able);
+      if (items == null) {
+        progress?[able]?.value = true;
+        return HintText('找不到「${able.l10nName}」的資料');
+      }
 
-    if (commitAfter) {
-      await able.finishPreview(allow);
-
-      // if (context.mounted && allow == true) {
-      //   showSnackBar(S.actSuccess, context: context);
-      // }
+      switch (able) {
+        case FormattableModel.menu:
+          return ProductPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+        case FormattableModel.orderAttr:
+          return OrderAttributePreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+        case FormattableModel.quantities:
+          return QuantityPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+        case FormattableModel.stock:
+          return IngredientPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+        case FormattableModel.replenisher:
+          return ReplenishmentPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+      }
     }
 
-    return allow;
+    if (ables.length == 1) {
+      return builder(ables.first, null);
+    }
+
+    final progress = <FormattableModel, ValueNotifier<bool>>{
+      for (final able in ables) able: ValueNotifier(false),
+    };
+    return DefaultTabController(
+      length: ables.length,
+      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        TabBar(tabs: [
+          for (final able in ables)
+            Tab(
+              child: Text(able.l10nName, softWrap: true),
+            ),
+        ]),
+        TabBarView(children: [
+          for (final able in ables) builder(able, progress),
+        ]),
+      ]),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveDialog(
-      title: Text(S.transitImportPreviewTitle),
-      action: TextButton(
-        onPressed: () {
-          Navigator.of(context).pop(items.isNotEmpty);
-        },
-        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+    return Column(children: [
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [_buildAction(context)]),
+      const SizedBox(height: kInternalSpacing),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+        child: getHeader(context),
       ),
-      content: Column(children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: getHeader(context),
-        ),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(child: HintText(S.totalCount(items.length))),
-        ),
-        ...getDetails(context, items),
-      ]),
+      const Divider(),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
+        child: Center(child: HintText(S.totalCount(items.length))),
+      ),
+      ...getDetails(context, items),
+    ]);
+  }
+
+  Widget _buildAction(BuildContext context) {
+    if (progress == null) {
+      return _buildConfirmedButton(context);
+    }
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: progress![able]!,
+      builder: (context, value, child) {
+        final notReady = progress!.values.where((e) => !e.value).length;
+        if (notReady == 0) {
+          return _buildConfirmedButton(context);
+        }
+
+        return Column(
+          children: [
+            Row(children: [
+              Checkbox.adaptive(value: value, onChanged: (value) => progress![able]!.value = !value!),
+              const Text('確認資料'),
+            ]),
+            HintText('還差 $notReady 種資料未確認'),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildConfirmedButton(BuildContext context) {
+    return FilledButton(
+      onPressed: () async {
+        final futures = (progress?.keys.toList() ?? [able]).map((e) => e.toRepository().commitStaged());
+        final result = await showSnackbarWhenFutureError(
+          Future.wait(futures),
+          'transit_import_failed',
+          context: context,
+        );
+
+        if (result != null && context.mounted) {
+          onDone(context);
+        }
+      },
+      child: const Text('匯入資料'),
     );
   }
 

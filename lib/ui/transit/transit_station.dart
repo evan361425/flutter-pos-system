@@ -151,7 +151,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
               exporter: exporter,
               stateNotifier: stateNotifier,
               ranger: ranger,
-              properties: ValueNotifier<OrderSpreadsheetProperties>(OrderSpreadsheetProperties.fromCache()),
+              settings: ValueNotifier<TransitOrderSettings>(TransitOrderSettings.fromCache()),
             );
           case _Combination.importBasic:
             return gs.ImportBasicView(exporter: exporter, stateNotifier: stateNotifier);
@@ -164,7 +164,7 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
             return excel.ExportOrderView(
               stateNotifier: stateNotifier,
               ranger: ranger,
-              properties: ValueNotifier<OrderSpreadsheetProperties>(OrderSpreadsheetProperties.fromCache()),
+              settings: ValueNotifier<TransitOrderSettings>(TransitOrderSettings.fromCache()),
             );
           case _Combination.importBasic:
             return excel.ImportBasicView(stateNotifier: stateNotifier);

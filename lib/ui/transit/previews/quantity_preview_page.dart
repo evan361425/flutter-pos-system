@@ -8,7 +8,10 @@ import 'preview_page.dart';
 class QuantityPreviewPage extends PreviewPage<Quantity> {
   const QuantityPreviewPage({
     super.key,
+    required super.able,
     required super.items,
+    required super.onDone,
+    required super.progress,
   });
 
   @override

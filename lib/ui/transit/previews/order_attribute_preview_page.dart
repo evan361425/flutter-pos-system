@@ -10,7 +10,10 @@ import 'preview_page.dart';
 class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
   const OrderAttributePreviewPage({
     super.key,
+    required super.able,
     required super.items,
+    required super.onDone,
+    required super.progress,
   });
 
   @override
