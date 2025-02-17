@@ -11,7 +11,7 @@ import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportOrderView extends StatefulWidget {
+class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
   final ValueNotifier<TransitOrderSettings> settings;
   final TransitStateNotifier stateNotifier;
@@ -26,54 +26,43 @@ class ExportOrderView extends StatefulWidget {
   });
 
   @override
-  State<ExportOrderView> createState() => _ExportOrderViewState();
-}
-
-class _ExportOrderViewState extends State<ExportOrderView> {
-  @override
   Widget build(BuildContext context) {
     return TransitOrderList(
-      ranger: widget.ranger,
+      ranger: ranger,
       memoryPredictor: memoryPredictor,
       warning: S.transitGSOrderMetaMemoryWarning,
       leading: Padding(
         padding: const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
         child: SignInButton(
           signedInWidget: TransitOrderHead(
+            stateNotifier: stateNotifier,
             title: '網路匯出',
             subtitle: '注意，由於 Google 的限流，有時會無法成功送出，需多次嘗試。\n建議大資料可以透過 Excel 或 CSV 匯出。',
             trailing: const Icon(Icons.cloud_upload_sharp),
-            ranger: widget.ranger,
-            properties: widget.settings,
-            onTap: _export,
+            ranger: ranger,
+            properties: settings,
+            onExport: _export,
+            onDone: _done,
           ),
         ),
       ),
     );
   }
 
-  Future<void> _export(BuildContext context) async {
-    widget.stateNotifier.exec(
-      () => showSnackbarWhenFutureError(
-        _startExport(),
-        'excel_export_failed',
+  void _done(BuildContext context, String link) {
+    if (link.isNotEmpty) {
+      Log.out('export finish', 'gs_export');
+      showSnackBar(
+        S.actSuccess,
+        // ignore: use_build_context_synchronously
         context: context,
-      ).then((link) {
-        if (link != null && link.isNotEmpty) {
-          Log.out('export finish', 'gs_export');
-          showSnackBar(
-            S.actSuccess,
-            // ignore: use_build_context_synchronously
-            context: context,
-            action: LauncherSnackbarAction(
-              label: S.transitGSSpreadsheetSnackbarAction,
-              link: link,
-              logCode: 'gs_export',
-            ),
-          );
-        }
-      }),
-    );
+        action: LauncherSnackbarAction(
+          label: S.transitGSSpreadsheetSnackbarAction,
+          link: link,
+          logCode: 'gs_export',
+        ),
+      );
+    }
   }
 
   /// Export all data to spreadsheet.
@@ -81,33 +70,33 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   /// 1. Ask user to select a spreadsheet.
   /// 2. Prepare the spreadsheet, make all sheets ready.
   /// 3. Export data to the spreadsheet.
-  Future<String?> _startExport() async {
+  Future<String> _export(BuildContext context) async {
     // Step 1
     GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
       context,
-      exporter: widget.exporter,
+      exporter: exporter,
       cacheKey: importCacheKey,
       fallbackCacheKey: exportCacheKey,
     );
-    if (ss == null || !mounted) {
+    if (ss == null || !context.mounted) {
       return '';
     }
 
     // Step 2
-    final sheetTitles = widget.settings.value.parseTitles(widget.ranger.value);
+    final sheetTitles = settings.value.parseTitles(ranger.value);
     final ables = sheetTitles.keys.toList();
     final titles = sheetTitles.values.toList();
     final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
     ss = await prepareSpreadsheet(
       context: context,
-      exporter: widget.exporter,
-      stateNotifier: widget.stateNotifier,
+      exporter: exporter,
+      stateNotifier: stateNotifier,
       defaultName: S.transitGSSpreadsheetModelDefaultName,
       cacheKey: exportCacheKey,
       sheets: titles,
       spreadsheet: ss,
     );
-    if (ss == null || !mounted) {
+    if (ss == null || !context.mounted) {
       return '';
     }
 
@@ -115,8 +104,8 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
 
     final orders = await Seller.instance.getDetailedOrders(
-      widget.ranger.value.start,
-      widget.ranger.value.end,
+      ranger.value.start,
+      ranger.value.end,
     );
     final data = ables.map((able) => orders.expand((order) {
           return able.formatRows(order).map((l) {
@@ -124,9 +113,9 @@ class _ExportOrderViewState extends State<ExportOrderView> {
           });
         }));
 
-    if (widget.settings.value.isOverwrite) {
-      widget.stateNotifier.value = S.transitGSProgressStatusOverwriteOrders;
-      await widget.exporter.updateSheetValues(
+    if (settings.value.isOverwrite) {
+      stateNotifier.value = S.transitGSProgressStatusOverwriteOrders;
+      await exporter.updateSheetValues(
         ss,
         sheets,
         data,
@@ -137,8 +126,8 @@ class _ExportOrderViewState extends State<ExportOrderView> {
     }
 
     for (final (i, rows) in data.indexed) {
-      widget.stateNotifier.value = S.transitGSProgressStatusAppendOrders(ables[i].l10nValue);
-      await widget.exporter.appendSheetValues(ss, sheets[i], rows);
+      stateNotifier.value = S.transitGSProgressStatusAppendOrders(ables[i].l10nName);
+      await exporter.appendSheetValues(ss, sheets[i], rows);
     }
 
     return ss.toLink();

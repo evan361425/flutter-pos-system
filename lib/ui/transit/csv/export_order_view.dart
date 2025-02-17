@@ -25,29 +25,24 @@ class ExportOrderView extends StatelessWidget {
       ranger: ranger,
       memoryPredictor: _memoryPredictor,
       leading: TransitOrderHead(
+        stateNotifier: stateNotifier,
         title: S.transitCSVShareBtn,
         subtitle: S.transitPTCopyWarning,
         trailing: const Icon(Icons.share_outlined),
         ranger: ranger,
-        onTap: _export,
+        onExport: _export,
+        onDone: _done,
       ),
     );
   }
 
-  Future<void> _export(BuildContext context) async {
-    stateNotifier.exec(() => showSnackbarWhenFutureError(
-          _startExport(),
-          'csv_export_failed',
-          context: context,
-        ).then((success) {
-          if (success == true) {
-            // ignore: use_build_context_synchronously
-            showSnackBar(S.transitPTCopySuccess, context: context);
-          }
-        }));
+  void _done(BuildContext context, bool ok) {
+    if (ok) {
+      showSnackBar(S.transitPTCopySuccess, context: context);
+    }
   }
 
-  Future<bool> _startExport() async {
+  Future<bool> _export(BuildContext context) async {
     final orders = await Seller.instance.getDetailedOrders(
       ranger.value.start,
       ranger.value.end,

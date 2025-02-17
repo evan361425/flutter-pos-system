@@ -26,29 +26,23 @@ class ExportOrderView extends StatelessWidget {
       ranger: ranger,
       orderViewBuilder: (order) => Text(formatOrder(order)),
       memoryPredictor: memoryPredictor,
-      leading: TransitOrderHead(
+      leading: TransitOrderHead<void>(
+        stateNotifier: stateNotifier,
         title: S.transitCSVShareBtn,
         subtitle: S.transitPTCopyWarning,
         trailing: const Icon(Icons.copy_outlined),
         ranger: ranger,
-        onTap: _export,
+        onExport: _export,
+        onDone: _done,
       ),
     );
   }
 
-  void _export(BuildContext context) {
-    stateNotifier.exec(() => showSnackbarWhenFutureError(
-          _startExport(),
-          'pt_export_failed',
-          context: context,
-        ).then((value) {
-          if (context.mounted) {
-            showSnackBar(S.transitPTCopySuccess, context: context);
-          }
-        }));
+  void _done(BuildContext context, void ok) {
+    showSnackBar(S.transitPTCopySuccess, context: context);
   }
 
-  Future<void> _startExport() async {
+  Future<void> _export(BuildContext context) async {
     final orders = await Seller.instance.getDetailedOrders(
       ranger.value.start,
       ranger.value.end,

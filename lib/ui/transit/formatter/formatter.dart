@@ -74,16 +74,12 @@ enum FormattableModel {
 }
 
 enum FormattableOrder {
-  basic('order'),
-  attr('orderDetailsAttr'),
-  product('orderDetailsProduct'),
-  ingredient('orderDetailsIngredient');
+  basic,
+  attr,
+  product,
+  ingredient;
 
-  final String l10nName;
-
-  const FormattableOrder(this.l10nName);
-
-  String get l10nValue => S.transitModelName(l10nName);
+  String get l10nName => S.transitOrderName(name);
 
   List<List<CellData>> formatRows(OrderObject order) {
     switch (this) {

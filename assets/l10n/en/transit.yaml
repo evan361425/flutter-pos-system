@@ -1,6 +1,12 @@
 $prefix: transit
 title: Data Transfer
 description: Importing and Exporting Store Information and Orders
+_desc:
+  $prefix: description
+  CSV: Commas Separate Values, lightweight to export and import data, compatible with most software.
+  excel: Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.
+  googleSheet: Google Sheets is a powerful mini-database. After exporting, it can be customized for various analyses!
+  plainText: Quick check, quick share.
 method:
   title: Please Select Transfer Method
   name:
@@ -25,12 +31,33 @@ model:
     quantities: Quantities
     replenisher: Replenisher
     orderAttr: Customer Settings
-    order: Order
-    orderDetailsAttr: Order Customer Settings
-    orderDetailsProduct: Order Product Details
-    orderDetailsIngredient: Order Ingredient Details
-  - name:
 order:
+  name:
+  - basic: Order
+    attr: Customer Details
+    product: Product Details
+    ingredient: Ingredient Details
+  setting:
+    title: Order Export Settings
+    meta:
+      overwrite:
+      - 'true': Will overwrite
+        'false': Won't overwrite
+      - value:
+      titlePrefix:
+      - 'true': Has date prefix
+        'false': No date prefix
+      - value:
+      memoryWarning: |-
+        The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.
+        For detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).
+    overwrite:
+      label: Overwrite Sheet
+      hint: Overwriting the sheet will start exporting from the first row.
+    titlePrefix:
+      label: Add Date Prefix
+      hint: Add a date prefix to the sheet name, for example, "0101 - 0131 Order Data".
+    recommendCombination: When not overwriting and using append instead, it's recommended not to add a date prefix to the form name.
   meta:
     range:
     - "Orders for {range}"
@@ -60,14 +87,111 @@ order:
     dialog:
       title: Order Details
 export:
+  tab: Export
   preview:
     btn: Preview
     title: Preview Output Result
-  btn: Export
+  basic:
+    btn:
+      csv: Export files
+      excel: Export file
+      googleSheet: Upload file
+      plainText: Copy
+    fileName: POS System Data
+    success:
+      csv: Exported successfully
+      excel: Exported successfully
+      googleSheet: Uploaded successfully
+      plainText: Copied successfully
+      action:
+        googleSheet: Open
+  order:
+    title:
+      csv: Export files
+      excel: Export file
+      googleSheet: Upload file
+      plainText: Copy
+    subtitle:
+      csv: Export multiple files with different types of data.
+      excel: Export one file with many sheets.
+      googleSheet: |
+        Upload needs network connection and might be throttled.
+        If the upload fails, please try again later or use other methods.
+      plainText: Simple text format, should be used for small data.
+    success:
+      csv: Exported successfully
+      excel: Exported successfully
+      googleSheet: Uploaded successfully
+      plainText: Copied successfully
 import:
+  tab: Import
+  btn:
+    csv: Select file
+    excel: Select file
+    googleSheet: Select spreadsheet
+    plainText: Paste
+  progress:
+    googleSheet:
+      sheet:
+      - Prepare sheet '{name}'
+      import: Importing data from spreadsheet
+      createSpreadsheet: Creating spreadsheet
+  csv:
+    error:
+      pickFile: Failed to pick file
+  excel:
+    error:
+      pickFile: Failed to pick file
+      dataNotFound:
+      - Can't find {name} in the data
+  googleSheet:
+    error:
+      createSpreadsheet: Unable to Create Spreadsheet
+      createSpreadsheetHelper: |-
+        Don't worry, it's usually easy to solve!
+        Possible reasons include:
+        • Unstable network conditions;
+        • POS system not authorized to edit spreadsheets.
+      spreadsheetEmpty: Please Select a Spreadsheet First
+      spreadsheetId:
+        empty: Cannot be Empty
+        invalid: |-
+          Invalid text. It must include:
+          • /spreadsheets/d/<ID>/
+          • Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
+      createSheet: Unable to Create Sheet in Spreadsheet
+      createSheetHelper: |-
+        Don't worry, it's usually easy to solve!
+        Possible reasons include:
+        • Unstable network conditions;
+        • POS system not authorized to create sheets;
+        • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
+        • The spreadsheet has been deleted.
+      sheetRepeat: Sheet name duplicate
+      sheetEmpty: Please select at least one sheet to export
+      nonExistName: Spreadsheet not found, has it been deleted?
+      import:
+        emptySpreadsheet: Must select a spreadsheet to import
+        emptySheet: Must select a specific sheet to import
+        emptyData: No values found in sheet
+        notFoundSpreadsheet: Spreadsheet not found
+        notFoundSheets:
+        - No data found for sheet "{name}"
+        - name:
+        notFoundHelper: |-
+          Don't worry, it's usually easy to solve!
+          Possible reasons include:
+          • Unstable network conditions;
+          • POS system not authorized to read sheets;
+          • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
+          • The spreadsheet has been deleted.
+  plainText:
+    hint: Paste copied text here
+    helper: After pasting the text, it will analyze and determine the type of information to import.
+    error:
+      notFound: This text cannot match any corresponding service. Please refer to the exported text content.
+  success: Imported successfully
   preview:
-    btn: Preview
-    title: Preview Import Result
     header: 'Note: Importing will remove the data not listed below. Please confirm before executing!'
     ingredient:
       meta:
@@ -82,7 +206,6 @@ import:
       header: After import, old ingredients won't be removed to avoid affecting the "Menu" status.
     quantity:
       header: After import, old quantities won't be removed to avoid affecting the "Menu" status.
-  btn: Import
   error:
     columnCount:
     - Insufficient data, {columns} columns required
@@ -96,8 +219,75 @@ import:
     updated: (Updated)
   - Additional status of the data displayed
   - name:
+format:
+  field:
+    product:
+      ingredient:
+        title: Ingredient Information
+        note: |-
+          Information of all product ingredients, format as follows:
+          - Ingredient 1, Default usage amount
+            + Quantity a, Additional usage amount, Additional price, Additional cost
+            + Quantity b, Additional usage amount, Additional price, Additional cost
+          - Ingredient 2, Default usage amount
+    replenishment:
+      title: Replenishment Amount
+      note: |-
+        The amount of specific ingredients during each replenishment, format as follows:
+        - Ingredient 1, Replenishment amount
+        - Ingredient 2, Replenishment amount
+    attributeOption:
+      title: Customer Setting Options
+      header:
+        ts: Timestamp
+        mode: Type
+        options: Options
+      note: |-
+        "Options" will have different meanings depending on the type of customer settings, format as follows:
+        - Option 1, Is default, Option value
+        - Option 2, Is default, Option value
+    order:
+      ts: Timestamp
+      time: Time
+      price: Price
+      productPrice: Product Price
+      paid: Paid
+      cost: Cost
+      profit: Profit
+      itemCount:
+      - Item Count
+      - how many items in the order
+      typeCount:
+      - Type Count
+      - how many types of products in the order
+    _order:
+      $prefix: order
+      attribute:
+        title: Order Customer Settings
+        header:
+          ts: Timestamp
+          name: Setting Category
+          option: Option
+      product:
+        title: Order Product Details
+        header:
+          ts: Timestamp
+          name: Product
+          catalog: Category
+          count: Quantity
+          price: Single Price
+          cost: Single Cost
+          origin: Original Price
+      ingredient:
+        title: Order Ingredient Details
+        header:
+          ts: Timestamp
+          name: Ingredient
+          quantity: Quantity
+          amount: Amount
+      expandable:
+        hint: See next table
 GS:
-  description: Google Sheets is a powerful mini-database. After exporting, it can be customized for various analyses!
   sheet:
     name:
       label:
@@ -164,109 +354,6 @@ GS:
     appendOrders:
     - Appended to {name}
     - name:
-  model:
-    status:
-    - menu: Updating Menu...
-      stock: Updating Inventory...
-      quantities: Updating Quantities...
-      replenisher: Updating Replenisher...
-      orderAttr: Exporting Customer Settings...
-      order: Exporting Orders...
-      orderDetailsAttr: Exporting Order Customer Settings...
-      orderDetailsProduct: Exporting Order Product Details...
-      orderDetailsIngredient: Exporting Order Ingredient Details...
-    - model:
-    product:
-      ingredient:
-        title: Ingredient Information
-        note: |-
-          Information of all product ingredients, format as follows:
-          - Ingredient 1, Default usage amount
-            + Quantity a, Additional usage amount, Additional price, Additional cost
-            + Quantity b, Additional usage amount, Additional price, Additional cost
-          - Ingredient 2, Default usage amount
-    replenishment:
-      title: Replenishment Amount
-      note: |-
-        The amount of specific ingredients during each replenishment, format as follows:
-        - Ingredient 1, Replenishment amount
-        - Ingredient 2, Replenishment amount
-    attributeOption:
-      title: Customer Setting Options
-      header:
-        ts: Timestamp
-        mode: Type
-        options: Options
-      note: |-
-        "Options" will have different meanings depending on the type of customer settings, format as follows:
-        - Option 1, Is default, Option value
-        - Option 2, Is default, Option value
-  order:
-    setting:
-      title: Order Export Settings
-      overwrite:
-        label: Overwrite Sheet
-        hint: Overwriting the sheet will start exporting from the first row.
-      titlePrefix:
-        label: Add Date Prefix
-        hint: Add a date prefix to the sheet name, for example, "0101 - 0131 Order Data".
-      recommendCombination: When not overwriting and using append instead, it's recommended not to add a date prefix to the form name.
-      name:
-        label: Sheet Name
-        helper: |-
-          Splitting the sheet allows for more flexible data analysis,
-          for example, you can query the total usage of a certain ingredient in order details.
-    meta:
-      overwrite:
-      - 'true': Will overwrite
-        'false': Won't overwrite
-      - value:
-      titlePrefix:
-      - 'true': Has date prefix
-        'false': No date prefix
-      - value:
-      memoryWarning: |-
-        The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.
-        For detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).
-    header:
-      ts: Timestamp
-      time: Time
-      price: Price
-      productPrice: Product Price
-      paid: Paid
-      cost: Cost
-      profit: Profit
-      itemCount:
-      - Item Count
-      - how many items in the order
-      typeCount:
-      - Type Count
-      - how many types of products in the order
-    attribute:
-      title: Order Customer Settings
-      header:
-        ts: Timestamp
-        name: Setting Category
-        option: Option
-    product:
-      title: Order Product Details
-      header:
-        ts: Timestamp
-        name: Product
-        catalog: Category
-        count: Quantity
-        price: Single Price
-        cost: Single Cost
-        origin: Original Price
-    ingredient:
-      title: Order Ingredient Details
-      header:
-        ts: Timestamp
-        name: Ingredient
-        quantity: Quantity
-        amount: Amount
-    expandable:
-      hint: See next table
   error:
     createSpreadsheet: Unable to Create Spreadsheet
     createSpreadsheetHelper: |-
@@ -526,11 +613,4 @@ PT:
         modeValue:
         - option value is {value}
         - value: {type: num, format: decimalPattern}
-excel:
-  description: Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.
-CSV:
-  description: Commas Separate Values, lightweight to export and import data, compatible with most software.
-  share:
-    btn: Share
-    success: Exported successfully.
 

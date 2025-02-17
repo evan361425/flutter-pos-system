@@ -17,7 +17,7 @@ class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
   });
 
   @override
-  Widget getItem(BuildContext context, OrderAttribute item) {
+  Widget buildItem(BuildContext context, OrderAttribute item) {
     final mode = S.orderAttributeModeName(item.mode.name);
     final defaultName = item.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     return ExpansionTile(

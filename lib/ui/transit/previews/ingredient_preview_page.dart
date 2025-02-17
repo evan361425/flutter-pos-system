@@ -15,7 +15,7 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
   });
 
   @override
-  Widget getItem(BuildContext context, Ingredient item) {
+  Widget buildItem(BuildContext context, Ingredient item) {
     return ListTile(
       title: ImporterColumnStatus(
         name: item.name,
@@ -29,7 +29,7 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
   }
 
   @override
-  Widget getHeader(BuildContext context) {
+  Widget buildHeader(BuildContext context) {
     return Text(S.transitImportPreviewIngredientHeader);
   }
 }

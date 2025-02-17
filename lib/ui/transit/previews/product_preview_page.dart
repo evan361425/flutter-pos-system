@@ -17,7 +17,7 @@ class ProductPreviewPage extends PreviewPage<Product> {
   });
 
   @override
-  Iterable<Widget> getDetails(
+  Iterable<Widget> buildDetails(
     BuildContext context,
     Iterable<FormattedItem> items,
   ) sync* {
@@ -41,12 +41,12 @@ class ProductPreviewPage extends PreviewPage<Product> {
         );
       }
 
-      yield getItem(context, product);
+      yield buildItem(context, product);
     }
   }
 
   @override
-  Widget getItem(BuildContext context, Product item) {
+  Widget buildItem(BuildContext context, Product item) {
     final textTheme = Theme.of(context).textTheme;
     final textStyle = textTheme.bodyMedium?.copyWith(
       color: textTheme.bodySmall?.color,

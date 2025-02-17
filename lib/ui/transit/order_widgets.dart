@@ -10,6 +10,7 @@ import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/date_range_picker.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -20,6 +21,7 @@ import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/order_formatter.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 enum ExportMemoryLevel {
   ok,
@@ -221,24 +223,28 @@ class TransitOrderList extends StatelessWidget {
   }
 }
 
-class TransitOrderHead extends StatelessWidget {
+class TransitOrderHead<T> extends StatelessWidget {
+  final TransitStateNotifier stateNotifier;
   final String title;
   final String subtitle;
   final Icon trailing;
   final ValueNotifier<DateTimeRange> ranger;
   final ValueNotifier<TransitOrderSettings>? properties;
   final EdgeInsets margin;
-  final void Function(BuildContext context) onTap;
+  final Future<T> Function(BuildContext context) onExport;
+  final void Function(BuildContext context, T result) onDone;
 
   const TransitOrderHead({
     super.key,
+    required this.stateNotifier,
     required this.title,
     required this.subtitle,
     required this.trailing,
     required this.ranger,
     this.properties,
     this.margin = const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
-    required this.onTap,
+    required this.onExport,
+    required this.onDone,
   });
 
   @override
@@ -254,7 +260,7 @@ class TransitOrderHead extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
-          onTap: () => onTap(context),
+          onTap: () => _onExport(context),
         ),
       ),
       _OrderRange(notifier: ranger),
@@ -278,6 +284,19 @@ class TransitOrderHead extends StatelessWidget {
           },
         ),
     ]);
+  }
+
+  void _onExport(BuildContext context) {
+    stateNotifier.exec(() => showSnackbarWhenFutureError(
+          onExport(context),
+          'csv_export_failed',
+          context: context,
+        ).then((result) {
+          if (result != null) {
+            // ignore: use_build_context_synchronously
+            onDone(context, result);
+          }
+        }));
   }
 
   void _showMetaSetting(BuildContext context) async {
@@ -315,7 +334,7 @@ class TransitOrderSettings {
     final prefix = withPrefix ? '${range.formatCompact(S.localeName)} ' : '';
 
     return {
-      for (final e in FormattableOrder.values) e: '$prefix${e.l10nValue}',
+      for (final e in FormattableOrder.values) e: '$prefix${e.l10nName}',
     };
   }
 

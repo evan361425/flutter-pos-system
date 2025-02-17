@@ -85,14 +85,14 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
       const SizedBox(height: kInternalSpacing),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-        child: getHeader(context),
+        child: buildHeader(context),
       ),
       const Divider(),
       Padding(
         padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
         child: Center(child: HintText(S.totalCount(items.length))),
       ),
-      ...getDetails(context, items),
+      ...buildDetails(context, items),
     ]);
   }
 
@@ -140,18 +140,18 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> getDetails(
+  Iterable<Widget> buildDetails(
     BuildContext context,
     Iterable<FormattedItem> items,
   ) sync* {
     for (final item in items) {
-      yield item.hasError ? PreviewErrorListTile(item) : getItem(context, item.item! as T);
+      yield item.hasError ? PreviewErrorListTile(item) : buildItem(context, item.item! as T);
     }
   }
 
-  Widget getItem(BuildContext context, T item);
+  Widget buildItem(BuildContext context, T item);
 
-  Widget getHeader(BuildContext context) {
+  Widget buildHeader(BuildContext context) {
     return Text(S.transitImportPreviewHeader);
   }
 }

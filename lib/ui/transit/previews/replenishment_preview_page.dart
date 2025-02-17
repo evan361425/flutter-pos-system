@@ -16,7 +16,7 @@ class ReplenishmentPreviewPage extends PreviewPage<Replenishment> {
   });
 
   @override
-  Widget getItem(
+  Widget buildItem(
     BuildContext context,
     Replenishment item,
   ) {

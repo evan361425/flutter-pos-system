@@ -15,7 +15,7 @@ class QuantityPreviewPage extends PreviewPage<Quantity> {
   });
 
   @override
-  Widget getItem(BuildContext context, Quantity item) {
+  Widget buildItem(BuildContext context, Quantity item) {
     return ListTile(
       title: ImporterColumnStatus(
         name: item.name,
@@ -28,7 +28,7 @@ class QuantityPreviewPage extends PreviewPage<Quantity> {
   }
 
   @override
-  Widget getHeader(BuildContext context) {
+  Widget buildHeader(BuildContext context) {
     return Text(S.transitImportPreviewQuantityHeader);
   }
 }
