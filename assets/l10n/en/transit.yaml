@@ -3,7 +3,7 @@ title: Data Transfer
 description: Importing and Exporting Store Information and Orders
 _desc:
   $prefix: description
-  CSV: Commas Separate Values, lightweight to export and import data, compatible with most software.
+  csv: Commas Separate Values, lightweight to export and import data, compatible with most software.
   excel: Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.
   googleSheet: Google Sheets is a powerful mini-database. After exporting, it can be customized for various analyses!
   plainText: Quick check, quick share.
@@ -13,17 +13,14 @@ method:
   - googleSheet: Google Sheets
     plainText: Plain Text
     excel: Excel
-    CSV: CSV
-  - name:
+    csv: CSV
 catalog:
   name:
   - order: Order Records
     model: Store Information
-  - name:
   helper:
   - order: Export order info for detailed statistical analysis.
     model: Store info is usually used to sync menu, inventory, etc., to third-party locations or to import to another device.
-  - name:
 model:
   name:
   - menu: Menu
@@ -68,7 +65,6 @@ order:
   capacity:
     title:
     - 'Estimated Capacity: {size}'
-    - size:
     content: High capacity may cause execution errors. It's recommended to perform in batches and not export too many records at once.
     ok: Capacity Okay
     warn: Capacity Warning
@@ -88,14 +84,11 @@ order:
       title: Order Details
 export:
   tab: Export
-  preview:
-    btn: Preview
-    title: Preview Output Result
   basic:
     btn:
-      csv: Export files
-      excel: Export file
-      googleSheet: Upload file
+      csv: Export CSV files
+      excel: Export Excel file
+      googleSheet: Upload to Google Sheets
       plainText: Copy
     fileName: POS System Data
     success:
@@ -107,16 +100,16 @@ export:
         googleSheet: Open
   order:
     title:
-      csv: Export files
-      excel: Export file
-      googleSheet: Upload file
+      csv: Export CSV files
+      excel: Export Excel file
+      googleSheet: Upload to Google Sheets
       plainText: Copy
     subtitle:
-      csv: Export multiple files with different types of data.
-      excel: Export one file with many sheets.
+      csv: Will have multiple files with different types of data.
+      excel: Single file with many sheets each having different types of data.
       googleSheet: |
-        Upload needs network connection and might be throttled.
-        If the upload fails, please try again later or use other methods.
+        Upload needs network connection and request might be throttled by Google.
+        If the upload fails, please try again later or use other methods to export.
       plainText: Simple text format, should be used for small data.
     success:
       csv: Exported successfully
@@ -126,26 +119,29 @@ export:
 import:
   tab: Import
   btn:
-    csv: Select file
-    excel: Select file
+    csv: Select .csv file
+    excel: Select .xlsx file
     googleSheet: Select spreadsheet
     plainText: Paste
   progress:
     googleSheet:
       sheet:
-      - Prepare sheet '{name}'
+      - Preparing sheet '{name}'
       import: Importing data from spreadsheet
       createSpreadsheet: Creating spreadsheet
-  csv:
-    error:
+  error:
+    basic:
+      columnCount:
+      - Insufficient data, {columns} columns required
+      - columns: {type: int}
+      duplicate: This line will be ignored as the same item appeared earlier
+    csv:
       pickFile: Failed to pick file
-  excel:
-    error:
+    excel:
       pickFile: Failed to pick file
       dataNotFound:
-      - Can't find {name} in the data
-  googleSheet:
-    error:
+      - Can't find '{name}' in the data
+    googleSheet:
       createSpreadsheet: Unable to Create Spreadsheet
       createSpreadsheetHelper: |-
         Don't worry, it's usually easy to solve!
@@ -185,11 +181,13 @@ import:
           • POS system not authorized to read sheets;
           • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
           • The spreadsheet has been deleted.
+    plainText:
+      notFound: This text cannot match any corresponding service. Please refer to the exported text content.
   plainText:
     hint: Paste copied text here
-    helper: After pasting the text, it will analyze and determine the type of information to import.
-    error:
-      notFound: This text cannot match any corresponding service. Please refer to the exported text content.
+    helper: |
+      After pasting the text, it will analyze and determine the type of information to import.
+      Copying too much text may cause system crash.
   success: Imported successfully
   preview:
     header: 'Note: Importing will remove the data not listed below. Please confirm before executing!'
@@ -206,11 +204,6 @@ import:
       header: After import, old ingredients won't be removed to avoid affecting the "Menu" status.
     quantity:
       header: After import, old quantities won't be removed to avoid affecting the "Menu" status.
-  error:
-    columnCount:
-    - Insufficient data, {columns} columns required
-    - columns: {type: int}
-    duplicate: This line will be ignored as the same item appeared earlier
   columnStatus:
   - normal: (Normal)
     staged: (New)
@@ -218,7 +211,6 @@ import:
     stagedQua: (New Quantity)
     updated: (Updated)
   - Additional status of the data displayed
-  - name:
 format:
   field:
     product:
@@ -287,14 +279,214 @@ format:
           amount: Amount
       expandable:
         hint: See next table
-GS:
-  sheet:
-    name:
-      label:
-      - 'Sheet Title of {name}'
-      - Label of title
+  text:
+    menu:
+      meta:
+        catalog:
+        - '{count} categories'
+        - count: {type: int}
+        product:
+        - '{count} products'
+        - count: {type: int}
+      header:
+      - This menu has {catalogs} categories, {products} products.
+      - catalogs: {type: int}
+        products: {type: int}
+      headerPrefix:
+      - This menu has
+      - This is used to check if this text is a menu
+      catalog:
+      - Category {index} is called {catalog} and {details}.
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - index:
+        catalog:
+        details:
+      catalogDetails:
+      - =0: it has no product
+        =1: it has one product
+        other: it has {count} products
+      - count: {type: int, mode: plural}
+      product:
+      - Product {index} is called {name}, with price at ${price}, cost ${cost} and {details}
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - index:
+        name:
+        price:
+        cost:
+        details:
+      productDetails:
+      - =0: it has no ingredient.
+        =1: |-
+          it has one ingredient: {names}.
+          Each product requires {details}.
+        other: |-
+          it has {count} ingredients: {names}.
+          Each product requires {details}.
+      - count: {type: int, mode: plural}
+        names:
+        details:
+      ingredient:
+      - '{amount} of {name} and {details}'
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - amount:
+        name:
+        details:
+      ingredientDetails:
+      - =0: it is unable to adjust quantity
+        =1: 'it also has one different quantity {quantities}'
+        other: 'it also has {count} different quantities {quantities}'
+      - count: {type: int, mode: plural}
+        quantities:
+      quantity:
+      - quantity {amount} with additional price ${price} and cost ${cost}
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - amount:
+        price:
+        cost:
+    stock:
+      meta:
+        ingredient:
+        - '{count} ingredients'
+        - count: {type: int}
+      header:
+      - The inventory has {count} ingredients in total.
+      - count: {type: int}
+      headerPrefix:
+      - The inventory has
+      - This is used to check if this text is stock
+      ingredient:
+      - Ingredient at {index} is called {name}, with {amount} amount{details}.
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - index:
+        name:
+        amount:
+        details:
+      _ingredient:
+        $prefix: ingredient
+        maxAmount:
+        - =0: ''
+          other: ', with a maximum of {max} pieces'
+        - String(max) are used so that regex can be inserted here during import to obtain information
+        - exist: {type: int, mode: plural}
+          max:
+        restockPrice:
+        - =0: ''
+          other: ' and {quantity} units of it cost ${price} to replenish'
+        - exist: {type: int, mode: plural}
+          quantity:
+          price:
+    quantities:
+      meta:
+        quantity:
+        - '{count} quantities'
+        - count: {type: int}
+      header:
+      - '{count} quantities have been set.'
+      - count: {type: int}
+      headerSuffix:
+      - quantities have been set.
+      - This is used to check if this text is quantities
+      quantity:
+      - Quantity at {index} is called {name}, which defaults to multiplying ingredient quantity by {prop}.
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - index:
+        name:
+        prop:
+    replenisher:
+      meta:
+        replenishment:
+        - '{count} replenishment methods'
+        - count: {type: int}
+      header:
+      - '{count} replenishment methods have been set.'
+      - count: {type: int}
+      headerSuffix:
+      - replenishment methods have been set.
+      - This is used to check if this text is replenishment quantity
+      replenishment:
+      - Replenishment method at {index} is called {name}, {details}.
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - index:
+        name:
+        details:
+      replenishmentDetails:
+      - =0: 'it will not adjust inventory'
+        other: 'it will adjust the inventory of {count} ingredients'
+      - count: {type: int, mode: plural}
+    oa:  # order attribute
+      meta:
+        oa:
+        - '{count} customer attributes'
+        - count: {type: int}
+      header:
+      - '{count} customer attributes have been set.'
+      - count: {type: int}
+      headerSuffix:
+      - customer attributes have been set.
+      - This is used to check if this text is customer settings
+      oa:
+      - Attribute at {index} is called {name}, belongs to {mode} type, {details}.
+      - Strings are used so that regex can be inserted here during import to obtain information
+      - index:
+        name:
+        mode:
+        details:
+      oaDetails:
+      - =0: it has no options
+        =1: it has one option
+        other: 'it has {count} options'
+      - count: {type: int, mode: plural}
+      defaultOption: default
+      modeValue:
+      - option value is {value}
+      - value: {type: num, format: decimalPattern}
+    order:
+      price:
+      - =0: Total price ${price}.
+        other: Total price ${price}, {productsPrice} of them are product price.
+      - hasProducts: {type: int, mode: plural}
+        price:
+        productsPrice:
+      money:
+      - Paid ${paid}, cost ${cost}.
+      - paid:
+        cost:
+      productCount:
+      - =0: There is no product.
+        =1: |-
+          There is 1 product details are:
+          {products}.
+        other: |-
+          There are {count} products ({setCount} types of set) including:
+          {products}.
+      - count: {type: int, mode: plural}
+        setCount: {type: int}
+        products:
+      product:
+      - =0: '{count} of {product} ({catalog}), total price is ${price}, no ingredient settings'
+        other: '{count} of {product} ({catalog}), total price is ${price}, ingredients are {ingredients}'
+      - hasIngredient: {type: int, mode: plural}
+        product:
+        catalog:
+        count: {type: int}
+        price:
+        ingredients:
+      ingredient:
+      - =0: "{ingredient} ({quantity})"
+        other: "{ingredient} ({quantity}), used {amount}"
+      - Details of ingredients and quantities for each product in the order list
+      - amount: {type: num, mode: plural, format: decimalPattern}
+        ingredient:
+        quantity:
+      noQuantity: default quantity
+      orderAttribute:
+      - Customer's {options}.
+      - options:
+      orderAttributeItem:
+      - '{name} is {option}'
       - name:
-      update: Modify Title
+        option:
+GS:
   spreadsheet:
     label: Spreadsheet
     action:
@@ -342,275 +534,3 @@ GS:
         divider: Select types to export
       import:
         divider: Select sheet to import
-    order:
-      defaultName: POS System Orders
-    snackbarAction: Open
-  progressStatus:
-    addSpreadsheet: Adding Spreadsheet...
-    addSheets: Adding Sheets...
-    verifyUser: Verifying Identity
-    fetchLocalOrders: Retrieving Local Data...
-    overwriteOrders: Overwriting Order Data...
-    appendOrders:
-    - Appended to {name}
-    - name:
-  error:
-    createSpreadsheet: Unable to Create Spreadsheet
-    createSpreadsheetHelper: |-
-      Don't worry, it's usually easy to solve!
-      Possible reasons include:
-      • Unstable network conditions;
-      • POS system not authorized to edit spreadsheets.
-    spreadsheetEmpty: Please Select a Spreadsheet First
-    spreadsheetId:
-      empty: Cannot be Empty
-      invalid: |-
-        Invalid text. It must include:
-        • /spreadsheets/d/<ID>/
-        • Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
-    createSheet: Unable to Create Sheet in Spreadsheet
-    createSheetHelper: |-
-      Don't worry, it's usually easy to solve!
-      Possible reasons include:
-      • Unstable network conditions;
-      • POS system not authorized to create sheets;
-      • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
-      • The spreadsheet has been deleted.
-    sheetRepeat: Sheet name duplicate
-    sheetEmpty: Please select at least one sheet to export
-    nonExistName: Spreadsheet not found, has it been deleted?
-    import:
-      emptySpreadsheet: Must select a spreadsheet to import
-      emptySheet: Must select a specific sheet to import
-      emptyData: No values found in sheet
-      notFoundSpreadsheet: Spreadsheet not found
-      notFoundSheets:
-      - No data found for sheet "{name}"
-      - name:
-      notFoundHelper: |-
-        Don't worry, it's usually easy to solve!
-        Possible reasons include:
-        • Unstable network conditions;
-        • POS system not authorized to read sheets;
-        • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
-        • The spreadsheet has been deleted.
-PT:
-  description: Quick check, quick share.
-  copy:
-    btn: Copy Text
-    success: Copied successfully
-    warning: Copying too much text may cause system crash
-  import:
-    hint: Paste copied text here
-    helper: After pasting the text, it will analyze and determine the type of information to import.
-    error:
-      notFound: This text cannot match any corresponding service. Please refer to the exported text content.
-  format:
-    order:
-      price:
-      - =0: Total price ${price}.
-        other: Total price ${price}, {productsPrice} of them are product price.
-      - hasProducts: {type: int, mode: plural}
-        price:
-        productsPrice:
-      money:
-      - Paid ${paid}, cost ${cost}.
-      - paid:
-        cost:
-      productCount:
-      - =0: There is no product.
-        =1: |-
-          There is 1 product details are:
-          {products}.
-        other: |-
-          There are {count} products ({setCount} types of set) including:
-          {products}.
-      - count: {type: int, mode: plural}
-        setCount: {type: int}
-        products:
-      product:
-      - =0: '{count} of {product} ({catalog}), total price is ${price}, no ingredient settings'
-        other: '{count} of {product} ({catalog}), total price is ${price}, ingredients are {ingredients}'
-      - hasIngredient: {type: int, mode: plural}
-        product:
-        catalog:
-        count: {type: int}
-        price:
-        ingredients:
-      ingredient:
-      - =0: "{ingredient} ({quantity})"
-        other: "{ingredient} ({quantity}), used {amount}"
-      - Details of ingredients and quantities for each product in the order list
-      - amount: {type: num, mode: plural, format: decimalPattern}
-        ingredient:
-        quantity:
-      noQuantity: default quantity
-      orderAttribute:
-      - Customer's {options}.
-      - options:
-      orderAttributeItem:
-      - '{name} is {option}'
-      - name:
-        option:
-    model:
-      menu:
-        meta:
-          catalog:
-          - '{count} categories'
-          - count: {type: int}
-          product:
-          - '{count} products'
-          - count: {type: int}
-        header:
-        - This menu has {catalogs} categories, {products} products.
-        - catalogs: {type: int}
-          products: {type: int}
-        headerPrefix:
-        - This menu has
-        - This is used to check if this text is a menu
-        catalog:
-        - Category {index} is called {catalog} and {details}.
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - index:
-          catalog:
-          details:
-        catalogDetails:
-        - =0: it has no product
-          =1: it has one product
-          other: it has {count} products
-        - count: {type: int, mode: plural}
-        product:
-        - Product {index} is called {name}, with price at ${price}, cost ${cost} and {details}
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - index:
-          name:
-          price:
-          cost:
-          details:
-        productDetails:
-        - =0: it has no ingredient.
-          =1: |-
-            it has one ingredient: {names}.
-            Each product requires {details}.
-          other: |-
-            it has {count} ingredients: {names}.
-            Each product requires {details}.
-        - count: {type: int, mode: plural}
-          names:
-          details:
-        ingredient:
-        - '{amount} of {name} and {details}'
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - amount:
-          name:
-          details:
-        ingredientDetails:
-        - =0: it is unable to adjust quantity
-          =1: 'it also has one different quantity {quantities}'
-          other: 'it also has {count} different quantities {quantities}'
-        - count: {type: int, mode: plural}
-          quantities:
-        quantity:
-        - quantity {amount} with additional price ${price} and cost ${cost}
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - amount:
-          price:
-          cost:
-      stock:
-        meta:
-          ingredient:
-          - '{count} ingredients'
-          - count: {type: int}
-        header:
-        - The inventory has {count} ingredients in total.
-        - count: {type: int}
-        headerPrefix:
-        - The inventory has
-        - This is used to check if this text is stock
-        ingredient:
-        - Ingredient at {index} is called {name}, with {amount} amount{details}.
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - index:
-          name:
-          amount:
-          details:
-        _ingredient:
-          $prefix: ingredient
-          maxAmount:
-          - =0: ''
-            other: ', with a maximum of {max} pieces'
-          - String(max) are used so that regex can be inserted here during import to obtain information
-          - exist: {type: int, mode: plural}
-            max:
-          restockPrice:
-          - =0: ''
-            other: ' and {quantity} units of it cost ${price} to replenish'
-          - exist: {type: int, mode: plural}
-            quantity:
-            price:
-      quantities:
-        meta:
-          quantity:
-          - '{count} quantities'
-          - count: {type: int}
-        header:
-        - '{count} quantities have been set.'
-        - count: {type: int}
-        headerSuffix:
-        - quantities have been set.
-        - This is used to check if this text is quantities
-        quantity:
-        - Quantity at {index} is called {name}, which defaults to multiplying ingredient quantity by {prop}.
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - index:
-          name:
-          prop:
-      replenisher:
-        meta:
-          replenishment:
-          - '{count} replenishment methods'
-          - count: {type: int}
-        header:
-        - '{count} replenishment methods have been set.'
-        - count: {type: int}
-        headerSuffix:
-        - replenishment methods have been set.
-        - This is used to check if this text is replenishment quantity
-        replenishment:
-        - Replenishment method at {index} is called {name}, {details}.
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - index:
-          name:
-          details:
-        replenishmentDetails:
-        - =0: 'it will not adjust inventory'
-          other: 'it will adjust the inventory of {count} ingredients'
-        - count: {type: int, mode: plural}
-      oa:  # order attribute
-        meta:
-          oa:
-          - '{count} customer attributes'
-          - count: {type: int}
-        header:
-        - '{count} customer attributes have been set.'
-        - count: {type: int}
-        headerSuffix:
-        - customer attributes have been set.
-        - This is used to check if this text is customer settings
-        oa:
-        - Attribute at {index} is called {name}, belongs to {mode} type, {details}.
-        - Strings are used so that regex can be inserted here during import to obtain information
-        - index:
-          name:
-          mode:
-          details:
-        oaDetails:
-        - =0: it has no options
-          =1: it has one option
-          other: 'it has {count} options'
-        - count: {type: int, mode: plural}
-        defaultOption: default
-        modeValue:
-        - option value is {value}
-        - value: {type: num, format: decimalPattern}
-

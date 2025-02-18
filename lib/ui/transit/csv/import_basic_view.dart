@@ -21,7 +21,7 @@ class ImportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImportView(
-      icon: const Icon(Icons.file_present_sharp, semanticLabel: '選擇檔案'),
+      icon: Icon(Icons.file_present_sharp, semanticLabel: S.transitImportBtnCsv),
       stateNotifier: stateNotifier,
       onLoad: _load,
       onDone: _done,
@@ -33,7 +33,7 @@ class ImportBasicView extends StatelessWidget {
     final input = await XFile.pick(extensions: const ['csv', 'txt']);
     if (input == null) {
       // ignore: use_build_context_synchronously
-      showSnackBar('檔案取得失敗', context: context);
+      showSnackBar(S.transitImportCsvErrorPickFile, context: context);
 
       return null;
     }
@@ -43,6 +43,6 @@ class ImportBasicView extends StatelessWidget {
   }
 
   void _done(BuildContext context) {
-    showSnackBar(S.actSuccess, context: context);
+    showSnackBar(S.transitImportSuccess, context: context);
   }
 }

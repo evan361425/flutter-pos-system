@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/csv_exporter.dart';
 import 'package:possystem/ui/transit/formatter/field_formatter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
@@ -18,7 +19,7 @@ class ExportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExportView(
-      icon: Icon(Icons.share_outlined, semanticLabel: '分享'),
+      icon: Icon(Icons.share_outlined, semanticLabel: S.transitExportBasicBtnCsv),
       stateNotifier: stateNotifier,
       allowAll: false,
       onExport: _export,
@@ -42,7 +43,7 @@ class ExportBasicView extends StatelessWidget {
 
     final ok = await exporter.export(names, data);
     if (context.mounted && ok) {
-      showSnackBar('成功匯出 CSV 資料', context: context);
+      showSnackBar(S.transitExportBasicSuccessCsv, context: context);
     }
   }
 }

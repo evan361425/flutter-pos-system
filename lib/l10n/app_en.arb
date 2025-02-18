@@ -284,39 +284,39 @@
   "printerInfoStatus": "Status",
   "transitTitle": "Data Transfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
+  "transitDescriptionCsv": "Commas Separate Values, lightweight to export and import data, compatible with most software.",
+  "transitDescriptionExcel": "Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.",
+  "transitDescriptionGoogleSheet": "Google Sheets is a powerful mini-database. After exporting, it can be customized for various analyses!",
+  "transitDescriptionPlainText": "Quick check, quick share.",
   "transitMethodTitle": "Please Select Transfer Method",
-  "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} excel{Excel} CSV{CSV} other{UNKNOWN}}",
-  "@transitMethodName": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
+  "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} excel{Excel} csv{CSV} other{UNKNOWN}}",
   "transitCatalogName": "{name, select, order{Order Records} model{Store Information} other{UNKNOWN}}",
-  "@transitCatalogName": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "transitCatalogHelper": "{name, select, order{Export order info for detailed statistical analysis.} model{Store info is usually used to sync menu, inventory, etc., to third-party locations or to import to another device.} other{UNKNOWN}}",
-  "@transitCatalogHelper": {
+  "transitModelName": "{name, select, menu{Menu} stock{Inventory} quantities{Quantities} replenisher{Replenisher} orderAttr{Customer Settings} other{UNKNOWN}}",
+  "transitOrderName": "{name, select, basic{Order} attr{Customer Details} product{Product Details} ingredient{Ingredient Details} other{UNKNOWN}}",
+  "transitOrderSettingTitle": "Order Export Settings",
+  "transitOrderSettingMetaOverwrite": "{value, select, true{Will overwrite} false{Won't overwrite} other{UNKNOWN}}",
+  "@transitOrderSettingMetaOverwrite": {
     "placeholders": {
-      "name": {
+      "value": {
         "type": "String"
       }
     }
   },
-  "transitModelName": "{name, select, menu{Menu} stock{Inventory} quantities{Quantities} replenisher{Replenisher} orderAttr{Customer Settings} order{Order} orderDetailsAttr{Order Customer Settings} orderDetailsProduct{Order Product Details} orderDetailsIngredient{Order Ingredient Details} other{UNKNOWN}}",
-  "@transitModelName": {
+  "transitOrderSettingMetaTitlePrefix": "{value, select, true{Has date prefix} false{No date prefix} other{UNKNOWN}}",
+  "@transitOrderSettingMetaTitlePrefix": {
     "placeholders": {
-      "name": {
+      "value": {
         "type": "String"
       }
     }
   },
+  "transitOrderSettingMetaMemoryWarning": "The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.\nFor detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).",
+  "transitOrderSettingOverwriteLabel": "Overwrite Sheet",
+  "transitOrderSettingOverwriteHint": "Overwriting the sheet will start exporting from the first row.",
+  "transitOrderSettingTitlePrefixLabel": "Add Date Prefix",
+  "transitOrderSettingTitlePrefixHint": "Add a date prefix to the sheet name, for example, \"0101 - 0131 Order Data\".",
+  "transitOrderSettingRecommendCombination": "When not overwriting and using append instead, it's recommended not to add a date prefix to the form name.",
   "transitOrderMetaRange": "Orders for {range}",
   "@transitOrderMetaRange": {
     "placeholders": {
@@ -335,13 +335,6 @@
     }
   },
   "transitOrderCapacityTitle": "Estimated Capacity: {size}",
-  "@transitOrderCapacityTitle": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
   "transitOrderCapacityContent": "High capacity may cause execution errors. It's recommended to perform in batches and not export too many records at once.",
   "transitOrderCapacityOk": "Capacity Okay",
   "transitOrderCapacityWarn": "Capacity Warning",
@@ -373,11 +366,76 @@
     }
   },
   "transitOrderItemDialogTitle": "Order Details",
-  "transitExportPreviewBtn": "Preview",
-  "transitExportPreviewTitle": "Preview Output Result",
-  "transitExportBtn": "Export",
-  "transitImportPreviewBtn": "Preview",
-  "transitImportPreviewTitle": "Preview Import Result",
+  "transitExportTab": "Export",
+  "transitExportBasicBtnCsv": "Export CSV files",
+  "transitExportBasicBtnExcel": "Export Excel file",
+  "transitExportBasicBtnGoogleSheet": "Upload to Google Sheets",
+  "transitExportBasicBtnPlainText": "Copy",
+  "transitExportBasicFileName": "POS System Data",
+  "transitExportBasicSuccessCsv": "Exported successfully",
+  "transitExportBasicSuccessExcel": "Exported successfully",
+  "transitExportBasicSuccessGoogleSheet": "Uploaded successfully",
+  "transitExportBasicSuccessPlainText": "Copied successfully",
+  "transitExportBasicSuccessActionGoogleSheet": "Open",
+  "transitExportOrderTitleCsv": "Export CSV files",
+  "transitExportOrderTitleExcel": "Export Excel file",
+  "transitExportOrderTitleGoogleSheet": "Upload to Google Sheets",
+  "transitExportOrderTitlePlainText": "Copy",
+  "transitExportOrderSubtitleCsv": "Will have multiple files with different types of data.",
+  "transitExportOrderSubtitleExcel": "Single file with many sheets each having different types of data.",
+  "transitExportOrderSubtitleGoogleSheet": "Upload needs network connection and request might be throttled by Google.\nIf the upload fails, please try again later or use other methods to export.\n",
+  "transitExportOrderSubtitlePlainText": "Simple text format, should be used for small data.",
+  "transitExportOrderSuccessCsv": "Exported successfully",
+  "transitExportOrderSuccessExcel": "Exported successfully",
+  "transitExportOrderSuccessGoogleSheet": "Uploaded successfully",
+  "transitExportOrderSuccessPlainText": "Copied successfully",
+  "transitImportTab": "Import",
+  "transitImportBtnCsv": "Select .csv file",
+  "transitImportBtnExcel": "Select .xlsx file",
+  "transitImportBtnGoogleSheet": "Select spreadsheet",
+  "transitImportBtnPlainText": "Paste",
+  "transitImportProgressGoogleSheetSheet": "Preparing sheet '{name}'",
+  "transitImportProgressGoogleSheetImport": "Importing data from spreadsheet",
+  "transitImportProgressGoogleSheetCreateSpreadsheet": "Creating spreadsheet",
+  "transitImportErrorBasicColumnCount": "Insufficient data, {columns} columns required",
+  "@transitImportErrorBasicColumnCount": {
+    "placeholders": {
+      "columns": {
+        "type": "int"
+      }
+    }
+  },
+  "transitImportErrorBasicDuplicate": "This line will be ignored as the same item appeared earlier",
+  "transitImportErrorCsvPickFile": "Failed to pick file",
+  "transitImportErrorExcelPickFile": "Failed to pick file",
+  "transitImportErrorExcelDataNotFound": "Can't find '{name}' in the data",
+  "transitImportErrorGoogleSheetCreateSpreadsheet": "Unable to Create Spreadsheet",
+  "transitImportErrorGoogleSheetCreateSpreadsheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to edit spreadsheets.",
+  "transitImportErrorGoogleSheetSpreadsheetEmpty": "Please Select a Spreadsheet First",
+  "transitImportErrorGoogleSheetSpreadsheetIdEmpty": "Cannot be Empty",
+  "transitImportErrorGoogleSheetSpreadsheetIdInvalid": "Invalid text. It must include:\n• /spreadsheets/d/<ID>/\n• Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).",
+  "transitImportErrorGoogleSheetCreateSheet": "Unable to Create Sheet in Spreadsheet",
+  "transitImportErrorGoogleSheetCreateSheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to create sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
+  "transitImportErrorGoogleSheetSheetRepeat": "Sheet name duplicate",
+  "transitImportErrorGoogleSheetSheetEmpty": "Please select at least one sheet to export",
+  "transitImportErrorGoogleSheetNonExistName": "Spreadsheet not found, has it been deleted?",
+  "transitImportErrorGoogleSheetImportEmptySpreadsheet": "Must select a spreadsheet to import",
+  "transitImportErrorGoogleSheetImportEmptySheet": "Must select a specific sheet to import",
+  "transitImportErrorGoogleSheetImportEmptyData": "No values found in sheet",
+  "transitImportErrorGoogleSheetImportNotFoundSpreadsheet": "Spreadsheet not found",
+  "transitImportErrorGoogleSheetImportNotFoundSheets": "No data found for sheet \"{name}\"",
+  "@transitImportErrorGoogleSheetImportNotFoundSheets": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transitImportErrorGoogleSheetImportNotFoundHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to read sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
+  "transitImportErrorPlainTextNotFound": "This text cannot match any corresponding service. Please refer to the exported text content.",
+  "transitImportPlainTextHint": "Paste copied text here",
+  "transitImportPlainTextHelper": "After pasting the text, it will analyze and determine the type of information to import.\nCopying too much text may cause system crash.\n",
+  "transitImportSuccess": "Imported successfully",
   "transitImportPreviewHeader": "Note: Importing will remove the data not listed below. Please confirm before executing!",
   "transitImportPreviewIngredientMetaAmount": "Amount: {amount}",
   "@transitImportPreviewIngredientMetaAmount": {
@@ -402,36 +460,478 @@
   },
   "transitImportPreviewIngredientHeader": "After import, old ingredients won't be removed to avoid affecting the \"Menu\" status.",
   "transitImportPreviewQuantityHeader": "After import, old quantities won't be removed to avoid affecting the \"Menu\" status.",
-  "transitImportBtn": "Import",
-  "transitImportErrorColumnCount": "Insufficient data, {columns} columns required",
-  "@transitImportErrorColumnCount": {
+  "transitImportColumnStatus": "{name, select, normal{(Normal)} staged{(New)} stagedIng{(New Ingredient)} stagedQua{(New Quantity)} updated{(Updated)} other{UNKNOWN}}",
+  "@transitImportColumnStatus": {
+    "description": "Additional status of the data displayed"
+  },
+  "transitFormatFieldProductIngredientTitle": "Ingredient Information",
+  "transitFormatFieldProductIngredientNote": "Information of all product ingredients, format as follows:\n- Ingredient 1, Default usage amount\n  + Quantity a, Additional usage amount, Additional price, Additional cost\n  + Quantity b, Additional usage amount, Additional price, Additional cost\n- Ingredient 2, Default usage amount",
+  "transitFormatFieldReplenishmentTitle": "Replenishment Amount",
+  "transitFormatFieldReplenishmentNote": "The amount of specific ingredients during each replenishment, format as follows:\n- Ingredient 1, Replenishment amount\n- Ingredient 2, Replenishment amount",
+  "transitFormatFieldAttributeOptionTitle": "Customer Setting Options",
+  "transitFormatFieldAttributeOptionHeaderTs": "Timestamp",
+  "transitFormatFieldAttributeOptionHeaderMode": "Type",
+  "transitFormatFieldAttributeOptionHeaderOptions": "Options",
+  "transitFormatFieldAttributeOptionNote": "\"Options\" will have different meanings depending on the type of customer settings, format as follows:\n- Option 1, Is default, Option value\n- Option 2, Is default, Option value",
+  "transitFormatFieldOrderTs": "Timestamp",
+  "transitFormatFieldOrderTime": "Time",
+  "transitFormatFieldOrderPrice": "Price",
+  "transitFormatFieldOrderProductPrice": "Product Price",
+  "transitFormatFieldOrderPaid": "Paid",
+  "transitFormatFieldOrderCost": "Cost",
+  "transitFormatFieldOrderProfit": "Profit",
+  "transitFormatFieldOrderItemCount": "Item Count",
+  "@transitFormatFieldOrderItemCount": {
+    "description": "how many items in the order"
+  },
+  "transitFormatFieldOrderTypeCount": "Type Count",
+  "@transitFormatFieldOrderTypeCount": {
+    "description": "how many types of products in the order"
+  },
+  "transitFormatFieldOrderAttributeTitle": "Order Customer Settings",
+  "transitFormatFieldOrderAttributeHeaderTs": "Timestamp",
+  "transitFormatFieldOrderAttributeHeaderName": "Setting Category",
+  "transitFormatFieldOrderAttributeHeaderOption": "Option",
+  "transitFormatFieldOrderProductTitle": "Order Product Details",
+  "transitFormatFieldOrderProductHeaderTs": "Timestamp",
+  "transitFormatFieldOrderProductHeaderName": "Product",
+  "transitFormatFieldOrderProductHeaderCatalog": "Category",
+  "transitFormatFieldOrderProductHeaderCount": "Quantity",
+  "transitFormatFieldOrderProductHeaderPrice": "Single Price",
+  "transitFormatFieldOrderProductHeaderCost": "Single Cost",
+  "transitFormatFieldOrderProductHeaderOrigin": "Original Price",
+  "transitFormatFieldOrderIngredientTitle": "Order Ingredient Details",
+  "transitFormatFieldOrderIngredientHeaderTs": "Timestamp",
+  "transitFormatFieldOrderIngredientHeaderName": "Ingredient",
+  "transitFormatFieldOrderIngredientHeaderQuantity": "Quantity",
+  "transitFormatFieldOrderIngredientHeaderAmount": "Amount",
+  "transitFormatFieldOrderExpandableHint": "See next table",
+  "transitFormatTextMenuMetaCatalog": "{count} categories",
+  "@transitFormatTextMenuMetaCatalog": {
     "placeholders": {
-      "columns": {
+      "count": {
         "type": "int"
       }
     }
   },
-  "transitImportErrorDuplicate": "This line will be ignored as the same item appeared earlier",
-  "transitImportColumnStatus": "{name, select, normal{(Normal)} staged{(New)} stagedIng{(New Ingredient)} stagedQua{(New Quantity)} updated{(Updated)} other{UNKNOWN}}",
-  "@transitImportColumnStatus": {
-    "description": "Additional status of the data displayed",
+  "transitFormatTextMenuMetaProduct": "{count} products",
+  "@transitFormatTextMenuMetaProduct": {
     "placeholders": {
-      "name": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextMenuHeader": "This menu has {catalogs} categories, {products} products.",
+  "@transitFormatTextMenuHeader": {
+    "placeholders": {
+      "catalogs": {
+        "type": "int"
+      },
+      "products": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextMenuHeaderPrefix": "This menu has",
+  "@transitFormatTextMenuHeaderPrefix": {
+    "description": "This is used to check if this text is a menu"
+  },
+  "transitFormatTextMenuCatalog": "Category {index} is called {catalog} and {details}.",
+  "@transitFormatTextMenuCatalog": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "catalog": {
+        "type": "String"
+      },
+      "details": {
         "type": "String"
       }
     }
   },
-  "transitGSDescription": "Google Sheets is a powerful mini-database. After exporting, it can be customized for various analyses!",
-  "transitGSSheetNameLabel": "Sheet Title of {name}",
-  "@transitGSSheetNameLabel": {
-    "description": "Label of title",
+  "transitFormatTextMenuCatalogDetails": "{count, plural, =0{it has no product} =1{it has one product} other{it has {count} products}}",
+  "@transitFormatTextMenuCatalogDetails": {
     "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextMenuProduct": "Product {index} is called {name}, with price at ${price}, cost ${cost} and {details}",
+  "@transitFormatTextMenuProduct": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
       "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      },
+      "details": {
         "type": "String"
       }
     }
   },
-  "transitGSSheetNameUpdate": "Modify Title",
+  "transitFormatTextMenuProductDetails": "{count, plural, =0{it has no ingredient.} =1{it has one ingredient: {names}.\nEach product requires {details}.} other{it has {count} ingredients: {names}.\nEach product requires {details}.}}",
+  "@transitFormatTextMenuProductDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextMenuIngredient": "{amount} of {name} and {details}",
+  "@transitFormatTextMenuIngredient": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextMenuIngredientDetails": "{count, plural, =0{it is unable to adjust quantity} =1{it also has one different quantity {quantities}} other{it also has {count} different quantities {quantities}}}",
+  "@transitFormatTextMenuIngredientDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "quantities": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextMenuQuantity": "quantity {amount} with additional price ${price} and cost ${cost}",
+  "@transitFormatTextMenuQuantity": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextStockMetaIngredient": "{count} ingredients",
+  "@transitFormatTextStockMetaIngredient": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextStockHeader": "The inventory has {count} ingredients in total.",
+  "@transitFormatTextStockHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextStockHeaderPrefix": "The inventory has",
+  "@transitFormatTextStockHeaderPrefix": {
+    "description": "This is used to check if this text is stock"
+  },
+  "transitFormatTextStockIngredient": "Ingredient at {index} is called {name}, with {amount} amount{details}.",
+  "@transitFormatTextStockIngredient": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextStockIngredientMaxAmount": "{exist, plural, =0{} other{, with a maximum of {max} pieces}}",
+  "@transitFormatTextStockIngredientMaxAmount": {
+    "description": "String(max) are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextStockIngredientRestockPrice": "{exist, plural, =0{} other{ and {quantity} units of it cost ${price} to replenish}}",
+  "@transitFormatTextStockIngredientRestockPrice": {
+    "placeholders": {
+      "exist": {
+        "type": "int"
+      },
+      "quantity": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextQuantitiesMetaQuantity": "{count} quantities",
+  "@transitFormatTextQuantitiesMetaQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextQuantitiesHeader": "{count} quantities have been set.",
+  "@transitFormatTextQuantitiesHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextQuantitiesHeaderSuffix": "quantities have been set.",
+  "@transitFormatTextQuantitiesHeaderSuffix": {
+    "description": "This is used to check if this text is quantities"
+  },
+  "transitFormatTextQuantitiesQuantity": "Quantity at {index} is called {name}, which defaults to multiplying ingredient quantity by {prop}.",
+  "@transitFormatTextQuantitiesQuantity": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "prop": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextReplenisherMetaReplenishment": "{count} replenishment methods",
+  "@transitFormatTextReplenisherMetaReplenishment": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextReplenisherHeader": "{count} replenishment methods have been set.",
+  "@transitFormatTextReplenisherHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextReplenisherHeaderSuffix": "replenishment methods have been set.",
+  "@transitFormatTextReplenisherHeaderSuffix": {
+    "description": "This is used to check if this text is replenishment quantity"
+  },
+  "transitFormatTextReplenisherReplenishment": "Replenishment method at {index} is called {name}, {details}.",
+  "@transitFormatTextReplenisherReplenishment": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextReplenisherReplenishmentDetails": "{count, plural, =0{it will not adjust inventory} other{it will adjust the inventory of {count} ingredients}}",
+  "@transitFormatTextReplenisherReplenishmentDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextOaMetaOa": "{count} customer attributes",
+  "@transitFormatTextOaMetaOa": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextOaHeader": "{count} customer attributes have been set.",
+  "@transitFormatTextOaHeader": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextOaHeaderSuffix": "customer attributes have been set.",
+  "@transitFormatTextOaHeaderSuffix": {
+    "description": "This is used to check if this text is customer settings"
+  },
+  "transitFormatTextOaOa": "Attribute at {index} is called {name}, belongs to {mode} type, {details}.",
+  "@transitFormatTextOaOa": {
+    "description": "Strings are used so that regex can be inserted here during import to obtain information",
+    "placeholders": {
+      "index": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextOaOaDetails": "{count, plural, =0{it has no options} =1{it has one option} other{it has {count} options}}",
+  "@transitFormatTextOaOaDetails": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transitFormatTextOaDefaultOption": "default",
+  "transitFormatTextOaModeValue": "option value is {value}",
+  "@transitFormatTextOaModeValue": {
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "transitFormatTextOrderPrice": "{hasProducts, plural, =0{Total price ${price}.} other{Total price ${price}, {productsPrice} of them are product price.}}",
+  "@transitFormatTextOrderPrice": {
+    "placeholders": {
+      "hasProducts": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "productsPrice": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextOrderMoney": "Paid ${paid}, cost ${cost}.",
+  "@transitFormatTextOrderMoney": {
+    "placeholders": {
+      "paid": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextOrderProductCount": "{count, plural, =0{There is no product.} =1{There is 1 product details are:\n{products}.} other{There are {count} products ({setCount} types of set) including:\n{products}.}}",
+  "@transitFormatTextOrderProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "setCount": {
+        "type": "int"
+      },
+      "products": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextOrderProduct": "{hasIngredient, plural, =0{{count} of {product} ({catalog}), total price is ${price}, no ingredient settings} other{{count} of {product} ({catalog}), total price is ${price}, ingredients are {ingredients}}}",
+  "@transitFormatTextOrderProduct": {
+    "placeholders": {
+      "hasIngredient": {
+        "type": "int"
+      },
+      "product": {
+        "type": "String"
+      },
+      "catalog": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      },
+      "ingredients": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextOrderIngredient": "{amount, plural, =0{{ingredient} ({quantity})} other{{ingredient} ({quantity}), used {amount}}}",
+  "@transitFormatTextOrderIngredient": {
+    "description": "Details of ingredients and quantities for each product in the order list",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "decimalPattern"
+      },
+      "ingredient": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextOrderNoQuantity": "default quantity",
+  "transitFormatTextOrderOrderAttribute": "Customer's {options}.",
+  "@transitFormatTextOrderOrderAttribute": {
+    "placeholders": {
+      "options": {
+        "type": "String"
+      }
+    }
+  },
+  "transitFormatTextOrderOrderAttributeItem": "{name} is {option}",
+  "@transitFormatTextOrderOrderAttributeItem": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "option": {
+        "type": "String"
+      }
+    }
+  },
   "transitGSSpreadsheetLabel": "Spreadsheet",
   "transitGSSpreadsheetActionSelect": "Select Spreadsheet",
   "transitGSSpreadsheetActionClear": "Clear Selection",
@@ -484,556 +984,6 @@
   "transitGSSpreadsheetModelDefaultName": "POS System Data",
   "transitGSSpreadsheetModelExportDivider": "Select types to export",
   "transitGSSpreadsheetModelImportDivider": "Select sheet to import",
-  "transitGSSpreadsheetOrderDefaultName": "POS System Orders",
-  "transitGSSpreadsheetSnackbarAction": "Open",
-  "transitGSProgressStatusAddSpreadsheet": "Adding Spreadsheet...",
-  "transitGSProgressStatusAddSheets": "Adding Sheets...",
-  "transitGSProgressStatusVerifyUser": "Verifying Identity",
-  "transitGSProgressStatusFetchLocalOrders": "Retrieving Local Data...",
-  "transitGSProgressStatusOverwriteOrders": "Overwriting Order Data...",
-  "transitGSProgressStatusAppendOrders": "Appended to {name}",
-  "@transitGSProgressStatusAppendOrders": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSModelStatus": "{model, select, menu{Updating Menu...} stock{Updating Inventory...} quantities{Updating Quantities...} replenisher{Updating Replenisher...} orderAttr{Exporting Customer Settings...} order{Exporting Orders...} orderDetailsAttr{Exporting Order Customer Settings...} orderDetailsProduct{Exporting Order Product Details...} orderDetailsIngredient{Exporting Order Ingredient Details...} other{UNKNOWN}}",
-  "@transitGSModelStatus": {
-    "placeholders": {
-      "model": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSModelProductIngredientTitle": "Ingredient Information",
-  "transitGSModelProductIngredientNote": "Information of all product ingredients, format as follows:\n- Ingredient 1, Default usage amount\n  + Quantity a, Additional usage amount, Additional price, Additional cost\n  + Quantity b, Additional usage amount, Additional price, Additional cost\n- Ingredient 2, Default usage amount",
-  "transitGSModelReplenishmentTitle": "Replenishment Amount",
-  "transitGSModelReplenishmentNote": "The amount of specific ingredients during each replenishment, format as follows:\n- Ingredient 1, Replenishment amount\n- Ingredient 2, Replenishment amount",
-  "transitGSModelAttributeOptionTitle": "Customer Setting Options",
-  "transitGSModelAttributeOptionHeaderTs": "Timestamp",
-  "transitGSModelAttributeOptionHeaderMode": "Type",
-  "transitGSModelAttributeOptionHeaderOptions": "Options",
-  "transitGSModelAttributeOptionNote": "\"Options\" will have different meanings depending on the type of customer settings, format as follows:\n- Option 1, Is default, Option value\n- Option 2, Is default, Option value",
-  "transitGSOrderSettingTitle": "Order Export Settings",
-  "transitGSOrderSettingOverwriteLabel": "Overwrite Sheet",
-  "transitGSOrderSettingOverwriteHint": "Overwriting the sheet will start exporting from the first row.",
-  "transitGSOrderSettingTitlePrefixLabel": "Add Date Prefix",
-  "transitGSOrderSettingTitlePrefixHint": "Add a date prefix to the sheet name, for example, \"0101 - 0131 Order Data\".",
-  "transitGSOrderSettingRecommendCombination": "When not overwriting and using append instead, it's recommended not to add a date prefix to the form name.",
-  "transitGSOrderSettingNameLabel": "Sheet Name",
-  "transitGSOrderSettingNameHelper": "Splitting the sheet allows for more flexible data analysis,\nfor example, you can query the total usage of a certain ingredient in order details.",
-  "transitGSOrderMetaOverwrite": "{value, select, true{Will overwrite} false{Won't overwrite} other{UNKNOWN}}",
-  "@transitGSOrderMetaOverwrite": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSOrderMetaTitlePrefix": "{value, select, true{Has date prefix} false{No date prefix} other{UNKNOWN}}",
-  "@transitGSOrderMetaTitlePrefix": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSOrderMetaMemoryWarning": "The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.\nFor detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).",
-  "transitGSOrderHeaderTs": "Timestamp",
-  "transitGSOrderHeaderTime": "Time",
-  "transitGSOrderHeaderPrice": "Price",
-  "transitGSOrderHeaderProductPrice": "Product Price",
-  "transitGSOrderHeaderPaid": "Paid",
-  "transitGSOrderHeaderCost": "Cost",
-  "transitGSOrderHeaderProfit": "Profit",
-  "transitGSOrderHeaderItemCount": "Item Count",
-  "@transitGSOrderHeaderItemCount": {
-    "description": "how many items in the order"
-  },
-  "transitGSOrderHeaderTypeCount": "Type Count",
-  "@transitGSOrderHeaderTypeCount": {
-    "description": "how many types of products in the order"
-  },
-  "transitGSOrderAttributeTitle": "Order Customer Settings",
-  "transitGSOrderAttributeHeaderTs": "Timestamp",
-  "transitGSOrderAttributeHeaderName": "Setting Category",
-  "transitGSOrderAttributeHeaderOption": "Option",
-  "transitGSOrderProductTitle": "Order Product Details",
-  "transitGSOrderProductHeaderTs": "Timestamp",
-  "transitGSOrderProductHeaderName": "Product",
-  "transitGSOrderProductHeaderCatalog": "Category",
-  "transitGSOrderProductHeaderCount": "Quantity",
-  "transitGSOrderProductHeaderPrice": "Single Price",
-  "transitGSOrderProductHeaderCost": "Single Cost",
-  "transitGSOrderProductHeaderOrigin": "Original Price",
-  "transitGSOrderIngredientTitle": "Order Ingredient Details",
-  "transitGSOrderIngredientHeaderTs": "Timestamp",
-  "transitGSOrderIngredientHeaderName": "Ingredient",
-  "transitGSOrderIngredientHeaderQuantity": "Quantity",
-  "transitGSOrderIngredientHeaderAmount": "Amount",
-  "transitGSOrderExpandableHint": "See next table",
-  "transitGSErrorCreateSpreadsheet": "Unable to Create Spreadsheet",
-  "transitGSErrorCreateSpreadsheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to edit spreadsheets.",
-  "transitGSErrorSpreadsheetEmpty": "Please Select a Spreadsheet First",
-  "transitGSErrorSpreadsheetIdEmpty": "Cannot be Empty",
-  "transitGSErrorSpreadsheetIdInvalid": "Invalid text. It must include:\n• /spreadsheets/d/<ID>/\n• Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).",
-  "transitGSErrorCreateSheet": "Unable to Create Sheet in Spreadsheet",
-  "transitGSErrorCreateSheetHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to create sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
-  "transitGSErrorSheetRepeat": "Sheet name duplicate",
-  "transitGSErrorSheetEmpty": "Please select at least one sheet to export",
-  "transitGSErrorNonExistName": "Spreadsheet not found, has it been deleted?",
-  "transitGSErrorImportEmptySpreadsheet": "Must select a spreadsheet to import",
-  "transitGSErrorImportEmptySheet": "Must select a specific sheet to import",
-  "transitGSErrorImportEmptyData": "No values found in sheet",
-  "transitGSErrorImportNotFoundSpreadsheet": "Spreadsheet not found",
-  "transitGSErrorImportNotFoundSheets": "No data found for sheet \"{name}\"",
-  "@transitGSErrorImportNotFoundSheets": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSErrorImportNotFoundHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to read sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
-  "transitPTDescription": "Quick check, quick share.",
-  "transitPTCopyBtn": "Copy Text",
-  "transitPTCopySuccess": "Copied successfully",
-  "transitPTCopyWarning": "Copying too much text may cause system crash",
-  "transitPTImportHint": "Paste copied text here",
-  "transitPTImportHelper": "After pasting the text, it will analyze and determine the type of information to import.",
-  "transitPTImportErrorNotFound": "This text cannot match any corresponding service. Please refer to the exported text content.",
-  "transitPTFormatOrderPrice": "{hasProducts, plural, =0{Total price ${price}.} other{Total price ${price}, {productsPrice} of them are product price.}}",
-  "@transitPTFormatOrderPrice": {
-    "placeholders": {
-      "hasProducts": {
-        "type": "int"
-      },
-      "price": {
-        "type": "String"
-      },
-      "productsPrice": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatOrderMoney": "Paid ${paid}, cost ${cost}.",
-  "@transitPTFormatOrderMoney": {
-    "placeholders": {
-      "paid": {
-        "type": "String"
-      },
-      "cost": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatOrderProductCount": "{count, plural, =0{There is no product.} =1{There is 1 product details are:\n{products}.} other{There are {count} products ({setCount} types of set) including:\n{products}.}}",
-  "@transitPTFormatOrderProductCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "setCount": {
-        "type": "int"
-      },
-      "products": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatOrderProduct": "{hasIngredient, plural, =0{{count} of {product} ({catalog}), total price is ${price}, no ingredient settings} other{{count} of {product} ({catalog}), total price is ${price}, ingredients are {ingredients}}}",
-  "@transitPTFormatOrderProduct": {
-    "placeholders": {
-      "hasIngredient": {
-        "type": "int"
-      },
-      "product": {
-        "type": "String"
-      },
-      "catalog": {
-        "type": "String"
-      },
-      "count": {
-        "type": "int"
-      },
-      "price": {
-        "type": "String"
-      },
-      "ingredients": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatOrderIngredient": "{amount, plural, =0{{ingredient} ({quantity})} other{{ingredient} ({quantity}), used {amount}}}",
-  "@transitPTFormatOrderIngredient": {
-    "description": "Details of ingredients and quantities for each product in the order list",
-    "placeholders": {
-      "amount": {
-        "type": "num",
-        "format": "decimalPattern"
-      },
-      "ingredient": {
-        "type": "String"
-      },
-      "quantity": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatOrderNoQuantity": "default quantity",
-  "transitPTFormatOrderOrderAttribute": "Customer's {options}.",
-  "@transitPTFormatOrderOrderAttribute": {
-    "placeholders": {
-      "options": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatOrderOrderAttributeItem": "{name} is {option}",
-  "@transitPTFormatOrderOrderAttributeItem": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "option": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelMenuMetaCatalog": "{count} categories",
-  "@transitPTFormatModelMenuMetaCatalog": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelMenuMetaProduct": "{count} products",
-  "@transitPTFormatModelMenuMetaProduct": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelMenuHeader": "This menu has {catalogs} categories, {products} products.",
-  "@transitPTFormatModelMenuHeader": {
-    "placeholders": {
-      "catalogs": {
-        "type": "int"
-      },
-      "products": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelMenuHeaderPrefix": "This menu has",
-  "@transitPTFormatModelMenuHeaderPrefix": {
-    "description": "This is used to check if this text is a menu"
-  },
-  "transitPTFormatModelMenuCatalog": "Category {index} is called {catalog} and {details}.",
-  "@transitPTFormatModelMenuCatalog": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "index": {
-        "type": "String"
-      },
-      "catalog": {
-        "type": "String"
-      },
-      "details": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelMenuCatalogDetails": "{count, plural, =0{it has no product} =1{it has one product} other{it has {count} products}}",
-  "@transitPTFormatModelMenuCatalogDetails": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelMenuProduct": "Product {index} is called {name}, with price at ${price}, cost ${cost} and {details}",
-  "@transitPTFormatModelMenuProduct": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "index": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      },
-      "price": {
-        "type": "String"
-      },
-      "cost": {
-        "type": "String"
-      },
-      "details": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelMenuProductDetails": "{count, plural, =0{it has no ingredient.} =1{it has one ingredient: {names}.\nEach product requires {details}.} other{it has {count} ingredients: {names}.\nEach product requires {details}.}}",
-  "@transitPTFormatModelMenuProductDetails": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "names": {
-        "type": "String"
-      },
-      "details": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelMenuIngredient": "{amount} of {name} and {details}",
-  "@transitPTFormatModelMenuIngredient": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      },
-      "details": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelMenuIngredientDetails": "{count, plural, =0{it is unable to adjust quantity} =1{it also has one different quantity {quantities}} other{it also has {count} different quantities {quantities}}}",
-  "@transitPTFormatModelMenuIngredientDetails": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "quantities": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelMenuQuantity": "quantity {amount} with additional price ${price} and cost ${cost}",
-  "@transitPTFormatModelMenuQuantity": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      },
-      "price": {
-        "type": "String"
-      },
-      "cost": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelStockMetaIngredient": "{count} ingredients",
-  "@transitPTFormatModelStockMetaIngredient": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelStockHeader": "The inventory has {count} ingredients in total.",
-  "@transitPTFormatModelStockHeader": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelStockHeaderPrefix": "The inventory has",
-  "@transitPTFormatModelStockHeaderPrefix": {
-    "description": "This is used to check if this text is stock"
-  },
-  "transitPTFormatModelStockIngredient": "Ingredient at {index} is called {name}, with {amount} amount{details}.",
-  "@transitPTFormatModelStockIngredient": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "index": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      },
-      "amount": {
-        "type": "String"
-      },
-      "details": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelStockIngredientMaxAmount": "{exist, plural, =0{} other{, with a maximum of {max} pieces}}",
-  "@transitPTFormatModelStockIngredientMaxAmount": {
-    "description": "String(max) are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "exist": {
-        "type": "int"
-      },
-      "max": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelStockIngredientRestockPrice": "{exist, plural, =0{} other{ and {quantity} units of it cost ${price} to replenish}}",
-  "@transitPTFormatModelStockIngredientRestockPrice": {
-    "placeholders": {
-      "exist": {
-        "type": "int"
-      },
-      "quantity": {
-        "type": "String"
-      },
-      "price": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelQuantitiesMetaQuantity": "{count} quantities",
-  "@transitPTFormatModelQuantitiesMetaQuantity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelQuantitiesHeader": "{count} quantities have been set.",
-  "@transitPTFormatModelQuantitiesHeader": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelQuantitiesHeaderSuffix": "quantities have been set.",
-  "@transitPTFormatModelQuantitiesHeaderSuffix": {
-    "description": "This is used to check if this text is quantities"
-  },
-  "transitPTFormatModelQuantitiesQuantity": "Quantity at {index} is called {name}, which defaults to multiplying ingredient quantity by {prop}.",
-  "@transitPTFormatModelQuantitiesQuantity": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "index": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      },
-      "prop": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelReplenisherMetaReplenishment": "{count} replenishment methods",
-  "@transitPTFormatModelReplenisherMetaReplenishment": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelReplenisherHeader": "{count} replenishment methods have been set.",
-  "@transitPTFormatModelReplenisherHeader": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelReplenisherHeaderSuffix": "replenishment methods have been set.",
-  "@transitPTFormatModelReplenisherHeaderSuffix": {
-    "description": "This is used to check if this text is replenishment quantity"
-  },
-  "transitPTFormatModelReplenisherReplenishment": "Replenishment method at {index} is called {name}, {details}.",
-  "@transitPTFormatModelReplenisherReplenishment": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "index": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      },
-      "details": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelReplenisherReplenishmentDetails": "{count, plural, =0{it will not adjust inventory} other{it will adjust the inventory of {count} ingredients}}",
-  "@transitPTFormatModelReplenisherReplenishmentDetails": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelOaMetaOa": "{count} customer attributes",
-  "@transitPTFormatModelOaMetaOa": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelOaHeader": "{count} customer attributes have been set.",
-  "@transitPTFormatModelOaHeader": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelOaHeaderSuffix": "customer attributes have been set.",
-  "@transitPTFormatModelOaHeaderSuffix": {
-    "description": "This is used to check if this text is customer settings"
-  },
-  "transitPTFormatModelOaOa": "Attribute at {index} is called {name}, belongs to {mode} type, {details}.",
-  "@transitPTFormatModelOaOa": {
-    "description": "Strings are used so that regex can be inserted here during import to obtain information",
-    "placeholders": {
-      "index": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      },
-      "mode": {
-        "type": "String"
-      },
-      "details": {
-        "type": "String"
-      }
-    }
-  },
-  "transitPTFormatModelOaOaDetails": "{count, plural, =0{it has no options} =1{it has one option} other{it has {count} options}}",
-  "@transitPTFormatModelOaOaDetails": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitPTFormatModelOaDefaultOption": "default",
-  "transitPTFormatModelOaModeValue": "option value is {value}",
-  "@transitPTFormatModelOaModeValue": {
-    "placeholders": {
-      "value": {
-        "type": "num",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "transitExcelDescription": "Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.",
-  "transitCSVDescription": "Commas Separate Values, lightweight to export and import data, compatible with most software.",
-  "transitCSVShareBtn": "Share",
-  "transitCSVShareSuccess": "Exported successfully.",
   "appTitle": "POS System",
   "actSuccess": "Successful!",
   "@actSuccess": {

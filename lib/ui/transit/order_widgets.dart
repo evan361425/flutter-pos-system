@@ -223,7 +223,7 @@ class TransitOrderList extends StatelessWidget {
   }
 }
 
-class TransitOrderHead<T> extends StatelessWidget {
+class TransitOrderHead extends StatelessWidget {
   final TransitStateNotifier stateNotifier;
   final String title;
   final String subtitle;
@@ -231,8 +231,7 @@ class TransitOrderHead<T> extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
   final ValueNotifier<TransitOrderSettings>? properties;
   final EdgeInsets margin;
-  final Future<T> Function(BuildContext context) onExport;
-  final void Function(BuildContext context, T result) onDone;
+  final Future<void> Function(BuildContext context) onExport;
 
   const TransitOrderHead({
     super.key,
@@ -244,7 +243,6 @@ class TransitOrderHead<T> extends StatelessWidget {
     this.properties,
     this.margin = const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
     required this.onExport,
-    required this.onDone,
   });
 
   @override
@@ -291,12 +289,7 @@ class TransitOrderHead<T> extends StatelessWidget {
           onExport(context),
           'csv_export_failed',
           context: context,
-        ).then((result) {
-          if (result != null) {
-            // ignore: use_build_context_synchronously
-            onDone(context, result);
-          }
-        }));
+        ));
   }
 
   void _showMetaSetting(BuildContext context) async {

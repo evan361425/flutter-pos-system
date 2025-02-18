@@ -26,23 +26,16 @@ class ExportOrderView extends StatelessWidget {
       memoryPredictor: _memoryPredictor,
       leading: TransitOrderHead(
         stateNotifier: stateNotifier,
-        title: S.transitCSVShareBtn,
-        subtitle: S.transitPTCopyWarning,
+        title: S.transitExportOrderTitleCsv,
+        subtitle: S.transitExportOrderSubtitleCsv,
         trailing: const Icon(Icons.share_outlined),
         ranger: ranger,
         onExport: _export,
-        onDone: _done,
       ),
     );
   }
 
-  void _done(BuildContext context, bool ok) {
-    if (ok) {
-      showSnackBar(S.transitPTCopySuccess, context: context);
-    }
-  }
-
-  Future<bool> _export(BuildContext context) async {
+  Future<void> _export(BuildContext context) async {
     final orders = await Seller.instance.getDetailedOrders(
       ranger.value.start,
       ranger.value.end,
@@ -60,7 +53,10 @@ class ExportOrderView extends StatelessWidget {
       ]);
     }
 
-    return exporter.export(names, data);
+    final ok = await exporter.export(names, data);
+    if (context.mounted && ok) {
+      showSnackBar(S.transitExportOrderSuccessCsv, context: context);
+    }
   }
 
   /// Offset are headers

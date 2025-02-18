@@ -51,17 +51,16 @@ class ExportOrderView extends StatelessWidget {
       ranger.value.end,
     );
 
-    final names = <String>[];
-    final data = <List<List<CellData>>>[];
-    for (final e in FormattableOrder.values) {
-      names.add(S.transitModelName(e.l10nName));
-      data.add([
-        e.formatHeader().map((e) => CellData(string: e)).toList(),
-        ...orders.expand((o) => e.formatRows(o)),
-      ]);
-    }
+    final names = settings.value.parseTitles(ranger.value);
+    final data = <List<List<CellData>>>[
+      for (final e in names.keys)
+        [
+          e.formatHeader().map((e) => CellData(string: e)).toList(),
+          ...orders.expand((o) => e.formatRows(o)),
+        ]
+    ];
 
-    return exporter.export(names, data);
+    return exporter.export(names.values.toList(), data);
   }
 
   /// Offset are headers
