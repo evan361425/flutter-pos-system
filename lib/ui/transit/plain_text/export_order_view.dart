@@ -26,20 +26,15 @@ class ExportOrderView extends StatelessWidget {
       ranger: ranger,
       orderViewBuilder: (order) => Text(formatOrder(order)),
       memoryPredictor: memoryPredictor,
-      leading: TransitOrderHead<void>(
+      leading: TransitOrderHead(
         stateNotifier: stateNotifier,
-        title: S.transitCSVShareBtn,
-        subtitle: S.transitPTCopyWarning,
+        title: S.transitExportOrderTitlePlainText,
+        subtitle: S.transitExportOrderSubtitlePlainText,
         trailing: const Icon(Icons.copy_outlined),
         ranger: ranger,
         onExport: _export,
-        onDone: _done,
       ),
     );
-  }
-
-  void _done(BuildContext context, void ok) {
-    showSnackBar(S.transitPTCopySuccess, context: context);
   }
 
   Future<void> _export(BuildContext context) async {
@@ -54,6 +49,10 @@ class ExportOrderView extends StatelessWidget {
               formatOrder(o),
             ].join('\n'))
         .join('\n\n'));
+
+    if (context.mounted) {
+      showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
+    }
   }
 
   /// Actual result depends on language, here is English version:
@@ -69,17 +68,17 @@ class ExportOrderView extends StatelessWidget {
 
   static String formatOrder(OrderObject order) {
     final attributes = order.attributes.map((a) {
-      return S.transitPTFormatOrderOrderAttributeItem(a.name, a.optionName);
+      return S.transitFormatTextOrderOrderAttributeItem(a.name, a.optionName);
     }).join('、');
     final products = order.products.map((p) {
       final ing = p.ingredients.map((i) {
-        return S.transitPTFormatOrderIngredient(
+        return S.transitFormatTextOrderIngredient(
           i.amount,
           i.ingredientName,
-          i.quantityName ?? S.transitPTFormatOrderNoQuantity,
+          i.quantityName ?? S.transitFormatTextOrderNoQuantity,
         );
       }).join('、');
-      return S.transitPTFormatOrderProduct(
+      return S.transitFormatTextOrderProduct(
         p.ingredients.length,
         p.productName,
         p.catalogName,
@@ -92,14 +91,14 @@ class ExportOrderView extends StatelessWidget {
     final totalCount = order.productsCount;
 
     return [
-      S.transitPTFormatOrderPrice(
+      S.transitFormatTextOrderPrice(
         order.productsPrice == order.price ? 0 : 1,
         order.price.toCurrency(),
         order.productsPrice.toCurrency(),
       ),
-      S.transitPTFormatOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
-      if (attributes != '') S.transitPTFormatOrderOrderAttribute(attributes),
-      S.transitPTFormatOrderProductCount(totalCount, setCount, products)
+      S.transitFormatTextOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
+      if (attributes != '') S.transitFormatTextOrderOrderAttribute(attributes),
+      S.transitFormatTextOrderProductCount(totalCount, setCount, products)
     ].join('\n');
   }
 }

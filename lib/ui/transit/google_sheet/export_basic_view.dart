@@ -23,7 +23,7 @@ class ExportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExportView(
-      icon: Icon(Icons.cloud_upload_sharp, semanticLabel: '上傳'),
+      icon: Icon(Icons.cloud_upload_sharp, semanticLabel: S.transitExportBasicBtnGoogleSheet),
       stateNotifier: stateNotifier,
       allowAll: true,
       onExport: _export,
@@ -46,10 +46,10 @@ class ExportBasicView extends StatelessWidget {
 
     if (context.mounted && link != null) {
       showSnackBar(
-        S.actSuccess,
+        S.transitExportBasicSuccessGoogleSheet,
         context: context,
         action: LauncherSnackbarAction(
-          label: S.transitGSSpreadsheetSnackbarAction,
+          label: S.transitExportBasicSuccessActionGoogleSheet,
           link: link,
           logCode: 'gs_export',
         ),
@@ -80,7 +80,7 @@ class ExportBasicView extends StatelessWidget {
       context: context,
       exporter: exporter,
       stateNotifier: stateNotifier,
-      defaultName: S.transitGSSpreadsheetModelDefaultName,
+      defaultName: S.transitExportBasicFileName,
       cacheKey: exportCacheKey,
       sheets: names,
       spreadsheet: ss,

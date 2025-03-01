@@ -61,15 +61,15 @@ class OrderFormatter {
   }
 
   static List<String> get basicHeaders => [
-        S.transitGSOrderHeaderTs,
-        S.transitGSOrderHeaderTime,
-        S.transitGSOrderHeaderPrice,
-        S.transitGSOrderHeaderProductPrice,
-        S.transitGSOrderHeaderPaid,
-        S.transitGSOrderHeaderCost,
-        S.transitGSOrderHeaderProfit,
-        S.transitGSOrderHeaderItemCount,
-        S.transitGSOrderHeaderTypeCount,
+        S.transitFormatFieldOrderTs,
+        S.transitFormatFieldOrderTime,
+        S.transitFormatFieldOrderPrice,
+        S.transitFormatFieldOrderProductPrice,
+        S.transitFormatFieldOrderPaid,
+        S.transitFormatFieldOrderCost,
+        S.transitFormatFieldOrderProfit,
+        S.transitFormatFieldOrderItemCount,
+        S.transitFormatFieldOrderTypeCount,
       ];
 
   /// Order's attributes at which index, 0-index
@@ -79,28 +79,28 @@ class OrderFormatter {
   static const productPosition = 9;
 
   static List<String> get attrHeaders => [
-        S.transitGSOrderAttributeHeaderTs,
-        S.transitGSOrderAttributeHeaderName,
-        S.transitGSOrderAttributeHeaderOption,
+        S.transitFormatFieldOrderAttributeHeaderTs,
+        S.transitFormatFieldOrderAttributeHeaderName,
+        S.transitFormatFieldOrderAttributeHeaderOption,
       ];
 
   static List<String> get productHeaders => [
-        S.transitGSOrderProductHeaderTs,
-        S.transitGSOrderProductHeaderName,
-        S.transitGSOrderProductHeaderCatalog,
-        S.transitGSOrderProductHeaderCount,
-        S.transitGSOrderProductHeaderPrice,
-        S.transitGSOrderProductHeaderCost,
-        S.transitGSOrderProductHeaderOrigin,
+        S.transitFormatFieldOrderProductHeaderTs,
+        S.transitFormatFieldOrderProductHeaderName,
+        S.transitFormatFieldOrderProductHeaderCatalog,
+        S.transitFormatFieldOrderProductHeaderCount,
+        S.transitFormatFieldOrderProductHeaderPrice,
+        S.transitFormatFieldOrderProductHeaderCost,
+        S.transitFormatFieldOrderProductHeaderOrigin,
       ];
 
   /// Order's ingredients detail at which index, 0-index
   static const ingredientPosition = 6;
 
   static List<String> get ingredientHeaders => [
-        S.transitGSOrderIngredientHeaderTs,
-        S.transitGSOrderIngredientHeaderName,
-        S.transitGSOrderIngredientHeaderQuantity,
-        S.transitGSOrderIngredientHeaderAmount,
+        S.transitFormatFieldOrderIngredientHeaderTs,
+        S.transitFormatFieldOrderIngredientHeaderName,
+        S.transitFormatFieldOrderIngredientHeaderQuantity,
+        S.transitFormatFieldOrderIngredientHeaderAmount,
       ];
 }

@@ -20,7 +20,7 @@ class ExportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExportView(
-      icon: Icon(Icons.copy_outlined, semanticLabel: '複製'),
+      icon: Icon(Icons.copy_outlined, semanticLabel: S.transitExportBasicBtnPlainText),
       stateNotifier: stateNotifier,
       allowAll: false,
       onExport: _export,
@@ -79,7 +79,7 @@ class ExportBasicView extends StatelessWidget {
     await exporter.export(able!);
 
     if (context.mounted) {
-      showSnackBar(S.transitPTCopySuccess, context: context);
+      showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
     }
   }
 }

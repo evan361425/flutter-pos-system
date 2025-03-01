@@ -41,20 +41,19 @@ class ExportOrderView extends StatelessWidget {
       ranger.value.end,
     );
 
-    final names = <String>[];
-    final data = <List<List<String>>>[];
-    for (final e in FormattableOrder.values) {
-      names.add(S.transitModelName(e.l10nName));
-      data.add([
-        e.formatHeader(),
-        ...orders.expand((o) {
-          return e.formatRows(o).map((l) => l.map((v) => v.toString()).toList());
-        }),
-      ]);
-    }
+    final names = FormattableOrder.values.map((e) => e.l10nName).toList();
+    final data = <List<List<String>>>[
+      for (final e in FormattableOrder.values)
+        [
+          e.formatHeader(),
+          ...orders.expand((o) {
+            return e.formatRows(o).map((l) => l.map((v) => v.toString()).toList());
+          }),
+        ]
+    ];
 
     final ok = await exporter.export(names, data);
-    if (context.mounted && ok) {
+    if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
     }
   }

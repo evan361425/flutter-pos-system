@@ -1,27 +1,6 @@
 {
   "en": [
-    "transitImportCsvErrorPickFile",
-    "transitImportExcelErrorPickFile",
-    "transitImportExcelErrorDataNotFound",
-    "transitImportGoogleSheetErrorCreateSpreadsheet",
-    "transitImportGoogleSheetErrorCreateSpreadsheetHelper",
-    "transitImportGoogleSheetErrorSpreadsheetEmpty",
-    "transitImportGoogleSheetErrorSpreadsheetIdEmpty",
-    "transitImportGoogleSheetErrorSpreadsheetIdInvalid",
-    "transitImportGoogleSheetErrorCreateSheet",
-    "transitImportGoogleSheetErrorCreateSheetHelper",
-    "transitImportGoogleSheetErrorSheetRepeat",
-    "transitImportGoogleSheetErrorSheetEmpty",
-    "transitImportGoogleSheetErrorNonExistName",
-    "transitImportGoogleSheetErrorImportEmptySpreadsheet",
-    "transitImportGoogleSheetErrorImportEmptySheet",
-    "transitImportGoogleSheetErrorImportEmptyData",
-    "transitImportGoogleSheetErrorImportNotFoundSpreadsheet",
-    "transitImportGoogleSheetErrorImportNotFoundSheets",
-    "transitImportGoogleSheetErrorImportNotFoundHelper",
     "transitImportPlainTextErrorNotFound",
-    "transitImportErrorColumnCount",
-    "transitImportErrorDuplicate",
     "orderCheckoutAttributeNoteTitle",
     "orderCheckoutAttributeNoteHint"
   ]

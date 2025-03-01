@@ -311,7 +311,6 @@
       }
     }
   },
-  "transitOrderSettingMetaMemoryWarning": "這裡的容量代表網路傳輸所消耗的量，實際佔用的雲端記憶體可能是此值的百分之一而已。\n詳細容量限制說明可以參考[本文件](https://developers.google.com/sheets/api/limits#quota)。",
   "transitOrderSettingOverwriteLabel": "是否覆寫表單",
   "transitOrderSettingOverwriteHint": "覆寫表單之後，將會從第一行開始匯出",
   "transitOrderSettingTitlePrefixLabel": "加上日期前綴",
@@ -371,7 +370,7 @@
   "transitExportBasicBtnExcel": "匯出成 Excel 檔",
   "transitExportBasicBtnGoogleSheet": "匯出至 Google 試算表",
   "transitExportBasicBtnPlainText": "純文字拷貝",
-  "transitExportBasicFileName": "訂單資料",
+  "transitExportBasicFileName": "POS 系統資料",
   "transitExportBasicSuccessCsv": "匯出成功",
   "transitExportBasicSuccessExcel": "匯出成功",
   "transitExportBasicSuccessGoogleSheet": "上傳成功",
@@ -385,37 +384,38 @@
   "transitExportOrderSubtitleExcel": "單一檔案內含工作表，每個工作表包含不同的資料",
   "transitExportOrderSubtitleGoogleSheet": "上傳需要網路連線，且請求可能會被 Google 限制。\n若上傳失敗，請稍後再試或使用其他方式匯出。\n",
   "transitExportOrderSubtitlePlainText": "適合用來簡單的分享或檢查資料",
+  "transitExportOrderFileName": "訂單資料",
+  "transitExportOrderProgressGoogleSheetOverwrite": "資料覆寫中",
+  "transitExportOrderProgressGoogleSheetAppend": "資料附加進既有資料中",
+  "transitExportOrderWarningMemoryGoogleSheet": "這裡的容量代表網路傳輸所消耗的量，實際佔用的雲端記憶體可能是此值的百分之一而已。\n詳細容量限制說明可以參考[本文件](https://developers.google.com/sheets/api/limits#quota)。\n",
   "transitExportOrderSuccessCsv": "匯出成功",
   "transitExportOrderSuccessExcel": "匯出成功",
   "transitExportOrderSuccessGoogleSheet": "上傳成功",
   "transitExportOrderSuccessPlainText": "拷貝成功",
+  "transitExportOrderSuccessActionGoogleSheet": "開啟表單",
   "transitImportTab": "匯入",
   "transitImportBtnCsv": "選擇 .csv 檔",
   "transitImportBtnExcel": "選擇 .xlsx 檔",
   "transitImportBtnGoogleSheet": "選擇 Google 試算表",
   "transitImportBtnPlainText": "貼上文字",
-  "transitImportProgressGoogleSheetSheet": "準備表單 '{name}' 中",
-  "transitImportProgressGoogleSheetImport": "拉取試算表資料中",
-  "transitImportProgressGoogleSheetCreateSpreadsheet": "建立試算表中",
-  "transitImportCsvErrorPickFile": "選擇檔案失敗",
-  "transitImportExcelErrorPickFile": "選擇檔案失敗",
-  "transitImportExcelErrorDataNotFound": "找不「{name}」的資料",
-  "transitImportGoogleSheetErrorCreateSpreadsheet": "無法建立試算表",
-  "transitImportGoogleSheetErrorCreateSpreadsheetHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的編輯。",
-  "transitImportGoogleSheetErrorSpreadsheetEmpty": "請先選擇試算表",
-  "transitImportGoogleSheetErrorSpreadsheetIdEmpty": "不能為空",
-  "transitImportGoogleSheetErrorSpreadsheetIdInvalid": "不合法的文字，必須包含：\n• /spreadsheets/d/<ID>/\n• 或者直接給 ID（英文+數字+底線+減號的組合）",
-  "transitImportGoogleSheetErrorCreateSheet": "無法在試算表中建立表單",
-  "transitImportGoogleSheetErrorCreateSheetHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的建立；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。",
-  "transitImportGoogleSheetErrorSheetRepeat": "表單名稱重複",
-  "transitImportGoogleSheetErrorSheetEmpty": "請選擇至少一個表單來匯出",
-  "transitImportGoogleSheetErrorNonExistName": "找不到試算表，是否已被刪除？",
-  "transitImportGoogleSheetErrorImportEmptySpreadsheet": "必須選擇試算表來匯入",
-  "transitImportGoogleSheetErrorImportEmptySheet": "必須選擇指定的表單來匯入",
-  "transitImportGoogleSheetErrorImportEmptyData": "在表單中沒找到任何值",
-  "transitImportGoogleSheetErrorImportNotFoundSpreadsheet": "找不到試算表",
-  "transitImportGoogleSheetErrorImportNotFoundSheets": "找不到表單「{name}」的資料",
-  "transitImportGoogleSheetErrorImportNotFoundHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的讀取；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。",
+  "transitImportProgressGoogleSheetStart": "拉取試算表資料中",
+  "transitImportProgressGoogleSheetPrepare": "取得試算表資訊中",
+  "transitImportErrorBasicColumnCount": "資料量不足，需要 {columns} 個欄位",
+  "@transitImportErrorBasicColumnCount": {
+    "placeholders": {
+      "columns": {
+        "type": "int"
+      }
+    }
+  },
+  "transitImportErrorBasicDuplicate": "將忽略本行，相同的項目已於前面出現",
+  "transitImportErrorCsvPickFile": "選擇檔案失敗",
+  "transitImportErrorExcelPickFile": "選擇檔案失敗",
+  "transitImportErrorExcelDataNotFound": "找不「{name}」的資料",
+  "transitImportErrorGoogleSheetFetchDataTitle": "無法拉取試算表資料",
+  "transitImportErrorGoogleSheetFetchDataHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的讀取；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。",
+  "transitImportErrorGoogleSheetMissingTitle": "找不到表單「{name}」的資料",
+  "transitImportErrorGoogleSheetMissingHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 該試算表沒有我們想要的表單；\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的讀取；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。",
   "transitImportPlainTextHint": "貼上複製而來的文字",
   "transitImportPlainTextHelper": "貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。\n複製過大的文字可能會造成系統的崩潰。\n",
   "transitImportPlainTextErrorNotFound": "這段文字無法匹配相應的服務，請參考匯出時的文字內容。",
@@ -444,8 +444,6 @@
   },
   "transitImportPreviewIngredientHeader": "匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。",
   "transitImportPreviewQuantityHeader": "匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。",
-  "transitImportErrorColumnCount": "資料量不足，需要 {columns} 個欄位",
-  "transitImportErrorDuplicate": "將忽略本行，相同的項目已於前面出現",
   "transitImportColumnStatus": "{name, select, normal{（一般）} staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
   "@transitImportColumnStatus": {
     "description": "Additional status of the data displayed"
@@ -455,9 +453,6 @@
   "transitFormatFieldReplenishmentTitle": "補貨量",
   "transitFormatFieldReplenishmentNote": "每次補貨時特定成分的量，格式如下：\n- 成分1,補貨量\n- 成分2,補貨量",
   "transitFormatFieldAttributeOptionTitle": "顧客設定選項",
-  "transitFormatFieldAttributeOptionHeaderTs": "時間戳記",
-  "transitFormatFieldAttributeOptionHeaderMode": "類型",
-  "transitFormatFieldAttributeOptionHeaderOptions": "選項",
   "transitFormatFieldAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
   "transitFormatFieldOrderTs": "時間戳記",
   "transitFormatFieldOrderTime": "時間",
@@ -918,58 +913,20 @@
       }
     }
   },
-  "transitGSSpreadsheetLabel": "試算表",
-  "transitGSSpreadsheetActionSelect": "選擇試算表",
-  "transitGSSpreadsheetActionClear": "清除所選",
-  "transitGSSpreadsheetExportEmptyLabel": "建立匯出",
-  "transitGSSpreadsheetExportEmptyHint": "建立新的試算表「{name}」，並把資料匯出至此",
-  "@transitGSSpreadsheetExportEmptyHint": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSSpreadsheetExportExistLabel": "指定匯出",
-  "@transitGSSpreadsheetExportExistLabel": {
-    "description": "Inform the user that data will be exported to the specified spreadsheet."
-  },
-  "transitGSSpreadsheetExportExistHint": "匯出至試算表「{name}」",
-  "@transitGSSpreadsheetExportExistHint": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSSpreadsheetImportAllBtn": "匯入全部",
-  "transitGSSpreadsheetImportAllHint": "不會有任何預覽畫面，直接覆寫全部的資料。",
-  "transitGSSpreadsheetImportAllConfirmTitle": "匯入全部資料？",
-  "transitGSSpreadsheetImportAllConfirmContent": "將會把所選表單的資料都下載，並完全覆蓋本地資料。\n此動作無法復原。",
-  "transitGSSpreadsheetImportExistLabel": "確認表單名稱",
-  "transitGSSpreadsheetImportExistHint": "從試算表中取得所有表單的名稱，並進行匯入",
-  "transitGSSpreadsheetImportEmptyLabel": "選擇試算表",
-  "transitGSSpreadsheetImportEmptyHint": "選擇要匯入的試算表後，就能開始匯入資料",
-  "transitGSSpreadsheetImportDropdownHint": "選擇欲匯入的表單",
-  "transitGSSpreadsheetConfirm": "此動作將會{hint}",
-  "@transitGSSpreadsheetConfirm": {
-    "placeholders": {
-      "hint": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSSpreadsheetSelectionHint": "{name, select, _{輸入試算表網址或試算表 ID} other{原試算表為「{name}」}}",
-  "@transitGSSpreadsheetSelectionHint": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "transitGSSpreadsheetModelDefaultName": "POS System 資料",
-  "transitGSSpreadsheetModelExportDivider": "選擇欲匯出的種類",
-  "transitGSSpreadsheetModelImportDivider": "選擇欲匯入表單",
+  "transitGoogleSheetDialogTitle": "提供 Google 試算表",
+  "transitGoogleSheetDialogCreateTitle": "建立新的試算表",
+  "transitGoogleSheetDialogSelectExist": "選擇現有的試算表",
+  "transitGoogleSheetDialogConfirm": "確認",
+  "transitGoogleSheetDialogIdLabel": "試算表 ID 或網址",
+  "transitGoogleSheetDialogIdHelper": "試算表的 ID 是網址中的英文、數字、底線和減號的組合。\n例如，\"https://docs.google.com/spreadsheets/d/1a2b3c4d5e6f7g8h9i0j\" 的 ID 是 \"1a2b3c4d5e6f7g8h9i0j\"。",
+  "transitGoogleSheetProgressCreate": "建立試算表",
+  "transitGoogleSheetProgressFulfill": "在試算表中建立表單",
+  "transitGoogleSheetErrorCreateTitle": "無法建立試算表",
+  "transitGoogleSheetErrorCreateHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的編輯。",
+  "transitGoogleSheetErrorFulfillTitle": "無法在試算表中建立表單",
+  "transitGoogleSheetErrorFulfillHelper": "別擔心，通常都可以簡單解決！\n可能的原因有：\n• 網路狀況不穩；\n• 尚未授權 POS 系統進行表單的建立；\n• 試算表 ID 打錯了，請嘗試複製整個網址後貼上；\n• 該試算表被刪除了。",
+  "transitGoogleSheetErrorIdEmpty": "ID 不能為空",
+  "transitGoogleSheetErrorIdInvalid": "不合法的 ID，必須包含：\n• /spreadsheets/d/<ID>/\n• 或者直接給 ID（英文+數字+底線+減號的組合）",
   "appTitle": "POS 系統",
   "actSuccess": "執行成功",
   "@actSuccess": {

@@ -35,15 +35,14 @@ class _ImportBasicViewState extends State<ImportBasicView> {
           border: const OutlineInputBorder(
             borderSide: BorderSide(width: 5.0),
           ),
-          hintText: S.transitPTImportHint,
-          helperText: S.transitPTImportHelper,
+          hintText: S.transitImportPlainTextHint,
+          helperText: S.transitImportPlainTextHelper,
           helperMaxLines: 2,
         ),
       ),
-      icon: const Icon(KIcons.preview, semanticLabel: '預覽資料'),
+      icon: Icon(KIcons.preview, semanticLabel: S.transitImportBtnPlainText),
       stateNotifier: widget.stateNotifier,
       onLoad: _load,
-      onDone: _done,
     );
   }
 
@@ -53,15 +52,11 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     final able = findPlainTextFormattable(first);
 
     if (able == null) {
-      showSnackBar(S.transitPTImportErrorNotFound, context: context);
+      showSnackBar(S.transitImportPlainTextErrorNotFound, context: context);
       return null;
     }
 
     model.value = able;
     return (FormattableModel _) => findPlainTextFormatter(able).format([lines]);
-  }
-
-  void _done(BuildContext context) {
-    showSnackBar(S.transitPTCopySuccess, context: context);
   }
 }

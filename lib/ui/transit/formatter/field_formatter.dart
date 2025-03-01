@@ -41,8 +41,8 @@ class _MenuFormatter extends ModelFormatter<Menu, CellData> {
         CellData(string: S.menuProductPriceLabel, isBold: true),
         CellData(string: S.menuProductCostLabel, isBold: true),
         CellData(
-          string: S.transitGSModelProductIngredientTitle,
-          note: S.transitGSModelProductIngredientNote,
+          string: S.transitFormatFieldProductIngredientTitle,
+          note: S.transitFormatFieldProductIngredientNote,
           isBold: true,
         ),
       ];
@@ -119,7 +119,11 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, CellData> {
   @override
   List<CellData> getHeader() => [
         CellData(string: S.stockReplenishmentNameLabel, isBold: true),
-        CellData(string: S.transitGSModelReplenishmentTitle, note: S.transitGSModelReplenishmentNote, isBold: true),
+        CellData(
+          string: S.transitFormatFieldReplenishmentTitle,
+          note: S.transitFormatFieldReplenishmentNote,
+          isBold: true,
+        ),
       ];
 
   @override
@@ -145,7 +149,11 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, CellData> {
     return <CellData>[
       CellData(string: S.orderAttributeNameLabel, isBold: true),
       CellData(string: S.orderAttributeModeDivider, note: note, isBold: true),
-      CellData(string: S.transitGSModelAttributeOptionTitle, note: S.transitGSModelAttributeOptionNote, isBold: true),
+      CellData(
+        string: S.transitFormatFieldAttributeOptionTitle,
+        note: S.transitFormatFieldAttributeOptionNote,
+        isBold: true,
+      ),
     ];
   }
 

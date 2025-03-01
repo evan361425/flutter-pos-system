@@ -161,7 +161,7 @@ abstract class ModelFormatter<T extends Repository, U> {
         final name = r[parser.nameIndex];
         // check if the name is duplicated
         if (result.any((e) => !e.hasError && e.item!.name == name)) {
-          msg = S.transitImportErrorDuplicate;
+          msg = S.transitImportErrorBasicDuplicate;
         }
       }
 

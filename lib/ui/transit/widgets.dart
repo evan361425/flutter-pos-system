@@ -3,7 +3,6 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 
@@ -38,7 +37,8 @@ class ImportView extends StatefulWidget {
   final Icon icon;
   final TransitStateNotifier stateNotifier;
   final Future<PreviewFormatter?> Function(BuildContext context, ValueNotifier<FormattableModel?> able) onLoad;
-  final PreviewOnDone onDone;
+  final String? errorMessage;
+  final String? moreMessage;
 
   /// Allow all data type to be imported.
   ///
@@ -51,8 +51,9 @@ class ImportView extends StatefulWidget {
     required this.icon,
     required this.stateNotifier,
     required this.onLoad,
-    required this.onDone,
     this.allowAll = false,
+    this.errorMessage,
+    this.moreMessage,
   });
 
   @override
@@ -105,7 +106,6 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
             return PreviewPage.buildTabBarView(
               ables: model.value?.toList() ?? FormattableModel.values,
               formatter: f,
-              onDone: widget.onDone,
             );
           },
         ),
@@ -118,6 +118,8 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
           widget.onLoad(context, model).then((v) => formatter.value = v),
           'transit_load',
           context: context,
+          message: widget.errorMessage,
+          more: widget.moreMessage,
         ));
   }
 }
@@ -294,7 +296,7 @@ class _ModelPickerState extends State<_ModelPicker> {
               DropdownMenuItem(
                 key: Key('transit.model_picker.${able.name}'),
                 value: able,
-                child: Text(S.transitModelName(able.name)),
+                child: Text(able.l10nName),
               ),
           ],
         ),

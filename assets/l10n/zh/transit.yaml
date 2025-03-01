@@ -43,9 +43,6 @@ order:
       titlePrefix:
       - 'true': 有日期前綴
         'false': 無日期前綴
-      memoryWarning: |-
-        這裡的容量代表網路傳輸所消耗的量，實際佔用的雲端記憶體可能是此值的百分之一而已。
-        詳細容量限制說明可以參考[本文件](https://developers.google.com/sheets/api/limits#quota)。
     overwrite:
       label: 是否覆寫表單
       hint: 覆寫表單之後，將會從第一行開始匯出
@@ -77,7 +74,7 @@ export:
       excel: 匯出成 Excel 檔
       googleSheet: 匯出至 Google 試算表
       plainText: 純文字拷貝
-    fileName: 訂單資料
+    fileName: POS 系統資料
     success:
       csv: 匯出成功
       excel: 匯出成功
@@ -98,11 +95,23 @@ export:
         上傳需要網路連線，且請求可能會被 Google 限制。
         若上傳失敗，請稍後再試或使用其他方式匯出。
       plainText: 適合用來簡單的分享或檢查資料
+    fileName: 訂單資料
+    progress:
+      googleSheet:
+        overwrite: 資料覆寫中
+        append: 資料附加進既有資料中
+    warning:
+      memory:
+        googleSheet: |
+          這裡的容量代表網路傳輸所消耗的量，實際佔用的雲端記憶體可能是此值的百分之一而已。
+          詳細容量限制說明可以參考[本文件](https://developers.google.com/sheets/api/limits#quota)。
     success:
       csv: 匯出成功
       excel: 匯出成功
       googleSheet: 上傳成功
       plainText: 拷貝成功
+      action:
+        googleSheet: 開啟表單
 import:
   tab: 匯入
   btn:
@@ -112,53 +121,33 @@ import:
     plainText: 貼上文字
   progress:
     googleSheet:
-      sheet:
-      - 準備表單 '{name}' 中
-      import: 拉取試算表資料中
-      createSpreadsheet: 建立試算表中
-  csv:
-    error:
+      start: 拉取試算表資料中
+      prepare: 取得試算表資訊中
+  error:
+    basic:
+      columnCount: 資料量不足，需要 {columns} 個欄位
+      duplicate: 將忽略本行，相同的項目已於前面出現
+    csv:
       pickFile: 選擇檔案失敗
-  excel:
-    error:
+    excel:
       pickFile: 選擇檔案失敗
-      dataNotFound:
-      - 找不「{name}」的資料
-  googleSheet:
-    error:
-      createSpreadsheet: 無法建立試算表
-      createSpreadsheetHelper: |-
-        別擔心，通常都可以簡單解決！
-        可能的原因有：
-        • 網路狀況不穩；
-        • 尚未授權 POS 系統進行表單的編輯。
-      spreadsheetEmpty: 請先選擇試算表
-      spreadsheetId:
-        empty: 不能為空
-        invalid: |-
-          不合法的文字，必須包含：
-          • /spreadsheets/d/<ID>/
-          • 或者直接給 ID（英文+數字+底線+減號的組合）
-      createSheet: 無法在試算表中建立表單
-      createSheetHelper: |-
-        別擔心，通常都可以簡單解決！
-        可能的原因有：
-        • 網路狀況不穩；
-        • 尚未授權 POS 系統進行表單的建立；
-        • 試算表 ID 打錯了，請嘗試複製整個網址後貼上；
-        • 該試算表被刪除了。
-      sheetRepeat: 表單名稱重複
-      sheetEmpty: 請選擇至少一個表單來匯出
-      nonExistName: 找不到試算表，是否已被刪除？
-      import:
-        emptySpreadsheet: 必須選擇試算表來匯入
-        emptySheet: 必須選擇指定的表單來匯入
-        emptyData: 在表單中沒找到任何值
-        notFoundSpreadsheet: 找不到試算表
-        notFoundSheets: 找不到表單「{name}」的資料
-        notFoundHelper: |-
+      dataNotFound: 找不「{name}」的資料
+    googleSheet:
+      fetchData:
+        title: 無法拉取試算表資料
+        helper: |-
           別擔心，通常都可以簡單解決！
           可能的原因有：
+          • 網路狀況不穩；
+          • 尚未授權 POS 系統進行表單的讀取；
+          • 試算表 ID 打錯了，請嘗試複製整個網址後貼上；
+          • 該試算表被刪除了。
+      missing:
+        title: 找不到表單「{name}」的資料
+        helper: |-
+          別擔心，通常都可以簡單解決！
+          可能的原因有：
+          • 該試算表沒有我們想要的表單；
           • 網路狀況不穩；
           • 尚未授權 POS 系統進行表單的讀取；
           • 試算表 ID 打錯了，請嘗試複製整個網址後貼上；
@@ -182,9 +171,6 @@ import:
       header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。
     quantity:
       header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。
-  error:
-    columnCount: 資料量不足，需要 {columns} 個欄位
-    duplicate: 將忽略本行，相同的項目已於前面出現
   columnStatus:
   - normal: （一般）
     staged: （新增）
@@ -210,10 +196,6 @@ format:
         - 成分2,補貨量
     attributeOption:
       title: 顧客設定選項
-      header:
-        ts: 時間戳記
-        mode: 類型
-        options: 選項
       note: |-
         「選項值」會根據顧客設定種類不同而有不同意義，格式如下：
         - 選項1,是否為預設,選項值
@@ -339,42 +321,41 @@ format:
         other: 它有 {count} 個選項
       defaultOption: 預設
       modeValue: 選項的值為 {value}
-GS:
-  spreadsheet:
-    label: 試算表
-    action:
-      select: 選擇試算表
-      clear: 清除所選
-    export:
-      empty:
-        label: 建立匯出
-        hint: 建立新的試算表「{name}」，並把資料匯出至此
-      exist:
-        label: 指定匯出
-        hint: 匯出至試算表「{name}」
-    import:
-      all:
-        btn: 匯入全部
-        hint: 不會有任何預覽畫面，直接覆寫全部的資料。
-        confirm:
-          title: 匯入全部資料？
-          content: |-
-            將會把所選表單的資料都下載，並完全覆蓋本地資料。
-            此動作無法復原。
-      exist:
-        label: 確認表單名稱
-        hint: 從試算表中取得所有表單的名稱，並進行匯入
-      empty:
-        label: 選擇試算表
-        hint: 選擇要匯入的試算表後，就能開始匯入資料
-      dropdownHint: 選擇欲匯入的表單
-    confirm: 此動作將會{hint}
-    selectionHint:
-    - _: 輸入試算表網址或試算表 ID
-      other: 原試算表為「{name}」
-    model:
-      defaultName: POS System 資料
-      export:
-        divider: 選擇欲匯出的種類
-      import:
-        divider: 選擇欲匯入表單
+googleSheet:
+  dialog:
+    title: 提供 Google 試算表
+    createTitle: 建立新的試算表
+    selectExist: 選擇現有的試算表
+    confirm: 確認
+    id:
+      label: 試算表 ID 或網址
+      helper: |-
+        試算表的 ID 是網址中的英文、數字、底線和減號的組合。
+        例如，"https://docs.google.com/spreadsheets/d/1a2b3c4d5e6f7g8h9i0j" 的 ID 是 "1a2b3c4d5e6f7g8h9i0j"。
+        使用現有的試算表將可能覆蓋選擇的工作表中的數據。
+  progress:
+    create: 建立試算表
+    fulfill: 在試算表中建立表單
+  error:
+    create:
+      title: 無法建立試算表
+      helper: |-
+        別擔心，通常都可以簡單解決！
+        可能的原因有：
+        • 網路狀況不穩；
+        • 尚未授權 POS 系統進行表單的編輯。
+    fulfill:
+      title: 無法在試算表中建立表單
+      helper: |-
+        別擔心，通常都可以簡單解決！
+        可能的原因有：
+        • 網路狀況不穩；
+        • 尚未授權 POS 系統進行表單的建立；
+        • 試算表 ID 打錯了，請嘗試複製整個網址後貼上；
+        • 該試算表被刪除了。
+    id:
+      empty: ID 不能為空
+      invalid: |-
+        不合法的 ID，必須包含：
+        • /spreadsheets/d/<ID>/
+        • 或者直接給 ID（英文+數字+底線+減號的組合）

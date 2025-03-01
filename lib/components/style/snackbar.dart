@@ -62,9 +62,22 @@ Future<T?> showSnackbarWhenFutureError<T>(
   String code, {
   BuildContext? context,
   GlobalKey<ScaffoldMessengerState>? key,
+  bool showIfFalse = false,
+  String? message,
+  String? more,
 }) async {
   try {
-    return await future;
+    final result = await future;
+    if (showIfFalse && message != null && result == false) {
+      showMoreInfoSnackBar(
+        message,
+        more == null ? null : Linkify.fromString(more),
+        context: context,
+        key: key,
+      );
+    }
+
+    return result;
   } catch (err) {
     _prettierError(err, context: context, key: key);
     Log.err(err, code, err is Error ? err.stackTrace : null);
@@ -102,7 +115,12 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
   );
 }
 
-void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key}) {
+void _prettierError(
+  Object e, {
+  BuildContext? context,
+  GlobalKey<ScaffoldMessengerState>? key,
+  String? moreMessage,
+}) {
   void show(String msg, [String? more]) {
     showMoreInfoSnackBar(
       msg,
@@ -148,5 +166,5 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
     return show(e.description ?? 'error from ${e.function}');
   }
 
-  return show(e.toString());
+  return show(e.toString(), moreMessage);
 }

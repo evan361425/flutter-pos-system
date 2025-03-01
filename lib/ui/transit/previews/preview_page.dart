@@ -18,21 +18,18 @@ typedef PreviewOnDone = void Function(BuildContext);
 abstract class PreviewPage<T extends Model> extends StatelessWidget {
   final FormattableModel able;
   final List<FormattedItem> items;
-  final PreviewOnDone onDone;
   final Map<FormattableModel, ValueNotifier<bool>>? progress;
 
   const PreviewPage({
     super.key,
     required this.able,
     required this.items,
-    required this.onDone,
     this.progress,
   });
 
   static Widget buildTabBarView({
     required List<FormattableModel> ables,
     required PreviewFormatter formatter,
-    required PreviewOnDone onDone,
   }) {
     Widget builder(FormattableModel able, Map<FormattableModel, ValueNotifier<bool>>? progress) {
       final items = formatter(able);
@@ -43,15 +40,15 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
 
       switch (able) {
         case FormattableModel.menu:
-          return ProductPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+          return ProductPreviewPage(able: able, items: items, progress: progress);
         case FormattableModel.orderAttr:
-          return OrderAttributePreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+          return OrderAttributePreviewPage(able: able, items: items, progress: progress);
         case FormattableModel.quantities:
-          return QuantityPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+          return QuantityPreviewPage(able: able, items: items, progress: progress);
         case FormattableModel.stock:
-          return IngredientPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+          return IngredientPreviewPage(able: able, items: items, progress: progress);
         case FormattableModel.replenisher:
-          return ReplenishmentPreviewPage(able: able, items: items, onDone: onDone, progress: progress);
+          return ReplenishmentPreviewPage(able: able, items: items, progress: progress);
       }
     }
 
@@ -133,7 +130,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
         );
 
         if (result != null && context.mounted) {
-          onDone(context);
+          showSnackBar(S.transitImportSuccess, context: context);
         }
       },
       child: const Text('匯入資料'),

@@ -24,7 +24,6 @@ class ImportBasicView extends StatelessWidget {
       icon: Icon(Icons.file_present_sharp, semanticLabel: S.transitImportBtnCsv),
       stateNotifier: stateNotifier,
       onLoad: _load,
-      onDone: _done,
       allowAll: false,
     );
   }
@@ -33,16 +32,12 @@ class ImportBasicView extends StatelessWidget {
     final input = await XFile.pick(extensions: const ['csv', 'txt']);
     if (input == null) {
       // ignore: use_build_context_synchronously
-      showSnackBar(S.transitImportCsvErrorPickFile, context: context);
+      showSnackBar(S.transitImportErrorCsvPickFile, context: context);
 
       return null;
     }
 
     final data = await exporter.import(input);
     return (FormattableModel able) => findFieldFormatter(able).format(data);
-  }
-
-  void _done(BuildContext context) {
-    showSnackBar(S.transitImportSuccess, context: context);
   }
 }

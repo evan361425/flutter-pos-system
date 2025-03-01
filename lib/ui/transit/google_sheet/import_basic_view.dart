@@ -24,11 +24,12 @@ class ImportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImportView(
-      icon: const Icon(Icons.cloud_download_sharp, semanticLabel: '選擇試算表'),
+      icon: Icon(Icons.cloud_download_sharp, semanticLabel: S.transitImportBtnGoogleSheet),
       stateNotifier: stateNotifier,
       onLoad: _load,
-      onDone: _done,
       allowAll: true,
+      errorMessage: S.transitImportErrorGoogleSheetFetchDataTitle,
+      moreMessage: S.transitImportErrorGoogleSheetFetchDataHelper,
     );
   }
 
@@ -49,23 +50,20 @@ class ImportBasicView extends StatelessWidget {
 
     // Step 2
     final titles = able.value?.toL10nNames() ?? FormattableModel.allL10nNames;
-    final wanted = titles.toSet();
-    if (!ss.containsAll(wanted)) {
-      stateNotifier.value = '準備試算表「${ss.name}」';
-      final requested = await exporter.getSheets(ss);
-      ss.merge(requested);
-    }
-
-    final exist = ss.sheets.map((e) => e.title).toSet();
-    final missing = wanted.difference(exist);
-    if (missing.isNotEmpty) {
-      // ignore: use_build_context_synchronously
-      showSnackBar(S.transitGSErrorImportNotFoundSheets(missing.join(', ')), context: context);
+    if (await showSnackbarWhenFutureError(
+          _prepareSheets(ss, titles),
+          'import_prepare_sheet',
+          context: context,
+          showIfFalse: true,
+          message: S.transitImportErrorGoogleSheetMissingTitle(titles.join(', ')),
+          more: S.transitImportErrorGoogleSheetMissingHelper,
+        ) !=
+        true) {
       return null;
     }
 
     // Step 3
-    stateNotifier.value = '匯入試算表...';
+    stateNotifier.value = S.transitImportProgressGoogleSheetStart;
     Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
 
     final ables = able.value?.toList() ?? FormattableModel.values;
@@ -82,8 +80,17 @@ class ImportBasicView extends StatelessWidget {
     };
   }
 
-  void _done(BuildContext context) {
-    showSnackBar(S.actSuccess, context: context);
+  Future<bool> _prepareSheets(GoogleSpreadsheet ss, List<String> titles) async {
+    final wanted = titles.toSet();
+    if (!ss.containsAll(wanted)) {
+      stateNotifier.value = S.transitImportProgressGoogleSheetPrepare;
+      final requested = await exporter.getSheets(ss);
+      ss.merge(requested);
+    }
+
+    final exist = ss.sheets.map((e) => e.title).toSet();
+    final missing = wanted.difference(exist);
+    return missing.isEmpty;
   }
 
   /// Request the data from the sheet.

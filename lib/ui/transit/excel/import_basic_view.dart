@@ -21,10 +21,9 @@ class ImportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImportView(
-      icon: const Icon(Icons.file_present_sharp, semanticLabel: '選擇檔案'),
+      icon: Icon(Icons.file_present_sharp, semanticLabel: S.transitImportBtnExcel),
       stateNotifier: stateNotifier,
       onLoad: _load,
-      onDone: _done,
       allowAll: true,
     );
   }
@@ -33,7 +32,7 @@ class ImportBasicView extends StatelessWidget {
     final input = await XFile.pick(extensions: const ['xlsx', 'xls']);
     if (input == null) {
       // ignore: use_build_context_synchronously
-      showSnackBar('檔案取得失敗', context: context);
+      showSnackBar(S.transitImportErrorExcelPickFile, context: context);
       return null;
     }
 
@@ -47,9 +46,5 @@ class ImportBasicView extends StatelessWidget {
 
       return findFieldFormatter(able).format(data);
     };
-  }
-
-  void _done(BuildContext context) {
-    showSnackBar(S.actSuccess, context: context);
   }
 }

@@ -10,7 +10,6 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
     super.key,
     required super.able,
     required super.items,
-    required super.onDone,
     required super.progress,
   });
 

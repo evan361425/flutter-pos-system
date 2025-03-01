@@ -35,15 +35,15 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
 }) async {
   // Step A, create a new spreadsheet
   if (spreadsheet.id == '') {
-    stateNotifier.value = S.transitGSProgressStatusAddSpreadsheet;
+    stateNotifier.value = S.transitGoogleSheetProgressCreate;
 
     final ss = await exporter.addSpreadsheet(defaultName, sheets);
     Log.out('create spreadsheet: ${ss?.name}', 'gs_export');
     if (ss == null) {
       if (context.mounted) {
         showMoreInfoSnackBar(
-          S.transitGSErrorCreateSpreadsheet,
-          Text(S.transitGSErrorCreateSpreadsheetHelper),
+          S.transitGoogleSheetErrorCreateTitle,
+          Text(S.transitGoogleSheetErrorCreateHelper),
           context: context,
         );
       }
@@ -71,14 +71,14 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
     return spreadsheet;
   }
 
-  stateNotifier.value = S.transitGSProgressStatusAddSheets;
+  stateNotifier.value = S.transitGoogleSheetProgressFulfill;
   final added = await exporter.addSheets(spreadsheet, missing.toList());
   Log.out('add ${added?.length} sheets to spreadsheet: ${spreadsheet.name}', 'gs_export');
   if (added == null) {
     if (context.mounted) {
       showMoreInfoSnackBar(
-        S.transitGSErrorCreateSheet,
-        Text(S.transitGSErrorCreateSheetHelper),
+        S.transitGoogleSheetErrorFulfillTitle,
+        Text(S.transitGoogleSheetErrorFulfillHelper),
         context: context,
       );
     }
@@ -168,7 +168,7 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
         PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
         TextButton(
           onPressed: _export,
-          child: Text(S.transitExportBtn),
+          child: Text(S.transitGoogleSheetDialogConfirm),
         ),
       ],
     );
@@ -186,9 +186,8 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
         validator: _spreadsheetValidator,
         onSaved: _submit,
         decoration: InputDecoration(
-          labelText: S.transitGSSpreadsheetLabel,
-          // TODO: 要說明會覆蓋 sheet
-          helperText: S.transitGSSpreadsheetSelectionHint(spreadsheet?.name ?? '_'),
+          labelText: S.transitGoogleSheetDialogIdLabel,
+          helperText: S.transitGoogleSheetDialogIdHelper,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           errorMaxLines: 5,
           suffixIcon: IconButton(
@@ -257,10 +256,10 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
 }
 
 String? _spreadsheetValidator(String? text) {
-  if (text == null || text.isEmpty) return S.transitGSErrorSpreadsheetIdEmpty;
+  if (text == null || text.isEmpty) return S.transitGoogleSheetErrorIdEmpty;
 
   if (!_sheetUrlRegex.hasMatch(text) && !_sheetIdRegex.hasMatch(text)) {
-    return S.transitGSErrorSpreadsheetIdInvalid;
+    return S.transitGoogleSheetErrorIdInvalid;
   }
 
   return null;

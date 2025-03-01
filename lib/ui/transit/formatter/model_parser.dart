@@ -42,7 +42,7 @@ class MenuParser extends ModelParser<Menu, Product> {
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 4) return S.transitImportErrorColumnCount(4);
+    if (row.length < 4) return S.transitImportErrorBasicColumnCount(4);
 
     final errorMsg = Validator.textLimit(S.menuCatalogNameLabel, 30)(row[0]) ??
         Validator.textLimit(S.menuProductNameLabel, 30)(row[1]) ??
@@ -131,7 +131,7 @@ class StockParser extends ModelParser<Stock, Ingredient> {
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
+    if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
@@ -162,7 +162,7 @@ class QuantitiesParser extends ModelParser<Quantities, Quantity> {
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
+    if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockQuantityNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
@@ -186,7 +186,7 @@ class ReplenisherParser extends ModelParser<Replenisher, Replenishment> {
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
+    if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     final errorMsg = Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
     if (errorMsg != null || row.length == 1) return errorMsg;
@@ -250,7 +250,7 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 2) return S.transitImportErrorColumnCount(2);
+    if (row.length < 2) return S.transitImportErrorBasicColumnCount(2);
 
     final msg = Validator.textLimit(S.orderAttributeNameLabel, 30)(row[0]);
     if (msg != null || row.length == 2) return msg;

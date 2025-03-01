@@ -1,5 +1,6 @@
 import 'package:excel/excel.dart' hide CellValue;
 import 'package:possystem/models/xfile.dart' as xx;
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -45,7 +46,7 @@ class ExcelExporter extends DataExporter {
     await (xx.XFile(path).dir).create();
 
     // put all files in the same directory
-    final file = xx.XFile(xx.XFile.fs.path.join(path, 'POS System.xlsx')).file;
+    final file = xx.XFile(xx.XFile.fs.path.join(path, '${S.transitExportBasicFileName}.xlsx')).file;
     await file.create();
     await file.writeAsBytes(bytes!);
 

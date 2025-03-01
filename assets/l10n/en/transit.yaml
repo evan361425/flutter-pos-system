@@ -45,9 +45,6 @@ order:
       - 'true': Has date prefix
         'false': No date prefix
       - value:
-      memoryWarning: |-
-        The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.
-        For detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).
     overwrite:
       label: Overwrite Sheet
       hint: Overwriting the sheet will start exporting from the first row.
@@ -111,11 +108,23 @@ export:
         Upload needs network connection and request might be throttled by Google.
         If the upload fails, please try again later or use other methods to export.
       plainText: Simple text format, should be used for small data.
+    fileName: POS System Orders
+    progress:
+      googleSheet:
+        overwrite: Overwriting existing data
+        append: Appending data to the exist sheet
+    warning:
+      memory:
+        googleSheet: |
+          The capacity here represents the amount consumed by network transmission, the actual cloud memory occupied may be only one percent of this value.
+          For detailed capacity limit explanations, please refer to [this document](https://developers.google.com/sheets/api/limits#quota).
     success:
       csv: Exported successfully
       excel: Exported successfully
       googleSheet: Uploaded successfully
       plainText: Copied successfully
+      action:
+        googleSheet: Open
 import:
   tab: Import
   btn:
@@ -125,10 +134,8 @@ import:
     plainText: Paste
   progress:
     googleSheet:
-      sheet:
-      - Preparing sheet '{name}'
-      import: Importing data from spreadsheet
-      createSpreadsheet: Creating spreadsheet
+      start: Importing data from spreadsheet
+      prepare: Fetching spreadsheet metadata
   error:
     basic:
       columnCount:
@@ -142,41 +149,22 @@ import:
       dataNotFound:
       - Can't find '{name}' in the data
     googleSheet:
-      createSpreadsheet: Unable to Create Spreadsheet
-      createSpreadsheetHelper: |-
-        Don't worry, it's usually easy to solve!
-        Possible reasons include:
-        • Unstable network conditions;
-        • POS system not authorized to edit spreadsheets.
-      spreadsheetEmpty: Please Select a Spreadsheet First
-      spreadsheetId:
-        empty: Cannot be Empty
-        invalid: |-
-          Invalid text. It must include:
-          • /spreadsheets/d/<ID>/
-          • Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
-      createSheet: Unable to Create Sheet in Spreadsheet
-      createSheetHelper: |-
-        Don't worry, it's usually easy to solve!
-        Possible reasons include:
-        • Unstable network conditions;
-        • POS system not authorized to create sheets;
-        • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
-        • The spreadsheet has been deleted.
-      sheetRepeat: Sheet name duplicate
-      sheetEmpty: Please select at least one sheet to export
-      nonExistName: Spreadsheet not found, has it been deleted?
-      import:
-        emptySpreadsheet: Must select a spreadsheet to import
-        emptySheet: Must select a specific sheet to import
-        emptyData: No values found in sheet
-        notFoundSpreadsheet: Spreadsheet not found
-        notFoundSheets:
-        - No data found for sheet "{name}"
-        - name:
-        notFoundHelper: |-
+      fetchData:
+        title: Unable to fetch data from spreadsheet
+        helper: |-
           Don't worry, it's usually easy to solve!
           Possible reasons include:
+          • Unstable network conditions;
+          • POS system not authorized to read sheets;
+          • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
+          • The spreadsheet has been deleted.
+      missing:
+        title:
+        - No data found for sheet {name}
+        helper: |-
+          Don't worry, it's usually easy to solve!
+          Possible reasons include:
+          • The spreadsheet doesn't have the sheets we want;
           • Unstable network conditions;
           • POS system not authorized to read sheets;
           • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
@@ -230,10 +218,6 @@ format:
         - Ingredient 2, Replenishment amount
     attributeOption:
       title: Customer Setting Options
-      header:
-        ts: Timestamp
-        mode: Type
-        options: Options
       note: |-
         "Options" will have different meanings depending on the type of customer settings, format as follows:
         - Option 1, Is default, Option value
@@ -486,51 +470,41 @@ format:
       - '{name} is {option}'
       - name:
         option:
-GS:
-  spreadsheet:
-    label: Spreadsheet
-    action:
-      select: Select Spreadsheet
-      clear: Clear Selection
-    export:
-      empty:
-        label: Create & Export
-        hint:
-        - Create a new spreadsheet "{name}" and export data to it.
-        - name:
-      exist:
-        label:
-        - Export
-        - Inform the user that data will be exported to the specified spreadsheet.
-        hint:
-        - Export to spreadsheet "{name}"
-        - name:
-    import:
-      all:
-        btn: Import All
-        hint: There will be no preview screen, directly overwrite all data.
-        confirm:
-          title: Import All Data?
-          content: |-
-            All data from the selected sheets will be downloaded and completely overwrite local data.
-            This action cannot be undone.
-      exist:
-        label: Load Sheets Name
-        hint: Get all sheet names from the spreadsheet and ready to import.
-      empty:
-        label: Select Spreadsheet
-        hint: Once you choose the spreadsheet to import, you can start importing data.
-      dropdownHint: Select desired sheet
-    confirm:
-    - This action will {hint}
-    - hint:
-    selectionHint:
-    - _: Enter the spreadsheet URL or spreadsheet ID
-      other: The current spreadsheet is "{name}"
-    - name:
-    model:
-      defaultName: POS System Data
-      export:
-        divider: Select types to export
-      import:
-        divider: Select sheet to import
+googleSheet:
+  dialog:
+    title: Provide Google Sheets
+    createTitle: Create New Spreadsheet
+    selectExist: Select Existing Spreadsheet
+    confirm: Confirm
+    id:
+      label: Spreadsheet ID or URL
+      helper: |-
+        The ID is the combination of letters, numbers, underscores, and hyphens in the URL.
+        For example, the ID of "https://docs.google.com/spreadsheets/d/1a2b3c4d5e6f7g8h9i0j" is "1a2b3c4d5e6f7g8h9i0j".
+        Using existing spreadsheets may overwrite the data in the selected sheet.
+  progress:
+    create: Creating new spreadsheet
+    fulfill: Filling spreadsheet with sheets
+  error:
+    create:
+      title: Unable to Create Spreadsheet
+      helper: |-
+        Don't worry, it's usually easy to solve!
+        Possible reasons include:
+        • Unstable network conditions;
+        • POS system not authorized to edit spreadsheets.
+    fulfill:
+      title: Unable to Create Sheet in Spreadsheet
+      helper: |-
+        Don't worry, it's usually easy to solve!
+        Possible reasons include:
+        • Unstable network conditions;
+        • POS system not authorized to edit spreadsheets;
+        • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
+        • The spreadsheet has been deleted.
+    id:
+      empty: ID cannot be empty
+      invalid: |-
+        Invalid ID. It must include:
+        • /spreadsheets/d/<ID>/
+        • Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
