@@ -6,7 +6,6 @@ import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
-import 'package:possystem/components/style/card_info_text.dart';
 import 'package:possystem/components/style/date_range_picker.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
@@ -268,10 +267,10 @@ class TransitOrderHead extends StatelessWidget {
           builder: (context, p, _) {
             return ListTile(
               key: const Key('transit.order_meta'),
-              title: Text(S.transitGSOrderSettingTitle),
+              title: Text(S.transitOrderSettingTitle),
               subtitle: MetaBlock.withString(context, [
-                S.transitGSOrderMetaOverwrite(p.isOverwrite.toString()),
-                S.transitGSOrderMetaTitlePrefix(p.withPrefix.toString()),
+                S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
+                S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
               ]),
               trailing: const SizedBox(
                 height: double.infinity,
@@ -350,7 +349,7 @@ class _OrderRangeState extends State<_OrderRange> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      key: const Key('btn.edit_range'),
+      key: const Key('transit.order.edit_range'),
       title: Text(S.transitOrderMetaRange(range.format(S.localeName))),
       subtitle: Text(S.transitOrderMetaRangeDays(range.duration.inDays)),
       onTap: pickRange,
@@ -397,18 +396,18 @@ class _OrderTableState extends State<_OrderTable> {
             OrderFormatter.productPosition,
           ],
         ),
-        TextDivider(label: S.transitGSOrderAttributeTitle),
+        TextDivider(label: S.transitFormatFieldOrderAttributeTitle),
         _SimpleTable(
           headers: OrderFormatter.attrHeaders,
           data: OrderFormatter.formatAttr(widget.order),
         ),
-        TextDivider(label: S.transitGSOrderProductTitle),
+        TextDivider(label: S.transitFormatFieldOrderProductTitle),
         _SimpleTable(
           headers: OrderFormatter.productHeaders,
           data: OrderFormatter.formatProduct(widget.order),
           expandableIndexes: const [OrderFormatter.ingredientPosition],
         ),
-        TextDivider(label: S.transitGSOrderIngredientTitle),
+        TextDivider(label: S.transitFormatFieldOrderIngredientTitle),
         _SimpleTable(
           headers: OrderFormatter.ingredientHeaders,
           data: OrderFormatter.formatIngredient(widget.order),
@@ -466,7 +465,7 @@ class _SimpleTable extends StatelessWidget {
       yield Padding(
         padding: const EdgeInsets.all(4.0),
         child: idxOf != -1
-            ? HintText(S.transitGSOrderExpandableHint)
+            ? HintText(S.transitFormatFieldOrderExpandableHint)
             : Text(
                 cell.toString(),
                 textAlign: cell is String ? TextAlign.end : TextAlign.start,
@@ -494,7 +493,7 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
   late bool withPrefix;
 
   @override
-  String get title => S.transitGSOrderSettingTitle;
+  String get title => S.transitOrderSettingTitle;
 
   @override
   List<Widget> buildFormFields() {
@@ -502,8 +501,8 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
       CheckboxListTile(
         key: const Key('is_overwrite'),
         value: isOverwrite,
-        title: Text(S.transitGSOrderSettingOverwriteLabel),
-        subtitle: Text(S.transitGSOrderSettingOverwriteHint),
+        title: Text(S.transitOrderSettingOverwriteLabel),
+        subtitle: Text(S.transitOrderSettingOverwriteHint),
         onChanged: (value) {
           if (value != null) {
             setState(() {
@@ -515,8 +514,8 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
       CheckboxListTile(
         key: const Key('with_prefix'),
         value: withPrefix,
-        title: Text(S.transitGSOrderSettingTitlePrefixLabel),
-        subtitle: Text(S.transitGSOrderSettingTitlePrefixHint),
+        title: Text(S.transitOrderSettingTitlePrefixLabel),
+        subtitle: Text(S.transitOrderSettingTitlePrefixHint),
         onChanged: (value) {
           if (value != null) {
             setState(() {
@@ -529,13 +528,11 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
         p(
           Center(
             child: Text(
-              S.transitGSOrderSettingRecommendCombination,
+              S.transitOrderSettingRecommendCombination,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ),
-      TextDivider(label: S.transitGSOrderSettingNameLabel),
-      p(CardInfoText(child: Text(S.transitGSOrderSettingNameHelper))),
     ];
   }
 

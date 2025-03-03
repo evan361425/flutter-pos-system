@@ -397,7 +397,12 @@
   "transitImportBtnCsv": "Select .csv file",
   "transitImportBtnExcel": "Select .xlsx file",
   "transitImportBtnGoogleSheet": "Select spreadsheet",
-  "transitImportBtnPlainText": "Paste",
+  "transitImportBtnPlainTextAction": "Paste",
+  "transitImportBtnPlainTextHint": "Paste copied text here",
+  "transitImportBtnPlainTextHelper": "After pasting the text, it will analyze and determine the type of information to import.\nCopying too much text may cause system crash.\n",
+  "transitImportModelSelectionLabel": "Data Type",
+  "transitImportModelSelectionAll": "All",
+  "transitImportModelSelectionHint": "Select the type of data first to import the corresponding data.",
   "transitImportProgressGoogleSheetStart": "Importing data from spreadsheet",
   "transitImportProgressGoogleSheetPrepare": "Fetching spreadsheet metadata",
   "transitImportErrorBasicColumnCount": "Insufficient data, {columns} columns required",
@@ -411,16 +416,24 @@
   "transitImportErrorBasicDuplicate": "This line will be ignored as the same item appeared earlier",
   "transitImportErrorCsvPickFile": "Failed to pick file",
   "transitImportErrorExcelPickFile": "Failed to pick file",
-  "transitImportErrorExcelDataNotFound": "Can't find '{name}' in the data",
   "transitImportErrorGoogleSheetFetchDataTitle": "Unable to fetch data from spreadsheet",
   "transitImportErrorGoogleSheetFetchDataHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to read sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
   "transitImportErrorGoogleSheetMissingTitle": "No data found for sheet {name}",
   "transitImportErrorGoogleSheetMissingHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• The spreadsheet doesn't have the sheets we want;\n• Unstable network conditions;\n• POS system not authorized to read sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
+  "transitImportErrorPreviewNotFound": "Can't find '{name}' in the data",
   "transitImportErrorPlainTextNotFound": "This text cannot match any corresponding service. Please refer to the exported text content.",
-  "transitImportPlainTextHint": "Paste copied text here",
-  "transitImportPlainTextHelper": "After pasting the text, it will analyze and determine the type of information to import.\nCopying too much text may cause system crash.\n",
   "transitImportSuccess": "Imported successfully",
   "transitImportPreviewHeader": "Note: Importing will remove the data not listed below. Please confirm before executing!",
+  "transitImportPreviewConfirmBtn": "Import Data",
+  "transitImportPreviewConfirmVerify": "Verify",
+  "transitImportPreviewConfirmHint": "Still have {count} types of data not verified.\nIf the data is incorrect, please cancel the operation and re-import after correction.\n",
+  "@transitImportPreviewConfirmHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "transitImportPreviewIngredientMetaAmount": "Amount: {amount}",
   "@transitImportPreviewIngredientMetaAmount": {
     "placeholders": {
@@ -914,11 +927,11 @@
     }
   },
   "transitGoogleSheetDialogTitle": "Provide Google Sheets",
-  "transitGoogleSheetDialogCreateTitle": "Create New Spreadsheet",
+  "transitGoogleSheetDialogCreate": "Create New Spreadsheet",
   "transitGoogleSheetDialogSelectExist": "Select Existing Spreadsheet",
   "transitGoogleSheetDialogConfirm": "Confirm",
   "transitGoogleSheetDialogIdLabel": "Spreadsheet ID or URL",
-  "transitGoogleSheetDialogIdHelper": "The ID is the combination of letters, numbers, underscores, and hyphens in the URL.\nFor example, the ID of \"https://docs.google.com/spreadsheets/d/1a2b3c4d5e6f7g8h9i0j\" is \"1a2b3c4d5e6f7g8h9i0j\".",
+  "transitGoogleSheetDialogIdHelper": "The ID is the combination of letters, numbers, underscores, and hyphens in the URL.\nFor example, the ID of \"https://docs.google.com/spreadsheets/d/1a2b3c4d5e6f7g8h9i0j\" is \"1a2b3c4d5e6f7g8h9i0j\".\nUsing existing spreadsheets may overwrite the data in the selected sheet.",
   "transitGoogleSheetProgressCreate": "Creating new spreadsheet",
   "transitGoogleSheetProgressFulfill": "Filling spreadsheet with sheets",
   "transitGoogleSheetErrorCreateTitle": "Unable to Create Spreadsheet",

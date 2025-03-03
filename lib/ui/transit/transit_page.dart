@@ -37,7 +37,7 @@ class _TransitPageState extends State<TransitPage> {
           child: SvgPicture.asset('assets/google_sheet_icon.svg', width: 24),
         ),
         title: Text(S.transitMethodName(TransitMethod.googleSheet.name)),
-        subtitle: Text(S.transitGSDescription),
+        subtitle: Text(S.transitDescriptionGoogleSheet),
         onTap: () => _goToStation(context, TransitMethod.googleSheet),
       ),
       ListTile(
@@ -47,7 +47,7 @@ class _TransitPageState extends State<TransitPage> {
           child: SvgPicture.asset('assets/excel_icon.svg', width: 24),
         ),
         title: Text(S.transitMethodName(TransitMethod.excel.name)),
-        subtitle: Text(S.transitExcelDescription),
+        subtitle: Text(S.transitDescriptionExcel),
         onTap: () => _goToStation(context, TransitMethod.excel),
       ),
       ListTile(
@@ -57,7 +57,7 @@ class _TransitPageState extends State<TransitPage> {
           child: Text('CSV'),
         ),
         title: Text(S.transitMethodName(TransitMethod.csv.name)),
-        subtitle: Text(S.transitCSVDescription),
+        subtitle: Text(S.transitDescriptionCsv),
         onTap: () => _goToStation(context, TransitMethod.csv),
       ),
       ListTile(
@@ -67,7 +67,7 @@ class _TransitPageState extends State<TransitPage> {
           child: Text('Text'),
         ),
         title: Text(S.transitMethodName(TransitMethod.plainText.name)),
-        subtitle: Text(S.transitPTDescription),
+        subtitle: Text(S.transitDescriptionPlainText),
         onTap: () => _goToStation(context, TransitMethod.plainText),
       ),
       const SizedBox(height: kFABSpacing),

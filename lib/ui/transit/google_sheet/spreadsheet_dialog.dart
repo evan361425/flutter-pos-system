@@ -139,19 +139,19 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
-      title: Text('Select a spreadsheet'),
+      title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(
         child: Column(children: [
           CheckboxListTile.adaptive(
             dense: true,
             value: createNew,
-            title: const Text('Create new spreadsheet'),
+            title: Text(S.transitGoogleSheetDialogCreate),
             onChanged: (v) => setState(() => createNew = v!),
           ),
           CheckboxListTile.adaptive(
             dense: true,
             value: !createNew,
-            title: const Text('Select existing spreadsheet'),
+            title: Text(S.transitGoogleSheetDialogSelectExist),
             onChanged: (v) => setState(() => createNew = !v!),
           ),
           if (!createNew) ...[

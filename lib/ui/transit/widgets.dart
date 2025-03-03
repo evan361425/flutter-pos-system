@@ -3,6 +3,7 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 
@@ -100,7 +101,7 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
           valueListenable: formatter,
           builder: (context, f, child) {
             if (f == null) {
-              return const Center(child: HintText('請選擇資料類型來進行匯入'));
+              return Center(child: HintText(S.transitImportModelSelectionHint));
             }
 
             return PreviewPage.buildTabBarView(
@@ -276,8 +277,8 @@ class _ModelPickerState extends State<_ModelPicker> {
         child: DropdownButtonFormField<FormattableModel?>(
           key: const Key('transit.model_picker'),
           value: widget.selected.value,
-          decoration: const InputDecoration(
-            label: Text('選擇資料類型'),
+          decoration: InputDecoration(
+            label: Text(S.transitImportModelSelectionLabel),
             floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
           onChanged: (value) {
@@ -287,10 +288,10 @@ class _ModelPickerState extends State<_ModelPicker> {
           },
           items: [
             if (widget.allowAll)
-              const DropdownMenuItem(
-                key: Key('transit.model_picker._all'),
+              DropdownMenuItem(
+                key: const Key('transit.model_picker._all'),
                 value: null,
-                child: Text('全部'),
+                child: Text(S.transitImportModelSelectionAll),
               ),
             for (final able in FormattableModel.values)
               DropdownMenuItem(

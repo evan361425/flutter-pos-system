@@ -133,7 +133,7 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
             )
           : const BoxDecoration(shape: BoxShape.circle),
       alignment: Alignment.center,
-      child: Text('${local.day}'),
+      child: Text(local.day.toString()),
     );
   }
 

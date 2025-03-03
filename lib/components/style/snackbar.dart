@@ -67,11 +67,14 @@ Future<T?> showSnackbarWhenFutureError<T>(
   String? more,
 }) async {
   try {
+    Log.out('start', code);
     final result = await future;
+
     if (showIfFalse && message != null && result == false) {
       showMoreInfoSnackBar(
         message,
         more == null ? null : Linkify.fromString(more),
+        // ignore: use_build_context_synchronously
         context: context,
         key: key,
       );
@@ -79,6 +82,7 @@ Future<T?> showSnackbarWhenFutureError<T>(
 
     return result;
   } catch (err) {
+    // ignore: use_build_context_synchronously
     _prettierError(err, context: context, key: key);
     Log.err(err, code, err is Error ? err.stackTrace : null);
     return null;

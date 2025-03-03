@@ -118,7 +118,16 @@ import:
     csv: 選擇 .csv 檔
     excel: 選擇 .xlsx 檔
     googleSheet: 選擇 Google 試算表
-    plainText: 貼上文字
+    plainText:
+      action: 貼上
+      hint: 貼上複製而來的文字
+      helper: |
+        貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。
+        複製過大的文字可能會造成系統的崩潰。
+  modelSelection:
+    label: 資料類型
+    all: 全部
+    hint: 請先選擇資料類型來進行匯入
   progress:
     googleSheet:
       start: 拉取試算表資料中
@@ -131,7 +140,6 @@ import:
       pickFile: 選擇檔案失敗
     excel:
       pickFile: 選擇檔案失敗
-      dataNotFound: 找不「{name}」的資料
     googleSheet:
       fetchData:
         title: 無法拉取試算表資料
@@ -152,16 +160,21 @@ import:
           • 尚未授權 POS 系統進行表單的讀取；
           • 試算表 ID 打錯了，請嘗試複製整個網址後貼上；
           • 該試算表被刪除了。
-  plainText:
-    hint: 貼上複製而來的文字
-    helper: |
-      貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。
-      複製過大的文字可能會造成系統的崩潰。
-    error:
+    preview:
+      notFound: 找不到「{name}」的資料
+    plainText:
       notFound: 這段文字無法匹配相應的服務，請參考匯出時的文字內容。
   success: 匯入成功
   preview:
     header: 注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！
+    confirm:
+      btn: 匯入資料
+      verify: 確認資料
+      hint:
+      - |
+        還差 {count} 種資料未確認。
+        請確認資料是否正確，若有錯誤請取消操作並修正後重新匯入。
+      - count: {type: int}
     ingredient:
       meta:
         amount: 庫存：{amount}
@@ -324,7 +337,7 @@ format:
 googleSheet:
   dialog:
     title: 提供 Google 試算表
-    createTitle: 建立新的試算表
+    create: 建立新的試算表
     selectExist: 選擇現有的試算表
     confirm: 確認
     id:

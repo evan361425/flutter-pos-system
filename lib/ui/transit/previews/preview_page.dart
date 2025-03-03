@@ -35,7 +35,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
       final items = formatter(able);
       if (items == null) {
         progress?[able]?.value = true;
-        return HintText('找不到「${able.l10nName}」的資料');
+        return HintText(S.transitImportErrorPreviewNotFound(able.l10nName));
       }
 
       switch (able) {
@@ -110,9 +110,9 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
           children: [
             Row(children: [
               Checkbox.adaptive(value: value, onChanged: (value) => progress![able]!.value = !value!),
-              const Text('確認資料'),
+              Text(S.transitImportPreviewConfirmVerify),
             ]),
-            HintText('還差 $notReady 種資料未確認'),
+            HintText(S.transitImportPreviewConfirmHint(notReady)),
           ],
         );
       },
@@ -133,7 +133,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
           showSnackBar(S.transitImportSuccess, context: context);
         }
       },
-      child: const Text('匯入資料'),
+      child: Text(S.transitImportPreviewConfirmBtn),
     );
   }
 

@@ -131,7 +131,16 @@ import:
     csv: Select .csv file
     excel: Select .xlsx file
     googleSheet: Select spreadsheet
-    plainText: Paste
+    plainText:
+      action: Paste
+      hint: Paste copied text here
+      helper: |
+        After pasting the text, it will analyze and determine the type of information to import.
+        Copying too much text may cause system crash.
+  modelSelection:
+    label: Data Type
+    all: All
+    hint: Select the type of data first to import the corresponding data.
   progress:
     googleSheet:
       start: Importing data from spreadsheet
@@ -146,8 +155,6 @@ import:
       pickFile: Failed to pick file
     excel:
       pickFile: Failed to pick file
-      dataNotFound:
-      - Can't find '{name}' in the data
     googleSheet:
       fetchData:
         title: Unable to fetch data from spreadsheet
@@ -169,16 +176,22 @@ import:
           • POS system not authorized to read sheets;
           • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
           • The spreadsheet has been deleted.
+    preview:
+      notFound:
+      - Can't find '{name}' in the data
     plainText:
       notFound: This text cannot match any corresponding service. Please refer to the exported text content.
-  plainText:
-    hint: Paste copied text here
-    helper: |
-      After pasting the text, it will analyze and determine the type of information to import.
-      Copying too much text may cause system crash.
   success: Imported successfully
   preview:
     header: 'Note: Importing will remove the data not listed below. Please confirm before executing!'
+    confirm:
+      btn: Import Data
+      verify: Verify
+      hint:
+      - |
+        Still have {count} types of data not verified.
+        If the data is incorrect, please cancel the operation and re-import after correction.
+      - count: {type: int}
     ingredient:
       meta:
         amount:
@@ -473,7 +486,7 @@ format:
 googleSheet:
   dialog:
     title: Provide Google Sheets
-    createTitle: Create New Spreadsheet
+    create: Create New Spreadsheet
     selectExist: Select Existing Spreadsheet
     confirm: Confirm
     id:

@@ -35,12 +35,12 @@ class _ImportBasicViewState extends State<ImportBasicView> {
           border: const OutlineInputBorder(
             borderSide: BorderSide(width: 5.0),
           ),
-          hintText: S.transitImportPlainTextHint,
-          helperText: S.transitImportPlainTextHelper,
+          hintText: S.transitImportBtnPlainTextHint,
+          helperText: S.transitImportBtnPlainTextHelper,
           helperMaxLines: 2,
         ),
       ),
-      icon: Icon(KIcons.preview, semanticLabel: S.transitImportBtnPlainText),
+      icon: Icon(KIcons.preview, semanticLabel: S.transitImportBtnPlainTextAction),
       stateNotifier: widget.stateNotifier,
       onLoad: _load,
     );
@@ -52,7 +52,7 @@ class _ImportBasicViewState extends State<ImportBasicView> {
     final able = findPlainTextFormattable(first);
 
     if (able == null) {
-      showSnackBar(S.transitImportPlainTextErrorNotFound, context: context);
+      showSnackBar(S.transitImportErrorPlainTextNotFound, context: context);
       return null;
     }
 

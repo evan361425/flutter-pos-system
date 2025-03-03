@@ -113,8 +113,8 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
         return TabBar(
           controller: tabController,
           tabs: [
-            Tab(text: S.transitExportBtn),
-            Tab(text: S.transitImportBtn),
+            Tab(text: S.transitExportTab),
+            Tab(text: S.transitImportTab),
           ],
         );
       default:
