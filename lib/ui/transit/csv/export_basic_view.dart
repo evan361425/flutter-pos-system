@@ -19,9 +19,9 @@ class ExportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExportView(
-      icon: Icon(Icons.share_outlined, semanticLabel: S.transitExportBasicBtnCsv),
+      icon: const Icon(Icons.share_outlined),
+      label: S.transitExportBasicBtnCsv,
       stateNotifier: stateNotifier,
-      allowAll: false,
       onExport: _export,
       buildModel: _buildModel,
     );
@@ -41,7 +41,7 @@ class ExportBasicView extends StatelessWidget {
     final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
     final data = getAllFormattedFieldData(able).map((e) => e.map((r) => r.map((c) => c.toString()))).toList();
 
-    final ok = await exporter.export(names, data);
+    final ok = await exporter.export(names: names, data: data);
     if (context.mounted && ok) {
       showSnackBar(S.transitExportBasicSuccessCsv, context: context);
     }

@@ -36,6 +36,7 @@ class TransitStateNotifier extends ValueNotifier<String> {
 class ImportView extends StatefulWidget {
   final Widget? header;
   final Icon icon;
+  final String label;
   final TransitStateNotifier stateNotifier;
   final Future<PreviewFormatter?> Function(BuildContext context, ValueNotifier<FormattableModel?> able) onLoad;
   final String? errorMessage;
@@ -50,6 +51,7 @@ class ImportView extends StatefulWidget {
     super.key,
     this.header,
     required this.icon,
+    required this.label,
     required this.stateNotifier,
     required this.onLoad,
     this.allowAll = false,
@@ -74,10 +76,11 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
 
     Widget header;
     if (widget.header != null) {
-      header = Row(spacing: kInternalSpacing, children: [
-        widget.header!,
+      header = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(child: Padding(padding: const EdgeInsets.only(top: kInternalSpacing), child: widget.header!)),
         IconButton.filled(
           onPressed: () => _onLoad(null),
+          tooltip: widget.label,
           icon: widget.icon,
         ),
       ]);
@@ -87,17 +90,18 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
         onTap: _onLoad,
         allowAll: widget.allowAll,
         icon: widget.icon,
+        label: widget.label,
       );
     }
 
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-        child: header,
-      ),
-      const Divider(),
-      Expanded(
-        child: ValueListenableBuilder(
+    return SingleChildScrollView(
+      child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+          child: header,
+        ),
+        const Divider(),
+        ValueListenableBuilder(
           valueListenable: formatter,
           builder: (context, f, child) {
             if (f == null) {
@@ -110,14 +114,14 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
             );
           },
         ),
-      ),
-    ]);
+      ]),
+    );
   }
 
   void _onLoad(FormattableModel? able) {
     widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
           widget.onLoad(context, model).then((v) => formatter.value = v),
-          'transit_load',
+          'transit_import_loaded',
           context: context,
           message: widget.errorMessage,
           more: widget.moreMessage,
@@ -127,6 +131,7 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
 
 class ExportView extends StatefulWidget {
   final Icon icon;
+  final String label;
   final TransitStateNotifier stateNotifier;
   final Future<void> Function(BuildContext context, FormattableModel? able) onExport;
   final Widget Function(BuildContext context, FormattableModel? able) buildModel;
@@ -139,6 +144,7 @@ class ExportView extends StatefulWidget {
   const ExportView({
     super.key,
     required this.icon,
+    required this.label,
     required this.stateNotifier,
     required this.onExport,
     required this.buildModel,
@@ -161,6 +167,7 @@ class _ExportViewState extends State<ExportView> {
           selected: model,
           onTap: _onExport,
           icon: widget.icon,
+          label: widget.label,
           allowAll: widget.allowAll,
         ),
       ),
@@ -256,12 +263,14 @@ class _ModelPicker extends StatefulWidget {
   final ValueNotifier<FormattableModel?> selected;
   final void Function(FormattableModel?) onTap;
   final Icon icon;
+  final String label;
   final bool allowAll;
 
   const _ModelPicker({
     required this.selected,
     required this.onTap,
     required this.icon,
+    required this.label,
     this.allowAll = true,
   });
 
@@ -305,6 +314,7 @@ class _ModelPickerState extends State<_ModelPicker> {
       const SizedBox(width: 8),
       IconButton.filled(
         onPressed: () => widget.onTap(widget.selected.value),
+        tooltip: widget.label,
         icon: widget.icon,
       ),
     ]);

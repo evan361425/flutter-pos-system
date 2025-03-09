@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
@@ -20,7 +19,8 @@ class ExportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExportView(
-      icon: Icon(Icons.copy_outlined, semanticLabel: S.transitExportBasicBtnPlainText),
+      icon: const Icon(Icons.copy_outlined),
+      label: S.transitExportBasicBtnPlainText,
       stateNotifier: stateNotifier,
       allowAll: false,
       onExport: _export,
@@ -32,47 +32,41 @@ class ExportBasicView extends StatelessWidget {
     final formatter = findPlainTextFormatter(able!);
     final rows = formatter.getRows();
 
-    return Column(children: [
-      MetaBlock.withString(context, formatter.getHeader())!,
-      const SizedBox(height: 16.0),
-      Expanded(
-        child: ListView.separated(
-          separatorBuilder: (context, index) => const SizedBox(height: 8.0),
-          itemCount: rows.length,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              // Title
-              return Column(
+    return ListView.separated(
+      separatorBuilder: (context, index) => const SizedBox(height: 8.0),
+      itemCount: rows.length,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          // Title
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final item in rows[0]) Center(child: Text(item)),
+            ],
+          );
+        }
+
+        return Card(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 100),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (final item in rows[0]) Center(child: Text(item)),
+                  for (final item in rows[index]) Text(item),
                 ],
-              );
-            }
-
-            return Card(
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: Theme.of(context).colorScheme.outline),
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 100),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (final item in rows[index]) Text(item),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    ]);
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _export(BuildContext context, FormattableModel? able) async {

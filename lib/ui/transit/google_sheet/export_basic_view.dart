@@ -23,7 +23,8 @@ class ExportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExportView(
-      icon: Icon(Icons.cloud_upload_sharp, semanticLabel: S.transitExportBasicBtnGoogleSheet),
+      icon: const Icon(Icons.cloud_upload_sharp),
+      label: S.transitExportBasicBtnGoogleSheet,
       stateNotifier: stateNotifier,
       allowAll: true,
       onExport: _export,

@@ -240,7 +240,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
     final result = await showSnackbarWhenFutureError(
       Future.wait(target.map((image) => image.file.delete())),
-      'image_gallery_delete',
+      'image_gallery_deletion',
       key: messenger,
     );
 

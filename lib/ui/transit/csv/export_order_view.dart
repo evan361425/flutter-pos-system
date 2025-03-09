@@ -52,7 +52,7 @@ class ExportOrderView extends StatelessWidget {
         ]
     ];
 
-    final ok = await exporter.export(names, data);
+    final ok = await exporter.export(names: names, data: data);
     if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
     }

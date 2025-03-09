@@ -286,7 +286,7 @@ class TransitOrderHead extends StatelessWidget {
   void _onExport(BuildContext context) {
     stateNotifier.exec(() => showSnackbarWhenFutureError(
           onExport(context),
-          'csv_export_failed',
+          'transit_export_order',
           context: context,
         ));
   }

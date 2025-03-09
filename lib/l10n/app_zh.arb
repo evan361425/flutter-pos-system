@@ -366,6 +366,7 @@
   },
   "transitOrderItemDialogTitle": "訂單細節",
   "transitExportTab": "匯出",
+  "transitExportFileDialogTitle": "選擇匯出的位置",
   "transitExportBasicBtnCsv": "匯出成 CSV 檔",
   "transitExportBasicBtnExcel": "匯出成 Excel 檔",
   "transitExportBasicBtnGoogleSheet": "匯出至 Google 試算表",
@@ -397,7 +398,7 @@
   "transitImportBtnCsv": "選擇 .csv 檔",
   "transitImportBtnExcel": "選擇 .xlsx 檔",
   "transitImportBtnGoogleSheet": "選擇 Google 試算表",
-  "transitImportBtnPlainTextAction": "貼上",
+  "transitImportBtnPlainTextAction": "匯入資料",
   "transitImportBtnPlainTextHint": "貼上複製而來的文字",
   "transitImportBtnPlainTextHelper": "貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。\n複製過大的文字可能會造成系統的崩潰。\n",
   "transitImportModelSelectionLabel": "資料類型",
@@ -423,7 +424,8 @@
   "transitImportErrorPreviewNotFound": "找不到「{name}」的資料",
   "transitImportErrorPlainTextNotFound": "這段文字無法匹配相應的服務，請參考匯出時的文字內容。",
   "transitImportSuccess": "匯入成功",
-  "transitImportPreviewHeader": "注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！",
+  "transitImportPreviewConfirmTitle": "確定匯入？",
+  "transitImportPreviewConfirmContent": "注意：匯入後將會把沒列到的資料移除，請確認是否執行！",
   "transitImportPreviewConfirmBtn": "匯入資料",
   "transitImportPreviewConfirmVerify": "確認資料",
   "transitImportPreviewConfirmHint": "還差 {count} 種資料未確認。\n請確認資料是否正確，若有錯誤請取消操作並修正後重新匯入。\n",
@@ -455,8 +457,8 @@
       }
     }
   },
-  "transitImportPreviewIngredientHeader": "匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。",
-  "transitImportPreviewQuantityHeader": "匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。",
+  "transitImportPreviewIngredientConfirm": "注意：匯入後，為了避免影響「菜單」的狀況，並不會把沒列出的成分移除。",
+  "transitImportPreviewQuantityConfirm": "注意：匯入後，為了避免影響「菜單」的狀況，並不會把沒列出的份量移除。",
   "transitImportColumnStatus": "{name, select, normal{（一般）} staged{（新增）} stagedIng{（新的成分）} stagedQua{（新的份量）} updated{（異動）} other{UNKNOWN}}",
   "@transitImportColumnStatus": {
     "description": "Additional status of the data displayed"

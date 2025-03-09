@@ -1,8 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/models/xfile.dart' as xx;
-import 'package:share_plus/share_plus.dart';
+import 'package:possystem/models/xfile.dart';
+import 'package:possystem/translator.dart';
 
 import 'data_exporter.dart';
 
@@ -27,32 +29,28 @@ class CSVExporter extends DataExporter {
     return result;
   }
 
-  Future<bool> export(List<String> names, List<Iterable<Iterable<String>>> data) async {
+  Future<bool> export({
+    required List<String> names,
+    required List<Iterable<Iterable<String>>> data,
+  }) async {
     assert(names.length == data.length, 'names and data length not match');
 
-    final contents = data
+    final bytes = data
         .map((rows) => rows
             .map((row) => row.map((e) {
                   final v = e.replaceAll('"', '""');
                   return v.contains(',') || v.contains('"') ? '"$v"' : v;
                 }).join(','))
             .join('\n'))
+        .map((e) => Uint8List.fromList(e.codeUnits))
         .toList();
+    final fileNames = names.map((name) => '$name.csv').toList();
 
-    final dir = await xx.XFile.getRootPath();
-    final path = xx.XFile.fs.path.join(dir, 'transit_temp');
-    await (xx.XFile(path).dir).create();
-
-    // put all files in the same directory
-    final files = names.map((name) => xx.XFile(xx.XFile.fs.path.join(path, '$name.csv')).file);
-    await Future.wait(files.map((file) => file.create()));
-    await Future.wait(files.mapIndexed((i, file) => file.writeAsString(contents[i])));
-
-    final result = await Share.shareXFiles(files.map((file) => XFile(file.path)).toList());
-
-    await Future.wait(files.map((file) => file.delete()));
-
-    return result.status == ShareResultStatus.success;
+    return XFile.save(
+      bytes: bytes,
+      fileNames: fileNames,
+      dialogTitle: S.transitExportFileDialogTitle,
+    );
   }
 
   /// Split a CSV line into fields

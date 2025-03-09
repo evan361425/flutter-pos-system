@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
@@ -40,7 +39,8 @@ class _ImportBasicViewState extends State<ImportBasicView> {
           helperMaxLines: 2,
         ),
       ),
-      icon: Icon(KIcons.preview, semanticLabel: S.transitImportBtnPlainTextAction),
+      icon: const Icon(Icons.import_export_sharp),
+      label: S.transitImportBtnPlainTextAction,
       stateNotifier: widget.stateNotifier,
       onLoad: _load,
     );

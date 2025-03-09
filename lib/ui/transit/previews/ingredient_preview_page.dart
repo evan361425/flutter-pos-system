@@ -28,7 +28,5 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
   }
 
   @override
-  Widget buildHeader(BuildContext context) {
-    return Text(S.transitImportPreviewIngredientHeader);
-  }
+  String get confirmedMessage => S.transitImportPreviewIngredientConfirm;
 }

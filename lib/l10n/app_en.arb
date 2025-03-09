@@ -366,6 +366,7 @@
   },
   "transitOrderItemDialogTitle": "Order Details",
   "transitExportTab": "Export",
+  "transitExportFileDialogTitle": "Select Export Location",
   "transitExportBasicBtnCsv": "Export CSV files",
   "transitExportBasicBtnExcel": "Export Excel file",
   "transitExportBasicBtnGoogleSheet": "Upload to Google Sheets",
@@ -397,7 +398,7 @@
   "transitImportBtnCsv": "Select .csv file",
   "transitImportBtnExcel": "Select .xlsx file",
   "transitImportBtnGoogleSheet": "Select spreadsheet",
-  "transitImportBtnPlainTextAction": "Paste",
+  "transitImportBtnPlainTextAction": "Import Data",
   "transitImportBtnPlainTextHint": "Paste copied text here",
   "transitImportBtnPlainTextHelper": "After pasting the text, it will analyze and determine the type of information to import.\nCopying too much text may cause system crash.\n",
   "transitImportModelSelectionLabel": "Data Type",
@@ -423,7 +424,8 @@
   "transitImportErrorPreviewNotFound": "Can't find '{name}' in the data",
   "transitImportErrorPlainTextNotFound": "This text cannot match any corresponding service. Please refer to the exported text content.",
   "transitImportSuccess": "Imported successfully",
-  "transitImportPreviewHeader": "Note: Importing will remove the data not listed below. Please confirm before executing!",
+  "transitImportPreviewConfirmTitle": "Import the data?",
+  "transitImportPreviewConfirmContent": "Note: After importing, the data not shown will be removed. Please confirm before executing!",
   "transitImportPreviewConfirmBtn": "Import Data",
   "transitImportPreviewConfirmVerify": "Verify",
   "transitImportPreviewConfirmHint": "Still have {count} types of data not verified.\nIf the data is incorrect, please cancel the operation and re-import after correction.\n",
@@ -455,8 +457,8 @@
       }
     }
   },
-  "transitImportPreviewIngredientHeader": "After import, old ingredients won't be removed to avoid affecting the \"Menu\" status.",
-  "transitImportPreviewQuantityHeader": "After import, old quantities won't be removed to avoid affecting the \"Menu\" status.",
+  "transitImportPreviewIngredientConfirm": "Note: After importing, ingredients not shown won't be removed to avoid affecting the \"Menu\" status.",
+  "transitImportPreviewQuantityConfirm": "Note: After importing, quantities not shown won't be removed to avoid affecting the \"Menu\" status.",
   "transitImportColumnStatus": "{name, select, normal{(Normal)} staged{(New)} stagedIng{(New Ingredient)} stagedQua{(New Quantity)} updated{(Updated)} other{UNKNOWN}}",
   "@transitImportColumnStatus": {
     "description": "Additional status of the data displayed"

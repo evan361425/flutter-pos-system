@@ -53,7 +53,11 @@ class ExportOrderView extends StatelessWidget {
         ]
     ];
 
-    final ok = await exporter.export(names.values.toList(), data);
+    final ok = await exporter.export(
+      names: names.values.toList(),
+      data: data,
+      fileName: S.transitExportOrderFileName,
+    );
     if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessExcel, context: context);
     }

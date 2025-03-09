@@ -1,8 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:excel/excel.dart' hide CellValue;
-import 'package:possystem/models/xfile.dart' as xx;
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
-import 'package:share_plus/share_plus.dart';
 
 import 'data_exporter.dart';
 
@@ -19,7 +20,11 @@ class ExcelExporter extends DataExporter {
     }).toList();
   }
 
-  Future<bool> export(List<String> names, List<List<List<CellData>>> data) async {
+  Future<bool> export({
+    required List<String> names,
+    required List<List<List<CellData>>> data,
+    required String fileName,
+  }) async {
     assert(names.length == data.length, 'names and data length not match');
 
     final excel = Excel.createExcel();
@@ -39,21 +44,11 @@ class ExcelExporter extends DataExporter {
       }
     }
 
-    final bytes = excel.save();
-
-    final dir = await xx.XFile.getRootPath();
-    final path = xx.XFile.fs.path.join(dir, 'transit_temp');
-    await (xx.XFile(path).dir).create();
-
-    // put all files in the same directory
-    final file = xx.XFile(xx.XFile.fs.path.join(path, '${S.transitExportBasicFileName}.xlsx')).file;
-    await file.create();
-    await file.writeAsBytes(bytes!);
-
-    final result = await Share.shareXFiles([XFile(file.path)]);
-
-    await file.delete();
-
-    return result.status == ShareResultStatus.success;
+    final bytes = excel.encode();
+    return XFile.save(
+      bytes: [Uint8List.fromList(bytes ?? [])],
+      fileNames: [fileName],
+      dialogTitle: S.transitExportFileDialogTitle,
+    );
   }
 }

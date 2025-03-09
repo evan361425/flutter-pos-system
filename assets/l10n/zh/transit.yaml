@@ -68,6 +68,7 @@ order:
       title: 訂單細節
 export:
   tab: 匯出
+  fileDialogTitle: 選擇匯出的位置
   basic:
     btn:
       csv: 匯出成 CSV 檔
@@ -95,7 +96,8 @@ export:
         上傳需要網路連線，且請求可能會被 Google 限制。
         若上傳失敗，請稍後再試或使用其他方式匯出。
       plainText: 適合用來簡單的分享或檢查資料
-    fileName: 訂單資料
+    file:
+      name: 訂單資料
     progress:
       googleSheet:
         overwrite: 資料覆寫中
@@ -119,7 +121,7 @@ import:
     excel: 選擇 .xlsx 檔
     googleSheet: 選擇 Google 試算表
     plainText:
-      action: 貼上
+      action: 匯入資料
       hint: 貼上複製而來的文字
       helper: |
         貼上文字後，會分析文字並決定匯入的是什麼種類的資訊。
@@ -166,8 +168,9 @@ import:
       notFound: 這段文字無法匹配相應的服務，請參考匯出時的文字內容。
   success: 匯入成功
   preview:
-    header: 注意：匯入後將會把下面沒列到的資料移除，請確認是否執行！
     confirm:
+      title: 確定匯入？
+      content: 注意：匯入後將會把沒列到的資料移除，請確認是否執行！
       btn: 匯入資料
       verify: 確認資料
       hint:
@@ -181,9 +184,9 @@ import:
         maxAmount:
         - =0: 未設定
           other: 最大值：{value}
-      header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的成分移除。
+      confirm: 注意：匯入後，為了避免影響「菜單」的狀況，並不會把沒列出的成分移除。
     quantity:
-      header: 匯入後，為了避免影響「菜單」的狀況，並不會把舊的份量移除。
+      confirm: 注意：匯入後，為了避免影響「菜單」的狀況，並不會把沒列出的份量移除。
   columnStatus:
   - normal: （一般）
     staged: （新增）

@@ -21,7 +21,8 @@ class ImportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImportView(
-      icon: Icon(Icons.file_present_sharp, semanticLabel: S.transitImportBtnExcel),
+      icon: const Icon(Icons.file_present_sharp),
+      label: S.transitImportBtnExcel,
       stateNotifier: stateNotifier,
       onLoad: _load,
       allowAll: true,

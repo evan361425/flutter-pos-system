@@ -116,7 +116,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
             items.addAll(data);
           });
         }),
-        'item_loader_failed',
+        'item_loader',
         context: context,
       );
     }
@@ -130,7 +130,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
             metrics = data;
           });
         }),
-        'metrics_loader_failed',
+        'metrics_loader',
         context: context,
       );
     }

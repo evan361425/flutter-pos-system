@@ -24,7 +24,8 @@ class ImportBasicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImportView(
-      icon: Icon(Icons.cloud_download_sharp, semanticLabel: S.transitImportBtnGoogleSheet),
+      icon: const Icon(Icons.cloud_download_sharp),
+      label: S.transitImportBtnGoogleSheet,
       stateNotifier: stateNotifier,
       onLoad: _load,
       allowAll: true,
@@ -52,7 +53,7 @@ class ImportBasicView extends StatelessWidget {
     final titles = able.value?.toL10nNames() ?? FormattableModel.allL10nNames;
     if (await showSnackbarWhenFutureError(
           _prepareSheets(ss, titles),
-          'import_prepare_sheet',
+          'import_sheet_preparing',
           context: context,
           showIfFalse: true,
           message: S.transitImportErrorGoogleSheetMissingTitle(titles.join(', ')),

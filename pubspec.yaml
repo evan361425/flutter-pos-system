@@ -71,7 +71,6 @@ dependencies:
   package_info_plus: ^8.1.2  # 24, 12-12
   visibility_detector: ^0.4.0+2  # 23, 03-09
   cupertino_icons: ^1.0.8  # This is for google-package which use it in some case
-  share_plus: ^10.1.4  # 25, 01-14
   excel: ^4.0.6  # 24, 08-20
 
 dev_dependencies:

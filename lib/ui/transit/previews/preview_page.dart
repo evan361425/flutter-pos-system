@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
@@ -78,16 +79,13 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: [_buildAction(context)]),
-      const SizedBox(height: kInternalSpacing),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-        child: buildHeader(context),
-      ),
-      const Divider(),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
-        child: Center(child: HintText(S.totalCount(items.length))),
+        child: Column(children: [
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [_buildAction(context)]),
+          const SizedBox(height: kInternalSpacing),
+          Center(child: HintText(S.totalCount(items.length))),
+        ]),
       ),
       ...buildDetails(context, items),
     ]);
@@ -122,10 +120,20 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   Widget _buildConfirmedButton(BuildContext context) {
     return FilledButton(
       onPressed: () async {
+        final confirmed = await ConfirmDialog.show(
+          context,
+          title: S.transitImportPreviewConfirmTitle,
+          content: confirmedMessage,
+        );
+        if (!confirmed) {
+          return;
+        }
+
         final futures = (progress?.keys.toList() ?? [able]).map((e) => e.toRepository().commitStaged());
         final result = await showSnackbarWhenFutureError(
           Future.wait(futures),
-          'transit_import_failed',
+          'transit_import_model',
+          // ignore: use_build_context_synchronously
           context: context,
         );
 
@@ -148,9 +156,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
 
   Widget buildItem(BuildContext context, T item);
 
-  Widget buildHeader(BuildContext context) {
-    return Text(S.transitImportPreviewHeader);
-  }
+  String get confirmedMessage => S.transitImportPreviewConfirmContent;
 }
 
 class ImporterColumnStatus extends StatelessWidget {
