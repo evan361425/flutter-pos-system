@@ -94,27 +94,28 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
       );
     }
 
-    return SingleChildScrollView(
-      child: Column(children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-          child: header,
-        ),
-        const Divider(),
-        ValueListenableBuilder(
-          valueListenable: formatter,
-          builder: (context, f, child) {
-            if (f == null) {
-              return Center(child: HintText(S.transitImportModelSelectionHint));
-            }
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+            child: header,
+          ),
+        ];
+      },
+      body: ValueListenableBuilder(
+        valueListenable: formatter,
+        builder: (context, f, child) {
+          if (f == null) {
+            return Center(child: HintText(S.transitImportModelSelectionHint));
+          }
 
-            return PreviewPage.buildTabBarView(
-              ables: model.value?.toList() ?? FormattableModel.values,
-              formatter: f,
-            );
-          },
-        ),
-      ]),
+          return PreviewPage.buildTabBarView(
+            ables: model.value?.toList() ?? FormattableModel.values,
+            formatter: f,
+          );
+        },
+      ),
     );
   }
 

@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class CSVExporter extends DataExporter {
 
   Future<List<List<String>>> import(List<int> input) async {
     final result = <List<String>>[];
-    final string = String.fromCharCodes(input);
+    final string = utf8.decode(input);
 
     for (final (lineNo, line) in string.split('\n').indexed) {
       if (line.isNotEmpty) {
@@ -38,11 +38,11 @@ class CSVExporter extends DataExporter {
     final bytes = data
         .map((rows) => rows
             .map((row) => row.map((e) {
-                  final v = e.replaceAll('"', '""');
-                  return v.contains(',') || v.contains('"') ? '"$v"' : v;
+                  final v = e.replaceAll('"', '""').replaceAll('\n', '\\n');
+                  return v.contains(',') || v.contains('"') || v.contains('\\n') ? '"$v"' : v;
                 }).join(','))
             .join('\n'))
-        .map((e) => Uint8List.fromList(e.codeUnits))
+        .map((e) => utf8.encode(e))
         .toList();
     final fileNames = names.map((name) => '$name.csv').toList();
 
@@ -91,8 +91,16 @@ class CSVExporter extends DataExporter {
         continue;
       }
 
-      // Regular character
-      field.write(char);
+      if (char == '\\' && chars.elementAtOrNull(i + 1) == 'n') {
+        field.write('\n');
+        skip = true;
+        continue;
+      }
+
+      // Regular character and ignore carriage return
+      if (char != '\r') {
+        field.write(char);
+      }
     }
 
     // Add the last field and row

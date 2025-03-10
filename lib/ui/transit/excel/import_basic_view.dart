@@ -30,7 +30,7 @@ class ImportBasicView extends StatelessWidget {
   }
 
   Future<PreviewFormatter?> _load(BuildContext context, ValueNotifier<FormattableModel?> _) async {
-    final input = await XFile.pick(extensions: const ['xlsx', 'xls']);
+    final input = await XFile.pick();
     if (input == null) {
       // ignore: use_build_context_synchronously
       showSnackBar(S.transitImportErrorExcelPickFile, context: context);

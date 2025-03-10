@@ -4,6 +4,7 @@ import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:possystem/helpers/logger.dart';
 
 class XFile {
   static FileSystem fs = const LocalFileSystem();
@@ -30,13 +31,10 @@ class XFile {
     return fs is LocalFileSystem ? (await getApplicationDocumentsDirectory()).path : '';
   }
 
-  static Future<List<int>?> pick({
-    required List<String> extensions,
-  }) async {
+  static Future<List<int>?> pick() async {
     final file = await FilePicker.platform.pickFiles(
       withReadStream: true,
-      allowedExtensions: extensions,
-      type: FileType.custom,
+      type: FileType.any,
     );
 
     final data = await file?.files.firstOrNull?.readStream?.toList();
@@ -54,6 +52,7 @@ class XFile {
       fileName: fileNames[0],
       bytes: bytes[0],
     );
+    Log.out('save file to $path', 'file');
 
     if (path == null) {
       return false;

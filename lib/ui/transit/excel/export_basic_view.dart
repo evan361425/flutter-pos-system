@@ -45,7 +45,7 @@ class ExportBasicView extends StatelessWidget {
     final ok = await exporter.export(
       names: names,
       data: data,
-      fileName: S.transitExportBasicFileName,
+      fileName: '${S.transitExportBasicFileName}.xlsx',
     );
     if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
