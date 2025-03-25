@@ -10,7 +10,8 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
     super.key,
     required super.able,
     required super.items,
-    required super.progress,
+    super.progress,
+    super.physics,
   });
 
   @override

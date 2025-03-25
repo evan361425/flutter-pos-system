@@ -16,11 +16,13 @@ method:
     csv: CSV
 catalog:
   name:
-  - order: Order Records
-    model: Store Information
+  - exportOrder: Export Order Records
+    exportModel: Export Store Information
+    importModel: Import Store Information
   helper:
-  - order: Export order info for detailed statistical analysis.
-    model: Store info is usually used to sync menu, inventory, etc., to third-party locations or to import to another device.
+  - exportOrder: Export order info for detailed statistical analysis.
+    exportModel: Export store info to backup menu, inventory, etc., to third-party locations.
+    importModel: Synchronize info to this device.
 model:
   name:
   - menu: Menu

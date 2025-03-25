@@ -16,11 +16,13 @@ method:
     csv: CSV 檔案
 catalog:  # 資料的分類
   name:
-  - order: 訂單記錄
-    model: 店家資訊
+  - exportOrder: 匯出訂單記錄
+    exportModel: 匯出店家資訊
+    importModel: 匯入店家資訊
   helper:
-  - order: 訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。
-    model: 商家資訊通常是用來把菜單、庫存等資訊同步到第三方位置或用來匯入到另一台手機。
+  - exportOrder: 訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。
+    exportModel: 商家資訊是用來把菜單、庫存等資訊備份到第三方位置。
+    importModel: 同步資訊到此設備。
 model:
   name:
   - menu: 菜單

@@ -20,19 +20,25 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   final FormattableModel able;
   final List<FormattedItem> items;
   final Map<FormattableModel, ValueNotifier<bool>>? progress;
+  final ScrollPhysics? physics;
 
   const PreviewPage({
     super.key,
     required this.able,
     required this.items,
     this.progress,
+    this.physics,
   });
 
   static Widget buildTabBarView({
     required List<FormattableModel> ables,
     required PreviewFormatter formatter,
   }) {
-    Widget builder(FormattableModel able, Map<FormattableModel, ValueNotifier<bool>>? progress) {
+    Widget builder(
+      FormattableModel able, [
+      Map<FormattableModel, ValueNotifier<bool>>? progress,
+      ScrollPhysics? physics,
+    ]) {
       final items = formatter(able);
       if (items == null) {
         progress?[able]?.value = true;
@@ -41,52 +47,58 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
 
       switch (able) {
         case FormattableModel.menu:
-          return ProductPreviewPage(able: able, items: items, progress: progress);
+          return ProductPreviewPage(able: able, items: items, progress: progress, physics: physics);
         case FormattableModel.orderAttr:
-          return OrderAttributePreviewPage(able: able, items: items, progress: progress);
+          return OrderAttributePreviewPage(able: able, items: items, progress: progress, physics: physics);
         case FormattableModel.quantities:
-          return QuantityPreviewPage(able: able, items: items, progress: progress);
+          return QuantityPreviewPage(able: able, items: items, progress: progress, physics: physics);
         case FormattableModel.stock:
-          return IngredientPreviewPage(able: able, items: items, progress: progress);
+          return IngredientPreviewPage(able: able, items: items, progress: progress, physics: physics);
         case FormattableModel.replenisher:
-          return ReplenishmentPreviewPage(able: able, items: items, progress: progress);
+          return ReplenishmentPreviewPage(able: able, items: items, progress: progress, physics: physics);
       }
     }
 
     if (ables.length == 1) {
-      return builder(ables.first, null);
+      return builder(ables.first);
     }
 
     final progress = <FormattableModel, ValueNotifier<bool>>{
       for (final able in ables) able: ValueNotifier(false),
     };
+    final physics = _NestedScrollPhysics(scrollable: ValueNotifier(false));
     return DefaultTabController(
       length: ables.length,
-      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        TabBar(tabs: [
-          for (final able in ables)
-            Tab(
-              child: Text(able.l10nName, softWrap: true),
-            ),
-        ]),
-        TabBarView(children: [
-          for (final able in ables) builder(able, progress),
-        ]),
+      child: CustomScrollView(slivers: <Widget>[
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: SliverTabBarDelegate(
+            TabBar(tabs: [
+              for (final able in ables)
+                Tab(
+                  child: Text(able.l10nName, softWrap: true),
+                ),
+            ]),
+          ),
+        ),
+        SliverFillRemaining(
+          child: TabBarView(children: [
+            for (final able in ables) builder(able, progress, physics),
+          ]),
+        ),
       ]),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-        child: Column(children: [
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [_buildAction(context)]),
-          const SizedBox(height: kInternalSpacing),
-          Center(child: HintText(S.totalCount(items.length))),
-        ]),
-      ),
+    return ListView(physics: physics, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        _buildAction(context),
+        const SizedBox(width: kHorizontalSpacing),
+      ]),
+      const SizedBox(height: kInternalSpacing),
+      Center(child: HintText(S.totalCount(items.length))),
       ...buildDetails(context, items),
     ]);
   }
@@ -219,4 +231,56 @@ class PreviewErrorListTile extends StatelessWidget {
       tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
     );
   }
+}
+
+class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+
+  SliverTabBarDelegate(this.tabBar);
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(color: Colors.white, child: tabBar);
+  }
+
+  @override
+  bool shouldRebuild(SliverTabBarDelegate oldDelegate) {
+    return false;
+  }
+}
+
+/// Control scrollable by [scrollable]
+class _NestedScrollPhysics extends ScrollPhysics {
+  final ValueNotifier<bool> scrollable;
+
+  const _NestedScrollPhysics({super.parent, required this.scrollable});
+
+  @override
+  _NestedScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return _NestedScrollPhysics(parent: buildParent(ancestor), scrollable: scrollable);
+  }
+
+  @override
+  bool get allowUserScrolling => true;
+
+  @override
+  bool get allowImplicitScrolling => true;
+
+  @override
+
+  /// If still waiting SliverAppBar to disappear, don't accept user offset. (scrollable is false)
+  /// Or when the position is not at the top, accept user offset anyway
+  /// because the SliverAppBar is in middle of disappearing but scroll view is
+  /// not at the top.
+  bool shouldAcceptUserOffset(ScrollMetrics position) => scrollable.value || position.pixels != 0.0;
 }

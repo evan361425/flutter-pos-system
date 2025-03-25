@@ -12,7 +12,8 @@ class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
     super.key,
     required super.able,
     required super.items,
-    required super.progress,
+    super.progress,
+    super.physics,
   });
 
   @override

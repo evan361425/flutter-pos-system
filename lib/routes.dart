@@ -570,15 +570,15 @@ class Routes {
                 state.pathParameters['method'],
                 TransitMethod.plainText,
               );
-              final type = _findEnum(
+              final catalog = _findEnum(
                 TransitCatalog.values,
-                state.pathParameters['type'],
-                TransitCatalog.model,
+                state.pathParameters['catalog'],
+                TransitCatalog.exportOrder,
               );
               final range = _parseRange(state.uri.queryParameters['range']);
 
               return _l(
-                TransitStation(method: method, catalog: type, range: range),
+                TransitStation(method: method, catalog: catalog, range: range),
                 state,
               );
             },

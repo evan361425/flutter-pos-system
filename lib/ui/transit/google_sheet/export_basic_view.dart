@@ -9,40 +9,23 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportBasicView extends StatelessWidget {
-  final TransitStateNotifier stateNotifier;
-
+class ExportBasicHeader extends BasicModelPicker {
   final GoogleSheetExporter exporter;
 
-  const ExportBasicView({
+  const ExportBasicHeader({
     super.key,
+    required super.selected,
+    required super.stateNotifier,
     required this.exporter,
-    required this.stateNotifier,
+    super.icon = const Icon(Icons.cloud_upload_sharp),
+    super.allowAll = true,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ExportView(
-      icon: const Icon(Icons.cloud_upload_sharp),
-      label: S.transitExportBasicBtnGoogleSheet,
-      stateNotifier: stateNotifier,
-      allowAll: true,
-      onExport: _export,
-      buildModel: _buildModel,
-    );
-  }
+  String get label => S.transitExportBasicBtnGoogleSheet;
 
-  Widget _buildModel(BuildContext context, FormattableModel? able) {
-    final formatter = findFieldFormatter(able ?? FormattableModel.menu);
-    final headers = formatter.getHeader();
-    return ModelDataTable(
-      headers: headers.map((e) => e.toString()).toList(),
-      notes: headers.map((e) => e.note).toList(),
-      source: ModelDataTableSource(formatter.getRows()),
-    );
-  }
-
-  Future<void> _export(BuildContext context, FormattableModel? able) async {
+  @override
+  Future<void> onExport(BuildContext context, FormattableModel? able) async {
     final link = await _startExport(context, able);
 
     if (context.mounted && link != null) {
@@ -104,5 +87,20 @@ class ExportBasicView extends StatelessWidget {
 
     Log.out('export finish', 'gs_export');
     return ss.toLink();
+  }
+}
+
+class ExportBasicView extends ExportView {
+  const ExportBasicView({
+    super.key,
+    required super.selected,
+    required super.stateNotifier,
+  });
+
+  @override
+  ModelData getSourceAndHeaders(FormattableModel able) {
+    final formatter = findFieldFormatter(able);
+    final headers = formatter.getHeader();
+    return ModelData(headers, formatter.getRows());
   }
 }

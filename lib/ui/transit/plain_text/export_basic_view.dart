@@ -6,30 +6,41 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportBasicView extends StatelessWidget {
-  final TransitStateNotifier stateNotifier;
+class ExportBasicHeader extends BasicModelPicker {
   final PlainTextExporter exporter;
 
-  const ExportBasicView({
+  const ExportBasicHeader({
     super.key,
-    required this.stateNotifier,
+    required super.selected,
+    required super.stateNotifier,
     this.exporter = const PlainTextExporter(),
+    super.icon = const Icon(Icons.copy_outlined),
+    super.allowAll = false,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ExportView(
-      icon: const Icon(Icons.copy_outlined),
-      label: S.transitExportBasicBtnPlainText,
-      stateNotifier: stateNotifier,
-      allowAll: false,
-      onExport: _export,
-      buildModel: _buildModel,
-    );
-  }
+  String get label => S.transitExportBasicBtnPlainText;
 
-  Widget _buildModel(BuildContext context, FormattableModel? able) {
-    final formatter = findPlainTextFormatter(able!);
+  @override
+  Future<void> onExport(BuildContext context, FormattableModel? able) async {
+    await exporter.export(able!);
+
+    if (context.mounted) {
+      showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
+    }
+  }
+}
+
+class ExportBasicView extends ExportView {
+  const ExportBasicView({
+    super.key,
+    required super.selected,
+    required super.stateNotifier,
+  });
+
+  @override
+  Widget buildModel(BuildContext context, FormattableModel able) {
+    final formatter = findPlainTextFormatter(able);
     final rows = formatter.getRows();
 
     return ListView.separated(
@@ -67,13 +78,5 @@ class ExportBasicView extends StatelessWidget {
         );
       },
     );
-  }
-
-  Future<void> _export(BuildContext context, FormattableModel? able) async {
-    await exporter.export(able!);
-
-    if (context.mounted) {
-      showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
-    }
   }
 }

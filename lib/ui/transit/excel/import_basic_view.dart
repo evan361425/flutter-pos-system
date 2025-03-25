@@ -8,28 +8,24 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ImportBasicView extends StatelessWidget {
+class ImportBasicHeader extends ImportBasicBaseHeader {
   final ExcelExporter exporter;
-  final TransitStateNotifier stateNotifier;
 
-  const ImportBasicView({
+  const ImportBasicHeader({
     super.key,
+    required super.selected,
+    required super.stateNotifier,
+    required super.formatter,
+    super.icon = const Icon(Icons.file_present_sharp),
+    super.allowAll = true,
     this.exporter = const ExcelExporter(),
-    required this.stateNotifier,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ImportView(
-      icon: const Icon(Icons.file_present_sharp),
-      label: S.transitImportBtnExcel,
-      stateNotifier: stateNotifier,
-      onLoad: _load,
-      allowAll: true,
-    );
-  }
+  String get label => S.transitImportBtnExcel;
 
-  Future<PreviewFormatter?> _load(BuildContext context, ValueNotifier<FormattableModel?> _) async {
+  @override
+  Future<PreviewFormatter?> onImport(BuildContext context) async {
     final input = await XFile.pick();
     if (input == null) {
       // ignore: use_build_context_synchronously

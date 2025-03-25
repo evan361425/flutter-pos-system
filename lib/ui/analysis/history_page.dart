@@ -43,7 +43,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 itemBuilder: (context) => TransitMethod.values
                     .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
                           value: value,
-                          child: Text(S.transitMethodName(value.name)),
+                          child: Text(value.l10nName),
                         ))
                     .toList(),
                 onSelected: (value) {

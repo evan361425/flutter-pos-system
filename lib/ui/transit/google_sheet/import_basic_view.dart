@@ -10,34 +10,31 @@ import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ImportBasicView extends StatelessWidget {
-  final TransitStateNotifier stateNotifier;
-
+class ImportBasicHeader extends ImportBasicBaseHeader {
   final GoogleSheetExporter exporter;
 
-  const ImportBasicView({
+  const ImportBasicHeader({
     super.key,
+    required super.selected,
+    required super.stateNotifier,
+    required super.formatter,
     required this.exporter,
-    required this.stateNotifier,
+    super.icon = const Icon(Icons.cloud_download_sharp),
+    super.allowAll = true,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ImportView(
-      icon: const Icon(Icons.cloud_download_sharp),
-      label: S.transitImportBtnGoogleSheet,
-      stateNotifier: stateNotifier,
-      onLoad: _load,
-      allowAll: true,
-      errorMessage: S.transitImportErrorGoogleSheetFetchDataTitle,
-      moreMessage: S.transitImportErrorGoogleSheetFetchDataHelper,
-    );
-  }
+  String get label => S.transitImportBtnGoogleSheet;
+  @override
+  String get errorMessage => S.transitImportErrorGoogleSheetFetchDataTitle;
+  @override
+  String get moreMessage => S.transitImportErrorGoogleSheetFetchDataHelper;
 
   /// 1. Ask user to select a spreadsheet.
   /// 2. Verify all sheets are exist.
   /// 3. Import each sheet one by one.
-  Future<PreviewFormatter?> _load(BuildContext context, ValueNotifier<FormattableModel?> able) async {
+  @override
+  Future<PreviewFormatter?> onImport(BuildContext context) async {
     // Step 1
     GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
       context,
@@ -50,7 +47,7 @@ class ImportBasicView extends StatelessWidget {
     }
 
     // Step 2
-    final titles = able.value?.toL10nNames() ?? FormattableModel.allL10nNames;
+    final titles = selected.value?.toL10nNames() ?? FormattableModel.allL10nNames;
     if (await showSnackbarWhenFutureError(
           _prepareSheets(ss, titles),
           'import_sheet_preparing',
@@ -67,7 +64,7 @@ class ImportBasicView extends StatelessWidget {
     stateNotifier.value = S.transitImportProgressGoogleSheetStart;
     Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
 
-    final ables = able.value?.toList() ?? FormattableModel.values;
+    final ables = selected.value?.toList() ?? FormattableModel.values;
     final sheets = titles.map((title) => ss.sheets.firstWhere((e) => e.title == title)).toList();
     final data = await _requestData(ss, ables, sheets);
 

@@ -6,38 +6,23 @@ import 'package:possystem/ui/transit/formatter/field_formatter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportBasicView extends StatelessWidget {
+class ExportBasicHeader extends BasicModelPicker {
   final CSVExporter exporter;
-  final TransitStateNotifier stateNotifier;
 
-  const ExportBasicView({
+  const ExportBasicHeader({
     super.key,
+    required super.selected,
+    required super.stateNotifier,
     this.exporter = const CSVExporter(),
-    required this.stateNotifier,
+    super.icon = const Icon(Icons.share_outlined),
+    super.allowAll = true,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ExportView(
-      icon: const Icon(Icons.share_outlined),
-      label: S.transitExportBasicBtnCsv,
-      stateNotifier: stateNotifier,
-      onExport: _export,
-      buildModel: _buildModel,
-    );
-  }
+  String get label => S.transitExportBasicBtnCsv;
 
-  Widget _buildModel(BuildContext context, FormattableModel? able) {
-    final formatter = findFieldFormatter(able ?? FormattableModel.menu);
-    final headers = formatter.getHeader();
-    return ModelDataTable(
-      headers: headers.map((e) => e.toString()).toList(),
-      notes: headers.map((e) => e.note).toList(),
-      source: ModelDataTableSource(formatter.getRows()),
-    );
-  }
-
-  Future<void> _export(BuildContext context, FormattableModel? able) async {
+  @override
+  Future<void> onExport(BuildContext context, FormattableModel? able) async {
     final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
     final data = getAllFormattedFieldData(able).map((e) => e.map((r) => r.map((c) => c.toString()))).toList();
 
@@ -45,5 +30,20 @@ class ExportBasicView extends StatelessWidget {
     if (context.mounted && ok) {
       showSnackBar(S.transitExportBasicSuccessCsv, context: context);
     }
+  }
+}
+
+class ExportBasicView extends ExportView {
+  const ExportBasicView({
+    super.key,
+    required super.selected,
+    required super.stateNotifier,
+  });
+
+  @override
+  ModelData getSourceAndHeaders(FormattableModel able) {
+    final formatter = findFieldFormatter(able);
+    final headers = formatter.getHeader();
+    return ModelData(headers, formatter.getRows());
   }
 }

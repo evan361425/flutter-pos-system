@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
@@ -32,31 +31,47 @@ class TransitStateNotifier extends ValueNotifier<String> {
   }
 }
 
+abstract class ImportBasicBaseHeader extends BasicModelPicker {
+  final ValueNotifier<PreviewFormatter?> formatter;
+
+  const ImportBasicBaseHeader({
+    super.key,
+    required super.selected,
+    required super.stateNotifier,
+    required super.icon,
+    required super.allowAll,
+    required this.formatter,
+  });
+
+  String? get errorMessage => null;
+
+  String? get moreMessage => null;
+
+  @override
+  void onTap(BuildContext context) {
+    stateNotifier.exec(() => showSnackbarWhenFutureError(
+          onImport(context).then((v) => formatter.value = v),
+          'transit_basic_import',
+          context: context,
+          message: errorMessage,
+          more: moreMessage,
+        ));
+  }
+
+  Future<PreviewFormatter?> onImport(BuildContext context);
+}
+
 /// It will use [AutomaticKeepAliveClientMixin] to avoid rebuild preview data.
 class ImportView extends StatefulWidget {
-  final Widget? header;
-  final Icon icon;
-  final String label;
   final TransitStateNotifier stateNotifier;
-  final Future<PreviewFormatter?> Function(BuildContext context, ValueNotifier<FormattableModel?> able) onLoad;
-  final String? errorMessage;
-  final String? moreMessage;
-
-  /// Allow all data type to be imported.
-  ///
-  /// For example, in CSV import, it is not allowed to import all data type.
-  final bool allowAll;
+  final ValueNotifier<FormattableModel?> selected;
+  final ValueNotifier<PreviewFormatter?> formatter;
 
   const ImportView({
     super.key,
-    this.header,
-    required this.icon,
-    required this.label,
     required this.stateNotifier,
-    required this.onLoad,
-    this.allowAll = false,
-    this.errorMessage,
-    this.moreMessage,
+    required this.selected,
+    required this.formatter,
   });
 
   @override
@@ -64,9 +79,6 @@ class ImportView extends StatefulWidget {
 }
 
 class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMixin {
-  final ValueNotifier<FormattableModel?> model = ValueNotifier(FormattableModel.menu);
-  final ValueNotifier<PreviewFormatter?> formatter = ValueNotifier(null);
-
   @override
   bool get wantKeepAlive => true;
 
@@ -74,212 +86,172 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
   Widget build(BuildContext context) {
     super.build(context);
 
-    Widget header;
-    if (widget.header != null) {
-      header = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Expanded(child: Padding(padding: const EdgeInsets.only(top: kInternalSpacing), child: widget.header!)),
-        IconButton.filled(
-          onPressed: () => _onLoad(null),
-          tooltip: widget.label,
-          icon: widget.icon,
-        ),
-      ]);
-    } else {
-      header = _ModelPicker(
-        selected: model,
-        onTap: _onLoad,
-        allowAll: widget.allowAll,
-        icon: widget.icon,
-        label: widget.label,
-      );
-    }
+    return ValueListenableBuilder(
+      valueListenable: widget.formatter,
+      builder: (context, f, child) {
+        if (f == null) {
+          return Center(child: HintText(S.transitImportModelSelectionHint));
+        }
 
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-            child: header,
-          ),
-        ];
+        return PreviewPage.buildTabBarView(
+          ables: widget.selected.value?.toList() ?? FormattableModel.values,
+          formatter: f,
+        );
       },
-      body: ValueListenableBuilder(
-        valueListenable: formatter,
-        builder: (context, f, child) {
-          if (f == null) {
-            return Center(child: HintText(S.transitImportModelSelectionHint));
-          }
-
-          return PreviewPage.buildTabBarView(
-            ables: model.value?.toList() ?? FormattableModel.values,
-            formatter: f,
-          );
-        },
-      ),
     );
-  }
-
-  void _onLoad(FormattableModel? able) {
-    widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
-          widget.onLoad(context, model).then((v) => formatter.value = v),
-          'transit_import_loaded',
-          context: context,
-          message: widget.errorMessage,
-          more: widget.moreMessage,
-        ));
   }
 }
 
-class ExportView extends StatefulWidget {
-  final Icon icon;
-  final String label;
+abstract class ExportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
-  final Future<void> Function(BuildContext context, FormattableModel? able) onExport;
-  final Widget Function(BuildContext context, FormattableModel? able) buildModel;
+  final ValueNotifier<FormattableModel?> selected;
+
+  const ExportView({
+    super.key,
+    required this.stateNotifier,
+    required this.selected,
+  });
+
+  @override
+  State<ExportView> createState() => _ExportViewState();
+
+  ModelData getSourceAndHeaders(FormattableModel able) {
+    throw UnimplementedError();
+  }
+
+  /// Build the model data table.
+  Widget buildModel(BuildContext context, FormattableModel able) {
+    final data = getSourceAndHeaders(able);
+    return PaginatedDataTable(
+      columns: [
+        for (final cell in data.headers) _buildColumn(cell),
+      ],
+      source: data.source,
+      showCheckboxColumn: false,
+    );
+  }
+
+  DataColumn _buildColumn(CellData cell) {
+    if (cell.note == null) {
+      return DataColumn(
+        label: Text(
+          cell.toString(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      );
+    }
+
+    return DataColumn(
+      label: Row(children: [
+        Text(
+          cell.toString(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(width: 4),
+        InfoPopup(cell.note!),
+      ]),
+    );
+  }
+}
+
+class _ExportViewState extends State<ExportView> with SingleTickerProviderStateMixin {
+  late final TabController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: SliverTabBarDelegate(
+            TabBar(controller: controller, tabs: [
+              for (final able in FormattableModel.values) Tab(text: able.l10nName),
+            ]),
+          ),
+        ),
+        SliverFillRemaining(
+          child: TabBarView(children: [
+            for (final able in FormattableModel.values) widget.buildModel(context, able),
+          ]),
+        ),
+      ],
+    );
+  }
+
+  @override
+  initState() {
+    super.initState();
+    controller = TabController(
+      length: FormattableModel.values.length,
+      vsync: this,
+    );
+
+    controller.addListener(() {
+      final model = FormattableModel.values[controller.index];
+      if (widget.selected.value != null && widget.selected.value != model) {
+        widget.selected.value = model;
+      }
+    });
+    widget.selected.addListener(_onModelChange);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    widget.selected.removeListener(_onModelChange);
+    super.dispose();
+  }
+
+  void _onModelChange() {
+    final model = widget.selected.value;
+
+    if (model != null) {
+      final index = FormattableModel.values.indexOf(model);
+      if (index != controller.index) {
+        controller.animateTo(index);
+      }
+    }
+  }
+}
+
+abstract class BasicModelPicker extends StatefulWidget {
+  /// Null means select all
+  final ValueNotifier<FormattableModel?> selected;
+  final TransitStateNotifier stateNotifier;
+  final Icon icon;
 
   /// Allow all data type to be imported.
   ///
   /// For example, in CSV import, it is not allowed to import all data type.
   final bool allowAll;
 
-  const ExportView({
+  const BasicModelPicker({
     super.key,
-    required this.icon,
-    required this.label,
-    required this.stateNotifier,
-    required this.onExport,
-    required this.buildModel,
-    this.allowAll = false,
-  });
-
-  @override
-  State<ExportView> createState() => _ExportViewState();
-}
-
-class _ExportViewState extends State<ExportView> {
-  final ValueNotifier<FormattableModel?> model = ValueNotifier(FormattableModel.menu);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-        child: _ModelPicker(
-          selected: model,
-          onTap: _onExport,
-          icon: widget.icon,
-          label: widget.label,
-          allowAll: widget.allowAll,
-        ),
-      ),
-      const Divider(),
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-          child: ValueListenableBuilder(
-            valueListenable: model,
-            builder: (context, able, _) => widget.buildModel(context, able),
-          ),
-        ),
-      ),
-    ]);
-  }
-
-  void _onExport(FormattableModel? able) {
-    widget.stateNotifier.exec(() => showSnackbarWhenFutureError(
-          widget.onExport(context, able),
-          'transit_export',
-          context: context,
-        ));
-  }
-}
-
-class ModelDataTable extends StatelessWidget {
-  final List<String> headers;
-  final ModelDataTableSource source;
-  final List<String?> notes;
-
-  const ModelDataTable({
-    super.key,
-    required this.headers,
-    required this.source,
-    required this.notes,
-  }) : assert(headers.length == notes.length);
-
-  @override
-  Widget build(BuildContext context) {
-    return PaginatedDataTable(
-      columns: [for (final (i, v) in headers.indexed) _buildColumn(i, v)],
-      source: source,
-      showCheckboxColumn: false,
-    );
-  }
-
-  DataColumn _buildColumn(int i, String v) {
-    final note = notes.elementAtOrNull(i);
-    if (note == null) {
-      return DataColumn(
-        label: Text(v, style: const TextStyle(fontWeight: FontWeight.bold)),
-      );
-    }
-
-    return DataColumn(
-      label: Row(children: [
-        Text(v, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(width: 4),
-        InfoPopup(note),
-      ]),
-    );
-  }
-}
-
-class ModelDataTableSource extends DataTableSource {
-  final List<List<Object?>> data;
-
-  ModelDataTableSource(this.data);
-
-  @override
-  DataRow? getRow(int index) {
-    return DataRow(cells: [
-      for (final item in data[index])
-        DataCell(Tooltip(
-          message: item.toString(),
-          child: Text(item.toString()),
-        )),
-    ]);
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => data.length;
-
-  @override
-  int get selectedRowCount => 0;
-}
-
-class _ModelPicker extends StatefulWidget {
-  /// Null means select all
-  final ValueNotifier<FormattableModel?> selected;
-  final void Function(FormattableModel?) onTap;
-  final Icon icon;
-  final String label;
-  final bool allowAll;
-
-  const _ModelPicker({
     required this.selected,
-    required this.onTap,
+    required this.stateNotifier,
     required this.icon,
-    required this.label,
     this.allowAll = true,
   });
 
   @override
-  State<_ModelPicker> createState() => _ModelPickerState();
+  State<BasicModelPicker> createState() => _BasicModelPickerState();
+
+  /// The label of the export button.
+  String get label;
+
+  void onTap(BuildContext context) {
+    stateNotifier.exec(() => showSnackbarWhenFutureError(
+          onExport(context, selected.value),
+          'transit_basic_export',
+          context: context,
+        ));
+  }
+
+  /// Action to export the data.
+  Future<void> onExport(BuildContext context, FormattableModel? able) async {}
 }
 
-class _ModelPickerState extends State<_ModelPicker> {
+class _BasicModelPickerState extends State<BasicModelPicker> {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
@@ -314,10 +286,45 @@ class _ModelPickerState extends State<_ModelPicker> {
       ),
       const SizedBox(width: 8),
       IconButton.filled(
-        onPressed: () => widget.onTap(widget.selected.value),
+        onPressed: () => widget.onTap(context),
         tooltip: widget.label,
         icon: widget.icon,
       ),
     ]);
   }
+}
+
+class ModelData {
+  final List<CellData> headers;
+  final List<List<Object?>> data;
+
+  ModelData(this.headers, this.data);
+
+  ModelDataTableSource get source => ModelDataTableSource(data);
+}
+
+class ModelDataTableSource extends DataTableSource {
+  final List<List<Object?>> data;
+
+  ModelDataTableSource(this.data);
+
+  @override
+  DataRow? getRow(int index) {
+    return DataRow(cells: [
+      for (final item in data[index])
+        DataCell(Tooltip(
+          message: item.toString(),
+          child: Text(item.toString()),
+        )),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => data.length;
+
+  @override
+  int get selectedRowCount => 0;
 }
