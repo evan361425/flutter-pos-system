@@ -5,37 +5,23 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/csv_exporter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
-import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> ranger;
-  final TransitStateNotifier stateNotifier;
-  final CSVExporter exporter;
-
-  const ExportOrderView({
+class ExportOrderHeader extends TransitOrderHeader {
+  const ExportOrderHeader({
     super.key,
-    required this.ranger,
-    required this.stateNotifier,
-    this.exporter = const CSVExporter(),
+    required super.stateNotifier,
+    required super.ranger,
+    super.settings,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TransitOrderList(
-      ranger: ranger,
-      memoryPredictor: _memoryPredictor,
-      leading: TransitOrderHead(
-        stateNotifier: stateNotifier,
-        title: S.transitExportOrderTitleCsv,
-        subtitle: S.transitExportOrderSubtitleCsv,
-        trailing: const Icon(Icons.share_outlined),
-        ranger: ranger,
-        onExport: _export,
-      ),
-    );
-  }
+  String get title => S.transitExportOrderTitleCsv;
 
-  Future<void> _export(BuildContext context) async {
+  @override
+  String get meta => S.transitExportOrderSubtitleCsv;
+
+  @override
+  Future<void> onExport(BuildContext context) async {
     final orders = await Seller.instance.getDetailedOrders(
       ranger.value.start,
       ranger.value.end,
@@ -52,10 +38,28 @@ class ExportOrderView extends StatelessWidget {
         ]
     ];
 
-    final ok = await exporter.export(names: names, data: data);
+    final ok = await const CSVExporter().export(names: names, data: data);
     if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
     }
+  }
+}
+
+class ExportOrderView extends StatelessWidget {
+  final ValueNotifier<DateTimeRange> ranger;
+
+  const ExportOrderView({
+    super.key,
+    required this.ranger,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TransitOrderList(
+      ranger: ranger,
+      memoryPredictor: _memoryPredictor,
+      leading: OrderRangeView(notifier: ranger),
+    );
   }
 
   /// Offset are headers

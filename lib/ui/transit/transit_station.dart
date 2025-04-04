@@ -182,40 +182,56 @@ class _TransitStationState extends State<TransitStation> {
           return pt.ExportBasicHeader(selected: model, stateNotifier: stateNotifier);
       }
     }
+
+    switch (widget.method) {
+      case TransitMethod.googleSheet:
+        return gs.ExportOrderHeader(
+          stateNotifier: stateNotifier,
+          exporter: _googleSheetExporter,
+          ranger: _ranger,
+          settings: _settings,
+        );
+      case TransitMethod.excel:
+        return excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger, settings: _settings);
+      case TransitMethod.csv:
+        return csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger);
+      case TransitMethod.plainText:
+        return pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger);
+    }
   }
 
   Widget _buildBody() {
     if (widget.catalog == TransitCatalog.importModel) {
-      return ImportView(stateNotifier: stateNotifier, selected: model, formatter: formatter);
+      return ImportView(
+        stateNotifier: stateNotifier,
+        selected: model,
+        formatter: formatter,
+        scrollable: scrollable,
+      );
     }
 
     if (widget.catalog == TransitCatalog.exportModel) {
       switch (widget.method) {
         case TransitMethod.googleSheet:
-          return gs.ExportBasicView(selected: model, stateNotifier: stateNotifier);
+          return gs.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
         case TransitMethod.excel:
-          return excel.ExportBasicView(selected: model, stateNotifier: stateNotifier);
+          return excel.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
         case TransitMethod.csv:
-          return csv.ExportBasicView(selected: model, stateNotifier: stateNotifier);
+          return csv.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
         case TransitMethod.plainText:
-          return pt.ExportBasicView(selected: model, stateNotifier: stateNotifier);
+          return pt.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
       }
     }
 
     switch (widget.method) {
       case TransitMethod.googleSheet:
-        return gs.ExportOrderView(
-          exporter: _googleSheetExporter,
-          stateNotifier: stateNotifier,
-          ranger: _ranger,
-          settings: _settings,
-        );
+        return gs.ExportOrderView(ranger: _ranger);
       case TransitMethod.excel:
-        return excel.ExportOrderView(stateNotifier: stateNotifier, ranger: _ranger, settings: _settings);
+        return excel.ExportOrderView(ranger: _ranger);
       case TransitMethod.csv:
-        return csv.ExportOrderView(stateNotifier: stateNotifier, ranger: _ranger);
+        return csv.ExportOrderView(ranger: _ranger);
       case TransitMethod.plainText:
-        return pt.ExportOrderView(stateNotifier: stateNotifier, ranger: _ranger);
+        return pt.ExportOrderView(ranger: _ranger);
     }
   }
 }

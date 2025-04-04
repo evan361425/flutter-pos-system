@@ -5,46 +5,29 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/excel_exporter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
-import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> ranger;
-  final ValueNotifier<TransitOrderSettings> settings;
-  final TransitStateNotifier stateNotifier;
-  final ExcelExporter exporter;
-
-  const ExportOrderView({
+class ExportOrderHeader extends TransitOrderHeader {
+  const ExportOrderHeader({
     super.key,
-    required this.ranger,
-    required this.stateNotifier,
-    required this.settings,
-    this.exporter = const ExcelExporter(),
+    required super.stateNotifier,
+    required super.ranger,
+    required super.settings,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TransitOrderList(
-      ranger: ranger,
-      memoryPredictor: _memoryPredictor,
-      leading: TransitOrderHead(
-        stateNotifier: stateNotifier,
-        title: S.transitExportOrderTitleExcel,
-        subtitle: S.transitExportOrderSubtitleExcel,
-        trailing: const Icon(Icons.share_outlined),
-        ranger: ranger,
-        properties: settings,
-        onExport: _export,
-      ),
-    );
-  }
+  String get title => S.transitExportOrderTitleExcel;
 
-  Future<void> _export(BuildContext context) async {
+  @override
+  String get meta => S.transitExportOrderSubtitleExcel;
+
+  @override
+  Future<void> onExport(BuildContext context) async {
     final orders = await Seller.instance.getDetailedOrders(
       ranger.value.start,
       ranger.value.end,
     );
 
-    final names = settings.value.parseTitles(ranger.value);
+    final names = settings!.value.parseTitles(ranger.value);
     final data = <List<List<CellData>>>[
       for (final e in names.keys)
         [
@@ -53,7 +36,7 @@ class ExportOrderView extends StatelessWidget {
         ]
     ];
 
-    final ok = await exporter.export(
+    final ok = await const ExcelExporter().export(
       names: names.values.toList(),
       data: data,
       fileName: '${S.transitExportOrderFileName}.xlsx',
@@ -61,6 +44,24 @@ class ExportOrderView extends StatelessWidget {
     if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessExcel, context: context);
     }
+  }
+}
+
+class ExportOrderView extends StatelessWidget {
+  final ValueNotifier<DateTimeRange> ranger;
+
+  const ExportOrderView({
+    super.key,
+    required this.ranger,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TransitOrderList(
+      ranger: ranger,
+      memoryPredictor: _memoryPredictor,
+      leading: OrderRangeView(notifier: ranger),
+    );
   }
 
   /// Offset are headers

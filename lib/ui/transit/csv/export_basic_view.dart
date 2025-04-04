@@ -38,6 +38,7 @@ class ExportBasicView extends ExportView {
     super.key,
     required super.selected,
     required super.stateNotifier,
+    required super.scrollable,
   });
 
   @override

@@ -6,18 +6,47 @@ import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
-import 'package:possystem/ui/transit/widgets.dart';
+
+class ExportOrderHeader extends TransitOrderHeader {
+  const ExportOrderHeader({
+    super.key,
+    required super.stateNotifier,
+    required super.ranger,
+    super.settings,
+  });
+
+  @override
+  String get title => S.transitExportOrderTitlePlainText;
+
+  @override
+  String get meta => S.transitExportOrderSubtitlePlainText;
+
+  @override
+  Future<void> onExport(BuildContext context) async {
+    final orders = await Seller.instance.getDetailedOrders(
+      ranger.value.start,
+      ranger.value.end,
+    );
+
+    await const PlainTextExporter().exportToClipboard(orders
+        .map((o) => [
+              S.transitOrderItemTitle(o.createdAt),
+              ExportOrderView.formatOrder(o),
+            ].join('\n'))
+        .join('\n\n'));
+
+    if (context.mounted) {
+      showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
+    }
+  }
+}
 
 class ExportOrderView extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
-  final TransitStateNotifier stateNotifier;
-  final PlainTextExporter exporter;
 
   const ExportOrderView({
     super.key,
     required this.ranger,
-    required this.stateNotifier,
-    this.exporter = const PlainTextExporter(),
   });
 
   @override
@@ -26,33 +55,8 @@ class ExportOrderView extends StatelessWidget {
       ranger: ranger,
       orderViewBuilder: (order) => Text(formatOrder(order)),
       memoryPredictor: memoryPredictor,
-      leading: TransitOrderHead(
-        stateNotifier: stateNotifier,
-        title: S.transitExportOrderTitlePlainText,
-        subtitle: S.transitExportOrderSubtitlePlainText,
-        trailing: const Icon(Icons.copy_outlined),
-        ranger: ranger,
-        onExport: _export,
-      ),
+      leading: OrderRangeView(notifier: ranger),
     );
-  }
-
-  Future<void> _export(BuildContext context) async {
-    final orders = await Seller.instance.getDetailedOrders(
-      ranger.value.start,
-      ranger.value.end,
-    );
-
-    await exporter.exportToClipboard(orders
-        .map((o) => [
-              S.transitOrderItemTitle(o.createdAt),
-              formatOrder(o),
-            ].join('\n'))
-        .join('\n\n'));
-
-    if (context.mounted) {
-      showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
-    }
   }
 
   /// Actual result depends on language, here is English version:

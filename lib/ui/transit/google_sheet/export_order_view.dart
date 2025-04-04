@@ -2,50 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/snackbar_actions.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
-import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> ranger;
-  final ValueNotifier<TransitOrderSettings> settings;
-  final TransitStateNotifier stateNotifier;
+class ExportOrderHeader extends TransitOrderHeader {
   final GoogleSheetExporter exporter;
 
-  const ExportOrderView({
+  const ExportOrderHeader({
     super.key,
-    required this.ranger,
-    required this.stateNotifier,
-    required this.settings,
+    required super.stateNotifier,
+    required super.ranger,
     required this.exporter,
+    required super.settings,
   });
 
   @override
+  String get title => S.transitExportOrderTitleGoogleSheet;
+
+  @override
+  String get meta => S.transitExportOrderSubtitleGoogleSheet;
+
+  @override
   Widget build(BuildContext context) {
-    return TransitOrderList(
-      ranger: ranger,
-      memoryPredictor: memoryPredictor,
-      warning: S.transitExportOrderWarningMemoryGoogleSheet,
-      leading: Padding(
-        padding: const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
-        child: SignInButton(
-          signedInWidget: TransitOrderHead(
-            stateNotifier: stateNotifier,
-            title: S.transitExportOrderTitleGoogleSheet,
-            subtitle: S.transitExportOrderSubtitleGoogleSheet,
-            trailing: const Icon(Icons.cloud_upload_sharp),
-            ranger: ranger,
-            properties: settings,
-            onExport: _export,
-          ),
-        ),
-      ),
-    );
+    return SignInButton(signedInWidget: super.build(context));
   }
 
   /// Export all data to spreadsheet.
@@ -53,7 +36,8 @@ class ExportOrderView extends StatelessWidget {
   /// 1. Ask user to select a spreadsheet.
   /// 2. Prepare the spreadsheet, make all sheets ready.
   /// 3. Export data to the spreadsheet.
-  Future<void> _export(BuildContext context) async {
+  @override
+  Future<void> onExport(BuildContext context) async {
     // Step 1
     GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
       context,
@@ -66,7 +50,7 @@ class ExportOrderView extends StatelessWidget {
     }
 
     // Step 2
-    final sheetTitles = settings.value.parseTitles(ranger.value);
+    final sheetTitles = settings!.value.parseTitles(ranger.value);
     final ables = sheetTitles.keys.toList();
     final titles = sheetTitles.values.toList();
     final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
@@ -97,7 +81,7 @@ class ExportOrderView extends StatelessWidget {
         }));
 
     var link = '';
-    if (settings.value.isOverwrite) {
+    if (settings!.value.isOverwrite) {
       stateNotifier.value = S.transitExportOrderProgressGoogleSheetOverwrite;
       await exporter.updateSheetValues(
         ss,
@@ -129,6 +113,25 @@ class ExportOrderView extends StatelessWidget {
         ),
       );
     }
+  }
+}
+
+class ExportOrderView extends StatelessWidget {
+  final ValueNotifier<DateTimeRange> ranger;
+
+  const ExportOrderView({
+    super.key,
+    required this.ranger,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TransitOrderList(
+      ranger: ranger,
+      memoryPredictor: memoryPredictor,
+      warning: S.transitExportOrderWarningMemoryGoogleSheet,
+      leading: OrderRangeView(notifier: ranger),
+    );
   }
 
   /// These values are based on the actual data:

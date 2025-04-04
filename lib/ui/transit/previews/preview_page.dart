@@ -6,6 +6,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 import 'ingredient_preview_page.dart';
 import 'order_attribute_preview_page.dart';
@@ -33,6 +34,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   static Widget buildTabBarView({
     required List<FormattableModel> ables,
     required PreviewFormatter formatter,
+    required ValueNotifier<bool> scrollable,
   }) {
     Widget builder(
       FormattableModel able, [
@@ -66,7 +68,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     final progress = <FormattableModel, ValueNotifier<bool>>{
       for (final able in ables) able: ValueNotifier(false),
     };
-    final physics = _NestedScrollPhysics(scrollable: ValueNotifier(false));
+    final physics = NestedScrollPhysics(scrollable: scrollable);
     return DefaultTabController(
       length: ables.length,
       child: CustomScrollView(slivers: <Widget>[
@@ -257,30 +259,4 @@ class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverTabBarDelegate oldDelegate) {
     return false;
   }
-}
-
-/// Control scrollable by [scrollable]
-class _NestedScrollPhysics extends ScrollPhysics {
-  final ValueNotifier<bool> scrollable;
-
-  const _NestedScrollPhysics({super.parent, required this.scrollable});
-
-  @override
-  _NestedScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return _NestedScrollPhysics(parent: buildParent(ancestor), scrollable: scrollable);
-  }
-
-  @override
-  bool get allowUserScrolling => true;
-
-  @override
-  bool get allowImplicitScrolling => true;
-
-  @override
-
-  /// If still waiting SliverAppBar to disappear, don't accept user offset. (scrollable is false)
-  /// Or when the position is not at the top, accept user offset anyway
-  /// because the SliverAppBar is in middle of disappearing but scroll view is
-  /// not at the top.
-  bool shouldAcceptUserOffset(ScrollMetrics position) => scrollable.value || position.pixels != 0.0;
 }

@@ -222,6 +222,76 @@ class TransitOrderList extends StatelessWidget {
   }
 }
 
+abstract class TransitOrderHeader extends StatelessWidget {
+  final TransitStateNotifier stateNotifier;
+  final ValueNotifier<DateTimeRange> ranger;
+  final ValueNotifier<TransitOrderSettings>? settings;
+
+  const TransitOrderHeader({
+    super.key,
+    required this.stateNotifier,
+    required this.ranger,
+    this.settings,
+  });
+
+  String get title;
+
+  String? get meta => null;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget? subtitle;
+    Widget? trailing;
+    if (settings != null) {
+      subtitle = ValueListenableBuilder(
+        valueListenable: settings!,
+        builder: (context, p, _) {
+          return MetaBlock.withString(context, [
+            if (meta != null) meta!,
+            S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
+            S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
+          ])!;
+        },
+      );
+
+      trailing = IconButton(
+        icon: const Icon(Icons.settings_sharp),
+        onPressed: () => _showMetaSetting(context),
+      );
+    } else if (meta != null) {
+      subtitle = Text(meta!);
+    }
+
+    return ListTile(
+      title: Text(title),
+      subtitle: subtitle,
+      trailing: trailing,
+      onTap: () => _onExport(context),
+    );
+  }
+
+  Future<void> onExport(BuildContext context);
+
+  void _onExport(BuildContext context) {
+    stateNotifier.exec(() => showSnackbarWhenFutureError(
+          onExport(context),
+          'transit_export_order',
+          context: context,
+        ));
+  }
+
+  void _showMetaSetting(BuildContext context) async {
+    final other = await showAdaptiveDialog<TransitOrderSettings>(
+      context: context,
+      builder: (context) => _OrderSettingPage(properties: settings!.value),
+    );
+
+    if (other != null && context.mounted) {
+      settings!.value = other;
+    }
+  }
+}
+
 class TransitOrderHead extends StatelessWidget {
   final TransitStateNotifier stateNotifier;
   final String title;
@@ -260,7 +330,7 @@ class TransitOrderHead extends StatelessWidget {
           onTap: () => _onExport(context),
         ),
       ),
-      _OrderRange(notifier: ranger),
+      OrderRangeView(notifier: ranger),
       if (properties != null)
         ValueListenableBuilder(
           valueListenable: properties!,
@@ -336,16 +406,16 @@ class TransitOrderSettings {
   }
 }
 
-class _OrderRange extends StatefulWidget {
+class OrderRangeView extends StatefulWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  const _OrderRange({required this.notifier});
+  const OrderRangeView({super.key, required this.notifier});
 
   @override
-  State<_OrderRange> createState() => _OrderRangeState();
+  State<OrderRangeView> createState() => _OrderRangeViewState();
 }
 
-class _OrderRangeState extends State<_OrderRange> {
+class _OrderRangeViewState extends State<OrderRangeView> {
   @override
   Widget build(BuildContext context) {
     return ListTile(

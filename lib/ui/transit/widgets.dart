@@ -66,12 +66,14 @@ class ImportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
   final ValueNotifier<FormattableModel?> selected;
   final ValueNotifier<PreviewFormatter?> formatter;
+  final ValueNotifier<bool> scrollable;
 
   const ImportView({
     super.key,
     required this.stateNotifier,
     required this.selected,
     required this.formatter,
+    required this.scrollable,
   });
 
   @override
@@ -96,6 +98,7 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
         return PreviewPage.buildTabBarView(
           ables: widget.selected.value?.toList() ?? FormattableModel.values,
           formatter: f,
+          scrollable: widget.scrollable,
         );
       },
     );
@@ -105,11 +108,13 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
 abstract class ExportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
   final ValueNotifier<FormattableModel?> selected;
+  final ValueNotifier<bool> scrollable;
 
   const ExportView({
     super.key,
     required this.stateNotifier,
     required this.selected,
+    required this.scrollable,
   });
 
   @override
@@ -128,6 +133,7 @@ abstract class ExportView extends StatefulWidget {
       ],
       source: data.source,
       showCheckboxColumn: false,
+      physics: NestedScrollPhysics(scrollable: scrollable),
     );
   }
 
@@ -327,4 +333,30 @@ class ModelDataTableSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+}
+
+/// Control scrollable by [scrollable]
+class NestedScrollPhysics extends ScrollPhysics {
+  final ValueNotifier<bool> scrollable;
+
+  const NestedScrollPhysics({super.parent, required this.scrollable});
+
+  @override
+  NestedScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return NestedScrollPhysics(parent: buildParent(ancestor), scrollable: scrollable);
+  }
+
+  @override
+  bool get allowUserScrolling => true;
+
+  @override
+  bool get allowImplicitScrolling => true;
+
+  @override
+
+  /// If still waiting SliverAppBar to disappear, don't accept user offset. (scrollable is false)
+  /// Or when the position is not at the top, accept user offset anyway
+  /// because the SliverAppBar is in middle of disappearing but scroll view is
+  /// not at the top.
+  bool shouldAcceptUserOffset(ScrollMetrics position) => scrollable.value || position.pixels != 0.0;
 }
