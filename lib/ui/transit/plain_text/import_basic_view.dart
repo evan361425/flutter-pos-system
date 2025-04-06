@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
@@ -22,59 +21,41 @@ class ImportBasicHeader extends StatefulWidget {
 }
 
 class _ImportBasicHeaderState extends State<ImportBasicHeader> {
-  final TextEditingController controller = TextEditingController();
+  String text = '';
 
   @override
   Widget build(BuildContext context) {
-    final textField = TextField(
-      key: const Key('transit.pt_text'),
-      controller: controller,
-      keyboardType: TextInputType.multiline,
-      minLines: 1,
-      maxLines: 1,
-      readOnly: true,
-      onTap: _showTextField,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 5.0),
-        ),
-        hintText: S.transitImportBtnPlainTextHint,
-        helperText: S.transitImportBtnPlainTextHelper,
-        helperMaxLines: 2,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListTile(
+        title: Text('點選以貼上文字'),
+        onTap: _showTextField,
+        trailing: const Icon(Icons.copy_rounded),
       ),
     );
-
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Expanded(child: Padding(padding: const EdgeInsets.only(top: kInternalSpacing), child: textField)),
-      IconButton.filled(
-        onPressed: _onLoad,
-        tooltip: S.transitImportBtnPlainTextAction,
-        icon: const Icon(Icons.import_export_sharp),
-      ),
-    ]);
   }
 
   void _showTextField() async {
-    final subController = TextEditingController(text: controller.text);
+    final controller = TextEditingController(text: text);
     final ok = await showAdaptiveDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
           content: TextField(
-            controller: subController,
+            controller: controller,
             keyboardType: TextInputType.multiline,
             minLines: 3,
+            maxLines: 5,
             decoration: InputDecoration(
               border: const OutlineInputBorder(
                 borderSide: BorderSide(width: 5.0),
               ),
               hintText: S.transitImportBtnPlainTextHint,
-              helperText: S.transitImportBtnPlainTextHelper,
               helperMaxLines: 2,
             ),
           ),
           actions: [
-            const PopButton(),
+            PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(MaterialLocalizations.of(context).okButtonLabel),
@@ -85,14 +66,13 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
     );
 
     if (ok == true && mounted) {
-      setState(() {
-        controller.text = subController.text;
-      });
+      text = controller.text;
+      _onLoad();
     }
   }
 
   void _onLoad() async {
-    final lines = controller.text.trim().split('\n');
+    final lines = text.trim().split('\n');
     final first = lines.isEmpty ? '' : lines.removeAt(0);
     final able = findPlainTextFormattable(first);
 

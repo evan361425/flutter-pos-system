@@ -49,7 +49,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 onSelected: (value) {
                   context.pushNamed(Routes.transitStation, pathParameters: {
                     'method': value.name,
-                    'type': 'order',
+                    'catalog': 'order',
                   }, queryParameters: {
                     'range': serializeRange(notifier.value)
                   });

@@ -20,6 +20,8 @@ class OrderLoader extends StatefulWidget {
 
   final bool countingAll;
 
+  final ScrollPhysics? physics;
+
   const OrderLoader({
     super.key,
     required this.ranger,
@@ -28,6 +30,7 @@ class OrderLoader extends StatefulWidget {
     this.countingAll = false,
     this.leading,
     this.emptyChild,
+    this.physics,
   });
 
   @override
@@ -38,6 +41,7 @@ class _OrderLoaderState extends State<OrderLoader> {
   @override
   Widget build(BuildContext context) {
     return ItemLoader<OrderObject, OrderMetrics>(
+      physics: widget.physics,
       leading: widget.leading,
       prototypeItem: widget.builder(
         context,
@@ -47,6 +51,7 @@ class _OrderLoaderState extends State<OrderLoader> {
       loader: _loadOrders,
       metricsLoader: _loadMetrics,
       builder: widget.builder,
+      padding: const EdgeInsets.all(0),
       metricsBuilder: (metrics) {
         final meta = MetaBlock.withString(context, [
           S.orderLoaderMetaTotalRevenue(metrics.revenue.toCurrency()),

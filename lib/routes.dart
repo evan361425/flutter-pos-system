@@ -562,7 +562,7 @@ class Routes {
         routes: [
           GoRoute(
             name: transitStation,
-            path: ':method/:type',
+            path: ':method/:catalog',
             parentNavigatorKey: rootNavigatorKey,
             builder: (ctx, state) {
               final method = _findEnum(

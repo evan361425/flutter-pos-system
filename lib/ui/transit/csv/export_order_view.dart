@@ -45,22 +45,15 @@ class ExportOrderHeader extends TransitOrderHeader {
   }
 }
 
-class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> ranger;
-
+class ExportOrderView extends TransitOrderList {
   const ExportOrderView({
     super.key,
-    required this.ranger,
+    required super.ranger,
+    required super.scrollable,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TransitOrderList(
-      ranger: ranger,
-      memoryPredictor: _memoryPredictor,
-      leading: OrderRangeView(notifier: ranger),
-    );
-  }
+  int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);
 
   /// Offset are headers
   static int _memoryPredictor(OrderMetrics m) {

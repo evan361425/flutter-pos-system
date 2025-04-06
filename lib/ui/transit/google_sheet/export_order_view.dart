@@ -116,23 +116,18 @@ class ExportOrderHeader extends TransitOrderHeader {
   }
 }
 
-class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> ranger;
-
+class ExportOrderView extends TransitOrderList {
   const ExportOrderView({
     super.key,
-    required this.ranger,
+    required super.ranger,
+    required super.scrollable,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TransitOrderList(
-      ranger: ranger,
-      memoryPredictor: memoryPredictor,
-      warning: S.transitExportOrderWarningMemoryGoogleSheet,
-      leading: OrderRangeView(notifier: ranger),
-    );
-  }
+  int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);
+
+  @override
+  String get warningMessage => S.transitExportOrderWarningMemoryGoogleSheet;
 
   /// These values are based on the actual data:
   ///
@@ -146,7 +141,7 @@ class ExportOrderView extends StatelessWidget {
   /// 1698067340,cheese,burger,,10
   ///
   /// After compression, the values should be multiplied by 0.5.
-  static int memoryPredictor(OrderMetrics m) {
+  static int _memoryPredictor(OrderMetrics m) {
     return (m.count * 30 + m.attrCount! * 10 + m.productCount! * 13 + m.ingredientCount! * 8).toInt();
   }
 }

@@ -95,7 +95,7 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
           return Center(child: HintText(S.transitImportModelSelectionHint));
         }
 
-        return PreviewPage.buildTabBarView(
+        return PreviewPageWrapper(
           ables: widget.selected.value?.toList() ?? FormattableModel.values,
           formatter: f,
           scrollable: widget.scrollable,
@@ -133,7 +133,6 @@ abstract class ExportView extends StatefulWidget {
       ],
       source: data.source,
       showCheckboxColumn: false,
-      physics: NestedScrollPhysics(scrollable: scrollable),
     );
   }
 
@@ -166,17 +165,19 @@ class _ExportViewState extends State<ExportView> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      primary: false,
+      physics: NestedScrollPhysics(scrollable: widget.scrollable),
       slivers: <Widget>[
         SliverPersistentHeader(
           pinned: true,
           delegate: SliverTabBarDelegate(
-            TabBar(controller: controller, tabs: [
+            TabBar(controller: controller, isScrollable: true, tabs: [
               for (final able in FormattableModel.values) Tab(text: able.l10nName),
             ]),
           ),
         ),
         SliverFillRemaining(
-          child: TabBarView(children: [
+          child: TabBarView(controller: controller, children: [
             for (final able in FormattableModel.values) widget.buildModel(context, able),
           ]),
         ),
@@ -260,43 +261,63 @@ abstract class BasicModelPicker extends StatefulWidget {
 class _BasicModelPickerState extends State<BasicModelPicker> {
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Expanded(
-        child: DropdownButtonFormField<FormattableModel?>(
-          key: const Key('transit.model_picker'),
-          value: widget.selected.value,
-          decoration: InputDecoration(
-            label: Text(S.transitImportModelSelectionLabel),
-            floatingLabelBehavior: FloatingLabelBehavior.always,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0, bottom: 2, top: 2),
+        child: Row(children: [
+          Expanded(
+            child: DropdownButtonFormField<FormattableModel?>(
+              key: const Key('transit.model_picker'),
+              value: widget.selected.value,
+              decoration: InputDecoration(
+                label: Text(S.transitImportModelSelectionLabel),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              onChanged: (value) => widget.selected.value = value,
+              items: [
+                if (widget.allowAll)
+                  DropdownMenuItem(
+                    key: const Key('transit.model_picker._all'),
+                    value: null,
+                    child: Text(S.transitImportModelSelectionAll),
+                  ),
+                for (final able in FormattableModel.values)
+                  DropdownMenuItem(
+                    key: Key('transit.model_picker.${able.name}'),
+                    value: able,
+                    child: Text(able.l10nName),
+                  ),
+              ],
+            ),
           ),
-          onChanged: (value) {
-            if (mounted) {
-              setState(() => widget.selected.value = value);
-            }
-          },
-          items: [
-            if (widget.allowAll)
-              DropdownMenuItem(
-                key: const Key('transit.model_picker._all'),
-                value: null,
-                child: Text(S.transitImportModelSelectionAll),
-              ),
-            for (final able in FormattableModel.values)
-              DropdownMenuItem(
-                key: Key('transit.model_picker.${able.name}'),
-                value: able,
-                child: Text(able.l10nName),
-              ),
-          ],
-        ),
+          const SizedBox(width: 8),
+          IconButton.filled(
+            onPressed: () => widget.onTap(context),
+            tooltip: widget.label,
+            icon: widget.icon,
+          ),
+        ]),
       ),
-      const SizedBox(width: 8),
-      IconButton.filled(
-        onPressed: () => widget.onTap(context),
-        tooltip: widget.label,
-        icon: widget.icon,
-      ),
-    ]);
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.selected.addListener(_onModelChange);
+  }
+
+  @override
+  void dispose() {
+    widget.selected.removeListener(_onModelChange);
+    super.dispose();
+  }
+
+  void _onModelChange() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
 

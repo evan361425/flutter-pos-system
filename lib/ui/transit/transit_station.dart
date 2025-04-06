@@ -89,6 +89,7 @@ class _TransitStationState extends State<TransitStation> {
               SliverAppBar(
                 automaticallyImplyLeading: false,
                 floating: true,
+                // pinned: true,
                 leading: const PopButton(),
                 title: Text(widget.method.l10nName),
                 bottom: PreferredSize(
@@ -225,13 +226,13 @@ class _TransitStationState extends State<TransitStation> {
 
     switch (widget.method) {
       case TransitMethod.googleSheet:
-        return gs.ExportOrderView(ranger: _ranger);
+        return gs.ExportOrderView(ranger: _ranger, scrollable: scrollable);
       case TransitMethod.excel:
-        return excel.ExportOrderView(ranger: _ranger);
+        return excel.ExportOrderView(ranger: _ranger, scrollable: scrollable);
       case TransitMethod.csv:
-        return csv.ExportOrderView(ranger: _ranger);
+        return csv.ExportOrderView(ranger: _ranger, scrollable: scrollable);
       case TransitMethod.plainText:
-        return pt.ExportOrderView(ranger: _ranger);
+        return pt.ExportOrderView(ranger: _ranger, scrollable: scrollable);
     }
   }
 }

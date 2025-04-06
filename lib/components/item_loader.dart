@@ -23,6 +23,8 @@ class ItemLoader<T, U> extends StatefulWidget {
 
   final Widget? leading;
 
+  final ScrollPhysics? physics;
+
   const ItemLoader({
     super.key,
     required this.builder,
@@ -35,6 +37,7 @@ class ItemLoader<T, U> extends StatefulWidget {
     this.emptyChild = const SizedBox.shrink(),
     this.leading,
     this.padding,
+    this.physics,
   });
 
   @override
@@ -56,6 +59,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
 
     return ListView.builder(
       padding: widget.padding,
+      physics: widget.physics,
       key: const Key('item_loader'),
       prototypeItem: widget.leading == null ? widget.prototypeItem : null,
       itemBuilder: (context, index) {

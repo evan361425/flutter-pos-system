@@ -12,7 +12,6 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -28,33 +27,25 @@ enum ExportMemoryLevel {
   danger,
 }
 
-class TransitOrderList extends StatelessWidget {
+abstract class TransitOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
 
-  /// Widget to show the order detail, if null, will show as a table.
-  final Widget Function(OrderObject)? orderViewBuilder;
-
-  /// Calculate the memory size of the order list, return the size in bytes.
-  final int Function(OrderMetrics) memoryPredictor;
-
-  /// Additional warning message to show in the memory info dialog.
-  final String? warning;
-
-  /// Leading widget of the list.
-  final Widget leading;
+  final ValueNotifier<bool> scrollable;
 
   const TransitOrderList({
     super.key,
     required this.ranger,
-    required this.memoryPredictor,
-    required this.leading,
-    this.orderViewBuilder,
-    this.warning,
+    required this.scrollable,
   });
+
+  /// Additional warning message to show in the memory info dialog.
+  String? get warningMessage => null;
 
   @override
   Widget build(BuildContext context) {
+    final leading = OrderRangeView(notifier: ranger);
     return OrderLoader(
+      physics: NestedScrollPhysics(scrollable: scrollable),
       leading: leading,
       ranger: ranger,
       countingAll: true,
@@ -66,6 +57,14 @@ class TransitOrderList extends StatelessWidget {
       trailingBuilder: _buildMemoryInfo,
       builder: _buildOrder,
     );
+  }
+
+  /// Calculate the memory size of the order list, return the size in bytes.
+  int memoryPredictor(OrderMetrics metrics);
+
+  /// Widget to show the order detail, if null, will show as a table.
+  Widget buildOrderView(BuildContext context, OrderObject order) {
+    return _OrderTable(order);
   }
 
   /// Since exporting too much data will cause the service to crash,
@@ -143,7 +142,7 @@ class TransitOrderList extends StatelessWidget {
               return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: orderViewBuilder?.call(detailedOrder) ?? _OrderTable(detailedOrder),
+                  child: buildOrderView(context, detailedOrder),
                 ),
               ]);
             },
@@ -195,7 +194,7 @@ class TransitOrderList extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
             child: Linkify.fromString([
               S.transitOrderCapacityContent,
-              if (warning != null) '\n$warning',
+              if (warningMessage != null) '\n$warningMessage',
             ].join('')),
           )
         ]),
@@ -262,11 +261,14 @@ abstract class TransitOrderHeader extends StatelessWidget {
       subtitle = Text(meta!);
     }
 
-    return ListTile(
-      title: Text(title),
-      subtitle: subtitle,
-      trailing: trailing,
-      onTap: () => _onExport(context),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListTile(
+        title: Text(title),
+        subtitle: subtitle,
+        trailing: trailing,
+        onTap: () => _onExport(context),
+      ),
     );
   }
 
@@ -288,87 +290,6 @@ abstract class TransitOrderHeader extends StatelessWidget {
 
     if (other != null && context.mounted) {
       settings!.value = other;
-    }
-  }
-}
-
-class TransitOrderHead extends StatelessWidget {
-  final TransitStateNotifier stateNotifier;
-  final String title;
-  final String subtitle;
-  final Icon trailing;
-  final ValueNotifier<DateTimeRange> ranger;
-  final ValueNotifier<TransitOrderSettings>? properties;
-  final EdgeInsets margin;
-  final Future<void> Function(BuildContext context) onExport;
-
-  const TransitOrderHead({
-    super.key,
-    required this.stateNotifier,
-    required this.title,
-    required this.subtitle,
-    required this.trailing,
-    required this.ranger,
-    this.properties,
-    this.margin = const EdgeInsets.fromLTRB(14.0, kTopSpacing, 14.0, kInternalSpacing),
-    required this.onExport,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      Card(
-        key: const Key('transit.order_export'),
-        margin: margin,
-        child: ListTile(
-          title: Text(title),
-          subtitle: Text(subtitle),
-          trailing: trailing,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          ),
-          onTap: () => _onExport(context),
-        ),
-      ),
-      OrderRangeView(notifier: ranger),
-      if (properties != null)
-        ValueListenableBuilder(
-          valueListenable: properties!,
-          builder: (context, p, _) {
-            return ListTile(
-              key: const Key('transit.order_meta'),
-              title: Text(S.transitOrderSettingTitle),
-              subtitle: MetaBlock.withString(context, [
-                S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
-                S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
-              ]),
-              trailing: const SizedBox(
-                height: double.infinity,
-                child: Icon(KIcons.edit),
-              ),
-              onTap: () => _showMetaSetting(context),
-            );
-          },
-        ),
-    ]);
-  }
-
-  void _onExport(BuildContext context) {
-    stateNotifier.exec(() => showSnackbarWhenFutureError(
-          onExport(context),
-          'transit_export_order',
-          context: context,
-        ));
-  }
-
-  void _showMetaSetting(BuildContext context) async {
-    final other = await showAdaptiveDialog<TransitOrderSettings>(
-      context: context,
-      builder: (context) => _OrderSettingPage(properties: properties!.value),
-    );
-
-    if (other != null && context.mounted) {
-      properties!.value = other;
     }
   }
 }

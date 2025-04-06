@@ -41,22 +41,19 @@ class ExportOrderHeader extends TransitOrderHeader {
   }
 }
 
-class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> ranger;
-
+class ExportOrderView extends TransitOrderList {
   const ExportOrderView({
     super.key,
-    required this.ranger,
+    required super.ranger,
+    required super.scrollable,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TransitOrderList(
-      ranger: ranger,
-      orderViewBuilder: (order) => Text(formatOrder(order)),
-      memoryPredictor: memoryPredictor,
-      leading: OrderRangeView(notifier: ranger),
-    );
+  int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);
+
+  @override
+  Widget buildOrderView(BuildContext context, OrderObject order) {
+    return Text(formatOrder(order));
   }
 
   /// Actual result depends on language, here is English version:
@@ -66,7 +63,7 @@ class ExportOrderView extends StatelessWidget {
   /// Customer's dining location is Dine-in, age is 30.
   /// There are 3 (2 kinds) products including:
   /// Cheese Burger (Burger) 1, total $200, ingredients are Cheese (Large, use 3).
-  static int memoryPredictor(OrderMetrics m) {
+  static int _memoryPredictor(OrderMetrics m) {
     return (m.count * 60 + m.attrCount! * 18 + m.productCount! * 25 + m.ingredientCount! * 10).toInt();
   }
 
