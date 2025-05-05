@@ -3,6 +3,7 @@ import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/snackbar_actions.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
@@ -37,7 +38,7 @@ class ExportOrderHeader extends TransitOrderHeader {
   /// 2. Prepare the spreadsheet, make all sheets ready.
   /// 3. Export data to the spreadsheet.
   @override
-  Future<void> onExport(BuildContext context) async {
+  Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     // Step 1
     GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
       context,
@@ -69,11 +70,6 @@ class ExportOrderHeader extends TransitOrderHeader {
 
     // Step 3
     Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
-
-    final orders = await Seller.instance.getDetailedOrders(
-      ranger.value.start,
-      ranger.value.end,
-    );
     final data = ables.map((able) => orders.expand((order) {
           return able.formatRows(order).map((l) {
             return l.map((v) => v.value).toList();
@@ -120,7 +116,6 @@ class ExportOrderView extends TransitOrderList {
   const ExportOrderView({
     super.key,
     required super.ranger,
-    required super.scrollable,
   });
 
   @override

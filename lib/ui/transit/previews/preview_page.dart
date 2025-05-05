@@ -6,7 +6,6 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
-import 'package:possystem/ui/transit/widgets.dart';
 
 import 'ingredient_preview_page.dart';
 import 'order_attribute_preview_page.dart';
@@ -20,13 +19,11 @@ typedef PreviewOnDone = void Function(BuildContext);
 class PreviewPageWrapper extends StatefulWidget {
   final List<FormattableModel> ables;
   final PreviewFormatter formatter;
-  final ValueNotifier<bool> scrollable;
 
   const PreviewPageWrapper({
     super.key,
     required this.ables,
     required this.formatter,
-    required this.scrollable,
   });
 
   @override
@@ -35,7 +32,6 @@ class PreviewPageWrapper extends StatefulWidget {
 
 class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
   Map<FormattableModel, ValueNotifier<bool>>? progress;
-  ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +41,14 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
 
     return DefaultTabController(
       length: widget.ables.length,
-      child: CustomScrollView(slivers: <Widget>[
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: SliverTabBarDelegate(
-            TabBar(isScrollable: true, tabs: [
-              for (final able in widget.ables)
-                Tab(
-                  child: Text(able.l10nName, softWrap: true),
-                ),
-            ]),
-          ),
-        ),
-        SliverFillRemaining(
+      child: Column(children: <Widget>[
+        TabBar.secondary(isScrollable: true, tabs: [
+          for (final able in widget.ables)
+            Tab(
+              child: Text(able.l10nName, softWrap: true),
+            ),
+        ]),
+        Expanded(
           child: TabBarView(children: [
             for (final able in widget.ables) _buildPage(able),
           ]),
@@ -72,7 +63,6 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
       progress = <FormattableModel, ValueNotifier<bool>>{
         for (final able in widget.ables) able: ValueNotifier(false),
       };
-      physics = NestedScrollPhysics(scrollable: widget.scrollable);
     }
     super.initState();
   }
@@ -81,20 +71,20 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
     final items = widget.formatter(able);
     if (items == null) {
       progress?[able]?.value = true;
-      return HintText(S.transitImportErrorPreviewNotFound(able.l10nName));
+      return Center(child: HintText(S.transitImportErrorPreviewNotFound(able.l10nName)));
     }
 
     switch (able) {
       case FormattableModel.menu:
-        return ProductPreviewPage(able: able, items: items, progress: progress, physics: physics);
+        return ProductPreviewPage(able: able, items: items, progress: progress);
       case FormattableModel.orderAttr:
-        return OrderAttributePreviewPage(able: able, items: items, progress: progress, physics: physics);
+        return OrderAttributePreviewPage(able: able, items: items, progress: progress);
       case FormattableModel.quantities:
-        return QuantityPreviewPage(able: able, items: items, progress: progress, physics: physics);
+        return QuantityPreviewPage(able: able, items: items, progress: progress);
       case FormattableModel.stock:
-        return IngredientPreviewPage(able: able, items: items, progress: progress, physics: physics);
+        return IngredientPreviewPage(able: able, items: items, progress: progress);
       case FormattableModel.replenisher:
-        return ReplenishmentPreviewPage(able: able, items: items, progress: progress, physics: physics);
+        return ReplenishmentPreviewPage(able: able, items: items, progress: progress);
     }
   }
 }
@@ -115,7 +105,8 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(physics: physics, children: [
+    return ListView(children: [
+      const SizedBox(height: 4.0),
       _buildAction(context),
       const SizedBox(height: kInternalSpacing),
       Center(child: HintText(S.totalCount(items.length))),
@@ -147,32 +138,35 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   }
 
   Widget _buildConfirmedButton(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: FilledButton(
-        onPressed: () async {
-          final confirmed = await ConfirmDialog.show(
-            context,
-            title: S.transitImportPreviewConfirmTitle,
-            content: confirmedMessage,
-          );
-          if (!confirmed) {
-            return;
-          }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: FilledButton(
+          onPressed: () async {
+            final confirmed = await ConfirmDialog.show(
+              context,
+              title: S.transitImportPreviewConfirmTitle,
+              content: confirmedMessage,
+            );
+            if (!confirmed) {
+              return;
+            }
 
-          final futures = (progress?.keys.toList() ?? [able]).map((e) => e.toRepository().commitStaged());
-          final result = await showSnackbarWhenFutureError(
-            Future.wait(futures),
-            'transit_import_model',
-            // ignore: use_build_context_synchronously
-            context: context,
-          );
+            final futures = (progress?.keys.toList() ?? [able]).map((e) => e.toRepository().commitStaged());
+            final result = await showSnackbarWhenFutureError(
+              Future.wait(futures),
+              'transit_import_model',
+              // ignore: use_build_context_synchronously
+              context: context,
+            );
 
-          if (result != null && context.mounted) {
-            showSnackBar(S.transitImportSuccess, context: context);
-          }
-        },
-        child: Text(S.transitImportPreviewConfirmBtn),
+            if (result != null && context.mounted) {
+              showSnackBar(S.transitImportSuccess, context: context);
+            }
+          },
+          child: Text(S.transitImportPreviewConfirmBtn),
+        ),
       ),
     );
   }

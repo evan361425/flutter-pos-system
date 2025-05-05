@@ -36,7 +36,6 @@ class ExportBasicView extends ExportView {
     super.key,
     required super.selected,
     required super.stateNotifier,
-    required super.scrollable,
   });
 
   @override
@@ -47,7 +46,6 @@ class ExportBasicView extends ExportView {
     return ListView.separated(
       separatorBuilder: (context, index) => const SizedBox(height: 8.0),
       itemCount: rows.length,
-      physics: NestedScrollPhysics(scrollable: scrollable),
       itemBuilder: (context, index) {
         if (index == 0) {
           // Title

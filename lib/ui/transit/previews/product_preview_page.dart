@@ -34,10 +34,13 @@ class ProductPreviewPage extends PreviewPage<Product> {
         catalogName = product.catalog.name;
 
         yield const SizedBox(height: 12.0);
-        yield ImporterColumnStatus(
-          name: catalogName,
-          status: product.catalog.statusName,
-          fontWeight: FontWeight.bold,
+        yield Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: ImporterColumnStatus(
+            name: catalogName,
+            status: product.catalog.statusName,
+            fontWeight: FontWeight.bold,
+          ),
         );
       }
 

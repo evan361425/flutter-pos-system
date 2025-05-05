@@ -22,12 +22,7 @@ class ExportOrderHeader extends TransitOrderHeader {
   String get meta => S.transitExportOrderSubtitlePlainText;
 
   @override
-  Future<void> onExport(BuildContext context) async {
-    final orders = await Seller.instance.getDetailedOrders(
-      ranger.value.start,
-      ranger.value.end,
-    );
-
+  Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     await const PlainTextExporter().exportToClipboard(orders
         .map((o) => [
               S.transitOrderItemTitle(o.createdAt),
@@ -45,7 +40,6 @@ class ExportOrderView extends TransitOrderList {
   const ExportOrderView({
     super.key,
     required super.ranger,
-    required super.scrollable,
   });
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/excel_exporter.dart';
@@ -21,12 +22,7 @@ class ExportOrderHeader extends TransitOrderHeader {
   String get meta => 'Orders.xlsx';
 
   @override
-  Future<void> onExport(BuildContext context) async {
-    final orders = await Seller.instance.getDetailedOrders(
-      ranger.value.start,
-      ranger.value.end,
-    );
-
+  Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     final names = settings!.value.parseTitles(ranger.value);
     final data = <List<List<CellData>>>[
       for (final e in names.keys)
@@ -51,7 +47,6 @@ class ExportOrderView extends TransitOrderList {
   const ExportOrderView({
     super.key,
     required super.ranger,
-    required super.scrollable,
   });
 
   @override

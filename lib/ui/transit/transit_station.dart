@@ -69,8 +69,6 @@ class TransitStation extends StatefulWidget {
 class _TransitStationState extends State<TransitStation> {
   final loading = GlobalKey<LoadingWrapperState>();
 
-  final scrollable = ValueNotifier(true);
-
   ValueNotifier<FormattableModel?>? _model;
   ValueNotifier<PreviewFormatter?>? _formatter;
 
@@ -82,24 +80,29 @@ class _TransitStationState extends State<TransitStation> {
     return LoadingWrapper(
       key: loading,
       child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            scrollable.value = innerBoxIsScrolled;
-            return [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                floating: true,
-                // pinned: true,
-                leading: const PopButton(),
-                title: Text(widget.method.l10nName),
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(48.0),
-                  child: _buildHeader(),
+        body: SafeArea(
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    title: Text(widget.method.l10nName),
+                    leading: const PopButton(),
+                    automaticallyImplyLeading: false,
+                    floating: true,
+                    snap: true,
+                    forceElevated: innerBoxIsScrolled,
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(56.0),
+                      child: _buildHeader(),
+                    ),
+                  ),
                 ),
-              ),
-            ];
-          },
-          body: _buildBody(),
+              ];
+            },
+            body: _buildBody(),
+          ),
         ),
       ),
     );
@@ -128,7 +131,6 @@ class _TransitStationState extends State<TransitStation> {
   void dispose() {
     loading.currentState?.dispose();
     stateNotifier.dispose();
-    scrollable.dispose();
     super.dispose();
   }
 
@@ -203,36 +205,37 @@ class _TransitStationState extends State<TransitStation> {
 
   Widget _buildBody() {
     if (widget.catalog == TransitCatalog.importModel) {
+      final hint = widget.method == TransitMethod.plainText ? '請先輸入文字來進行匯入' : null;
       return ImportView(
         stateNotifier: stateNotifier,
         selected: model,
         formatter: formatter,
-        scrollable: scrollable,
+        hint: hint,
       );
     }
 
     if (widget.catalog == TransitCatalog.exportModel) {
       switch (widget.method) {
         case TransitMethod.googleSheet:
-          return gs.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
+          return gs.ExportBasicView(selected: model, stateNotifier: stateNotifier);
         case TransitMethod.excel:
-          return excel.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
+          return excel.ExportBasicView(selected: model, stateNotifier: stateNotifier);
         case TransitMethod.csv:
-          return csv.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
+          return csv.ExportBasicView(selected: model, stateNotifier: stateNotifier);
         case TransitMethod.plainText:
-          return pt.ExportBasicView(selected: model, stateNotifier: stateNotifier, scrollable: scrollable);
+          return pt.ExportBasicView(selected: model, stateNotifier: stateNotifier);
       }
     }
 
     switch (widget.method) {
       case TransitMethod.googleSheet:
-        return gs.ExportOrderView(ranger: _ranger, scrollable: scrollable);
+        return gs.ExportOrderView(ranger: _ranger);
       case TransitMethod.excel:
-        return excel.ExportOrderView(ranger: _ranger, scrollable: scrollable);
+        return excel.ExportOrderView(ranger: _ranger);
       case TransitMethod.csv:
-        return csv.ExportOrderView(ranger: _ranger, scrollable: scrollable);
+        return csv.ExportOrderView(ranger: _ranger);
       case TransitMethod.plainText:
-        return pt.ExportOrderView(ranger: _ranger, scrollable: scrollable);
+        return pt.ExportOrderView(ranger: _ranger);
     }
   }
 }

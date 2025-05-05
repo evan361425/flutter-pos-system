@@ -30,12 +30,9 @@ enum ExportMemoryLevel {
 abstract class TransitOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
 
-  final ValueNotifier<bool> scrollable;
-
   const TransitOrderList({
     super.key,
     required this.ranger,
-    required this.scrollable,
   });
 
   /// Additional warning message to show in the memory info dialog.
@@ -45,7 +42,6 @@ abstract class TransitOrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     final leading = OrderRangeView(notifier: ranger);
     return OrderLoader(
-      physics: NestedScrollPhysics(scrollable: scrollable),
       leading: leading,
       ranger: ranger,
       countingAll: true,
@@ -262,7 +258,7 @@ abstract class TransitOrderHeader extends StatelessWidget {
     }
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      margin: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
       child: ListTile(
         title: Text(title),
         subtitle: subtitle,
@@ -272,14 +268,23 @@ abstract class TransitOrderHeader extends StatelessWidget {
     );
   }
 
-  Future<void> onExport(BuildContext context);
+  Future<void> onExport(BuildContext context, List<OrderObject> orders);
 
   void _onExport(BuildContext context) {
-    stateNotifier.exec(() => showSnackbarWhenFutureError(
-          onExport(context),
-          'transit_export_order',
-          context: context,
-        ));
+    stateNotifier.exec(() async {
+      final orders = await Seller.instance.getDetailedOrders(
+        ranger.value.start,
+        ranger.value.end,
+      );
+
+      return showSnackbarWhenFutureError(
+        // ignore: use_build_context_synchronously
+        onExport(context, orders),
+        'transit_export_order',
+        // ignore: use_build_context_synchronously
+        context: context,
+      );
+    });
   }
 
   void _showMetaSetting(BuildContext context) async {

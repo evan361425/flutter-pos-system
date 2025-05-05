@@ -19,11 +19,11 @@ class TransitStateNotifier extends ValueNotifier<String> {
     value = '_finish';
   }
 
-  void exec(VoidCallback callback) {
+  void exec(Future<void> Function() callback) async {
     if (!isProgressing) {
       try {
         startProgress();
-        callback();
+        await callback();
       } finally {
         finishProgress();
       }
@@ -66,14 +66,14 @@ class ImportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
   final ValueNotifier<FormattableModel?> selected;
   final ValueNotifier<PreviewFormatter?> formatter;
-  final ValueNotifier<bool> scrollable;
+  final String? hint;
 
   const ImportView({
     super.key,
     required this.stateNotifier,
     required this.selected,
     required this.formatter,
-    required this.scrollable,
+    this.hint,
   });
 
   @override
@@ -92,13 +92,12 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
       valueListenable: widget.formatter,
       builder: (context, f, child) {
         if (f == null) {
-          return Center(child: HintText(S.transitImportModelSelectionHint));
+          return Center(child: HintText(widget.hint ?? S.transitImportModelSelectionHint));
         }
 
         return PreviewPageWrapper(
           ables: widget.selected.value?.toList() ?? FormattableModel.values,
           formatter: f,
-          scrollable: widget.scrollable,
         );
       },
     );
@@ -108,13 +107,11 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
 abstract class ExportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
   final ValueNotifier<FormattableModel?> selected;
-  final ValueNotifier<bool> scrollable;
 
   const ExportView({
     super.key,
     required this.stateNotifier,
     required this.selected,
-    required this.scrollable,
   });
 
   @override
@@ -164,25 +161,16 @@ class _ExportViewState extends State<ExportView> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      primary: false,
-      physics: NestedScrollPhysics(scrollable: widget.scrollable),
-      slivers: <Widget>[
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: SliverTabBarDelegate(
-            TabBar(controller: controller, isScrollable: true, tabs: [
-              for (final able in FormattableModel.values) Tab(text: able.l10nName),
-            ]),
-          ),
-        ),
-        SliverFillRemaining(
-          child: TabBarView(controller: controller, children: [
-            for (final able in FormattableModel.values) widget.buildModel(context, able),
-          ]),
-        ),
-      ],
-    );
+    return Column(children: <Widget>[
+      TabBar.secondary(controller: controller, isScrollable: true, tabs: [
+        for (final able in FormattableModel.values) Tab(text: able.l10nName),
+      ]),
+      Expanded(
+        child: TabBarView(controller: controller, children: [
+          for (final able in FormattableModel.values) widget.buildModel(context, able),
+        ]),
+      ),
+    ]);
   }
 
   @override
@@ -262,7 +250,7 @@ class _BasicModelPickerState extends State<BasicModelPicker> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.only(left: 8, right: 8, bottom: 4),
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0, bottom: 2, top: 2),
         child: Row(children: [

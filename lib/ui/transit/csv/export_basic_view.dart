@@ -15,7 +15,7 @@ class ExportBasicHeader extends BasicModelPicker {
     required super.stateNotifier,
     this.exporter = const CSVExporter(),
     super.icon = const Icon(Icons.share_outlined),
-    super.allowAll = true,
+    super.allowAll = false,
   });
 
   @override
@@ -23,6 +23,7 @@ class ExportBasicHeader extends BasicModelPicker {
 
   @override
   Future<void> onExport(BuildContext context, FormattableModel? able) async {
+    // only support single file export, multi files will get permission denied
     final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
     final data = getAllFormattedFieldData(able).map((e) => e.map((r) => r.map((c) => c.toString()))).toList();
 
@@ -38,7 +39,6 @@ class ExportBasicView extends ExportView {
     super.key,
     required super.selected,
     required super.stateNotifier,
-    required super.scrollable,
   });
 
   @override
