@@ -26,14 +26,16 @@ void main() {
       FormattableModel able,
       String expected,
     ) {
-      const formatter = PlainTextFormatter();
-      final text = formatter.getRows(able).map((row) => row.join('\n')).join('\n\n');
+      final formatter = findPlainTextFormatter(able);
+      final text = formatter.getRows().map((row) => row.join('\n')).join('\n\n');
       expect(text, equals(expected));
 
       final lines = text.trim().split('\n');
 
-      final guessed = formatter.findFormattable(lines.removeAt(0));
-      return formatter.format<T>(guessed!, [lines]);
+      final guessed = findPlainTextFormattable(lines.removeAt(0));
+      expect(guessed, equals(able));
+
+      return formatter.format<T>([lines]);
     }
 
     test('menu', () {
@@ -296,8 +298,7 @@ void main() {
     });
 
     test('unable to found which formattable', () {
-      const formatter = PlainTextFormatter();
-      expect(formatter.findFormattable('some-text'), equals(null));
+      expect(findPlainTextFormattable('some-text'), equals(null));
     });
 
     setUpAll(() {

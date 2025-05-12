@@ -24,17 +24,14 @@ class ExportOrderHeader extends TransitOrderHeader {
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     final names = FormattableOrder.values.map((e) => e.l10nName).toList();
-    final data = <List<List<String>>>[
-      for (final e in FormattableOrder.values)
-        [
-          e.formatHeader(),
-          ...orders.expand((o) {
-            return e.formatRows(o).map((l) => l.map((v) => v.toString()).toList());
-          }),
-        ]
-    ];
+    final headers = FormattableOrder.values.map((e) => e.formatHeader()).toList();
+    final data = FormattableOrder.values
+        .map((formatter) => orders.expand((o) {
+              return formatter.formatRows(o).map((r) => r.map((v) => v.toString()));
+            }))
+        .toList();
 
-    final ok = await const CSVExporter().export(names: names, data: data);
+    final ok = await const CSVExporter().export(names: names, data: data, headers: headers);
     if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
     }

@@ -135,7 +135,7 @@ import:
     excel: Select .xlsx file
     googleSheet: Select spreadsheet
     plainText:
-      action: Import Data
+      action: Click to paste text
       hint: Paste copied text here
       helper: |
         After pasting the text, it will analyze and determine the type of information to import.
@@ -520,6 +520,14 @@ googleSheet:
         • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
         • The spreadsheet has been deleted.
     id:
+      notFound: Spreadsheet not found
+      notFoundHelper: |-
+        Don't worry, it's usually easy to solve!
+        Possible reasons include:
+        • Unstable network conditions;
+        • POS system not authorized to read sheets;
+        • Misspelled spreadsheet ID, try copying the entire URL and pasting it;
+        • The spreadsheet has been deleted.
       empty: ID cannot be empty
       invalid: |-
         Invalid ID. It must include:

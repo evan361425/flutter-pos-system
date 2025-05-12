@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:possystem/components/linkify.dart';
@@ -126,6 +127,10 @@ void _prettierError(
   String? moreMessage,
 }) {
   void show(String msg, [String? more]) {
+    if (kDebugMode) {
+      print('error: $msg');
+      print('stack: ${e is Error ? e.stackTrace : null}');
+    }
     showMoreInfoSnackBar(
       msg,
       more == null ? null : Linkify.fromString(more),

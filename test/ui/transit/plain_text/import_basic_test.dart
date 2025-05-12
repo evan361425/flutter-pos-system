@@ -19,7 +19,7 @@ void main() {
       return const MaterialApp(
         home: TransitStation(
           exporter: PlainTextExporter(),
-          catalog: TransitCatalog.model,
+          catalog: TransitCatalog.importModel,
           method: TransitMethod.plainText,
         ),
       );
@@ -29,35 +29,34 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
+      await tester.tap(find.text(S.transitImportBtnPlainTextAction));
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byKey(const Key('transit.pt_text')),
-        'some-text',
-      );
+      await tester.enterText(find.byKey(const Key('transit.pt_text')), 'some-text');
       await tester.tap(find.byKey(const Key('transit.pt_preview')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.transitPTImportErrorNotFound), findsOneWidget);
+      expect(find.text(S.transitImportErrorPlainTextNotFound), findsOneWidget);
     });
 
     testWidgets('successfully', (tester) async {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(Tab, S.transitImportBtn));
+      await tester.tap(find.text(S.transitImportBtnPlainTextAction));
       await tester.pumpAndSettle();
 
       await tester.enterText(
           find.byKey(const Key('transit.pt_text')),
-          '${S.transitPTFormatModelQuantitiesHeader(1)}\n\n'
-          '${S.transitPTFormatModelQuantitiesQuantity('1', 'q1', '1')}');
+          '${S.transitFormatTextQuantitiesHeader(1)}\n\n'
+          '${S.transitFormatTextQuantitiesQuantity('1', 'q1', '1')}');
       await tester.tap(find.byKey(const Key('transit.pt_preview')));
       await tester.pumpAndSettle();
 
       // allow import
-      await tester.tap(find.text('Save'));
+      await tester.tap(find.byKey(const Key('transit.import.confirm')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();
 
       // quantities won't reset to avoid changing menu settings.

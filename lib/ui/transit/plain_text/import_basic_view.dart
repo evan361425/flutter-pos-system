@@ -28,7 +28,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListTile(
-        title: Text('點選以貼上文字'),
+        title: Text(S.transitImportBtnPlainTextAction),
         onTap: _showTextField,
         trailing: const Icon(Icons.copy_rounded),
       ),
@@ -42,6 +42,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
       builder: (context) {
         return AlertDialog(
           content: TextField(
+            key: const Key('transit.pt_text'),
             controller: controller,
             keyboardType: TextInputType.multiline,
             minLines: 3,
@@ -57,6 +58,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
           actions: [
             PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
             TextButton(
+              key: const Key('transit.pt_preview'),
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(MaterialLocalizations.of(context).okButtonLabel),
             ),

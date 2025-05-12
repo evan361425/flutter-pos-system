@@ -15,7 +15,8 @@ class ExcelExporter extends DataExporter {
   List<List<String>>? import(Excel excel, String sheetName) {
     final sheet = excel.sheets[sheetName];
 
-    return sheet?.rows.map((row) {
+    // skip first row which is header
+    return sheet?.rows.skip(1).map((row) {
       return row.map((cell) => cell?.value?.toString() ?? '').toList();
     }).toList();
   }
@@ -23,13 +24,16 @@ class ExcelExporter extends DataExporter {
   Future<bool> export({
     required List<String> names,
     required List<List<List<CellData>>> data,
+    required List<List<CellData>> headers,
     required String fileName,
   }) async {
-    assert(names.length == data.length, 'names and data length not match');
+    assert(names.length == data.length && names.length == headers.length, 'length not match');
 
     final excel = Excel.createExcel();
     for (final (sheetIdx, rows) in data.indexed) {
       final sheet = excel[names[sheetIdx]];
+      rows.insert(0, headers[sheetIdx]);
+
       for (final (rowIdx, row) in rows.indexed) {
         for (final (columnIdx, cell) in row.indexed) {
           final value = cell.string != null

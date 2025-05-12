@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/snackbar_actions.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -9,16 +10,38 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ExportBasicHeader extends BasicModelPicker {
+class ExportBasicHeader extends StatelessWidget {
   final GoogleSheetExporter exporter;
+  final ValueNotifier<FormattableModel?> selected;
+  final TransitStateNotifier stateNotifier;
 
   const ExportBasicHeader({
     super.key,
+    required this.exporter,
+    required this.selected,
+    required this.stateNotifier,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SignInButton(
+      signedInWidget: _ExportBasicHeader(
+        exporter: exporter,
+        stateNotifier: stateNotifier,
+        selected: selected,
+      ),
+    );
+  }
+}
+
+class _ExportBasicHeader extends BasicModelPicker {
+  final GoogleSheetExporter exporter;
+
+  const _ExportBasicHeader({
     required super.selected,
     required super.stateNotifier,
     required this.exporter,
     super.icon = const Icon(Icons.cloud_upload_sharp),
-    super.allowAll = true,
   });
 
   @override
@@ -52,6 +75,7 @@ class ExportBasicHeader extends BasicModelPicker {
       context,
       exporter: exporter,
       cacheKey: exportCacheKey,
+      allowCreateNew: true,
       fallbackCacheKey: importCacheKey,
     );
     if (ss == null || !context.mounted) {
@@ -74,9 +98,9 @@ class ExportBasicHeader extends BasicModelPicker {
     }
 
     // Step 3
-    Log.ger('gs_export', {'spreadsheet': ss.id, 'sheets': names});
     final data = getAllFormattedFieldData(able);
     final headers = getAllFormattedFieldHeaders(able);
+    Log.ger('gs_export', {'spreadsheet': ss.id, 'sheets': names});
 
     await exporter.updateSheet(
       ss,

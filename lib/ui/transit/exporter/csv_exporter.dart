@@ -32,11 +32,12 @@ class CSVExporter extends DataExporter {
   Future<bool> export({
     required List<String> names,
     required List<Iterable<Iterable<String>>> data,
+    required List<Iterable<String>> headers,
   }) async {
-    assert(names.length == data.length, 'names and data length not match');
+    assert(names.length == data.length && names.length == headers.length, 'length not match');
 
     final bytes = data
-        .map((rows) => rows
+        .mapIndexed((idx, rows) => [headers[idx], ...rows]
             .map((row) => row.map((e) {
                   final v = e.replaceAll('"', '""').replaceAll('\n', '\\n');
                   return v.contains(',') || v.contains('"') || v.contains('\\n') ? '"$v"' : v;

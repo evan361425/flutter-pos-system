@@ -58,6 +58,9 @@ abstract class ImportBasicBaseHeader extends BasicModelPicker {
         ));
   }
 
+  @override
+  Future<void> onExport(BuildContext context, FormattableModel? able) async {}
+
   Future<PreviewFormatter?> onImport(BuildContext context);
 }
 
@@ -167,7 +170,10 @@ class _ExportViewState extends State<ExportView> with SingleTickerProviderStateM
       ]),
       Expanded(
         child: TabBarView(controller: controller, children: [
-          for (final able in FormattableModel.values) widget.buildModel(context, able),
+          for (final able in FormattableModel.values)
+            SingleChildScrollView(
+              child: widget.buildModel(context, able),
+            ),
         ]),
       ),
     ]);
@@ -243,7 +249,7 @@ abstract class BasicModelPicker extends StatefulWidget {
   }
 
   /// Action to export the data.
-  Future<void> onExport(BuildContext context, FormattableModel? able) async {}
+  Future<void> onExport(BuildContext context, FormattableModel? able);
 }
 
 class _BasicModelPickerState extends State<BasicModelPicker> {
@@ -281,6 +287,7 @@ class _BasicModelPickerState extends State<BasicModelPicker> {
           ),
           const SizedBox(width: 8),
           IconButton.filled(
+            key: const Key('transit.model_export'),
             onPressed: () => widget.onTap(context),
             tooltip: widget.label,
             icon: widget.icon,

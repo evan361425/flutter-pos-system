@@ -43,7 +43,7 @@ void main() {
     });
 
     test('GoogleSheetCellData #dataValidation', () async {
-      final data = GoogleSheetCellData(stringValue: 'a', options: ['b', 'c']);
+      final data = GoogleSheetCellData(string: 'a', options: ['b', 'c']);
 
       final result = data.toGoogleFormat();
 

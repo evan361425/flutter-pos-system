@@ -44,6 +44,7 @@ class ExportOrderHeader extends TransitOrderHeader {
       context,
       exporter: exporter,
       cacheKey: importCacheKey,
+      allowCreateNew: true,
       fallbackCacheKey: exportCacheKey,
     );
     if (ss == null || !context.mounted) {

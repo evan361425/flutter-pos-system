@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/translator.dart';
@@ -10,15 +11,41 @@ import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-class ImportBasicHeader extends ImportBasicBaseHeader {
+class ImportBasicHeader extends StatelessWidget {
   final GoogleSheetExporter exporter;
+  final ValueNotifier<FormattableModel?> selected;
+  final TransitStateNotifier stateNotifier;
+  final ValueNotifier<PreviewFormatter?> formatter;
 
   const ImportBasicHeader({
     super.key,
-    required super.selected,
-    required super.stateNotifier,
-    required super.formatter,
     required this.exporter,
+    required this.selected,
+    required this.stateNotifier,
+    required this.formatter,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SignInButton(
+      signedInWidget: _ImportBasicHeader(
+        exporter: exporter,
+        stateNotifier: stateNotifier,
+        selected: selected,
+        formatter: formatter,
+      ),
+    );
+  }
+}
+
+class _ImportBasicHeader extends ImportBasicBaseHeader {
+  final GoogleSheetExporter exporter;
+
+  const _ImportBasicHeader({
+    required this.exporter,
+    required super.stateNotifier,
+    required super.selected,
+    required super.formatter,
     super.icon = const Icon(Icons.cloud_download_sharp),
     super.allowAll = true,
   });
@@ -40,6 +67,7 @@ class ImportBasicHeader extends ImportBasicBaseHeader {
       context,
       exporter: exporter,
       cacheKey: importCacheKey,
+      allowCreateNew: false,
       fallbackCacheKey: exportCacheKey,
     );
     if (ss == null || !context.mounted) {

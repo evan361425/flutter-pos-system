@@ -24,17 +24,13 @@ class ExportOrderHeader extends TransitOrderHeader {
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     final names = settings!.value.parseTitles(ranger.value);
-    final data = <List<List<CellData>>>[
-      for (final e in names.keys)
-        [
-          e.formatHeader().map((e) => CellData(string: e)).toList(),
-          ...orders.expand((o) => e.formatRows(o)),
-        ]
-    ];
+    final headers = names.keys.map((e) => e.formatHeader().map((v) => CellData(string: v)).toList()).toList();
+    final data = names.keys.map((e) => orders.expand((o) => e.formatRows(o)).toList()).toList();
 
     final ok = await const ExcelExporter().export(
       names: names.values.toList(),
       data: data,
+      headers: headers,
       fileName: '${S.transitExportOrderFileName}.xlsx',
     );
     if (ok && context.mounted) {

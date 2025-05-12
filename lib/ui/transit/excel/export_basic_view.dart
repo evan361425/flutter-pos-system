@@ -25,10 +25,12 @@ class ExportBasicHeader extends BasicModelPicker {
   Future<void> onExport(BuildContext context, FormattableModel? able) async {
     final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
     final data = getAllFormattedFieldData(able);
+    final headers = getAllFormattedFieldHeaders(able);
 
     final ok = await exporter.export(
       names: names,
       data: data,
+      headers: headers,
       fileName: '${S.transitExportBasicFileName}.xlsx',
     );
     if (ok && context.mounted) {

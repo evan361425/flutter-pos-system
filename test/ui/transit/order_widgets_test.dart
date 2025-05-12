@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
 
@@ -12,13 +13,7 @@ void main() {
     Future<void> showDialog(WidgetTester tester, IconData icon) async {
       final yesterday = DateTime.now().subtract(const Duration(days: 1));
       final range = DateTimeRange(start: yesterday, end: DateTime.now());
-      final widget = TransitOrderList(
-        leading: const Text(''),
-        ranger: ValueNotifier(range),
-        orderViewBuilder: (o) => const Text('hi'),
-        memoryPredictor: (m) => m.revenue.toInt(),
-        warning: 'hi there',
-      );
+      final widget = _TestOrderList(ranger: ValueNotifier(range));
 
       await tester.pumpWidget(MaterialApp(home: Scaffold(body: widget)));
       await tester.pumpAndSettle();
@@ -62,4 +57,16 @@ void main() {
       initializeTranslator();
     });
   });
+}
+
+class _TestOrderList extends TransitOrderList {
+  const _TestOrderList({required super.ranger});
+
+  @override
+  int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);
+
+  /// Offset are headers
+  static int _memoryPredictor(OrderMetrics m) {
+    return m.revenue.toInt();
+  }
 }

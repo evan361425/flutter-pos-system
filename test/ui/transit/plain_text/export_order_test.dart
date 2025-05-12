@@ -24,7 +24,7 @@ void main() {
       return const MaterialApp(
         home: TransitStation(
           exporter: PlainTextExporter(),
-          catalog: TransitCatalog.order,
+          catalog: TransitCatalog.exportOrder,
           method: TransitMethod.plainText,
         ),
       );
@@ -35,36 +35,29 @@ void main() {
       OrderSetter.setMetrics([order], countingAll: true);
       OrderSetter.setOrders([order]);
 
-//       const message = '''Total price \$40, 20 of them are product price.
-// Paid \$0, cost \$30.
-// Customer's oa-1 is oao-1、oa-2 is oao-2.
-// There are 10 products (2 types of set) including:
-// 5 of p-1 (c-1), total price is \$35, ingredients are i-1 (q-1), used 3、i-2 (default quantity)、i-3 (default quantity), used -5；
-// 15 of p-2 (c-2), total price is \$300, no ingredient settings.
-// ''';
       final message = [
-        S.transitPTFormatOrderPrice(1, '40', '20'),
-        S.transitPTFormatOrderMoney('0', '30'),
-        S.transitPTFormatOrderOrderAttribute([
-          S.transitPTFormatOrderOrderAttributeItem('oa-1', 'oao-1'),
-          S.transitPTFormatOrderOrderAttributeItem('oa-2', 'oao-2'),
+        S.transitFormatTextOrderPrice(1, '40', '20'),
+        S.transitFormatTextOrderMoney('0', '30'),
+        S.transitFormatTextOrderOrderAttribute([
+          S.transitFormatTextOrderOrderAttributeItem('oa-1', 'oao-1'),
+          S.transitFormatTextOrderOrderAttributeItem('oa-2', 'oao-2'),
         ].join('、')),
-        S.transitPTFormatOrderProductCount(
+        S.transitFormatTextOrderProductCount(
             10,
             2,
             [
-              S.transitPTFormatOrderProduct(
+              S.transitFormatTextOrderProduct(
                   1,
                   'p-1',
                   'c-1',
                   5,
                   '35',
                   [
-                    S.transitPTFormatOrderIngredient(3, 'i-1', 'q-1'),
-                    S.transitPTFormatOrderIngredient(0, 'i-2', S.transitPTFormatOrderNoQuantity),
-                    S.transitPTFormatOrderIngredient(-5, 'i-3', S.transitPTFormatOrderNoQuantity),
+                    S.transitFormatTextOrderIngredient(3, 'i-1', 'q-1'),
+                    S.transitFormatTextOrderIngredient(0, 'i-2', S.transitFormatTextOrderNoQuantity),
+                    S.transitFormatTextOrderIngredient(-5, 'i-3', S.transitFormatTextOrderNoQuantity),
                   ].join('、')),
-              S.transitPTFormatOrderProduct(0, 'p-2', 'c-2', 15, '300', ''),
+              S.transitFormatTextOrderProduct(0, 'p-2', 'c-2', 15, '300', ''),
             ].join('；\n')),
       ].join('\n');
 
@@ -80,7 +73,7 @@ void main() {
       await tester.pumpAndSettle();
 
       OrderSetter.setDetailedOrders([order]);
-      await tester.tap(find.byKey(const Key('export_btn')));
+      await tester.tap(find.byKey(const Key('transit.order.export')));
       await tester.pumpAndSettle();
 
       final copied = await Clipboard.getData('text/plain');
@@ -92,18 +85,13 @@ void main() {
     });
 
     test('format', () {
-//       const expected = '''Total price \$0.
-// Paid \$0, cost \$0.
-// There is no product.''';
       final expected = [
-        S.transitPTFormatOrderPrice(0, '0', '0'),
-        S.transitPTFormatOrderMoney('0', '0'),
-        S.transitPTFormatOrderProductCount(0, 0, ''),
+        S.transitFormatTextOrderPrice(0, '0', '0'),
+        S.transitFormatTextOrderMoney('0', '0'),
+        S.transitFormatTextOrderProductCount(0, 0, ''),
       ].join('\n');
 
-      final actual = ExportOrderView.formatOrder(
-        OrderObject(createdAt: DateTime.now()),
-      );
+      final actual = ExportOrderView.formatOrder(OrderObject(createdAt: DateTime.now()));
 
       expect(actual, equals(expected));
     });

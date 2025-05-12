@@ -92,12 +92,13 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
 class SpreadsheetDialog extends StatefulWidget {
   final GoogleSheetExporter exporter;
   final String cacheKey;
+  final bool allowCreateNew;
   final String? fallbackCacheKey;
 
-  const SpreadsheetDialog({
-    super.key,
+  const SpreadsheetDialog._({
     required this.exporter,
     required this.cacheKey,
+    required this.allowCreateNew,
     this.fallbackCacheKey,
   });
 
@@ -105,14 +106,16 @@ class SpreadsheetDialog extends StatefulWidget {
     BuildContext context, {
     required GoogleSheetExporter exporter,
     required String cacheKey,
+    required bool allowCreateNew,
     String? fallbackCacheKey,
   }) {
     return showAdaptiveDialog<GoogleSpreadsheet>(
       context: context,
       barrierColor: Colors.transparent,
-      builder: (_) => SpreadsheetDialog(
+      builder: (_) => SpreadsheetDialog._(
         exporter: exporter,
         cacheKey: cacheKey,
+        allowCreateNew: allowCreateNew,
         fallbackCacheKey: fallbackCacheKey,
       ),
     );
@@ -136,38 +139,53 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
 
   late TextEditingController textController;
 
+  /// Special error message after verifying the spreadsheet existence.
+  String? errorText;
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
       title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(
         child: Column(children: [
-          CheckboxListTile.adaptive(
-            dense: true,
-            value: createNew,
-            title: Text(S.transitGoogleSheetDialogCreate),
-            onChanged: (v) => setState(() => createNew = v!),
-          ),
-          CheckboxListTile.adaptive(
-            dense: true,
-            value: !createNew,
-            title: Text(S.transitGoogleSheetDialogSelectExist),
-            onChanged: (v) => setState(() => createNew = !v!),
-          ),
-          if (!createNew) ...[
+          if (widget.allowCreateNew) ...[
+            CheckboxListTile.adaptive(
+              dense: true,
+              value: createNew,
+              title: Text(S.transitGoogleSheetDialogCreate),
+              onChanged: (v) => setState(() => createNew = v!),
+            ),
+            CheckboxListTile.adaptive(
+              dense: true,
+              value: !createNew,
+              title: Text(S.transitGoogleSheetDialogSelectExist),
+              onChanged: (v) => setState(() => createNew = !v!),
+            ),
             const Divider(),
+          ],
+          if (!createNew) ...[
             _buildTextField(),
+            if (errorText != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(errorText!, style: Theme.of(context).inputDecorationTheme.errorStyle),
+              ),
           ],
-          if (showTutorial) ...[
-            const SizedBox(height: 16.0),
-            _buildTutorialImage(),
-          ],
+          if (showTutorial)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: _buildTutorialImage(),
+            ),
         ]),
       ),
       actions: [
-        PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+        PopButton(
+          key: const Key('transit.spreadsheet_cancel'),
+          title: MaterialLocalizations.of(context).cancelButtonLabel,
+        ),
         TextButton(
-          onPressed: _export,
+          key: const Key('transit.spreadsheet_confirm'),
+          onPressed: _confirm,
           child: Text(S.transitGoogleSheetDialogConfirm),
         ),
       ],
@@ -178,12 +196,12 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     return Form(
       key: form,
       child: TextFormField(
-        key: const Key('transit.spreadsheet_dialog'),
+        key: const Key('transit.spreadsheet_editor'),
         autocorrect: false,
         controller: textController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
-        validator: _spreadsheetValidator,
+        validator: _validate,
         onSaved: _submit,
         decoration: InputDecoration(
           labelText: S.transitGoogleSheetDialogIdLabel,
@@ -214,12 +232,26 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
       spreadsheet = GoogleSpreadsheet.fromString(val);
     }
 
-    createNew = spreadsheet == null;
+    createNew = widget.allowCreateNew ? spreadsheet == null : false;
     textController = TextEditingController(text: spreadsheet?.id);
     super.initState();
   }
 
-  void _export() {
+  Future<void> _setupSpreadsheet(String? id) async {
+    if (id != null && id != spreadsheet?.id) {
+      final other = await widget.exporter.getSpreadsheet(id);
+      if (other == null) {
+        return;
+      }
+
+      await Cache.instance.set<String>(widget.cacheKey, other.toString());
+      setState(() => spreadsheet = other);
+    }
+  }
+
+  void _confirm() {
+    errorText = null;
+
     if (createNew) {
       Navigator.of(context).pop(GoogleSpreadsheet(id: '', name: '', sheets: []));
       return;
@@ -230,7 +262,7 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     }
   }
 
-  /// [_spreadsheetValidator] has already make sure [text] is not null
+  /// [_validate] has already make sure [text] is not null
   Future<void> _submit(String? text) async {
     final urlResult = _sheetUrlRegex.firstMatch(text!);
 
@@ -240,27 +272,24 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
       await _setupSpreadsheet(_sheetIdRegex.firstMatch(text)?.group(0));
     }
 
-    if (spreadsheet != null && mounted) {
-      Navigator.of(context).pop(spreadsheet);
+    if (mounted) {
+      if (spreadsheet == null) {
+        setState(() {
+          errorText = '${S.transitGoogleSheetErrorIdNotFound}\n${S.transitGoogleSheetErrorIdNotFoundHelper}';
+        });
+      } else {
+        Navigator.of(context).pop(spreadsheet);
+      }
     }
   }
 
-  Future<void> _setupSpreadsheet(String? id) async {
-    if (id != null && id != spreadsheet?.id) {
-      final other = await widget.exporter.getSpreadsheet(id);
+  String? _validate(String? text) {
+    if (text == null || text.isEmpty) return S.transitGoogleSheetErrorIdEmpty;
 
-      await Cache.instance.set<String>(widget.cacheKey, other.toString());
-      setState(() => spreadsheet = other);
+    if (!_sheetUrlRegex.hasMatch(text) && !_sheetIdRegex.hasMatch(text)) {
+      return S.transitGoogleSheetErrorIdInvalid;
     }
+
+    return errorText;
   }
-}
-
-String? _spreadsheetValidator(String? text) {
-  if (text == null || text.isEmpty) return S.transitGoogleSheetErrorIdEmpty;
-
-  if (!_sheetUrlRegex.hasMatch(text) && !_sheetIdRegex.hasMatch(text)) {
-    return S.transitGoogleSheetErrorIdInvalid;
-  }
-
-  return null;
 }

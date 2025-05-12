@@ -26,7 +26,8 @@ class SignInButton extends StatelessWidget {
     return StreamBuilder<firebase.User?>(
       stream: Auth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        User user = User(user: snapshot.data);
+        // final user = kDebugMode ? User(displayName: 'Test User') : User(user: snapshot.data);
+        final user = User(user: snapshot.data);
 
         // User is not signed in
         if (user.notSignedIn) {

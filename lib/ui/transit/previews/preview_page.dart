@@ -143,6 +143,8 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: FilledButton(
+          key: const Key('transit.import.confirm'),
+          child: Text(S.transitImportPreviewConfirmBtn),
           onPressed: () async {
             final confirmed = await ConfirmDialog.show(
               context,
@@ -165,7 +167,6 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
               showSnackBar(S.transitImportSuccess, context: context);
             }
           },
-          child: Text(S.transitImportPreviewConfirmBtn),
         ),
       ),
     );

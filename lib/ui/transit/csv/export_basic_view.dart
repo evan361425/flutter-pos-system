@@ -25,9 +25,10 @@ class ExportBasicHeader extends BasicModelPicker {
   Future<void> onExport(BuildContext context, FormattableModel? able) async {
     // only support single file export, multi files will get permission denied
     final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
+    final headers = getAllFormattedFieldHeaders(able).map((e) => e.map((v) => v.toString())).toList();
     final data = getAllFormattedFieldData(able).map((e) => e.map((r) => r.map((c) => c.toString()))).toList();
 
-    final ok = await exporter.export(names: names, data: data);
+    final ok = await exporter.export(names: names, data: data, headers: headers);
     if (context.mounted && ok) {
       showSnackBar(S.transitExportBasicSuccessCsv, context: context);
     }

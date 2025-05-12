@@ -163,18 +163,9 @@ abstract class TransitOrderList extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Icon(
-                Icons.check_outlined,
-                weight: level == 0 ? 24.0 : null,
-              ),
-              Icon(
-                Icons.warning_amber_outlined,
-                weight: level == 0 ? 24.0 : null,
-              ),
-              Icon(
-                Icons.dangerous_outlined,
-                weight: level == 0 ? 24.0 : null,
-              ),
+              Icon(Icons.check_outlined, weight: level == 0 ? 24.0 : null),
+              Icon(Icons.warning_amber_outlined, weight: level == 1 ? 24.0 : null),
+              Icon(Icons.dangerous_outlined, weight: level == 2 ? 24.0 : null),
             ],
           ),
           Row(
@@ -260,6 +251,7 @@ abstract class TransitOrderHeader extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
       child: ListTile(
+        key: const Key('transit.order.export'),
         title: Text(title),
         subtitle: subtitle,
         trailing: trailing,
