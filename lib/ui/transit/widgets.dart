@@ -69,14 +69,14 @@ class ImportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
   final ValueNotifier<FormattableModel?> selected;
   final ValueNotifier<PreviewFormatter?> formatter;
-  final String? hint;
+  final String hint;
 
   const ImportView({
     super.key,
     required this.stateNotifier,
     required this.selected,
     required this.formatter,
-    this.hint,
+    required this.hint,
   });
 
   @override
@@ -95,7 +95,7 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
       valueListenable: widget.formatter,
       builder: (context, f, child) {
         if (f == null) {
-          return Center(child: HintText(widget.hint ?? S.transitImportModelSelectionHint));
+          return Center(child: HintText(widget.hint));
         }
 
         return PreviewPageWrapper(

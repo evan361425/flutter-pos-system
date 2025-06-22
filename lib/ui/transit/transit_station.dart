@@ -205,12 +205,13 @@ class _TransitStationState extends State<TransitStation> {
 
   Widget _buildBody() {
     if (widget.catalog == TransitCatalog.importModel) {
-      final hint = widget.method == TransitMethod.plainText ? '請先輸入文字來進行匯入' : null;
       return ImportView(
         stateNotifier: stateNotifier,
         selected: model,
         formatter: formatter,
-        hint: hint,
+        hint: widget.method == TransitMethod.plainText
+            ? S.transitImportModelSelectionPlainTextHint
+            : S.transitImportModelSelectionHint,
       );
     }
 

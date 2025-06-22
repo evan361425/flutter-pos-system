@@ -52,6 +52,69 @@ void main() {
       expect(find.text(S.transitOrderCapacityTitle('1.5MB')), findsOneWidget);
     });
 
+    testWidgets('preview order', (tester) async {
+      final order = OrderSetter.sample();
+      OrderSetter.setMetrics([order], countingAll: true);
+      OrderSetter.setOrders([order]);
+      OrderSetter.setOrder(order);
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.expand_outlined));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Table), findsNWidgets(4));
+    });
+
+    testWidgets('pick range', (tester) async {
+      OrderSetter.setMetrics([], countingAll: true);
+      OrderSetter.setOrders([]);
+
+      final init = DateTimeRange(
+        start: DateTime(2023, DateTime.june, 10),
+        end: DateTime(2023, DateTime.june, 11),
+      );
+
+      await tester.pumpWidget(MaterialApp(
+        locale: LanguageSetting.instance.language.locale,
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          DefaultWidgetsLocalizations.delegate,
+          DefaultMaterialLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [LanguageSetting.instance.language.locale],
+        home: TransitStation(
+          catalog: TransitCatalog.exportOrder,
+          method: TransitMethod.googleSheet,
+          range: init,
+          exporter: GoogleSheetExporter(
+            scopes: gsExporterScopes,
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('btn.edit_range')));
+      await tester.pumpAndSettle();
+
+      // xx/01-xx/05
+      await tester.tap(find.text('1').first);
+      await tester.tap(find.text('5').first);
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      final expected = DateTimeRange(
+        start: DateTime(2023, DateTime.june, 1),
+        end: DateTime(2023, DateTime.june, 6),
+      );
+
+      expect(
+        find.text(S.transitOrderMetaRange(expected.format('en'))),
+        findsOneWidget,
+      );
+    });
+
     setUpAll(() {
       initializeDatabase();
       initializeTranslator();

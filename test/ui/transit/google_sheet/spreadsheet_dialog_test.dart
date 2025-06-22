@@ -19,7 +19,6 @@ import '../../../test_helpers/translator.dart';
 
 void main() {
   group('Transit - Google Sheet - Spreadsheet Dialog', () {
-    const spreadsheetId = '1bCPUG2iS5xXqchWIa9Pq-TT4J-Bt9Pig6i-QqkOWEoE';
     const gsExporterScopes = [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope];
     late GoogleSheetExporter exporter;
     bool shouldPrepare = false;
@@ -132,6 +131,7 @@ void main() {
 
     testWidgets('pick success', (tester) async {
       when(cache.get(importCacheKey)).thenReturn('old-id:true:old-name');
+      const spreadsheetId = '1bCPUG2iS5xXqchWIa9Pq-TT4J-Bt9Pig6i-QqkOWEoE';
 
       final sheetsApi = getMockSheetsApi();
       mockPick(sheetsApi, spreadsheetId, 'some-sheet');

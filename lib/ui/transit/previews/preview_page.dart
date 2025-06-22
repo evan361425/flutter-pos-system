@@ -70,6 +70,7 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
   Widget _buildPage(FormattableModel able) {
     final items = widget.formatter(able);
     if (items == null) {
+      // missing this sheet data is still able to import other sheets
       progress?[able]?.value = true;
       return Center(child: HintText(S.transitImportErrorPreviewNotFound(able.l10nName)));
     }

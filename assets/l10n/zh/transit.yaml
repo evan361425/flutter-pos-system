@@ -132,6 +132,7 @@ import:
     label: 資料類型
     all: 全部
     hint: 請先選擇資料類型來進行匯入
+    plainTextHint: 請先輸入文字來進行匯入
   progress:
     googleSheet:
       start: 拉取試算表資料中

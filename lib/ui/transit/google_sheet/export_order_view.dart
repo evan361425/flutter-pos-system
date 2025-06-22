@@ -55,7 +55,6 @@ class ExportOrderHeader extends TransitOrderHeader {
     final sheetTitles = settings!.value.parseTitles(ranger.value);
     final ables = sheetTitles.keys.toList();
     final titles = sheetTitles.values.toList();
-    final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
     ss = await prepareSpreadsheet(
       context: context,
       exporter: exporter,
@@ -71,6 +70,7 @@ class ExportOrderHeader extends TransitOrderHeader {
 
     // Step 3
     Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
+    final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
     final data = ables.map((able) => orders.expand((order) {
           return able.formatRows(order).map((l) {
             return l.map((v) => v.value).toList();

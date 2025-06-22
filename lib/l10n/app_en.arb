@@ -404,6 +404,7 @@
   "transitImportModelSelectionLabel": "Data Type",
   "transitImportModelSelectionAll": "All",
   "transitImportModelSelectionHint": "Select the type of data first to import the corresponding data.",
+  "transitImportModelSelectionPlainTextHint": "Enter text to import",
   "transitImportProgressGoogleSheetStart": "Importing data from spreadsheet",
   "transitImportProgressGoogleSheetPrepare": "Fetching spreadsheet metadata",
   "transitImportErrorBasicColumnCount": "Insufficient data, {columns} columns required",

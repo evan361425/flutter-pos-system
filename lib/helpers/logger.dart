@@ -9,6 +9,7 @@ const _isDebug = kDebugMode || isLocalTest;
 
 class Log {
   static void out(String msg, String code) {
+    print('$code: $msg');
     developer.log(msg, name: code);
   }
 

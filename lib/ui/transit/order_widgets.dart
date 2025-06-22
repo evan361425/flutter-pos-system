@@ -251,7 +251,7 @@ abstract class TransitOrderHeader extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
       child: ListTile(
-        key: const Key('transit.order.export'),
+        key: const Key('transit.order_export'),
         title: Text(title),
         subtitle: subtitle,
         trailing: trailing,

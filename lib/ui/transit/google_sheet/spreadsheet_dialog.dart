@@ -144,6 +144,7 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
 
   @override
   Widget build(BuildContext context) {
+    print('createNew: $createNew, errorText: ${errorText}');
     return AlertDialog.adaptive(
       title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(
@@ -241,6 +242,7 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     if (id != null && id != spreadsheet?.id) {
       final other = await widget.exporter.getSpreadsheet(id);
       if (other == null) {
+        spreadsheet = null;
         return;
       }
 
@@ -253,6 +255,7 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     errorText = null;
 
     if (createNew) {
+      Log.out('create new spreadsheet', 'gs_export');
       Navigator.of(context).pop(GoogleSpreadsheet(id: '', name: '', sheets: []));
       return;
     }
@@ -278,6 +281,7 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
           errorText = '${S.transitGoogleSheetErrorIdNotFound}\n${S.transitGoogleSheetErrorIdNotFoundHelper}';
         });
       } else {
+        Log.out('selected spreadsheet: ${spreadsheet!.name}', 'gs_export');
         Navigator.of(context).pop(spreadsheet);
       }
     }

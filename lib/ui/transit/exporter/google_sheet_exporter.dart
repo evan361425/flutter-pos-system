@@ -193,7 +193,7 @@ class GoogleSheetExporter extends DataExporter {
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     final types = sheets.map((e) => e.typeName).join(' ');
-    Log.out('append_values $types', _logCode);
+    Log.out('update_values $types', _logCode);
     await sheetsApi?.spreadsheets.values.batchUpdate(
       gs.BatchUpdateValuesRequest(
         includeValuesInResponse: false,
