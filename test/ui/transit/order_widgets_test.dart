@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
+import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_database.dart';
 import '../../test_helpers/order_setter.dart';
 import '../../test_helpers/translator.dart';
@@ -58,64 +62,74 @@ void main() {
       OrderSetter.setOrders([order]);
       OrderSetter.setOrder(order);
 
-      await tester.pumpWidget(buildApp());
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.expand_outlined));
-      await tester.pumpAndSettle();
+      await showDialog(tester, Icons.expand_outlined);
 
       expect(find.byType(Table), findsNWidgets(4));
     });
 
-    testWidgets('pick range', (tester) async {
+    testWidgets('edit metadata and range', (tester) async {
+      cache.reset();
+      when(cache.get(any)).thenReturn(null);
+      when(cache.set(any, any)).thenAnswer((_) async => true);
       OrderSetter.setMetrics([], countingAll: true);
       OrderSetter.setOrders([]);
 
-      final init = DateTimeRange(
+      final ranger = ValueNotifier(DateTimeRange(
         start: DateTime(2023, DateTime.june, 10),
         end: DateTime(2023, DateTime.june, 11),
-      );
+      ));
+      final settings = ValueNotifier(const TransitOrderSettings());
 
       await tester.pumpWidget(MaterialApp(
-        locale: LanguageSetting.instance.language.locale,
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          DefaultWidgetsLocalizations.delegate,
-          DefaultMaterialLocalizations.delegate,
-          DefaultCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [LanguageSetting.instance.language.locale],
-        home: TransitStation(
-          catalog: TransitCatalog.exportOrder,
-          method: TransitMethod.googleSheet,
-          range: init,
-          exporter: GoogleSheetExporter(
-            scopes: gsExporterScopes,
-          ),
+        home: Scaffold(
+          body: Column(children: [
+            _TestOrderHeader(
+              stateNotifier: TransitStateNotifier(),
+              ranger: ranger,
+              settings: settings,
+            ),
+            _TestOrderList(ranger: ranger),
+          ]),
         ),
       ));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('btn.edit_range')));
+      await tester.tap(find.byIcon(Icons.date_range_outlined));
       await tester.pumpAndSettle();
 
-      // xx/01-xx/05
+      // date range: xx/01 - xx/05
       await tester.tap(find.text('1').first);
       await tester.tap(find.text('5').first);
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
-      final expected = DateTimeRange(
-        start: DateTime(2023, DateTime.june, 1),
-        end: DateTime(2023, DateTime.june, 6),
-      );
-
       expect(
-        find.text(S.transitOrderMetaRange(expected.format('en'))),
-        findsOneWidget,
-      );
+          ranger.value.toString(),
+          equals(DateTimeRange(
+            start: DateTime(2023, DateTime.june, 1),
+            end: DateTime(2023, DateTime.june, 6),
+          ).toString()));
+
+      await tester.tap(find.byIcon(Icons.settings_sharp));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('transit.order.is_overwrite')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.transitOrderSettingRecommendCombination), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('transit.order.with_prefix')));
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
+      expect(settings.value.withPrefix, isFalse);
+      expect(settings.value.isOverwrite, isFalse);
+      verify(cache.set('exporter_order_meta.isOverwrite', false)).called(1);
+      verify(cache.set('exporter_order_meta.withPrefix', false)).called(1);
     });
 
     setUpAll(() {
+      initializeCache();
       initializeDatabase();
       initializeTranslator();
     });
@@ -132,4 +146,20 @@ class _TestOrderList extends TransitOrderList {
   static int _memoryPredictor(OrderMetrics m) {
     return m.revenue.toInt();
   }
+}
+
+class _TestOrderHeader extends TransitOrderHeader {
+  const _TestOrderHeader({
+    required super.stateNotifier,
+    required super.ranger,
+    super.settings,
+  });
+
+  @override
+  Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
+    return;
+  }
+
+  @override
+  String get title => 'Test';
 }

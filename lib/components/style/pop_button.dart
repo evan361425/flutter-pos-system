@@ -15,7 +15,12 @@ class PopButton extends StatelessWidget {
 
   static safePop<T>(BuildContext context, {String path = Routes.base, T? value}) {
     if (context.mounted) {
-      context.canPop() ? context.pop<T?>(value) : context.go(path);
+      final router = GoRouter.maybeOf(context);
+      if (router != null) {
+        router.canPop() ? router.pop<T?>(value) : router.go(path);
+      } else {
+        Navigator.of(context).pop<T?>(value);
+      }
     }
   }
 

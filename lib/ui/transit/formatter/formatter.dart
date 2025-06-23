@@ -43,33 +43,23 @@ enum FormattableModel {
 
   /// Parse row (list of string) to specific [Model]
   ModelParser toParser() {
-    switch (this) {
-      case FormattableModel.menu:
-        return MenuParser(Menu.instance);
-      case FormattableModel.stock:
-        return StockParser(Stock.instance);
-      case FormattableModel.quantities:
-        return QuantitiesParser(Quantities.instance);
-      case FormattableModel.replenisher:
-        return ReplenisherParser(Replenisher.instance);
-      case FormattableModel.orderAttr:
-        return OAParser(OrderAttributes.instance);
-    }
+    return switch (this) {
+      FormattableModel.menu => MenuParser(Menu.instance) as ModelParser,
+      FormattableModel.stock => StockParser(Stock.instance),
+      FormattableModel.quantities => QuantitiesParser(Quantities.instance),
+      FormattableModel.replenisher => ReplenisherParser(Replenisher.instance),
+      FormattableModel.orderAttr => OAParser(OrderAttributes.instance),
+    };
   }
 
   Repository toRepository() {
-    switch (this) {
-      case FormattableModel.menu:
-        return Menu.instance;
-      case FormattableModel.stock:
-        return Stock.instance;
-      case FormattableModel.quantities:
-        return Quantities.instance;
-      case FormattableModel.replenisher:
-        return Replenisher.instance;
-      case FormattableModel.orderAttr:
-        return OrderAttributes.instance;
-    }
+    return switch (this) {
+      FormattableModel.menu => Menu.instance as Repository,
+      FormattableModel.stock => Stock.instance,
+      FormattableModel.quantities => Quantities.instance,
+      FormattableModel.replenisher => Replenisher.instance,
+      FormattableModel.orderAttr => OrderAttributes.instance,
+    };
   }
 }
 
@@ -82,29 +72,21 @@ enum FormattableOrder {
   String get l10nName => S.transitOrderName(name);
 
   List<List<CellData>> formatRows(OrderObject order) {
-    switch (this) {
-      case FormattableOrder.attr:
-        return OrderFormatter.formatAttr(order);
-      case FormattableOrder.product:
-        return OrderFormatter.formatProduct(order);
-      case FormattableOrder.ingredient:
-        return OrderFormatter.formatIngredient(order);
-      default:
-        return OrderFormatter.formatBasic(order);
-    }
+    return switch (this) {
+      FormattableOrder.attr => OrderFormatter.formatAttr(order),
+      FormattableOrder.product => OrderFormatter.formatProduct(order),
+      FormattableOrder.ingredient => OrderFormatter.formatIngredient(order),
+      _ => OrderFormatter.formatBasic(order),
+    };
   }
 
   List<String> formatHeader() {
-    switch (this) {
-      case FormattableOrder.attr:
-        return OrderFormatter.attrHeaders;
-      case FormattableOrder.product:
-        return OrderFormatter.productHeaders;
-      case FormattableOrder.ingredient:
-        return OrderFormatter.ingredientHeaders;
-      default:
-        return OrderFormatter.basicHeaders;
-    }
+    return switch (this) {
+      FormattableOrder.attr => OrderFormatter.attrHeaders,
+      FormattableOrder.product => OrderFormatter.productHeaders,
+      FormattableOrder.ingredient => OrderFormatter.ingredientHeaders,
+      _ => OrderFormatter.basicHeaders,
+    };
   }
 }
 

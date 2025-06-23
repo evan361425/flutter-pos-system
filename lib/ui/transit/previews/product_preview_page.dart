@@ -10,7 +10,7 @@ import 'preview_page.dart';
 class ProductPreviewPage extends PreviewPage<Product> {
   const ProductPreviewPage({
     super.key,
-    required super.able,
+    required super.model,
     required super.items,
     super.progress,
     super.physics,
@@ -56,6 +56,7 @@ class ProductPreviewPage extends PreviewPage<Product> {
     );
 
     return ExpansionTile(
+      key: Key('transit_preview.menu.${item.id}'),
       title: ImporterColumnStatus(
         name: item.name,
         status: item.statusName,

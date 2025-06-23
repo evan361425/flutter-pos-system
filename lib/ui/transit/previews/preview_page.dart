@@ -17,12 +17,12 @@ typedef PreviewFormatter = List<FormattedItem>? Function(FormattableModel);
 typedef PreviewOnDone = void Function(BuildContext);
 
 class PreviewPageWrapper extends StatefulWidget {
-  final List<FormattableModel> ables;
+  final List<FormattableModel> models;
   final PreviewFormatter formatter;
 
   const PreviewPageWrapper({
     super.key,
-    required this.ables,
+    required this.models,
     required this.formatter,
   });
 
@@ -35,22 +35,22 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.ables.length == 1) {
-      return _buildPage(widget.ables.first);
+    if (widget.models.length == 1) {
+      return _buildPage(widget.models.first);
     }
 
     return DefaultTabController(
-      length: widget.ables.length,
+      length: widget.models.length,
       child: Column(children: <Widget>[
         TabBar.secondary(isScrollable: true, tabs: [
-          for (final able in widget.ables)
+          for (final model in widget.models)
             Tab(
-              child: Text(able.l10nName, softWrap: true),
+              child: Text(model.l10nName, softWrap: true),
             ),
         ]),
         Expanded(
           child: TabBarView(children: [
-            for (final able in widget.ables) _buildPage(able),
+            for (final model in widget.models) _buildPage(model),
           ]),
         ),
       ]),
@@ -59,46 +59,47 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
 
   @override
   void initState() {
-    if (widget.ables.length > 1) {
+    if (widget.models.length > 1) {
       progress = <FormattableModel, ValueNotifier<bool>>{
-        for (final able in widget.ables) able: ValueNotifier(false),
+        for (final model in widget.models) model: ValueNotifier(false),
       };
     }
     super.initState();
   }
 
-  Widget _buildPage(FormattableModel able) {
-    final items = widget.formatter(able);
-    if (items == null) {
+  @override
+  void dispose() {
+    super.dispose();
+    FormattableModel.abort();
+  }
+
+  Widget _buildPage(FormattableModel model) {
+    final items = widget.formatter(model);
+    if (items == null || items.isEmpty) {
       // missing this sheet data is still able to import other sheets
-      progress?[able]?.value = true;
-      return Center(child: HintText(S.transitImportErrorPreviewNotFound(able.l10nName)));
+      progress?[model]?.value = true;
+      return Center(child: HintText(S.transitImportErrorPreviewNotFound(model.l10nName)));
     }
 
-    switch (able) {
-      case FormattableModel.menu:
-        return ProductPreviewPage(able: able, items: items, progress: progress);
-      case FormattableModel.orderAttr:
-        return OrderAttributePreviewPage(able: able, items: items, progress: progress);
-      case FormattableModel.quantities:
-        return QuantityPreviewPage(able: able, items: items, progress: progress);
-      case FormattableModel.stock:
-        return IngredientPreviewPage(able: able, items: items, progress: progress);
-      case FormattableModel.replenisher:
-        return ReplenishmentPreviewPage(able: able, items: items, progress: progress);
-    }
+    return switch (model) {
+      FormattableModel.menu => ProductPreviewPage(model: model, items: items, progress: progress),
+      FormattableModel.orderAttr => OrderAttributePreviewPage(model: model, items: items, progress: progress),
+      FormattableModel.quantities => QuantityPreviewPage(model: model, items: items, progress: progress),
+      FormattableModel.stock => IngredientPreviewPage(model: model, items: items, progress: progress),
+      FormattableModel.replenisher => ReplenishmentPreviewPage(model: model, items: items, progress: progress),
+    };
   }
 }
 
 abstract class PreviewPage<T extends Model> extends StatelessWidget {
-  final FormattableModel able;
+  final FormattableModel model;
   final List<FormattedItem> items;
   final Map<FormattableModel, ValueNotifier<bool>>? progress;
   final ScrollPhysics? physics;
 
   const PreviewPage({
     super.key,
-    required this.able,
+    required this.model,
     required this.items,
     this.progress,
     this.physics,
@@ -121,7 +122,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     }
 
     return ValueListenableBuilder<bool>(
-      valueListenable: progress![able]!,
+      valueListenable: progress![model]!,
       builder: (context, value, child) {
         final notReady = progress!.values.where((e) => !e.value).length;
         if (notReady == 0) {
@@ -130,7 +131,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
 
         return CheckboxListTile(
           value: value,
-          onChanged: (value) => progress![able]!.value = value!,
+          onChanged: (value) => progress![model]!.value = value!,
           title: Text(S.transitImportPreviewConfirmVerify),
           subtitle: Text(S.transitImportPreviewConfirmHint(notReady)),
         );
@@ -156,9 +157,9 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
               return;
             }
 
-            final futures = (progress?.keys.toList() ?? [able]).map((e) => e.toRepository().commitStaged());
             final result = await showSnackbarWhenFutureError(
-              Future.wait(futures),
+              Future.forEach(progress?.keys.toList() ?? [model], (e) => e.toRepository().commitStaged())
+                  .then((_) => true),
               'transit_import_model',
               // ignore: use_build_context_synchronously
               context: context,
@@ -206,9 +207,7 @@ class ImporterColumnStatus extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: name,
-        style: DefaultTextStyle.of(context).style.copyWith(
-              fontWeight: fontWeight,
-            ),
+        style: DefaultTextStyle.of(context).style.copyWith(fontWeight: fontWeight),
         children: <TextSpan>[
           TextSpan(
             text: S.transitImportColumnStatus(status),

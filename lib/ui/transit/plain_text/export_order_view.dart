@@ -19,9 +19,6 @@ class ExportOrderHeader extends TransitOrderHeader {
   String get title => S.transitExportOrderTitlePlainText;
 
   @override
-  String get meta => S.transitExportOrderSubtitlePlainText;
-
-  @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     await const PlainTextExporter().exportToClipboard(orders
         .map((o) => [
@@ -41,6 +38,9 @@ class ExportOrderView extends TransitOrderList {
     super.key,
     required super.ranger,
   });
+
+  @override
+  String get helpMessage => S.transitExportOrderSubtitlePlainText;
 
   @override
   int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);

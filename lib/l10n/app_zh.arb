@@ -290,6 +290,7 @@
   "transitDescriptionPlainText": "快速檢查、快速分享。",
   "transitMethodTitle": "請選擇欲轉移的方式",
   "transitMethodName": "{name, select, googleSheet{Google 試算表} plainText{純文字} excel{Excel 檔案} csv{CSV 檔案} other{UNKNOWN}}",
+  "transitCatalogTitle": "用 {name} 做什麼？",
   "transitCatalogName": "{name, select, exportOrder{匯出訂單記錄} exportModel{匯出店家資訊} importModel{匯入店家資訊} other{UNKNOWN}}",
   "transitCatalogHelper": "{name, select, exportOrder{訂單資訊可以讓你匯出到第三方位置後做更細緻的統計分析。} exportModel{商家資訊是用來把菜單、庫存等資訊備份到第三方位置。} importModel{同步資訊到此設備。} other{UNKNOWN}}",
   "transitModelName": "{name, select, menu{菜單} stock{庫存} quantities{份量} replenisher{補貨} orderAttr{顧客設定} other{UNKNOWN}}",

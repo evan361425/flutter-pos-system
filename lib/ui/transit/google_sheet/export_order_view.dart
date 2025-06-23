@@ -25,9 +25,6 @@ class ExportOrderHeader extends TransitOrderHeader {
   String get title => S.transitExportOrderTitleGoogleSheet;
 
   @override
-  String get meta => S.transitExportOrderSubtitleGoogleSheet;
-
-  @override
   Widget build(BuildContext context) {
     return SignInButton(signedInWidget: super.build(context));
   }
@@ -118,6 +115,9 @@ class ExportOrderView extends TransitOrderList {
     super.key,
     required super.ranger,
   });
+
+  @override
+  String get helpMessage => S.transitExportOrderSubtitleGoogleSheet;
 
   @override
   int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);

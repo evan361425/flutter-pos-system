@@ -38,9 +38,18 @@ abstract class TransitOrderList extends StatelessWidget {
   /// Additional warning message to show in the memory info dialog.
   String? get warningMessage => null;
 
+  String? get helpMessage => null;
+
   @override
   Widget build(BuildContext context) {
-    final leading = OrderRangeView(notifier: ranger);
+    Widget leading = OrderRangeView(notifier: ranger);
+    if (helpMessage != null) {
+      leading = Column(children: [
+        HintText(helpMessage!),
+        leading,
+      ]);
+    }
+
     return OrderLoader(
       leading: leading,
       ranger: ranger,
@@ -222,8 +231,6 @@ abstract class TransitOrderHeader extends StatelessWidget {
 
   String get title;
 
-  String? get meta => null;
-
   @override
   Widget build(BuildContext context) {
     Widget? subtitle;
@@ -232,11 +239,12 @@ abstract class TransitOrderHeader extends StatelessWidget {
       subtitle = ValueListenableBuilder(
         valueListenable: settings!,
         builder: (context, p, _) {
-          return MetaBlock.withString(context, [
-            if (meta != null) meta!,
-            S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
-            S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
-          ])!;
+          return Column(children: [
+            MetaBlock.withString(context, [
+              S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
+              S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
+            ])!,
+          ]);
         },
       );
 
@@ -244,8 +252,6 @@ abstract class TransitOrderHeader extends StatelessWidget {
         icon: const Icon(Icons.settings_sharp),
         onPressed: () => _showMetaSetting(context),
       );
-    } else if (meta != null) {
-      subtitle = Text(meta!);
     }
 
     return Card(
@@ -299,14 +305,14 @@ class TransitOrderSettings {
   final bool withPrefix;
 
   const TransitOrderSettings({
-    required this.isOverwrite,
-    required this.withPrefix,
+    this.isOverwrite = true,
+    this.withPrefix = true,
   });
 
   factory TransitOrderSettings.fromCache() {
     return TransitOrderSettings(
-      isOverwrite: Cache.instance.get<bool>('$_cacheKey.isOverwrite') ?? true,
-      withPrefix: Cache.instance.get<bool>('$_cacheKey.withPrefix') ?? true,
+      isOverwrite: Cache.instance.get<bool>('$_cacheMetaKey.isOverwrite') ?? true,
+      withPrefix: Cache.instance.get<bool>('$_cacheMetaKey.withPrefix') ?? true,
     );
   }
 
@@ -319,8 +325,8 @@ class TransitOrderSettings {
   }
 
   Future<void> cache() async {
-    await Cache.instance.set<bool>('$_cacheKey.isOverwrite', isOverwrite);
-    await Cache.instance.set<bool>('$_cacheKey.withPrefix', withPrefix);
+    await Cache.instance.set<bool>('$_cacheMetaKey.isOverwrite', isOverwrite);
+    await Cache.instance.set<bool>('$_cacheMetaKey.withPrefix', withPrefix);
   }
 }
 
@@ -464,7 +470,7 @@ class _SimpleTable extends StatelessWidget {
   }
 }
 
-const _cacheKey = 'exporter_order_meta';
+const _cacheMetaKey = 'exporter_order_meta';
 
 class _OrderSettingPage extends StatefulWidget {
   final TransitOrderSettings properties;
@@ -487,7 +493,7 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
   List<Widget> buildFormFields() {
     return [
       CheckboxListTile(
-        key: const Key('is_overwrite'),
+        key: const Key('transit.order.is_overwrite'),
         value: isOverwrite,
         title: Text(S.transitOrderSettingOverwriteLabel),
         subtitle: Text(S.transitOrderSettingOverwriteHint),
@@ -500,7 +506,7 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
         },
       ),
       CheckboxListTile(
-        key: const Key('with_prefix'),
+        key: const Key('transit.order.with_prefix'),
         value: withPrefix,
         title: Text(S.transitOrderSettingTitlePrefixLabel),
         subtitle: Text(S.transitOrderSettingTitlePrefixHint),

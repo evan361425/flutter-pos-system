@@ -13,19 +13,17 @@ const _reDig = r' *-?\d+\.?\d*';
 const _reInt = r'[0-9 ]+';
 const _rePre = r'^';
 
-ModelFormatter<Repository, String> findPlainTextFormatter(FormattableModel able) {
-  switch (able) {
-    case FormattableModel.menu:
-      return _MenuFormatter(Menu.instance, able.toParser());
-    case FormattableModel.stock:
-      return _StockFormatter(Stock.instance, able.toParser());
-    case FormattableModel.quantities:
-      return _QuantitiesFormatter(Quantities.instance, able.toParser());
-    case FormattableModel.replenisher:
-      return _ReplenisherFormatter(Replenisher.instance, able.toParser());
-    case FormattableModel.orderAttr:
-      return _OAFormatter(OrderAttributes.instance, able.toParser());
-  }
+ModelFormatter<Repository, String> findPlainTextFormatter(FormattableModel able, [Repository? repo]) {
+  final parser = able.toParser();
+
+  return switch (able) {
+    FormattableModel.menu =>
+      _MenuFormatter((repo ?? Menu.instance) as Menu, parser) as ModelFormatter<Repository, String>,
+    FormattableModel.stock => _StockFormatter((repo ?? Stock.instance) as Stock, parser),
+    FormattableModel.quantities => _QuantitiesFormatter((repo ?? Quantities.instance) as Quantities, parser),
+    FormattableModel.replenisher => _ReplenisherFormatter((repo ?? Replenisher.instance) as Replenisher, parser),
+    FormattableModel.orderAttr => _OAFormatter((repo ?? OrderAttributes.instance) as OrderAttributes, parser),
+  };
 }
 
 FormattableModel? findPlainTextFormattable(String line) {

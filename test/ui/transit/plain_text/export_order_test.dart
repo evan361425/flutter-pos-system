@@ -73,7 +73,7 @@ void main() {
       await tester.pumpAndSettle();
 
       OrderSetter.setDetailedOrders([order]);
-      await tester.tap(find.byKey(const Key('transit.order.export')));
+      await tester.tap(find.byKey(const Key('transit.order_export')));
       await tester.pumpAndSettle();
 
       final copied = await Clipboard.getData('text/plain');

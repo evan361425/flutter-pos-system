@@ -144,7 +144,6 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
 
   @override
   Widget build(BuildContext context) {
-    print('createNew: $createNew, errorText: ${errorText}');
     return AlertDialog.adaptive(
       title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(

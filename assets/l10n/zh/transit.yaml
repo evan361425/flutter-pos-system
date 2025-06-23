@@ -15,6 +15,8 @@ method:
     excel: Excel 檔案
     csv: CSV 檔案
 catalog:  # 資料的分類
+  title:
+  - 用 {name} 做什麼？
   name:
   - exportOrder: 匯出訂單記錄
     exportModel: 匯出店家資訊

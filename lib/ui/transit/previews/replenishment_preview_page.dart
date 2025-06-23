@@ -9,7 +9,7 @@ import 'preview_page.dart';
 class ReplenishmentPreviewPage extends PreviewPage<Replenishment> {
   const ReplenishmentPreviewPage({
     super.key,
-    required super.able,
+    required super.model,
     required super.items,
     super.progress,
     super.physics,
@@ -21,6 +21,7 @@ class ReplenishmentPreviewPage extends PreviewPage<Replenishment> {
     Replenishment item,
   ) {
     return ExpansionTile(
+      key: Key('transit_preview.replenisher.${item.id}'),
       title: ImporterColumnStatus(
         name: item.name,
         status: item.statusName,

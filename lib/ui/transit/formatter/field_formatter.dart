@@ -16,19 +16,17 @@ List<List<List<CellData>>> getAllFormattedFieldData(FormattableModel? able) {
   return (able?.toList() ?? FormattableModel.values).map((able) => findFieldFormatter(able).getRows()).toList();
 }
 
-ModelFormatter<Repository, CellData> findFieldFormatter(FormattableModel able) {
-  switch (able) {
-    case FormattableModel.menu:
-      return _MenuFormatter(Menu.instance, able.toParser());
-    case FormattableModel.stock:
-      return _StockFormatter(Stock.instance, able.toParser());
-    case FormattableModel.quantities:
-      return _QuantitiesFormatter(Quantities.instance, able.toParser());
-    case FormattableModel.replenisher:
-      return _ReplenisherFormatter(Replenisher.instance, able.toParser());
-    case FormattableModel.orderAttr:
-      return _OAFormatter(OrderAttributes.instance, able.toParser());
-  }
+ModelFormatter<Repository, CellData> findFieldFormatter(FormattableModel able, [Repository? repo]) {
+  final parser = able.toParser();
+
+  return switch (able) {
+    FormattableModel.menu =>
+      _MenuFormatter((repo ?? Menu.instance) as Menu, parser) as ModelFormatter<Repository, CellData>,
+    FormattableModel.stock => _StockFormatter((repo ?? Stock.instance) as Stock, parser),
+    FormattableModel.quantities => _QuantitiesFormatter((repo ?? Quantities.instance) as Quantities, parser),
+    FormattableModel.replenisher => _ReplenisherFormatter((repo ?? Replenisher.instance) as Replenisher, parser),
+    FormattableModel.orderAttr => _OAFormatter((repo ?? OrderAttributes.instance) as OrderAttributes, parser),
+  };
 }
 
 class _MenuFormatter extends ModelFormatter<Menu, CellData> {

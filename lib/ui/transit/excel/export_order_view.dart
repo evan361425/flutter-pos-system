@@ -19,9 +19,6 @@ class ExportOrderHeader extends TransitOrderHeader {
   String get title => S.transitExportOrderTitleExcel;
 
   @override
-  String get meta => 'Orders.xlsx';
-
-  @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     final names = settings!.value.parseTitles(ranger.value);
     final headers = names.keys.map((e) => e.formatHeader().map((v) => CellData(string: v)).toList()).toList();
@@ -44,6 +41,9 @@ class ExportOrderView extends TransitOrderList {
     super.key,
     required super.ranger,
   });
+
+  @override
+  String get helpMessage => S.transitExportOrderSubtitleExcel;
 
   @override
   int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);

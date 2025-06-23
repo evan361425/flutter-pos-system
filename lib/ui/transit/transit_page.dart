@@ -62,7 +62,7 @@ class TransitPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog.adaptive(
-          title: Text('用 ${method.l10nName} 做什麼？'),
+          title: Text(S.transitCatalogTitle(method.l10nName)),
           scrollable: true,
           content: Column(children: [
             for (final catalog in TransitCatalog.values)

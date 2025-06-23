@@ -15,6 +15,8 @@ method:
     excel: Excel
     csv: CSV
 catalog:
+  title:
+  - Use {name} to Do What?
   name:
   - exportOrder: Export Order Records
     exportModel: Export Store Information

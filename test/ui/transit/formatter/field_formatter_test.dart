@@ -212,7 +212,9 @@ void main() {
         verifyItem(4, 'i3', 0, null, 'staged');
 
         expect(items[1].hasError, isTrue);
+        expect(items[1].error!.message, equals(S.transitImportErrorBasicDuplicate));
         expect(items[2].hasError, isTrue);
+        expect(items[2].error!.message, equals(S.transitImportErrorBasicColumnCount(1)));
       });
 
       setUp(() {

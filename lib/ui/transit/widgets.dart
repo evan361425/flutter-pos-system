@@ -99,7 +99,7 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
         }
 
         return PreviewPageWrapper(
-          ables: widget.selected.value?.toList() ?? FormattableModel.values,
+          models: widget.selected.value?.toList() ?? FormattableModel.values,
           formatter: f,
         );
       },
@@ -127,12 +127,14 @@ abstract class ExportView extends StatefulWidget {
   /// Build the model data table.
   Widget buildModel(BuildContext context, FormattableModel able) {
     final data = getSourceAndHeaders(able);
-    return PaginatedDataTable(
-      columns: [
-        for (final cell in data.headers) _buildColumn(cell),
-      ],
-      source: data.source,
-      showCheckboxColumn: false,
+    return SingleChildScrollView(
+      child: PaginatedDataTable(
+        columns: [
+          for (final cell in data.headers) _buildColumn(cell),
+        ],
+        source: data.source,
+        showCheckboxColumn: false,
+      ),
     );
   }
 
@@ -170,10 +172,7 @@ class _ExportViewState extends State<ExportView> with SingleTickerProviderStateM
       ]),
       Expanded(
         child: TabBarView(controller: controller, children: [
-          for (final able in FormattableModel.values)
-            SingleChildScrollView(
-              child: widget.buildModel(context, able),
-            ),
+          for (final able in FormattableModel.values) widget.buildModel(context, able),
         ]),
       ),
     ]);

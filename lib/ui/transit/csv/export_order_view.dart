@@ -19,9 +19,6 @@ class ExportOrderHeader extends TransitOrderHeader {
   String get title => S.transitExportOrderTitleCsv;
 
   @override
-  String get meta => S.transitExportOrderSubtitleCsv;
-
-  @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     final names = FormattableOrder.values.map((e) => e.l10nName).toList();
     final headers = FormattableOrder.values.map((e) => e.formatHeader()).toList();
@@ -43,6 +40,9 @@ class ExportOrderView extends TransitOrderList {
     super.key,
     required super.ranger,
   });
+
+  @override
+  String get helpMessage => S.transitExportOrderSubtitleCsv;
 
   @override
   int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);
