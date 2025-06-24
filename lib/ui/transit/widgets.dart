@@ -34,6 +34,8 @@ class TransitStateNotifier extends ValueNotifier<String> {
 abstract class ImportBasicBaseHeader extends BasicModelPicker {
   final ValueNotifier<PreviewFormatter?> formatter;
 
+  final String logName;
+
   const ImportBasicBaseHeader({
     super.key,
     required super.selected,
@@ -41,6 +43,7 @@ abstract class ImportBasicBaseHeader extends BasicModelPicker {
     required super.icon,
     required super.allowAll,
     required this.formatter,
+    this.logName = '',
   });
 
   String? get errorMessage => null;
@@ -51,7 +54,7 @@ abstract class ImportBasicBaseHeader extends BasicModelPicker {
   void onTap(BuildContext context) {
     stateNotifier.exec(() => showSnackbarWhenFutureError(
           onImport(context).then((v) => formatter.value = v),
-          'transit_basic_import',
+          'transit_import_$logName',
           context: context,
           message: errorMessage,
           more: moreMessage,
@@ -348,30 +351,4 @@ class ModelDataTableSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
-}
-
-/// Control scrollable by [scrollable]
-class NestedScrollPhysics extends ScrollPhysics {
-  final ValueNotifier<bool> scrollable;
-
-  const NestedScrollPhysics({super.parent, required this.scrollable});
-
-  @override
-  NestedScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return NestedScrollPhysics(parent: buildParent(ancestor), scrollable: scrollable);
-  }
-
-  @override
-  bool get allowUserScrolling => true;
-
-  @override
-  bool get allowImplicitScrolling => true;
-
-  @override
-
-  /// If still waiting SliverAppBar to disappear, don't accept user offset. (scrollable is false)
-  /// Or when the position is not at the top, accept user offset anyway
-  /// because the SliverAppBar is in middle of disappearing but scroll view is
-  /// not at the top.
-  bool shouldAcceptUserOffset(ScrollMetrics position) => scrollable.value || position.pixels != 0.0;
 }

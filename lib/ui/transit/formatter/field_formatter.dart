@@ -16,16 +16,15 @@ List<List<List<CellData>>> getAllFormattedFieldData(FormattableModel? able) {
   return (able?.toList() ?? FormattableModel.values).map((able) => findFieldFormatter(able).getRows()).toList();
 }
 
-ModelFormatter<Repository, CellData> findFieldFormatter(FormattableModel able, [Repository? repo]) {
+ModelFormatter<Repository, CellData> findFieldFormatter(FormattableModel able) {
   final parser = able.toParser();
 
   return switch (able) {
-    FormattableModel.menu =>
-      _MenuFormatter((repo ?? Menu.instance) as Menu, parser) as ModelFormatter<Repository, CellData>,
-    FormattableModel.stock => _StockFormatter((repo ?? Stock.instance) as Stock, parser),
-    FormattableModel.quantities => _QuantitiesFormatter((repo ?? Quantities.instance) as Quantities, parser),
-    FormattableModel.replenisher => _ReplenisherFormatter((repo ?? Replenisher.instance) as Replenisher, parser),
-    FormattableModel.orderAttr => _OAFormatter((repo ?? OrderAttributes.instance) as OrderAttributes, parser),
+    FormattableModel.menu => _MenuFormatter(Menu.instance, parser) as ModelFormatter<Repository, CellData>,
+    FormattableModel.stock => _StockFormatter(Stock.instance, parser),
+    FormattableModel.quantities => _QuantitiesFormatter(Quantities.instance, parser),
+    FormattableModel.replenisher => _ReplenisherFormatter(Replenisher.instance, parser),
+    FormattableModel.orderAttr => _OAFormatter(OrderAttributes.instance, parser),
   };
 }
 

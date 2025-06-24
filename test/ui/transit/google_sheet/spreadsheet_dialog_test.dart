@@ -94,6 +94,9 @@ void main() {
       await tester.pumpWidget(buildApp());
       await action(tester);
 
+      await tester.tap(find.byIcon(Icons.help_outline));
+      await tester.pump();
+
       final editor = find.byKey(const Key('transit.spreadsheet_editor'));
       final editorW = editor.evaluate().single.widget as TextFormField;
       expect(editorW.controller?.text, equals('old-id'));

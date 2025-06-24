@@ -9,6 +9,7 @@ const _isDebug = kDebugMode || isLocalTest;
 
 class Log {
   static void out(String msg, String code) {
+    print('$code: $msg');
     developer.log(msg, name: code);
   }
 
@@ -19,7 +20,7 @@ class Log {
   ]) async {
     assert(!event.contains('.'), 'should not contain "."');
     final message = parameters?.entries.map((e) => '${e.key}=${e.value}').join(' ');
-    developer.log(message ?? '', name: event);
+    Log.out(message ?? '', event);
 
     if (forceSend || allowSendEvents) {
       final Map<String, Object> filtered = <String, Object>{};

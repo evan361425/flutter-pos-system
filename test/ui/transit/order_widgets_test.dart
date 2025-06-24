@@ -79,7 +79,9 @@ void main() {
         end: DateTime(2023, DateTime.june, 11),
       ));
       final settings = ValueNotifier(const TransitOrderSettings());
+      final list = _TestOrderList(ranger: ranger);
 
+      expect(list.warningMessage, isNull);
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: Column(children: [
@@ -88,7 +90,7 @@ void main() {
               ranger: ranger,
               settings: settings,
             ),
-            _TestOrderList(ranger: ranger),
+            list,
           ]),
         ),
       ));

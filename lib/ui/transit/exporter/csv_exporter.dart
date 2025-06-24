@@ -36,6 +36,12 @@ class CSVExporter extends DataExporter {
   }) async {
     assert(names.length == data.length && names.length == headers.length, 'length not match');
 
+    final fileNames = names.whereIndexed((i, name) => data[i].isNotEmpty).map((name) => '$name.csv').toList();
+    if (fileNames.isEmpty) {
+      Log.out('no data to export', 'csv');
+      return Future.value(false);
+    }
+
     final bytes = data
         .mapIndexed((idx, rows) => [headers[idx], ...rows]
             .map((row) => row.map((e) {
@@ -45,10 +51,10 @@ class CSVExporter extends DataExporter {
             .join('\n'))
         .map((e) => utf8.encode(e))
         .toList();
-    final fileNames = names.map((name) => '$name.csv').toList();
 
+    Log.out('exporting with ${names.length} files: ${fileNames.join(', ')}', 'csv');
     return XFile.save(
-      bytes: bytes,
+      bytes: bytes.whereIndexed((i, _) => data[i].isNotEmpty).toList(),
       fileNames: fileNames,
       dialogTitle: S.transitExportFileDialogTitle,
     );

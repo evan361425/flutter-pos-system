@@ -602,22 +602,6 @@
       }
     }
   },
-  "transitFormatTextMenuMetaCatalog": "{count} 個產品種類",
-  "@transitFormatTextMenuMetaCatalog": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitFormatTextMenuMetaProduct": "{count} 個產品",
-  "@transitFormatTextMenuMetaProduct": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "transitFormatTextMenuHeader": "本菜單共有 {catalogs} 個產品種類、{products} 個產品。",
   "@transitFormatTextMenuHeader": {
     "placeholders": {
@@ -732,14 +716,6 @@
       }
     }
   },
-  "transitFormatTextStockMetaIngredient": "{count} 種成分",
-  "@transitFormatTextStockMetaIngredient": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "transitFormatTextStockHeader": "本庫存共有 {count} 種成分。",
   "@transitFormatTextStockHeader": {
     "placeholders": {
@@ -796,14 +772,6 @@
       }
     }
   },
-  "transitFormatTextQuantitiesMetaQuantity": "{count} 種份量",
-  "@transitFormatTextQuantitiesMetaQuantity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "transitFormatTextQuantitiesHeader": "共設定 {count} 種份量。",
   "@transitFormatTextQuantitiesHeader": {
     "placeholders": {
@@ -828,14 +796,6 @@
       },
       "prop": {
         "type": "String"
-      }
-    }
-  },
-  "transitFormatTextReplenisherMetaReplenishment": "{count} 種補貨方式",
-  "@transitFormatTextReplenisherMetaReplenishment": {
-    "placeholders": {
-      "count": {
-        "type": "int"
       }
     }
   },
@@ -868,14 +828,6 @@
   },
   "transitFormatTextReplenisherReplenishmentDetails": "{count, plural, =0{它並不會調整庫存} other{它會調整{count}種成份的庫存}}",
   "@transitFormatTextReplenisherReplenishmentDetails": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitFormatTextOaMetaOa": "{count} 種顧客屬性",
-  "@transitFormatTextOaMetaOa": {
     "placeholders": {
       "count": {
         "type": "int"

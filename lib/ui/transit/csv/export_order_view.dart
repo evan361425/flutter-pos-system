@@ -8,11 +8,14 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
 
 class ExportOrderHeader extends TransitOrderHeader {
+  final CSVExporter exporter;
+
   const ExportOrderHeader({
     super.key,
     required super.stateNotifier,
     required super.ranger,
     super.settings,
+    this.exporter = const CSVExporter(),
   });
 
   @override
@@ -28,7 +31,7 @@ class ExportOrderHeader extends TransitOrderHeader {
             }))
         .toList();
 
-    final ok = await const CSVExporter().export(names: names, data: data, headers: headers);
+    final ok = await exporter.export(names: names, data: data, headers: headers);
     if (ok && context.mounted) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
     }

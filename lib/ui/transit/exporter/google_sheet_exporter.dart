@@ -348,21 +348,6 @@ class GoogleSheetProperties {
         <GoogleSheetProperties>[];
   }
 
-  static GoogleSheetProperties? fromCacheValue(String? value) {
-    if (value == null) return null;
-
-    final index = value.lastIndexOf(' ');
-    if (index == -1) return null;
-
-    final name = value.substring(0, index);
-    final id = int.tryParse(value.substring(index + 1));
-    if (name.isEmpty || id == null) return null;
-
-    return GoogleSheetProperties(id, name);
-  }
-
-  String toCacheValue() => '$title $id';
-
   @override
   bool operator ==(Object other) {
     return other is GoogleSheetProperties && other.id == id && other.title == title;

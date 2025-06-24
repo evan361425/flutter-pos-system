@@ -504,22 +504,6 @@
   "transitFormatFieldOrderIngredientHeaderQuantity": "Quantity",
   "transitFormatFieldOrderIngredientHeaderAmount": "Amount",
   "transitFormatFieldOrderExpandableHint": "See next table",
-  "transitFormatTextMenuMetaCatalog": "{count} categories",
-  "@transitFormatTextMenuMetaCatalog": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitFormatTextMenuMetaProduct": "{count} products",
-  "@transitFormatTextMenuMetaProduct": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "transitFormatTextMenuHeader": "This menu has {catalogs} categories, {products} products.",
   "@transitFormatTextMenuHeader": {
     "placeholders": {
@@ -634,14 +618,6 @@
       }
     }
   },
-  "transitFormatTextStockMetaIngredient": "{count} ingredients",
-  "@transitFormatTextStockMetaIngredient": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "transitFormatTextStockHeader": "The inventory has {count} ingredients in total.",
   "@transitFormatTextStockHeader": {
     "placeholders": {
@@ -698,14 +674,6 @@
       }
     }
   },
-  "transitFormatTextQuantitiesMetaQuantity": "{count} quantities",
-  "@transitFormatTextQuantitiesMetaQuantity": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "transitFormatTextQuantitiesHeader": "{count} quantities have been set.",
   "@transitFormatTextQuantitiesHeader": {
     "placeholders": {
@@ -730,14 +698,6 @@
       },
       "prop": {
         "type": "String"
-      }
-    }
-  },
-  "transitFormatTextReplenisherMetaReplenishment": "{count} replenishment methods",
-  "@transitFormatTextReplenisherMetaReplenishment": {
-    "placeholders": {
-      "count": {
-        "type": "int"
       }
     }
   },
@@ -770,14 +730,6 @@
   },
   "transitFormatTextReplenisherReplenishmentDetails": "{count, plural, =0{it will not adjust inventory} other{it will adjust the inventory of {count} ingredients}}",
   "@transitFormatTextReplenisherReplenishmentDetails": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "transitFormatTextOaMetaOa": "{count} customer attributes",
-  "@transitFormatTextOaMetaOa": {
     "placeholders": {
       "count": {
         "type": "int"

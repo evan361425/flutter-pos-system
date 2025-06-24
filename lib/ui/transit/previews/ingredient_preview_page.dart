@@ -30,5 +30,5 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
   }
 
   @override
-  String get confirmedMessage => S.transitImportPreviewIngredientConfirm;
+  String get helpMessage => S.transitImportPreviewIngredientConfirm;
 }

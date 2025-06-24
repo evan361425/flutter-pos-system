@@ -36,6 +36,7 @@ class XFile {
       withReadStream: true,
       type: FileType.any,
     );
+    Log.out('picked file: ${file?.files.firstOrNull?.name}', 'file');
 
     final data = await file?.files.firstOrNull?.readStream?.toList();
     return data?.reduce((a, b) => a + b);

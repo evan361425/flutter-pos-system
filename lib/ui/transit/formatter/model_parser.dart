@@ -229,7 +229,7 @@ class ReplenisherParser extends ModelParser<Replenisher, Replenishment> {
       final amount = num.tryParse(columns[1]);
       if (amount == null) continue;
 
-      Ingredient? ing = Stock.instance.getItemByName(columns[0]);
+      Ingredient? ing = Stock.instance.getItemByName(columns[0]) ?? Stock.instance.getStagedByName(columns[0]);
       if (ing == null) {
         ing = Ingredient(
           name: columns[0],

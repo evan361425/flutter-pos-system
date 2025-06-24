@@ -47,6 +47,8 @@ class ExcelExporter extends DataExporter {
         }
       }
     }
+    excel.delete('Sheet1'); // remove default sheet if not used
+    excel.setDefaultSheet(names.first);
 
     final bytes = excel.encode();
     return XFile.save(

@@ -29,5 +29,5 @@ class QuantityPreviewPage extends PreviewPage<Quantity> {
   }
 
   @override
-  String get confirmedMessage => S.transitImportPreviewQuantityConfirm;
+  String get helpMessage => S.transitImportPreviewQuantityConfirm;
 }

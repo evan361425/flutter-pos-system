@@ -142,16 +142,14 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   Widget _buildConfirmedButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: FilledButton(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        FilledButton(
           key: const Key('transit.import.confirm'),
           child: Text(S.transitImportPreviewConfirmBtn),
           onPressed: () async {
             final confirmed = await ConfirmDialog.show(
               context,
               title: S.transitImportPreviewConfirmTitle,
-              content: confirmedMessage,
             );
             if (!confirmed) {
               return;
@@ -170,7 +168,8 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
             }
           },
         ),
-      ),
+        Text(helpMessage),
+      ]),
     );
   }
 
@@ -185,7 +184,7 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
 
   Widget buildItem(BuildContext context, T item);
 
-  String get confirmedMessage => S.transitImportPreviewConfirmContent;
+  String get helpMessage => S.transitImportPreviewConfirmContent;
 }
 
 class ImporterColumnStatus extends StatelessWidget {
@@ -245,31 +244,5 @@ class PreviewErrorListTile extends StatelessWidget {
       ),
       tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
     );
-  }
-}
-
-class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
-
-  SliverTabBarDelegate(this.tabBar);
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(color: Colors.white, child: tabBar);
-  }
-
-  @override
-  bool shouldRebuild(SliverTabBarDelegate oldDelegate) {
-    return false;
   }
 }

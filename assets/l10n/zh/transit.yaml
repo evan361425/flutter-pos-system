@@ -282,9 +282,6 @@ format:
       orderAttribute: 顧客的 {options}
       orderAttributeItem: '{name} 為 {option}'
     menu:
-      meta:
-        catalog: '{count} 個產品種類'
-        product: '{count} 個產品'
       header: 本菜單共有 {catalogs} 個產品種類、{products} 個產品。
       headerPrefix: 本菜單
       catalog: 第{index}個種類叫做 {catalog}，{details}。
@@ -303,8 +300,6 @@ format:
         other: 它還有 {count} 個不同份量 {quantities}
       quantity: '每份產品改成使用 {amount} 個並調整產品售價 {price} 元和成本 {cost} 元'
     stock:
-      meta:
-        ingredient: '{count} 種成分'
       header: 本庫存共有 {count} 種成分。
       headerPrefix: 本庫存
       ingredient: 第{index}個成分叫做 {name}，庫存現有 {amount} 個{details}。
@@ -317,14 +312,10 @@ format:
         - =0: ''
           other: '且每 {quantity} 個成本要價 {price} 元'
     quantities:
-      meta:
-        quantity: '{count} 種份量'
       header: 共設定 {count} 種份量。
       headerSuffix: 種份量。
       quantity: 第{index}種份量叫做 {name}，預設會讓成分的份量乘以 {prop} 倍。
     replenisher:
-      meta:
-        replenishment: '{count} 種補貨方式'
       header: 共設定 {count} 種補貨方式。
       headerSuffix: 種補貨方式。
       replenishment: 第{index}個成分叫做 {name}，{details}。
@@ -332,8 +323,6 @@ format:
       - =0: '它並不會調整庫存'
         other: 它會調整{count}種成份的庫存
     oa:  # order attribute
-      meta:
-        oa: '{count} 種顧客屬性'
       header: 共設定 {count} 種顧客屬性。
       headerSuffix: 種顧客屬性。
       oa: 第{index}種屬性叫做 {name}，屬於 {mode} 類型，{details}。

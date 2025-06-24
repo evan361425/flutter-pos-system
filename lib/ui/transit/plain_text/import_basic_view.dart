@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
@@ -36,6 +37,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
   }
 
   void _showTextField() async {
+    Log.ger('transit_import_plaintext');
     final controller = TextEditingController(text: text);
     final ok = await showAdaptiveDialog<bool>(
       context: context,

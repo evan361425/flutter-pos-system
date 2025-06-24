@@ -9,6 +9,7 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/order_formatter.dart';
+import 'package:possystem/ui/transit/google_sheet/views.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
@@ -45,6 +46,16 @@ void main() {
         ]),
       );
     }
+
+    test('warning message', () {
+      final view = ExportOrderView(
+          ranger: ValueNotifier(DateTimeRange(
+        start: DateTime.now().subtract(const Duration(days: 1)),
+        end: DateTime.now(),
+      )));
+
+      expect(view.warningMessage, isNotNull);
+    });
 
     testWidgets('select spreadsheet failed', (tester) async {
       await tester.pumpWidget(buildApp());

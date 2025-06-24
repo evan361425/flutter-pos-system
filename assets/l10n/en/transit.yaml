@@ -285,13 +285,6 @@ format:
         hint: See next table
   text:
     menu:
-      meta:
-        catalog:
-        - '{count} categories'
-        - count: {type: int}
-        product:
-        - '{count} products'
-        - count: {type: int}
       header:
       - This menu has {catalogs} categories, {products} products.
       - catalogs: {type: int}
@@ -348,10 +341,6 @@ format:
         price:
         cost:
     stock:
-      meta:
-        ingredient:
-        - '{count} ingredients'
-        - count: {type: int}
       header:
       - The inventory has {count} ingredients in total.
       - count: {type: int}
@@ -380,10 +369,6 @@ format:
           quantity:
           price:
     quantities:
-      meta:
-        quantity:
-        - '{count} quantities'
-        - count: {type: int}
       header:
       - '{count} quantities have been set.'
       - count: {type: int}
@@ -397,10 +382,6 @@ format:
         name:
         prop:
     replenisher:
-      meta:
-        replenishment:
-        - '{count} replenishment methods'
-        - count: {type: int}
       header:
       - '{count} replenishment methods have been set.'
       - count: {type: int}
@@ -418,10 +399,6 @@ format:
         other: 'it will adjust the inventory of {count} ingredients'
       - count: {type: int, mode: plural}
     oa:  # order attribute
-      meta:
-        oa:
-        - '{count} customer attributes'
-        - count: {type: int}
       header:
       - '{count} customer attributes have been set.'
       - count: {type: int}

@@ -27,6 +27,7 @@ void main() {
       String expected,
     ) {
       final formatter = findPlainTextFormatter(able);
+      expect(formatter.getHeader(), isEmpty);
       final text = formatter.getRows().map((row) => row.join('\n')).join('\n\n');
       expect(text, equals(expected));
 

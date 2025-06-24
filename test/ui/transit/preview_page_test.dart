@@ -8,7 +8,6 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -37,13 +36,6 @@ void main() {
     };
 
     return items.map((e) => FormattedItem(item: e)).toList();
-  }
-
-  void expectNameWithStatus(String text, String status) {
-    expect(
-      find.text(text + S.transitImportColumnStatus(status), findRichText: true),
-      findsOneWidget,
-    );
   }
 
   Widget buildApp(List<FormattableModel> ables, [PreviewFormatter? formatter]) {
@@ -87,10 +79,17 @@ void main() {
         await tester.tap(find.byType(ExpansionTile).first);
         await tester.pump();
 
-        expectNameWithStatus('p1', 'staged');
-        expectNameWithStatus('c1', 'staged');
-        expectNameWithStatus('i1', 'stagedIng');
-        expectNameWithStatus('q1', 'stagedQua');
+        void checkName(String text, String status) {
+          expect(
+            find.text(text + S.transitImportColumnStatus(status), findRichText: true),
+            findsOneWidget,
+          );
+        }
+
+        checkName('p1', 'staged');
+        checkName('c1', 'staged');
+        checkName('i1', 'stagedIng');
+        checkName('q1', 'stagedQua');
 
         await tester.tap(find.byKey(const Key('transit.import.confirm')));
         await tester.pumpAndSettle();
@@ -151,37 +150,37 @@ void main() {
           expect(repo.stagedItems.isEmpty, isTrue, reason: 'Staged items for $model should be empty after abort');
         }
       });
-
-      testWidgets('preview and commit all models', (tester) async {
-        final irf = _ImportFromRepo(() {
-          Stock.instance.replaceItems({
-            'i1': Stock.instance.getItem('i1')!,
-            'i2': Ingredient(id: 'i2', name: 'i2', currentAmount: 10),
-          });
-        });
-
-        await tester.pumpWidget(buildApp(FormattableModel.values, irf.formatter));
-        await tester.pumpAndSettle();
-
-        for (final model in FormattableModel.values) {
-          await tester.tap(find.text(model.l10nName));
-          await tester.pumpAndSettle();
-          await tester.tap(find.text(S.transitImportPreviewConfirmVerify));
-          await tester.pumpAndSettle();
-        }
-
-        await tester.tap(find.byKey(const Key('transit.import.confirm')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
-        await tester.pumpAndSettle();
-
-        irf.compares(FormattableModel.menu);
-        irf.compares(FormattableModel.stock);
-        irf.compares(FormattableModel.quantities);
-        irf.compares(FormattableModel.replenisher);
-        irf.compares(FormattableModel.orderAttr);
-      });
     }
+
+    testWidgets('preview and commit all models', (tester) async {
+      final irf = _ImportFromRepo(() {
+        Stock.instance.replaceItems({
+          'i1': Stock.instance.getItem('i1')!,
+          'i2': Ingredient(id: 'i2', name: 'i2', currentAmount: 10),
+        });
+      });
+
+      await tester.pumpWidget(buildApp(FormattableModel.values, irf.formatter));
+      await tester.pumpAndSettle();
+
+      for (final model in FormattableModel.values) {
+        await tester.tap(find.text(model.l10nName));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.transitImportPreviewConfirmVerify));
+        await tester.pumpAndSettle();
+      }
+
+      await tester.tap(find.byKey(const Key('transit.import.confirm')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      irf.compares(FormattableModel.menu);
+      irf.compares(FormattableModel.stock);
+      irf.compares(FormattableModel.quantities);
+      irf.compares(FormattableModel.replenisher);
+      irf.compares(FormattableModel.orderAttr);
+    });
   });
 
   setUp(() {
@@ -203,6 +202,12 @@ class _ImportFromRepo {
   final Quantities quantities;
   final Replenisher replenisher;
   final OrderAttributes orderAttributes;
+
+  late Menu menuOri;
+  late Stock stockOri;
+  late Quantities quantitiesOri;
+  late Replenisher replenisherOri;
+  late OrderAttributes orderAttributesOri;
 
   _ImportFromRepo._(this.menu, this.stock, this.quantities, this.replenisher, this.orderAttributes);
 
@@ -254,38 +259,58 @@ class _ImportFromRepo {
   }
 
   void compares(FormattableModel model) {
-    Repository repo = switch (model) {
-      FormattableModel.menu => menu as Repository,
-      FormattableModel.stock => stock,
-      FormattableModel.quantities => quantities,
-      FormattableModel.replenisher => replenisher,
-      FormattableModel.orderAttr => orderAttributes,
-    };
+    final actual = findPlainTextFormatter(model).getRows();
 
-    final texts = [
-      findPlainTextFormatter(model),
-      findPlainTextFormatter(model, repo),
-    ].map((e) => e.getRows().map((e) => e.join(",")).join("\n")).toList();
+    switchRepo();
+    final expected = findPlainTextFormatter(model).getRows();
+    switchBack();
 
-    expect(texts[0], equals(texts[1]));
+    expect(
+      actual.map((e) => e.join(",")).join("\n"),
+      equals(expected.map((e) => e.join(",")).join("\n")),
+    );
   }
 
   List<FormattedItem>? formatter(FormattableModel model) {
-    final (items, formatter) = switch (model) {
-      FormattableModel.menu => (
-          menu.itemList.map((e) => e.itemList).expand((e) => e).toList(),
-          findFieldFormatter(model, menu)
-        ),
-      FormattableModel.stock => (stock.itemList, findFieldFormatter(model, stock)),
-      FormattableModel.quantities => (quantities.itemList, findFieldFormatter(model, quantities)),
-      FormattableModel.replenisher => (replenisher.itemList, findFieldFormatter(model, replenisher)),
-      FormattableModel.orderAttr => (orderAttributes.itemList, findFieldFormatter(model, orderAttributes)),
+    final items = switch (model) {
+      FormattableModel.menu => menu.itemList.map((e) => e.itemList).expand((e) => e).toList(),
+      FormattableModel.stock => stock.itemList,
+      FormattableModel.quantities => quantities.itemList,
+      FormattableModel.replenisher => replenisher.itemList,
+      FormattableModel.orderAttr => orderAttributes.itemList,
     };
 
+    switchRepo();
+    final rows = findFieldFormatter(model).getRows();
+    switchBack();
+
     final parser = model.toParser();
-    final rows = formatter.getRows();
-    return items.mapIndexed((i, e) {
+    final result = items.mapIndexed((i, e) {
       return FormattedItem(item: parser.parse(rows[i].map((e) => e.toString()).toList(), i + 1));
     }).toList();
+
+    return result;
+  }
+
+  void switchRepo() {
+    menuOri = Menu.instance;
+    stockOri = Stock.instance;
+    quantitiesOri = Quantities.instance;
+    replenisherOri = Replenisher.instance;
+    orderAttributesOri = OrderAttributes.instance;
+
+    Menu.instance = menu;
+    Stock.instance = stock;
+    Quantities.instance = quantities;
+    Replenisher.instance = replenisher;
+    OrderAttributes.instance = orderAttributes;
+  }
+
+  void switchBack() {
+    Menu.instance = menuOri;
+    Stock.instance = stockOri;
+    Quantities.instance = quantitiesOri;
+    Replenisher.instance = replenisherOri;
+    OrderAttributes.instance = orderAttributesOri;
   }
 }

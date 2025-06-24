@@ -17,10 +17,6 @@ enum FormattableModel {
   replenisher,
   orderAttr;
 
-  static FormattableModel find(String name) {
-    return FormattableModel.values.firstWhere((e) => e.name == name);
-  }
-
   static void abort() {
     for (var e in FormattableModel.values) {
       e.toRepository().abortStaged();

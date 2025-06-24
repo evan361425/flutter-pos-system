@@ -8,8 +8,11 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/previews/preview_page.dart';
 import 'package:possystem/ui/transit/transit_page.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
@@ -42,6 +45,28 @@ void main() {
       }
     });
 
+    test('fulfill coverage', () async {
+      final header = _MyHeader(
+        selected: ValueNotifier<FormattableModel?>(null),
+        stateNotifier: TransitStateNotifier(),
+        icon: const Icon(Icons.abc),
+        allowAll: true,
+        formatter: ValueNotifier<PreviewFormatter?>(null),
+      );
+      final view = _ExportView(
+        stateNotifier: header.stateNotifier,
+        selected: header.selected,
+      );
+
+      try {
+        await header.onExport(_MyContext(), FormattableModel.menu);
+      } catch (e) {
+        expect(e, isA<UnimplementedError>());
+      }
+
+      expect(() => view.getSourceAndHeaders(FormattableModel.menu), throwsUnimplementedError);
+    });
+
     setUp(() {
       Menu();
       Stock();
@@ -58,3 +83,25 @@ void main() {
     });
   });
 }
+
+class _MyHeader extends ImportBasicBaseHeader {
+  const _MyHeader({
+    required super.selected,
+    required super.stateNotifier,
+    required super.icon,
+    required super.allowAll,
+    required super.formatter,
+  });
+
+  @override
+  String get label => '';
+
+  @override
+  Future<PreviewFormatter?> onImport(BuildContext context) => Future.value(null);
+}
+
+class _ExportView extends ExportView {
+  const _ExportView({required super.stateNotifier, required super.selected});
+}
+
+class _MyContext extends Mock implements BuildContext {}

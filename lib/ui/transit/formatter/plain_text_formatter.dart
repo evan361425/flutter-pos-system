@@ -13,16 +13,15 @@ const _reDig = r' *-?\d+\.?\d*';
 const _reInt = r'[0-9 ]+';
 const _rePre = r'^';
 
-ModelFormatter<Repository, String> findPlainTextFormatter(FormattableModel able, [Repository? repo]) {
+ModelFormatter<Repository, String> findPlainTextFormatter(FormattableModel able) {
   final parser = able.toParser();
 
   return switch (able) {
-    FormattableModel.menu =>
-      _MenuFormatter((repo ?? Menu.instance) as Menu, parser) as ModelFormatter<Repository, String>,
-    FormattableModel.stock => _StockFormatter((repo ?? Stock.instance) as Stock, parser),
-    FormattableModel.quantities => _QuantitiesFormatter((repo ?? Quantities.instance) as Quantities, parser),
-    FormattableModel.replenisher => _ReplenisherFormatter((repo ?? Replenisher.instance) as Replenisher, parser),
-    FormattableModel.orderAttr => _OAFormatter((repo ?? OrderAttributes.instance) as OrderAttributes, parser),
+    FormattableModel.menu => _MenuFormatter(Menu.instance, parser) as ModelFormatter<Repository, String>,
+    FormattableModel.stock => _StockFormatter(Stock.instance, parser),
+    FormattableModel.quantities => _QuantitiesFormatter(Quantities.instance, parser),
+    FormattableModel.replenisher => _ReplenisherFormatter(Replenisher.instance, parser),
+    FormattableModel.orderAttr => _OAFormatter(OrderAttributes.instance, parser),
   };
 }
 
@@ -50,8 +49,7 @@ class _MenuFormatter extends ModelFormatter<Menu, String> {
   static const quantityDelimiter = '、';
 
   @override
-  List<String> getHeader() =>
-      [S.transitFormatTextMenuMetaCatalog(target.length), S.transitFormatTextMenuMetaProduct(target.products.length)];
+  List<String> getHeader() => [];
 
   @override
   List<List<String>> getRows() {
@@ -212,7 +210,7 @@ class _StockFormatter extends ModelFormatter<Stock, String> {
   const _StockFormatter(super.target, super.parser);
 
   @override
-  List<String> getHeader() => [S.transitFormatTextStockMetaIngredient(target.length)];
+  List<String> getHeader() => [];
 
   @override
   List<List<String>> getRows() {
@@ -283,7 +281,7 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, String> {
   const _QuantitiesFormatter(super.target, super.parser);
 
   @override
-  List<String> getHeader() => [S.transitFormatTextQuantitiesMetaQuantity(target.length)];
+  List<String> getHeader() => [];
 
   @override
   List<List<String>> getRows() {
@@ -334,7 +332,7 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, String> {
   static const ingredientDelimiter = '：';
 
   @override
-  List<String> getHeader() => [S.transitFormatTextReplenisherMetaReplenishment(target.length)];
+  List<String> getHeader() => [];
 
   @override
   List<List<String>> getRows() {
@@ -395,7 +393,7 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, String> {
   const _OAFormatter(super.target, super.parser);
 
   @override
-  List<String> getHeader() => [S.transitFormatTextOaMetaOa(target.length)];
+  List<String> getHeader() => [];
 
   @override
   List<List<String>> getRows() {

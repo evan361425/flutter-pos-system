@@ -18,6 +18,7 @@ class ImportBasicHeader extends ImportBasicBaseHeader {
     required super.formatter,
     super.icon = const Icon(Icons.file_present_sharp),
     super.allowAll = false,
+    super.logName = 'csv',
     this.exporter = const CSVExporter(),
   });
 
