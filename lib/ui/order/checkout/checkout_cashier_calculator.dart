@@ -236,12 +236,12 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
 
       switch (op) {
         case '+':
-          return parts[0] + (parts[1] ?? 0);
+          return parts[0] + parts[1];
         case '-':
-          return parts[0] - (parts[1] ?? 0);
+          return parts[0] - parts[1];
         case 'x':
         default:
-          return parts[0] * (parts[1] ?? 1);
+          return parts[0] * parts[1];
       }
     } on StateError {
       return fallback;
