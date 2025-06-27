@@ -234,14 +234,14 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
       final op = _operators.firstWhere((o) => val.contains(o));
       final parts = val.split(op).map((e) => num.tryParse(e)).map((e) => e ?? 0).toList();
 
-      switch (operator) {
+      switch (op) {
         case '+':
-          return parts[0]! + (parts[1] ?? 0);
+          return parts[0] + (parts[1] ?? 0);
         case '-':
-          return parts[0]! - (parts[1] ?? 0);
+          return parts[0] - (parts[1] ?? 0);
         case 'x':
         default:
-          return parts[0]! * (parts[1] ?? 1);
+          return parts[0] * (parts[1] ?? 1);
       }
     } on StateError {
       return fallback;
