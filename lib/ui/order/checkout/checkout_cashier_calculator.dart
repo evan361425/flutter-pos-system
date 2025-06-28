@@ -232,7 +232,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
     final fallback = num.tryParse(val) ?? other;
     try {
       final op = _operators.firstWhere((o) => val.contains(o));
-      final parts = val.split(op).map((e) => num.tryParse(e)).map((e) => e ?? 0).toList();
+      final parts = val.split(op).map((e) => num.tryParse(e)).map((e) => e ?? (op == 'x' ? 1 : 0)).toList();
 
       switch (op) {
         case '+':
