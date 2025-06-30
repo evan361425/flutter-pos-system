@@ -103,11 +103,8 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
   }
 
   Widget _buildTab(_TabType tab) {
-    switch (tab) {
-      case _TabType.day:
-      case _TabType.week:
-      case _TabType.month:
-        return ListView(
+    return switch (tab) {
+      _TabType.day || _TabType.week || _TabType.month => ListView(
           children: [
             for (final e in ranges[tab]!.entries)
               RadioListTile(
@@ -118,9 +115,8 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
                 onChanged: (value) => setState(() => select = value!),
               ),
           ],
-        );
-      case _TabType.custom:
-        return ListView(children: [
+        ),
+      _TabType.custom => ListView(children: [
           ListTile(
             title: Text(select.format(S.localeName)),
             onTap: () async {
@@ -131,8 +127,8 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
               }
             },
           ),
-        ]);
-    }
+        ]),
+    };
   }
 
   @override

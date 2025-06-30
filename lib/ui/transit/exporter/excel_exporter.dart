@@ -51,9 +51,9 @@ class ExcelExporter extends DataExporter {
     excel.setDefaultSheet(names.first);
 
     final bytes = excel.encode();
-    return XFile.save(
-      bytes: [Uint8List.fromList(bytes ?? [])],
-      fileNames: [fileName],
+    return await XFile.save(
+      bytes: Uint8List.fromList(bytes ?? []),
+      fileName: fileName,
       dialogTitle: S.transitExportFileDialogTitle,
     );
   }

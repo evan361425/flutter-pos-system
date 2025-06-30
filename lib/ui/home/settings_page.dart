@@ -193,57 +193,42 @@ enum Feature {
   const Feature();
 
   Iterable<String> get itemTitles {
-    switch (this) {
-      case Feature.theme:
-        return ThemeMode.values.map((e) => S.settingThemeName(e.name));
-      case Feature.language:
-        return Language.values.map((e) => e.title);
-      case Feature.checkoutWarning:
-        return CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name));
-    }
+    return switch (this) {
+      Feature.theme => ThemeMode.values.map((e) => S.settingThemeName(e.name)),
+      Feature.language => Language.values.map((e) => e.title),
+      Feature.checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name)),
+    };
   }
 
   Iterable<String> get itemSubtitles {
-    switch (this) {
-      case Feature.theme:
-        return ThemeMode.values.map((e) => '');
-      case Feature.language:
-        return Language.values.map((e) => '');
-      case Feature.checkoutWarning:
-        return CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name));
-    }
+    return switch (this) {
+      Feature.theme => ThemeMode.values.map((e) => ''),
+      Feature.language => Language.values.map((e) => ''),
+      Feature.checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name)),
+    };
   }
 
   String get title {
-    switch (this) {
-      case Feature.theme:
-        return S.settingThemeTitle;
-      case Feature.language:
-        return S.settingLanguageTitle;
-      case Feature.checkoutWarning:
-        return S.settingCheckoutWarningTitle;
-    }
+    return switch (this) {
+      Feature.theme => S.settingThemeTitle,
+      Feature.language => S.settingLanguageTitle,
+      Feature.checkoutWarning => S.settingCheckoutWarningTitle,
+    };
   }
 
   int get selected {
-    switch (this) {
-      case Feature.theme:
-        return ThemeSetting.instance.value.index;
-      case Feature.language:
-        return LanguageSetting.instance.language.index;
-      case Feature.checkoutWarning:
-        return CheckoutWarningSetting.instance.value.index;
-    }
+    return switch (this) {
+      Feature.theme => ThemeSetting.instance.value.index,
+      Feature.language => LanguageSetting.instance.language.index,
+      Feature.checkoutWarning => CheckoutWarningSetting.instance.value.index,
+    };
   }
 
   Future<void> update(int index) {
-    switch (this) {
-      case Feature.theme:
-        return ThemeSetting.instance.update(ThemeMode.values[index]);
-      case Feature.language:
-        return LanguageSetting.instance.update(Language.values[index]);
-      case Feature.checkoutWarning:
-        return CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]);
-    }
+    return switch (this) {
+      Feature.theme => ThemeSetting.instance.update(ThemeMode.values[index]),
+      Feature.language => LanguageSetting.instance.update(Language.values[index]),
+      Feature.checkoutWarning => CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]),
+    };
   }
 }

@@ -357,13 +357,10 @@ enum CheckoutStatus {
   ok;
 
   factory CheckoutStatus.fromCashier(CashierUpdateStatus status) {
-    switch (status) {
-      case CashierUpdateStatus.notEnough:
-        return CheckoutStatus.cashierNotEnough;
-      case CashierUpdateStatus.usingSmall:
-        return CheckoutStatus.cashierUsingSmall;
-      case CashierUpdateStatus.ok:
-        return CheckoutStatus.ok;
-    }
+    return switch (status) {
+      CashierUpdateStatus.notEnough => CheckoutStatus.cashierNotEnough,
+      CashierUpdateStatus.usingSmall => CheckoutStatus.cashierUsingSmall,
+      CashierUpdateStatus.ok => CheckoutStatus.ok,
+    };
   }
 }

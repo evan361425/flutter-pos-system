@@ -8,9 +8,10 @@ import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
+import 'package:possystem/ui/transit/formatter/field_formatter.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 
 import '../../../mocks/mock_storage.dart';
@@ -29,11 +30,11 @@ void main() {
       );
     }
 
-    testWidgets('successfully', (tester) async {
+    testWidgets('import quantity only', (tester) async {
       final picker = mockFilePicker();
       mockFilePick(picker, bytes: utf8.encode('some-headers\nq1,1\n'));
 
-      Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});
+      // Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -46,6 +47,38 @@ void main() {
       await tester.pumpAndSettle();
 
       // allow import
+      await tester.tap(find.byKey(const Key('transit.import.confirm')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      verify(storage.add(any, any, {'name': 'q1', 'defaultProportion': 1}));
+    });
+
+    testWidgets('import all', (tester) async {
+      final qh = getAllFormattedFieldHeaders(FormattableModel.quantities).first.join(',');
+      final data = getAllFormattedFieldHeaders(null).map((h) {
+        final header = h.join(',');
+        if (header == qh) {
+          return '$header\nq1,1';
+        }
+        return header;
+      }).join('\n\n');
+
+      final picker = mockFilePicker();
+      mockFilePick(picker, bytes: utf8.encode(data));
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.file_present_sharp));
+      await tester.pumpAndSettle();
+
+      // allow import
+      await tester.tap(find.text(FormattableModel.quantities.l10nName));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.transitImportPreviewConfirmVerify));
+      await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('transit.import.confirm')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));

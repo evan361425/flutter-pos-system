@@ -8,9 +8,14 @@ import 'package:possystem/constants/constant.dart';
 const _isDebug = kDebugMode || isLocalTest;
 
 class Log {
-  static void out(String msg, String code) {
-    print('$code: $msg');
-    developer.log(msg, name: code);
+  static void out(
+    String msg,
+    String code, {
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
+    // print('$code: $msg, error: $error, stackTrace: $stackTrace');
+    developer.log(msg, name: code, error: error, stackTrace: stackTrace);
   }
 
   static void ger(
@@ -47,12 +52,7 @@ class Log {
       errorCount++;
       return !code.contains('.');
     }());
-    developer.log(
-      error.toString(),
-      name: code,
-      error: error,
-      stackTrace: stackTrace,
-    );
+    out(error.toString(), code, error: error, stackTrace: stackTrace);
 
     if (forceSend || allowSendEvents) {
       FirebaseCrashlytics.instance.recordError(

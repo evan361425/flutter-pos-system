@@ -22,6 +22,7 @@ MockFilePicker mockFilePicker() {
 }
 
 String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
+  reset(picker);
   when(picker.pickFiles(
     type: anyNamed('type'),
     withReadStream: anyNamed('withReadStream'),
@@ -44,20 +45,22 @@ String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
 }
 
 String mockFileSave(MockFilePicker picker, {bool canceled = false}) {
+  reset(picker);
   when(picker.saveFile(
     dialogTitle: anyNamed('dialogTitle'),
     fileName: anyNamed('fileName'),
     bytes: anyNamed('bytes'),
-  )).thenAnswer((_) async {
+  )).thenAnswer((v) async {
     if (canceled) return null;
 
-    final tempDir = XFile.fs.systemTempDirectory.path;
-    final file = XFile('$tempDir/saved-file');
-
-    return file.path;
+    final path = XFile.fs.systemTempDirectory.path;
+    final fileName = v.namedArguments[#fileName] as String;
+    final bytes = v.namedArguments[#bytes] as Uint8List;
+    XFile('$path/$fileName').file.writeAsBytesSync(bytes);
+    return path;
   });
 
-  return '${XFile.fs.systemTempDirectory.path}/saved-file';
+  return XFile.fs.systemTempDirectory.path;
 }
 
 void mockImagePick(WidgetTester tester, {bool canceled = false}) {

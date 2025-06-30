@@ -17,7 +17,7 @@ class ImportBasicHeader extends ImportBasicBaseHeader {
     required super.stateNotifier,
     required super.formatter,
     super.icon = const Icon(Icons.file_present_sharp),
-    super.allowAll = false,
+    super.allowAll = true,
     super.logName = 'csv',
     this.exporter = const CSVExporter(),
   });
@@ -35,6 +35,21 @@ class ImportBasicHeader extends ImportBasicBaseHeader {
     }
 
     final data = await exporter.import(input);
-    return (FormattableModel able) => findFieldFormatter(able).format(data);
+
+    if (selected.value != null) {
+      return (FormattableModel able) => findFieldFormatter(able).format(data.first.skip(1).toList());
+    }
+
+    final headers = getAllFormattedFieldHeaders(null).map((row) => row.map((e) => e.toString()).join(',')).toList();
+    final parts = <FormattableModel, List<List<String>>>{};
+    data.where((rows) => rows.isNotEmpty).forEach((rows) {
+      final header = rows.first.join(',');
+      final idx = headers.indexOf(header);
+      if (idx != -1) {
+        parts[FormattableModel.values[idx]] = rows.skip(1).toList();
+      }
+    });
+
+    return (FormattableModel able) => parts.containsKey(able) ? findFieldFormatter(able).format(parts[able]!) : null;
   }
 }

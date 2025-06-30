@@ -11,7 +11,6 @@ import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/field_formatter.dart';
@@ -47,42 +46,40 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('transit.model_picker')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('transit.model_picker._all')), warnIfMissed: false);
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('transit.model_export')));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.transitExportBasicSuccessCsv), findsOneWidget);
-
       final header1 = findFieldFormatter(FormattableModel.stock).getHeader().map((e) => e.toString()).join(',');
+      final header2 = findFieldFormatter(FormattableModel.quantities).getHeader().map((e) => e.toString()).join(',');
       verify(picker.saveFile(
         dialogTitle: anyNamed('dialogTitle'),
-        fileName: '${FormattableModel.stock.l10nName}.csv',
-        bytes: utf8.encode('$header1\ni1,0.0,100,,1.0'),
+        fileName: '${S.transitExportBasicFileName}.csv',
+        bytes: utf8.encode('$header1\ni1,0.0,100,,1.0\n\n$header2\nq1,1'),
       ));
-
-      final path = '${XFile.fs.systemTempDirectory.path}/${FormattableModel.quantities.l10nName}.csv';
-      final header2 = findFieldFormatter(FormattableModel.quantities).getHeader().map((e) => e.toString()).join(',');
-      expect(XFile(path).file.readAsBytesSync().toList(), utf8.encode('$header2\nq1,1'));
     });
 
     testWidgets('abort saving', (tester) async {
-      final picker = mockFilePicker();
-      mockFileSave(picker, canceled: true);
-
       Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});
+      Stock.instance.replaceItems({'i1': Ingredient(id: 'i1', name: 'i1')});
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      // empty data export
+      await tester.tap(find.byKey(const Key('transit.model_picker')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('transit.model_picker.menu')), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      // empty data export, won't need picker
       await tester.tap(find.byKey(const Key('transit.model_export')));
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitExportBasicSuccessCsv), findsNothing);
 
+      final picker = mockFilePicker();
+      mockFileSave(picker, canceled: true);
+
+      // change by tab
       await tester.tap(find.text(FormattableModel.quantities.l10nName));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('transit.model_export')));

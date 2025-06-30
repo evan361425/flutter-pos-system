@@ -11,53 +11,62 @@ import 'data_exporter.dart';
 class CSVExporter extends DataExporter {
   const CSVExporter();
 
-  Future<List<List<String>>> import(List<int> input) async {
-    final result = <List<String>>[];
-    final string = utf8.decode(input);
+  Future<List<List<List<String>>>> import(List<int> input) async {
+    final text = utf8.decode(input);
+    Log.out(text, 'csv');
+    final parts = text.split('\n\n');
 
-    for (final (lineNo, line) in string.split('\n').indexed) {
-      if (line.isNotEmpty) {
+    int lineNo = 0;
+    return parts.map((part) {
+      final result = part.split('\n').where((e) {
+        lineNo++;
+        return e.isNotEmpty;
+      }).map((line) {
         try {
-          result.add(split(line));
+          return split(line);
         } catch (e) {
           Log.out('parse csv failed at line $lineNo: ${e.toString()}', 'csv');
-          result.add([line]);
+          return [line];
         }
-      }
-    }
+      }).toList();
 
-    return result;
+      lineNo += 2;
+      return result;
+    }).toList();
   }
 
   Future<bool> export({
-    required List<String> names,
+    required String name,
     required List<Iterable<Iterable<String>>> data,
     required List<Iterable<String>> headers,
   }) async {
-    assert(names.length == data.length && names.length == headers.length, 'length not match');
+    assert(data.length == headers.length, 'length not match');
 
-    final fileNames = names.whereIndexed((i, name) => data[i].isNotEmpty).map((name) => '$name.csv').toList();
-    if (fileNames.isEmpty) {
+    if (data.every((e) => e.isEmpty)) {
       Log.out('no data to export', 'csv');
-      return Future.value(false);
+      return false;
     }
 
-    final bytes = data
-        .mapIndexed((idx, rows) => [headers[idx], ...rows]
-            .map((row) => row.map((e) {
-                  final v = e.replaceAll('"', '""').replaceAll('\n', '\\n');
-                  return v.contains(',') || v.contains('"') || v.contains('\\n') ? '"$v"' : v;
-                }).join(','))
-            .join('\n'))
-        .map((e) => utf8.encode(e))
-        .toList();
+    final texts = <String>[];
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].isNotEmpty) {
+        texts.add('${join(headers[i])}\n${data[i].map((e) => join(e)).join('\n')}');
+      }
+    }
 
-    Log.out('exporting with ${names.length} files: ${fileNames.join(', ')}', 'csv');
-    return XFile.save(
-      bytes: bytes.whereIndexed((i, _) => data[i].isNotEmpty).toList(),
-      fileNames: fileNames,
+    Log.out('exporting file: $name.csv', 'csv');
+    return await XFile.save(
+      bytes: utf8.encode(texts.join('\n\n')),
+      fileName: '$name.csv',
       dialogTitle: S.transitExportFileDialogTitle,
     );
+  }
+
+  static String join(Iterable<String> fields) {
+    return fields.map((e) {
+      final v = e.replaceAll('"', '""').replaceAll('\n', '\\n');
+      return v.contains(',') || v.contains('"') || v.contains('\\n') ? '"$v"' : v;
+    }).join(',');
   }
 
   /// Split a CSV line into fields

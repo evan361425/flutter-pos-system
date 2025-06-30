@@ -239,12 +239,10 @@ abstract class TransitOrderHeader extends StatelessWidget {
       subtitle = ValueListenableBuilder(
         valueListenable: settings!,
         builder: (context, p, _) {
-          return Column(children: [
-            MetaBlock.withString(context, [
-              S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
-              S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
-            ])!,
-          ]);
+          return MetaBlock.withString(context, [
+            S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
+            S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
+          ])!;
         },
       );
 

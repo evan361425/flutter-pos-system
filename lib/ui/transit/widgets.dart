@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/info_popup.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
@@ -52,6 +53,7 @@ abstract class ImportBasicBaseHeader extends BasicModelPicker {
 
   @override
   void onTap(BuildContext context) {
+    Log.out('start importing', 'import_picker');
     stateNotifier.exec(() => showSnackbarWhenFutureError(
           onImport(context).then((v) => formatter.value = v),
           'transit_import_$logName',
@@ -302,6 +304,7 @@ class _BasicModelPickerState extends State<BasicModelPicker> {
   @override
   void initState() {
     super.initState();
+    widget.selected.value = widget.allowAll ? null : FormattableModel.menu;
     widget.selected.addListener(_onModelChange);
   }
 

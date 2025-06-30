@@ -1,8 +1,7 @@
-import 'dart:typed_data';
-
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:possystem/helpers/logger.dart';
 
@@ -32,42 +31,32 @@ class XFile {
   }
 
   static Future<List<int>?> pick() async {
-    final file = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.platform.pickFiles(
       withReadStream: true,
       type: FileType.any,
     );
-    Log.out('picked file: ${file?.files.firstOrNull?.name}', 'file');
+    final file = result?.files.firstOrNull;
+    Log.out('picked file: ${file?.path}', 'file');
 
-    final data = await file?.files.firstOrNull?.readStream?.toList();
+    final data = await file?.readStream?.toList();
     return data?.reduce((a, b) => a + b);
   }
 
   static Future<bool> save({
-    required List<Uint8List> bytes,
-    required List<String> fileNames,
     required String dialogTitle,
+    required String fileName,
+    required Uint8List bytes,
   }) async {
-    assert(bytes.length == fileNames.length, 'bytes and fileNames length not match');
     final path = await FilePicker.platform.saveFile(
       dialogTitle: dialogTitle,
-      fileName: fileNames[0],
-      bytes: bytes[0],
+      fileName: fileName,
+      bytes: bytes,
     );
-    Log.out('save file to $path', 'file');
+    Log.out('saved $fileName to $path', 'file');
 
-    if (path == null) {
+    // web will always return null
+    if (path == null && !kIsWeb) {
       return false;
-    }
-
-    final file = XFile(path).file;
-    if (!(await file.exists())) {
-      // in desktop platform, the file is not created
-      await file.writeAsBytes(bytes[0]);
-    }
-
-    final dir = file.parent;
-    for (var i = 1; i < bytes.length; i++) {
-      await dir.childFile(fileNames[i]).writeAsBytes(bytes[i]);
     }
 
     return true;

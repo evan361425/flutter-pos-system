@@ -38,7 +38,7 @@ void main() {
 
     testWidgets('successfully', (tester) async {
       final picker = mockFilePicker();
-      final file = mockFileSave(picker);
+      final path = mockFileSave(picker);
 
       Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});
       Stock.instance.replaceItems({'i1': Ingredient(id: 'i1', name: 'i1', totalAmount: 100)});
@@ -46,10 +46,6 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('transit.model_picker')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('transit.model_picker._all')), warnIfMissed: false);
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('transit.model_export')));
       await tester.pumpAndSettle();
 
@@ -60,7 +56,7 @@ void main() {
         bytes: anyNamed('bytes'),
       ));
 
-      final excel = Excel.decodeBytes(XFile(file).file.readAsBytesSync());
+      final excel = Excel.decodeBytes(XFile('$path/${S.transitExportBasicFileName}.xlsx').file.readAsBytesSync());
       expect(excel.sheets.keys.toList(), equals(FormattableModel.allL10nNames));
 
       final header = findFieldFormatter(FormattableModel.quantities).getHeader().map((e) => e.toString()).join(',');

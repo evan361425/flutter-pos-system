@@ -27,7 +27,7 @@ void main() {
 
     testWidgets('preview and export', (tester) async {
       final picker = mockFilePicker();
-      final file = mockFileSave(picker);
+      final path = mockFileSave(picker);
       when(cache.get('exporter_order_meta.withPrefix')).thenReturn(false);
 
       final order = OrderSetter.sample();
@@ -48,7 +48,7 @@ void main() {
         bytes: anyNamed('bytes'),
       ));
 
-      final excel = Excel.decodeBytes(XFile(file).file.readAsBytesSync());
+      final excel = Excel.decodeBytes(XFile('$path/${S.transitExportOrderFileName}.xlsx').file.readAsBytesSync());
       expect(excel.sheets.keys.toList(), equals(FormattableOrder.values.map((e) => e.l10nName).toList()));
     });
 

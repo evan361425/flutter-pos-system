@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/models/xfile.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
@@ -41,18 +44,20 @@ void main() {
       expect(find.text(S.transitExportOrderSuccessCsv), findsOneWidget);
       verify(picker.saveFile(
         dialogTitle: anyNamed('dialogTitle'),
-        fileName: '${FormattableOrder.basic.l10nName}.csv',
-        bytes: anyNamed('bytes'),
+        fileName: '${S.transitExportOrderFileName}.csv',
+        bytes: argThat(predicate((e) {
+          if (e is Uint8List) {
+            final parts = utf8.decode(e).split('\n\n').toList();
+            final expected = FormattableOrder.values.map((e) => e.formatHeader().join(','));
+
+            return expected.mapIndexed((i, e) {
+              return parts[i].split('\n').first == e;
+            }).every((e) => e);
+          }
+
+          return false;
+        }), named: 'bytes'),
       ));
-
-      void checkFileExist(String file) {
-        final path = '${XFile.fs.systemTempDirectory.path}/$file.csv';
-        expect(XFile(path).file.existsSync(), isTrue, reason: 'File $file should exist');
-      }
-
-      checkFileExist(FormattableOrder.product.l10nName);
-      checkFileExist(FormattableOrder.ingredient.l10nName);
-      checkFileExist(FormattableOrder.attr.l10nName);
     });
 
     setUpAll(() {

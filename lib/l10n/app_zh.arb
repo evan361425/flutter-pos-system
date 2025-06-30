@@ -378,6 +378,7 @@
   "transitExportBasicSuccessGoogleSheet": "上傳成功",
   "transitExportBasicSuccessPlainText": "拷貝成功",
   "transitExportBasicSuccessActionGoogleSheet": "開啟表單",
+  "transitExportBasicErrorOnlyOneFileExported": "只有 {name} 匯出成功，其他檔敗因為沒有資料夾的權限而匯出失敗。",
   "transitExportOrderTitleCsv": "匯出成 CSV 檔",
   "transitExportOrderTitleExcel": "匯出成 Excel 檔",
   "transitExportOrderTitleGoogleSheet": "匯出至 Google 試算表",

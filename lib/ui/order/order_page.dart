@@ -185,24 +185,16 @@ class _OrderPageState extends State<OrderPage> {
 void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
   status = CheckoutWarningSetting.instance.shouldShow(status);
 
-  switch (status) {
-    case CheckoutStatus.ok:
-    case CheckoutStatus.stash:
-    case CheckoutStatus.restore:
-      showSnackBar(S.actSuccess, context: context);
-      break;
-    case CheckoutStatus.cashierNotEnough:
-      showSnackBar(S.orderSnackbarCashierNotEnough, context: context);
-      break;
-    case CheckoutStatus.cashierUsingSmall:
-      showMoreInfoSnackBar(
+  return switch (status) {
+    CheckoutStatus.ok || CheckoutStatus.stash || CheckoutStatus.restore => showSnackBar(S.actSuccess, context: context),
+    CheckoutStatus.cashierNotEnough => showSnackBar(S.orderSnackbarCashierNotEnough, context: context),
+    CheckoutStatus.cashierUsingSmall => showMoreInfoSnackBar(
         S.orderSnackbarCashierUsingSmallMoney,
         Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('settings/checkoutWarning'))),
         context: context,
-      );
-      break;
-    default:
-  }
+      ),
+    _ => null,
+  };
 }
 
 /// [DraggableScrollableActuator] will trigger `animateTo` while building widget

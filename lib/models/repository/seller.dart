@@ -572,33 +572,23 @@ enum OrderMetricTarget {
   ///
   /// - [selection] null and empty means select all
   List<Model> getItems([List<String>? selection]) {
-    late final List<Model> result;
-    switch (this) {
-      case OrderMetricTarget.product:
-        result = Menu.instance.products.toList();
-        break;
-      case OrderMetricTarget.catalog:
-        result = Menu.instance.itemList;
-        break;
-      case OrderMetricTarget.ingredient:
-        result = Stock.instance.itemList;
-        break;
-      case OrderMetricTarget.attribute:
-        if (selection != null) {
-          if (selection.isEmpty) {
-            return OrderAttributes.instance.itemList.expand((e) => e.itemList).toList();
-          }
+    if (this == OrderMetricTarget.attribute && selection != null) {
+      if (selection.isEmpty) {
+        return OrderAttributes.instance.itemList.expand((e) => e.itemList).toList();
+      }
 
-          return selection
-              .expand<OrderAttributeOption>((id) => OrderAttributes.instance.getItemByName(id)?.itemList ?? const [])
-              .toList();
-        }
-
-        result = OrderAttributes.instance.itemList;
-        break;
-      default:
-        return const [];
+      return selection
+          .expand<OrderAttributeOption>((id) => OrderAttributes.instance.getItemByName(id)?.itemList ?? const [])
+          .toList();
     }
+
+    final result = switch (this) {
+      OrderMetricTarget.product => Menu.instance.products.toList() as List<Model>,
+      OrderMetricTarget.catalog => Menu.instance.itemList,
+      OrderMetricTarget.ingredient => Stock.instance.itemList,
+      OrderMetricTarget.attribute => OrderAttributes.instance.itemList,
+      _ => const <Model>[],
+    };
 
     // null and empty means select all
     if (selection == null || selection.isEmpty) {

@@ -63,6 +63,10 @@ void main() {
 
     Future<void> start(WidgetTester tester) async {
       await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('transit.model_picker')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('transit.model_picker.menu')).first, warnIfMissed: false);
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('transit.model_export')));
       await tester.pump();
       await tester.tap(find.byKey(const Key('transit.spreadsheet_confirm')));

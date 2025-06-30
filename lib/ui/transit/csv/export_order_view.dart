@@ -23,7 +23,6 @@ class ExportOrderHeader extends TransitOrderHeader {
 
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
-    final names = FormattableOrder.values.map((e) => e.l10nName).toList();
     final headers = FormattableOrder.values.map((e) => e.formatHeader()).toList();
     final data = FormattableOrder.values
         .map((formatter) => orders.expand((o) {
@@ -31,8 +30,8 @@ class ExportOrderHeader extends TransitOrderHeader {
             }))
         .toList();
 
-    final ok = await exporter.export(names: names, data: data, headers: headers);
-    if (ok && context.mounted) {
+    final ok = await exporter.export(name: S.transitExportOrderFileName, data: data, headers: headers);
+    if (context.mounted && ok) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
     }
   }
