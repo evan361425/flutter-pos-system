@@ -114,7 +114,7 @@ jobs:
               : ''.concat(${{ steps.build_code.outputs.value }} % 100);
 
   fastlane-deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: var
     steps:
       - name: Set up Flutter
@@ -133,7 +133,7 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3"
+          ruby-version: "2.7"
           bundler-cache: true
           working-directory: android
       - run: bundle exec fastlane --version
