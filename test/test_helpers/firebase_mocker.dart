@@ -46,7 +46,6 @@ Map<String, List<String>> setupFirebaseAnalyticsMocks() {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
     MethodChannelFirebaseAnalytics.channel,
     (MethodCall methodCall) async {
-      print('MockAnalytics: $methodCall');
       record['methods']!.add(methodCall.method);
       switch (methodCall.method) {
         case 'Analytics#getAppInstanceId':
