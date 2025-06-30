@@ -1,14 +1,66 @@
 import 'package:file/memory.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/xfile.dart';
 
 import '../mocks/mock_helpers.dart';
+import 'file_mocker.mocks.dart';
 
+@GenerateMocks([FilePicker])
 void initializeFileSystem() {
   XFile.fs = MemoryFileSystem();
+}
+
+MockFilePicker mockFilePicker() {
+  final picker = MyFilePicker();
+  FilePicker.platform = picker;
+  return picker.picker;
+}
+
+String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
+  reset(picker);
+  when(picker.pickFiles(
+    type: anyNamed('type'),
+    withReadStream: anyNamed('withReadStream'),
+  )).thenAnswer((_) async {
+    if (bytes == null) {
+      return null;
+    }
+
+    return FilePickerResult([
+      PlatformFile(
+        name: 'picked-file',
+        path: '${XFile.fs.systemTempDirectory.path}/picked-file',
+        size: 10,
+        readStream: Stream.fromIterable([bytes]),
+      )
+    ]);
+  });
+
+  return '${XFile.fs.systemTempDirectory.path}/picked-file';
+}
+
+String mockFileSave(MockFilePicker picker, {bool canceled = false}) {
+  reset(picker);
+  when(picker.saveFile(
+    dialogTitle: anyNamed('dialogTitle'),
+    fileName: anyNamed('fileName'),
+    bytes: anyNamed('bytes'),
+  )).thenAnswer((v) async {
+    if (canceled) return null;
+
+    final path = XFile.fs.systemTempDirectory.path;
+    final fileName = v.namedArguments[#fileName] as String;
+    final bytes = v.namedArguments[#bytes] as Uint8List;
+    XFile('$path/$fileName').file.writeAsBytesSync(bytes);
+    return path;
+  });
+
+  return XFile.fs.systemTempDirectory.path;
 }
 
 void mockImagePick(WidgetTester tester, {bool canceled = false}) {
@@ -154,3 +206,57 @@ const _examplePng = <int>[
   96,
   130
 ];
+
+class MyFilePicker extends FilePicker {
+  final picker = MockFilePicker();
+
+  @override
+  Future<FilePickerResult?> pickFiles({
+    String? dialogTitle,
+    String? initialDirectory,
+    FileType type = FileType.any,
+    List<String>? allowedExtensions,
+    Function(FilePickerStatus)? onFileLoading,
+    bool allowCompression = true,
+    int compressionQuality = 30,
+    bool allowMultiple = false,
+    bool withData = false,
+    bool withReadStream = false,
+    bool lockParentWindow = false,
+    bool readSequential = false,
+  }) async =>
+      picker.pickFiles(
+        dialogTitle: dialogTitle,
+        initialDirectory: initialDirectory,
+        type: type,
+        allowedExtensions: allowedExtensions,
+        onFileLoading: onFileLoading,
+        allowCompression: allowCompression,
+        compressionQuality: compressionQuality,
+        allowMultiple: allowMultiple,
+        withData: withData,
+        withReadStream: withReadStream,
+        lockParentWindow: lockParentWindow,
+        readSequential: readSequential,
+      );
+
+  @override
+  Future<String?> saveFile({
+    String? dialogTitle,
+    String? fileName,
+    String? initialDirectory,
+    FileType type = FileType.any,
+    List<String>? allowedExtensions,
+    Uint8List? bytes,
+    bool lockParentWindow = false,
+  }) async =>
+      picker.saveFile(
+        dialogTitle: dialogTitle,
+        fileName: fileName,
+        initialDirectory: initialDirectory,
+        type: type,
+        allowedExtensions: allowedExtensions,
+        bytes: bytes,
+        lockParentWindow: lockParentWindow,
+      );
+}

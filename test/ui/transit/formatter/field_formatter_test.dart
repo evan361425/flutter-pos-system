@@ -1,6 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
-import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -16,14 +14,15 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/formatter/field_formatter.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 
-import '../../test_helpers/translator.dart';
+import '../../../test_helpers/translator.dart';
 
 void main() {
-  group('Google Sheet Formatter', () {
+  group('Field Formatter', () {
     group('Menu', () {
       test('format', () {
-        const formatter = GoogleSheetFormatter();
         const ingredients = '''
 - i1,1
   + q1,1,1,1
@@ -38,7 +37,7 @@ void main() {
   + q1,1,1,1
 ''';
 
-        final items = formatter.format<Product>(Formattable.menu, [
+        final items = findFieldFormatter(FormattableModel.menu).format<Product>([
           ['A', 'pB', 1, 1, '- i0'],
           ['B', 'pA', 1, 1, 'from-format\n +\n-i'],
           ['C', 'pA', 1, 1],
@@ -190,9 +189,7 @@ void main() {
 
     group('Stock', () {
       test('format', () {
-        const formatter = GoogleSheetFormatter();
-
-        final items = formatter.format<Ingredient>(Formattable.stock, [
+        final items = findFieldFormatter(FormattableModel.stock).format<Ingredient>([
           ['i1', 2, 3],
           ['i1'],
           [],
@@ -215,7 +212,9 @@ void main() {
         verifyItem(4, 'i3', 0, null, 'staged');
 
         expect(items[1].hasError, isTrue);
+        expect(items[1].error!.message, equals(S.transitImportErrorBasicDuplicate));
         expect(items[2].hasError, isTrue);
+        expect(items[2].error!.message, equals(S.transitImportErrorBasicColumnCount(1)));
       });
 
       setUp(() {
@@ -229,9 +228,7 @@ void main() {
 
     group('Quantities', () {
       test('format', () {
-        const formatter = GoogleSheetFormatter();
-
-        final items = formatter.format<Quantity>(Formattable.quantities, [
+        final items = findFieldFormatter(FormattableModel.quantities).format<Quantity>([
           ['q1', 2],
           ['q1'],
           [],
@@ -268,10 +265,9 @@ void main() {
 
     group('Replenisher', () {
       test('format', () {
-        const formatter = GoogleSheetFormatter();
         const r1Data = '- i1,20\n- i2,-5';
 
-        final items = formatter.format<Replenishment>(Formattable.replenisher, [
+        final items = findFieldFormatter(FormattableModel.replenisher).format<Replenishment>([
           ['r1', r1Data],
           ['r1'],
           [],
@@ -315,10 +311,9 @@ void main() {
 
     group('OrderAttributes', () {
       test('format', () {
-        const formatter = GoogleSheetFormatter();
         const c1Data = '- co1,true\n- co2,,5';
 
-        final items = formatter.format<OrderAttribute>(Formattable.orderAttr, [
+        final items = findFieldFormatter(FormattableModel.orderAttr).format<OrderAttribute>([
           ['c1', S.orderAttributeModeName('changeDiscount'), c1Data],
           ['c1', '', '- co1,20'],
           ['c2'],

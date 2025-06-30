@@ -18,7 +18,7 @@ class PrinterInfoDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(S.printerInfoTitle),
       scrollable: true,
       content: Column(mainAxisSize: MainAxisSize.min, children: [

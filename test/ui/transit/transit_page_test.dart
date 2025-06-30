@@ -8,7 +8,11 @@ import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/routes.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/previews/preview_page.dart';
 import 'package:possystem/ui/transit/transit_page.dart';
+import 'package:possystem/ui/transit/transit_station.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
 import '../../mocks/mock_auth.dart';
 import '../../mocks/mock_cache.dart';
@@ -17,7 +21,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Transit Page', () {
     testWidgets('nav', (tester) async {
-      const keys = ['transit.google_sheet', 'transit.plain_text'];
+      const keys = ['google_sheet', 'excel', 'csv', 'plain_text'];
 
       when(cache.get(any)).thenReturn(null);
 
@@ -32,30 +36,35 @@ void main() {
       ));
 
       for (var key in keys) {
-        await tester.tap(find.byKey(Key(key)));
-        await tester.pump(const Duration(milliseconds: 100));
-        await tester.pump(const Duration(milliseconds: 100));
+        await tester.tap(find.byKey(Key('transit.$key')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(TransitCatalog.exportModel.l10nName));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('pop')).last);
         await tester.pumpAndSettle();
       }
+    });
 
-      // move to basic
-      await tester.timedDragFrom(
-        const Offset(300, 300),
-        const Offset(-200, 0),
-        const Duration(milliseconds: 100),
+    test('fulfill coverage', () async {
+      final header = _MyHeader(
+        selected: ValueNotifier<FormattableModel?>(null),
+        stateNotifier: TransitStateNotifier(),
+        icon: const Icon(Icons.abc),
+        allowAll: true,
+        formatter: ValueNotifier<PreviewFormatter?>(null),
       );
-      await tester.pumpAndSettle();
+      final view = _ExportView(
+        stateNotifier: header.stateNotifier,
+        selected: header.selected,
+      );
 
-      for (var key in keys) {
-        await tester.tap(find.byKey(Key(key)));
-        await tester.pumpAndSettle();
-
-        expect(find.byKey(const Key('transit.basic_tab')), findsOneWidget);
-
-        await tester.tap(find.byKey(const Key('pop')));
-        await tester.pumpAndSettle();
+      try {
+        await header.onExport(_MyContext(), FormattableModel.menu);
+      } catch (e) {
+        expect(e, isA<UnimplementedError>());
       }
+
+      expect(() => view.getSourceAndHeaders(FormattableModel.menu), throwsUnimplementedError);
     });
 
     setUp(() {
@@ -69,8 +78,30 @@ void main() {
 
     setUpAll(() {
       initializeTranslator();
-      initializeCache();
       initializeAuth();
+      initializeCache();
     });
   });
 }
+
+class _MyHeader extends ImportBasicBaseHeader {
+  const _MyHeader({
+    required super.selected,
+    required super.stateNotifier,
+    required super.icon,
+    required super.allowAll,
+    required super.formatter,
+  });
+
+  @override
+  String get label => '';
+
+  @override
+  Future<PreviewFormatter?> onImport(BuildContext context) => Future.value(null);
+}
+
+class _ExportView extends ExportView {
+  const _ExportView({required super.stateNotifier, required super.selected});
+}
+
+class _MyContext extends Mock implements BuildContext {}

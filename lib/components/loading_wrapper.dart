@@ -31,7 +31,7 @@ class LoadingWrapperState extends State<LoadingWrapper> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircularProgressIndicator(),
+                const CircularProgressIndicator.adaptive(),
                 if (_status != null)
                   DefaultTextStyle(
                     style: Theme.of(context).textTheme.headlineSmall!,

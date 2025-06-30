@@ -10,14 +10,18 @@ import 'preview_page.dart';
 class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
   const OrderAttributePreviewPage({
     super.key,
+    required super.model,
     required super.items,
+    super.progress,
+    super.physics,
   });
 
   @override
-  Widget getItem(BuildContext context, OrderAttribute item) {
+  Widget buildItem(BuildContext context, OrderAttribute item) {
     final mode = S.orderAttributeModeName(item.mode.name);
     final defaultName = item.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     return ExpansionTile(
+      key: Key('transit_preview.order_attr.${item.id}'),
       title: ImporterColumnStatus(
         name: item.name,
         status: item.statusName,

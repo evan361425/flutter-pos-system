@@ -47,6 +47,7 @@ class _OrderLoaderState extends State<OrderLoader> {
       loader: _loadOrders,
       metricsLoader: _loadMetrics,
       builder: widget.builder,
+      padding: const EdgeInsets.all(0),
       metricsBuilder: (metrics) {
         final meta = MetaBlock.withString(context, [
           S.orderLoaderMetaTotalRevenue(metrics.revenue.toCurrency()),

@@ -1,204 +1,129 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/snackbar_actions.dart';
-import 'package:possystem/constants/constant.dart';
-import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/transit_order_list.dart';
-import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
+import 'package:possystem/ui/transit/order_widgets.dart';
 
-import 'order_formatter.dart';
-import 'order_setting_page.dart';
-import 'order_table.dart';
-import 'spreadsheet_selector.dart';
-
-const _cacheKey = 'exporter_order_google_sheet';
-
-class ExportOrderView extends StatefulWidget {
-  final ValueNotifier<DateTimeRange> rangeNotifier;
-
-  final ValueNotifier<String> statusNotifier;
-
+class ExportOrderHeader extends TransitOrderHeader {
   final GoogleSheetExporter exporter;
 
-  const ExportOrderView({
+  const ExportOrderHeader({
     super.key,
-    required this.rangeNotifier,
-    required this.statusNotifier,
+    required super.stateNotifier,
+    required super.ranger,
     required this.exporter,
+    required super.settings,
   });
 
   @override
-  State<ExportOrderView> createState() => _ExportOrderViewState();
-}
-
-class _ExportOrderViewState extends State<ExportOrderView> {
-  final selector = GlobalKey<SpreadsheetSelectorState>();
-  late OrderSpreadsheetProperties properties;
+  String get title => S.transitExportOrderTitleGoogleSheet;
 
   @override
   Widget build(BuildContext context) {
-    return TransitOrderList(
-      notifier: widget.rangeNotifier,
-      formatOrder: (order) => OrderTable(order: order),
-      memoryPredictor: memoryPredictor,
-      warning: S.transitGSOrderMetaMemoryWarning,
-      leading: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
-            child: SignInButton(
-              signedInWidget: SpreadsheetSelector(
-                key: selector,
-                notifier: widget.statusNotifier,
-                exporter: widget.exporter,
-                cacheKey: _cacheKey,
-                existLabel: S.transitGSSpreadsheetExportExistLabel,
-                existHint: S.transitGSSpreadsheetExportExistHint,
-                emptyLabel: S.transitGSSpreadsheetExportEmptyLabel,
-                emptyHint: S.transitGSSpreadsheetExportEmptyHint(S.transitGSSpreadsheetOrderDefaultName),
-                fallbackCacheKey: 'exporter_google_sheet',
-                defaultName: S.transitGSSpreadsheetOrderDefaultName,
-                requiredSheetTitles: requiredSheetTitles,
-                onPrepared: exportData,
-              ),
-            ),
-          ),
-          TransitOrderRange(notifier: widget.rangeNotifier),
-          ListTile(
-            key: const Key('edit_sheets'),
-            title: Text(S.transitGSOrderSettingTitle),
-            subtitle: MetaBlock.withString(
-              context,
-              [
-                S.transitGSOrderMetaOverwrite(properties.isOverwrite.toString()),
-                S.transitGSOrderMetaTitlePrefix(properties.withPrefix.toString()),
-                // This message may break the two lines limit, so put it at the end.
-                properties.requiredSheets.map((e) => e.name).join('、'),
-              ],
-              maxLines: 2,
-            ),
-            isThreeLine: true,
-            trailing: const SizedBox(
-              height: double.infinity,
-              child: Icon(KIcons.edit),
-            ),
-            onTap: editSheets,
-          ),
-        ],
-      ),
-    );
+    return SignInButton(signedInWidget: super.build(context));
   }
 
+  /// Export all data to spreadsheet.
+  ///
+  /// 1. Ask user to select a spreadsheet.
+  /// 2. Prepare the spreadsheet, make all sheets ready.
+  /// 3. Export data to the spreadsheet.
   @override
-  void initState() {
-    super.initState();
-    properties = OrderSpreadsheetProperties.fromCache();
-  }
-
-  Map<SheetType, String> requiredSheetTitles() {
-    final prefix = properties.withPrefix ? '${widget.rangeNotifier.value.formatCompact(S.localeName)} ' : '';
-
-    return {
-      for (final sheet in properties.requiredSheets)
-        SheetType.values.firstWhere((e) => e.name == sheet.type.name): '$prefix${sheet.name}',
-    };
-  }
-
-  /// [SpreadsheetSelector] validate the basic data before actually exporting.
-  Future<void> exportData(
-    GoogleSpreadsheet ss,
-    Map<SheetType, GoogleSheetProperties> prepared,
-  ) async {
-    widget.statusNotifier.value = S.transitGSProgressStatusFetchLocalOrders;
-    final orders = await Seller.instance.getDetailedOrders(
-      widget.rangeNotifier.value.start,
-      widget.rangeNotifier.value.end,
+  Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
+    // Step 1
+    GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
+      context,
+      exporter: exporter,
+      cacheKey: importCacheKey,
+      allowCreateNew: true,
+      fallbackCacheKey: exportCacheKey,
     );
-    Log.ger('gs_export', {'spreadsheet': ss.id, 'target': 'order'});
-
-    final data = prepared.keys.map(chooseFormatter).map((method) => orders.expand((order) => method(order)));
-
-    if (properties.isOverwrite) {
-      widget.statusNotifier.value = S.transitGSProgressStatusOverwriteOrders;
-      await widget.exporter.updateSheetValues(
-        ss,
-        prepared.values,
-        data,
-        prepared.keys.map((key) => chooseHeaders(key)),
-      );
-    } else {
-      final it = data.iterator;
-      for (final entry in prepared.entries) {
-        it.moveNext();
-        final name = S.transitModelName(entry.key.name);
-        widget.statusNotifier.value = S.transitGSProgressStatusAppendOrders(name);
-        await widget.exporter.appendSheetValues(ss, entry.value, it.current);
-      }
+    if (ss == null || !context.mounted) {
+      return;
     }
 
-    Log.out('export finish', 'gs_export');
-    if (mounted) {
+    // Step 2
+    final sheetTitles = settings!.value.parseTitles(ranger.value);
+    final ables = sheetTitles.keys.toList();
+    final titles = sheetTitles.values.toList();
+    ss = await prepareSpreadsheet(
+      context: context,
+      exporter: exporter,
+      stateNotifier: stateNotifier,
+      defaultName: S.transitExportOrderFileName,
+      cacheKey: exportCacheKey,
+      sheets: titles,
+      spreadsheet: ss,
+    );
+    if (ss == null || !context.mounted) {
+      return;
+    }
+
+    // Step 3
+    Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
+    final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
+    final data = ables.map((able) => orders.expand((order) {
+          return able.formatRows(order).map((l) {
+            return l.map((v) => v.value).toList();
+          });
+        }));
+
+    var link = '';
+    if (settings!.value.isOverwrite) {
+      stateNotifier.value = S.transitExportOrderProgressGoogleSheetOverwrite;
+      await exporter.updateSheetValues(
+        ss,
+        sheets,
+        data,
+        ables.map((able) => able.formatHeader()),
+      );
+
+      link = ss.toLink();
+    } else {
+      stateNotifier.value = S.transitExportOrderProgressGoogleSheetAppend;
+      for (final (i, rows) in data.indexed) {
+        await exporter.appendSheetValues(ss, sheets[i], rows);
+      }
+
+      link = ss.toLink();
+    }
+
+    if (link.isNotEmpty) {
+      Log.out('export finish', 'gs_export');
       showSnackBar(
-        S.actSuccess,
+        S.transitExportOrderSuccessGoogleSheet,
+        // ignore: use_build_context_synchronously
         context: context,
         action: LauncherSnackbarAction(
-          label: S.transitGSSpreadsheetSnackbarAction,
-          link: ss.toLink(),
+          label: S.transitExportOrderSuccessActionGoogleSheet,
+          link: link,
           logCode: 'gs_export',
         ),
       );
     }
   }
+}
 
-  void editSheets() async {
-    final other = await showAdaptiveDialog<OrderSpreadsheetProperties>(
-      context: context,
-      builder: (context) => OrderSettingPage(
-        properties: properties,
-        sheets: selector.currentState?.spreadsheet?.sheets,
-      ),
-    );
+class ExportOrderView extends TransitOrderList {
+  const ExportOrderView({
+    super.key,
+    required super.ranger,
+  });
 
-    if (other != null && mounted) {
-      setState(() {
-        properties = other;
-      });
-    }
-  }
+  @override
+  String get helpMessage => S.transitExportOrderSubtitleGoogleSheet;
 
-  static List<List<Object>> Function(OrderObject) chooseFormatter(SheetType type) {
-    switch (type) {
-      case SheetType.orderDetailsAttr:
-        return OrderFormatter.formatOrderDetailsAttr;
-      case SheetType.orderDetailsProduct:
-        return OrderFormatter.formatOrderDetailsProduct;
-      case SheetType.orderDetailsIngredient:
-        return OrderFormatter.formatOrderDetailsIngredient;
-      default:
-        return OrderFormatter.formatOrder;
-    }
-  }
+  @override
+  int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);
 
-  static List<String> chooseHeaders(SheetType type) {
-    switch (type) {
-      case SheetType.orderDetailsAttr:
-        return OrderFormatter.orderDetailsAttrHeaders;
-      case SheetType.orderDetailsProduct:
-        return OrderFormatter.orderDetailsProductHeaders;
-      case SheetType.orderDetailsIngredient:
-        return OrderFormatter.orderDetailsIngredientHeaders;
-      default:
-        return OrderFormatter.orderHeaders;
-    }
-  }
+  @override
+  String get warningMessage => S.transitExportOrderWarningMemoryGoogleSheet;
 
   /// These values are based on the actual data:
   ///
@@ -212,7 +137,7 @@ class _ExportOrderViewState extends State<ExportOrderView> {
   /// 1698067340,cheese,burger,,10
   ///
   /// After compression, the values should be multiplied by 0.5.
-  static int memoryPredictor(OrderMetrics m) {
+  static int _memoryPredictor(OrderMetrics m) {
     return (m.count * 30 + m.attrCount! * 10 + m.productCount! * 13 + m.ingredientCount! * 8).toInt();
   }
 }

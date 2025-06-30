@@ -18,158 +18,31 @@ import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/models/stock/replenishment.dart';
 import 'package:possystem/translator.dart';
 
-enum Formattable {
-  menu,
-  stock,
-  quantities,
-  replenisher,
-  orderAttr,
-}
-
-abstract class Formatter<T> {
-  const Formatter();
-
-  List<FormattedItem<U>> format<U extends Model>(
-    Formattable able,
-    List<List<Object?>> rows,
-  ) {
-    final transformer = getTransformer(able);
-    final parsed = transformer.parseRows(rows);
-
-    final formatter = getFormatter(able);
-    final result = <FormattedItem<U>>[];
-
-    bool existInResult(String name) {
-      return result.any((e) => !e.hasError && e.item!.name == name);
-    }
-
-    int counter = 1;
-    for (var row in parsed) {
-      final r = row.map((e) => e.trim()).toList();
-      final msg =
-          formatter.validate(r) ?? (existInResult(r[formatter.nameIndex]) ? S.transitImportErrorDuplicate : null);
-
-      if (msg != null) {
-        result.add(
-          FormattedItem<U>(
-            error: FormatterValidateError(msg, row.join(' ')),
-          ),
-        );
-      } else {
-        result.add(FormattedItem<U>(item: formatter.format(r, counter++) as U));
-      }
-    }
-
-    return result;
-  }
-
-  List<T> getHeader(Formattable able) => getTransformer(able).getHeader() as List<T>;
-
-  List<List<T>> getRows(Formattable able) => getTransformer(able).getRows() as List<List<T>>;
-
-  ModelFormatter getFormatter(Formattable able) {
-    switch (able) {
-      case Formattable.menu:
-        return _MenuFormatter(Menu.instance);
-      case Formattable.stock:
-        return _StockFormatter(Stock.instance);
-      case Formattable.quantities:
-        return _QuantitiesFormatter(Quantities.instance);
-      case Formattable.replenisher:
-        return _ReplenisherFormatter(Replenisher.instance);
-      case Formattable.orderAttr:
-        return _OAFormatter(OrderAttributes.instance);
-    }
-  }
-
-  ModelTransformer getTransformer(Formattable able);
-
-  static Formattable nameToFormattable(String name) {
-    return Formattable.values.firstWhere((e) => e.name == name);
-  }
-
-  static Repository getTarget(Formattable able) {
-    switch (able) {
-      case Formattable.menu:
-        return Menu.instance;
-      case Formattable.stock:
-        return Stock.instance;
-      case Formattable.quantities:
-        return Quantities.instance;
-      case Formattable.replenisher:
-        return Replenisher.instance;
-      case Formattable.orderAttr:
-        return OrderAttributes.instance;
-    }
-  }
-
-  static Future<void> finishFormat(Formattable able, [bool? willCommit]) async {
-    final target = getTarget(able);
-    if (willCommit == true) {
-      await target.commitStaged();
-    } else {
-      target.abortStaged();
-    }
-  }
-}
-
-class FormatterValidateError extends Error {
-  final String message;
-
-  final String raw;
-
-  FormatterValidateError(this.message, this.raw);
-}
-
-class FormattedItem<T extends Model> {
-  final T? item;
-
-  final FormatterValidateError? error;
-
-  const FormattedItem({this.item, this.error});
-
-  bool get hasError => error != null;
-}
-
-abstract class ModelFormatter<T extends Repository, U extends Model> {
+abstract class ModelParser<T extends Repository, U extends Model> {
   final T target;
 
-  const ModelFormatter(this.target);
+  const ModelParser(this.target);
 
   int get nameIndex => 0;
 
   /// Return error message if invalid
   String? validate(List<String> row);
 
-  /// Format row to specific [Model]
+  /// Parse row to specific [Model]
   ///
   /// [index] 1-index
-  U format(List<String> row, int index);
+  U parse(List<String> row, int index);
 }
 
-abstract class ModelTransformer<T extends Repository> {
-  final T target;
-
-  const ModelTransformer(this.target);
-
-  List<Object> getHeader();
-
-  List<List<Object>> getRows();
-
-  List<List<String>> parseRows(List<List<Object?>> rows) {
-    return rows.map((row) => row.map((e) => e.toString().trim()).toList()).toList();
-  }
-}
-
-class _MenuFormatter extends ModelFormatter<Menu, Product> {
-  const _MenuFormatter(super.target);
+class MenuParser extends ModelParser<Menu, Product> {
+  const MenuParser(super.target);
 
   @override
   int get nameIndex => 1;
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 4) return S.transitImportErrorColumnCount(4);
+    if (row.length < 4) return S.transitImportErrorBasicColumnCount(4);
 
     final errorMsg = Validator.textLimit(S.menuCatalogNameLabel, 30)(row[0]) ??
         Validator.textLimit(S.menuProductNameLabel, 30)(row[1]) ??
@@ -208,7 +81,7 @@ class _MenuFormatter extends ModelFormatter<Menu, Product> {
   }
 
   @override
-  Product format(List<String> row, int index) {
+  Product parse(List<String> row, int index) {
     final catalog = target.getStagedByName(row[0]) ??
         Catalog.fromRow(
           target.getItemByName(row[0]),
@@ -253,12 +126,12 @@ class _MenuFormatter extends ModelFormatter<Menu, Product> {
   }
 }
 
-class _StockFormatter extends ModelFormatter<Stock, Ingredient> {
-  const _StockFormatter(super.target);
+class StockParser extends ModelParser<Stock, Ingredient> {
+  const StockParser(super.target);
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
+    if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
@@ -276,7 +149,7 @@ class _StockFormatter extends ModelFormatter<Stock, Ingredient> {
   }
 
   @override
-  Ingredient format(List<String> row, int index) {
+  Ingredient parse(List<String> row, int index) {
     final ingredient = Ingredient.fromRow(target.getItemByName(row[0]), row);
     Stock.instance.addStaged(ingredient);
 
@@ -284,12 +157,12 @@ class _StockFormatter extends ModelFormatter<Stock, Ingredient> {
   }
 }
 
-class _QuantitiesFormatter extends ModelFormatter<Quantities, Quantity> {
-  const _QuantitiesFormatter(super.target);
+class QuantitiesParser extends ModelParser<Quantities, Quantity> {
+  const QuantitiesParser(super.target);
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
+    if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockQuantityNameLabel, 30)(row[0]) ??
         Validator.positiveNumber(
@@ -300,7 +173,7 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, Quantity> {
   }
 
   @override
-  Quantity format(List<String> row, int index) {
+  Quantity parse(List<String> row, int index) {
     final quantity = Quantity.fromRow(target.getItemByName(row[0]), row);
     Quantities.instance.addStaged(quantity);
 
@@ -308,12 +181,12 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, Quantity> {
   }
 }
 
-class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
-  const _ReplenisherFormatter(super.target);
+class ReplenisherParser extends ModelParser<Replenisher, Replenishment> {
+  const ReplenisherParser(super.target);
 
   @override
   String? validate(List<String> row) {
-    if (row.isEmpty) return S.transitImportErrorColumnCount(1);
+    if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     final errorMsg = Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
     if (errorMsg != null || row.length == 1) return errorMsg;
@@ -333,7 +206,7 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
   }
 
   @override
-  Replenishment format(List<String> row, int index) {
+  Replenishment parse(List<String> row, int index) {
     final rep = Replenishment.fromRow(
       target.getItemByName(row[0]),
       row,
@@ -356,7 +229,7 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
       final amount = num.tryParse(columns[1]);
       if (amount == null) continue;
 
-      Ingredient? ing = Stock.instance.getItemByName(columns[0]);
+      Ingredient? ing = Stock.instance.getItemByName(columns[0]) ?? Stock.instance.getStagedByName(columns[0]);
       if (ing == null) {
         ing = Ingredient(
           name: columns[0],
@@ -372,12 +245,12 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, Replenishment> {
   }
 }
 
-class _OAFormatter extends ModelFormatter<OrderAttributes, OrderAttribute> {
-  const _OAFormatter(super.target);
+class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
+  const OAParser(super.target);
 
   @override
   String? validate(List<String> row) {
-    if (row.length < 2) return S.transitImportErrorColumnCount(2);
+    if (row.length < 2) return S.transitImportErrorBasicColumnCount(2);
 
     final msg = Validator.textLimit(S.orderAttributeNameLabel, 30)(row[0]);
     if (msg != null || row.length == 2) return msg;
@@ -399,7 +272,7 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, OrderAttribute> {
   }
 
   @override
-  OrderAttribute format(List<String> row, int index) {
+  OrderAttribute parse(List<String> row, int index) {
     final ori = target.getItemByName(row[0]);
     final attr = OrderAttribute.fromRow(
       ori,

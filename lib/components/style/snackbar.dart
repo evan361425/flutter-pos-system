@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:possystem/components/linkify.dart';
@@ -62,10 +63,27 @@ Future<T?> showSnackbarWhenFutureError<T>(
   String code, {
   BuildContext? context,
   GlobalKey<ScaffoldMessengerState>? key,
+  bool showIfFalse = false,
+  String? message,
+  String? more,
 }) async {
   try {
-    return await future;
+    Log.out('start', code);
+    final result = await future;
+
+    if (showIfFalse && message != null && result == false) {
+      showMoreInfoSnackBar(
+        message,
+        more == null ? null : Linkify.fromString(more),
+        // ignore: use_build_context_synchronously
+        context: context,
+        key: key,
+      );
+    }
+
+    return result;
   } catch (err) {
+    // ignore: use_build_context_synchronously
     _prettierError(err, context: context, key: key);
     Log.err(err, code, err is Error ? err.stackTrace : null);
     return null;
@@ -102,8 +120,17 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
   );
 }
 
-void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key}) {
+void _prettierError(
+  Object e, {
+  BuildContext? context,
+  GlobalKey<ScaffoldMessengerState>? key,
+  String? moreMessage,
+}) {
   void show(String msg, [String? more]) {
+    if (kDebugMode) {
+      print('error: $msg');
+      print('stack: ${e is Error ? e.stackTrace : null}');
+    }
     showMoreInfoSnackBar(
       msg,
       more == null ? null : Linkify.fromString(more),
@@ -148,5 +175,5 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
     return show(e.description ?? 'error from ${e.function}');
   }
 
-  return show(e.toString());
+  return show(e.toString(), moreMessage);
 }

@@ -8,8 +8,14 @@ import 'package:possystem/constants/constant.dart';
 const _isDebug = kDebugMode || isLocalTest;
 
 class Log {
-  static void out(String msg, String code) {
-    developer.log(msg, name: code);
+  static void out(
+    String msg,
+    String code, {
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
+    // print('$code: $msg, error: $error, stackTrace: $stackTrace');
+    developer.log(msg, name: code, error: error, stackTrace: stackTrace);
   }
 
   static void ger(
@@ -19,7 +25,7 @@ class Log {
   ]) async {
     assert(!event.contains('.'), 'should not contain "."');
     final message = parameters?.entries.map((e) => '${e.key}=${e.value}').join(' ');
-    developer.log(message ?? '', name: event);
+    Log.out(message ?? '', event);
 
     if (forceSend || allowSendEvents) {
       final Map<String, Object> filtered = <String, Object>{};
@@ -46,12 +52,7 @@ class Log {
       errorCount++;
       return !code.contains('.');
     }());
-    developer.log(
-      error.toString(),
-      name: code,
-      error: error,
-      stackTrace: stackTrace,
-    );
+    out(error.toString(), code, error: error, stackTrace: stackTrace);
 
     if (forceSend || allowSendEvents) {
       FirebaseCrashlytics.instance.recordError(

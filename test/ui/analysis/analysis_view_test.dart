@@ -47,6 +47,8 @@ void main() {
     void mockGetChart() {
       when(database.query(
         any,
+        where: anyNamed('where'),
+        whereArgs: anyNamed('whereArgs'),
         columns: argThat(contains('SUM(price) revenue'), named: 'columns'),
         orderBy: anyNamed('orderBy'),
         escapeTable: anyNamed('escapeTable'),

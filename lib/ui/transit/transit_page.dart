@@ -1,47 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/choice_chip_with_help.dart';
-import 'package:possystem/components/style/text_divider.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 import 'transit_station.dart';
 
-class TransitPage extends StatefulWidget {
+class TransitPage extends StatelessWidget {
   const TransitPage({super.key});
 
   @override
-  State<TransitPage> createState() => _TransitPageState();
-}
-
-class _TransitPageState extends State<TransitPage> {
-  final selector = GlobalKey<ChoiceChipWithHelpState<TransitCatalog>>();
-
-  @override
   Widget build(BuildContext context) {
-    final list = ListView(children: [
-      ChoiceChipWithHelp<TransitCatalog>(
-        key: selector,
-        values: TransitCatalog.values,
-        selected: TransitCatalog.order,
-        labels: TransitCatalog.values.map((e) => S.transitCatalogName(e.name)).toList(),
-        helpTexts: TransitCatalog.values.map((e) => S.transitCatalogHelper(e.name)).toList(),
-      ),
-      TextDivider(label: S.transitMethodTitle),
+    return ListView(children: [
       ListTile(
         key: const Key('transit.google_sheet'),
         leading: CircleAvatar(
           radius: 24,
-          child: SvgPicture.asset(
-            'assets/google_sheet_icon.svg',
-            width: 24,
-          ),
+          child: SvgPicture.asset('assets/google_sheet_icon.svg', width: 24),
         ),
-        title: Text(S.transitMethodName(TransitMethod.googleSheet.name)),
-        subtitle: Text(S.transitGSDescription),
-        onTap: () => _goToStation(context, TransitMethod.googleSheet),
+        title: Text(TransitMethod.googleSheet.l10nName),
+        subtitle: Text(S.transitDescriptionGoogleSheet),
+        onTap: () => _next(context, TransitMethod.googleSheet),
+      ),
+      ListTile(
+        key: const Key('transit.excel'),
+        leading: CircleAvatar(
+          radius: 24,
+          child: SvgPicture.asset('assets/excel_icon.svg', width: 24),
+        ),
+        title: Text(TransitMethod.excel.l10nName),
+        subtitle: Text(S.transitDescriptionExcel),
+        onTap: () => _next(context, TransitMethod.excel),
+      ),
+      ListTile(
+        key: const Key('transit.csv'),
+        leading: const CircleAvatar(
+          radius: 24,
+          child: Text('CSV'),
+        ),
+        title: Text(TransitMethod.csv.l10nName),
+        subtitle: Text(S.transitDescriptionCsv),
+        onTap: () => _next(context, TransitMethod.csv),
       ),
       ListTile(
         key: const Key('transit.plain_text'),
@@ -49,29 +49,38 @@ class _TransitPageState extends State<TransitPage> {
           radius: 24,
           child: Text('Text'),
         ),
-        title: Text(S.transitMethodName(TransitMethod.plainText.name)),
-        subtitle: Text(S.transitPTDescription),
-        onTap: () => _goToStation(context, TransitMethod.plainText),
+        title: Text(TransitMethod.plainText.l10nName),
+        subtitle: Text(S.transitDescriptionPlainText),
+        onTap: () => _next(context, TransitMethod.plainText),
       ),
       const SizedBox(height: kFABSpacing),
     ]);
-
-    // allow scroll as TabView
-    return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        selector.currentState?.updateSelectedIndex(
-          details.velocity.pixelsPerSecond.dx,
-        );
-      },
-      // fill the screen to allow drag from white space
-      child: SizedBox(height: double.infinity, child: list),
-    );
   }
 
-  void _goToStation(BuildContext context, TransitMethod method) {
-    context.pushNamed(Routes.transitStation, pathParameters: {
-      'method': method.name,
-      'type': selector.currentState?.selected.name ?? 'order',
-    });
+  void _next(BuildContext context, TransitMethod method) async {
+    final catalog = await showAdaptiveDialog<TransitCatalog>(
+      context: context,
+      builder: (context) {
+        return AlertDialog.adaptive(
+          title: Text(S.transitCatalogTitle(method.l10nName)),
+          scrollable: true,
+          content: Column(children: [
+            for (final catalog in TransitCatalog.values)
+              ListTile(
+                title: Text(catalog.l10nName),
+                subtitle: Text(catalog.l10nHelper),
+                onTap: () => Navigator.of(context).pop(catalog),
+              ),
+          ]),
+        );
+      },
+    );
+
+    if (catalog != null && context.mounted) {
+      context.pushNamed(Routes.transitStation, pathParameters: {
+        'method': method.name,
+        'catalog': catalog.name,
+      });
+    }
   }
 }

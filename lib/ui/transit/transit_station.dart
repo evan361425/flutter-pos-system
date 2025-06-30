@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/loading_wrapper.dart';
 import 'package:possystem/components/style/pop_button.dart';
-import 'package:possystem/helpers/exporter/data_exporter.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/data_exporter.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/order_widgets.dart';
+import 'package:possystem/ui/transit/previews/preview_page.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
+import 'csv/views.dart' as csv;
+import 'excel/views.dart' as excel;
 import 'google_sheet/views.dart' as gs;
 import 'plain_text/views.dart' as pt;
 
 enum TransitCatalog {
-  order,
-  model,
+  exportOrder,
+  exportModel,
+  importModel;
+
+  String get l10nName {
+    return S.transitCatalogName(name);
+  }
+
+  String get l10nHelper {
+    return S.transitCatalogHelper(name);
+  }
 }
 
 enum TransitMethod {
   googleSheet,
-  plainText,
+  excel,
+  csv,
+  plainText;
+
+  String get l10nName {
+    return S.transitMethodName(name);
+  }
 }
 
 class TransitStation extends StatefulWidget {
@@ -27,7 +48,7 @@ class TransitStation extends StatefulWidget {
   final DateTimeRange? range;
 
   @visibleForTesting
-  final ValueNotifier<String>? notifier;
+  final TransitStateNotifier? notifier;
 
   @visibleForTesting
   final DataExporter? exporter;
@@ -45,50 +66,57 @@ class TransitStation extends StatefulWidget {
   State<TransitStation> createState() => _TransitStationState();
 }
 
-class _TransitStationState extends State<TransitStation> with TickerProviderStateMixin {
+class _TransitStationState extends State<TransitStation> {
   final loading = GlobalKey<LoadingWrapperState>();
 
-  /// This is used to display the "in progress" information to avoid interruption during export.
-  late final ValueNotifier<String> stateNotifier;
+  ValueNotifier<FormattableModel?>? _model;
+  ValueNotifier<PreviewFormatter?>? _formatter;
 
-  late final TabController tabController;
+  /// This is used to display the "in progress" information to avoid interruption during export.
+  late final TransitStateNotifier stateNotifier;
 
   @override
   Widget build(BuildContext context) {
     return LoadingWrapper(
       key: loading,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(S.transitMethodName(widget.method.name)),
-          leading: const PopButton(),
-          bottom: _buildAppBarBottom(),
+        body: SafeArea(
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    title: Text(widget.method.l10nName),
+                    leading: const PopButton(),
+                    automaticallyImplyLeading: false,
+                    floating: true,
+                    snap: true,
+                    forceElevated: innerBoxIsScrolled,
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(56.0),
+                      child: _buildHeader(),
+                    ),
+                  ),
+                ),
+              ];
+            },
+            body: _buildBody(),
+          ),
         ),
-        body: _buildBody(),
       ),
     );
   }
 
   @override
   void initState() {
-    tabController = TabController(length: 2, vsync: this);
-    tabController.addListener(() {
-      if (!tabController.indexIsChanging) {
-        FocusManager.instance.primaryFocus?.unfocus();
-      }
-    });
-
-    stateNotifier = widget.notifier ?? ValueNotifier('');
+    stateNotifier = widget.notifier ?? TransitStateNotifier();
     stateNotifier.addListener(() {
-      switch (stateNotifier.value) {
-        case '_start':
-          loading.currentState?.startLoading();
-          break;
-        case '_finish':
-          loading.currentState?.finishLoading();
-          break;
-        default:
-          loading.currentState?.setStatus(stateNotifier.value);
-      }
+      return switch (stateNotifier.value) {
+        '_start' => loading.currentState?.startLoading(),
+        '_finish' => loading.currentState?.finishLoading(),
+        _ => loading.currentState?.setStatus(stateNotifier.value),
+      };
     });
 
     super.initState();
@@ -101,72 +129,84 @@ class _TransitStationState extends State<TransitStation> with TickerProviderStat
     super.dispose();
   }
 
-  PreferredSizeWidget? _buildAppBarBottom() {
-    switch (widget.catalog) {
-      case TransitCatalog.model:
-        return TabBar(
-          controller: tabController,
-          tabs: [
-            Tab(text: S.transitExportBtn),
-            Tab(text: S.transitImportBtn),
-          ],
-        );
-      default:
-        return null;
+  ValueNotifier<TransitOrderSettings> get _settings {
+    return ValueNotifier<TransitOrderSettings>(TransitOrderSettings.fromCache());
+  }
+
+  ValueNotifier<DateTimeRange> get _ranger {
+    return ValueNotifier(widget.range ?? Util.getDateRange());
+  }
+
+  ValueNotifier<FormattableModel?> get model {
+    return _model ??= ValueNotifier(null);
+  }
+
+  ValueNotifier<PreviewFormatter?> get formatter {
+    return _formatter ??= ValueNotifier<PreviewFormatter?>(null);
+  }
+
+  GoogleSheetExporter get _googleSheetExporter {
+    return (widget.exporter ?? GoogleSheetExporter()) as GoogleSheetExporter;
+  }
+
+  Widget _buildHeader() {
+    if (widget.catalog == TransitCatalog.importModel) {
+      return switch (widget.method) {
+        TransitMethod.googleSheet => gs.ImportBasicHeader(
+            selected: model, stateNotifier: stateNotifier, formatter: formatter, exporter: _googleSheetExporter),
+        TransitMethod.excel =>
+          excel.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
+        TransitMethod.csv => csv.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
+        TransitMethod.plainText => pt.ImportBasicHeader(selected: model, formatter: formatter),
+      };
     }
+
+    if (widget.catalog == TransitCatalog.exportModel) {
+      return switch (widget.method) {
+        TransitMethod.googleSheet =>
+          gs.ExportBasicHeader(selected: model, stateNotifier: stateNotifier, exporter: _googleSheetExporter),
+        TransitMethod.excel => excel.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
+        TransitMethod.csv => csv.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
+        TransitMethod.plainText => pt.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
+      };
+    }
+
+    return switch (widget.method) {
+      TransitMethod.googleSheet => gs.ExportOrderHeader(
+          stateNotifier: stateNotifier, exporter: _googleSheetExporter, ranger: _ranger, settings: _settings),
+      TransitMethod.excel =>
+        excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger, settings: _settings),
+      TransitMethod.csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger),
+      TransitMethod.plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger),
+    };
   }
 
   Widget _buildBody() {
-    switch (widget.catalog) {
-      case TransitCatalog.model:
-        return TabBarView(
-          key: const Key('transit.basic_tab'),
-          controller: tabController,
-          children: [
-            _buildScreen(_Combination.exportBasic),
-            _buildScreen(_Combination.importBasic),
-          ],
-        );
-      case TransitCatalog.order:
-        return _buildScreen(_Combination.exportOrder);
+    if (widget.catalog == TransitCatalog.importModel) {
+      return ImportView(
+        stateNotifier: stateNotifier,
+        selected: model,
+        formatter: formatter,
+        hint: widget.method == TransitMethod.plainText
+            ? S.transitImportModelSelectionPlainTextHint
+            : S.transitImportModelSelectionHint,
+      );
     }
-  }
 
-  Widget _buildScreen(_Combination combination) {
-    switch (widget.method) {
-      case TransitMethod.googleSheet:
-        final exporter = (widget.exporter ?? GoogleSheetExporter()) as GoogleSheetExporter;
-        switch (combination) {
-          case _Combination.exportBasic:
-            return gs.ExportBasicView(
-              exporter: exporter,
-              notifier: stateNotifier,
-            );
-          case _Combination.exportOrder:
-            return gs.ExportOrderView(
-              exporter: exporter,
-              statusNotifier: stateNotifier,
-              rangeNotifier: ValueNotifier(widget.range ?? Util.getDateRange()),
-            );
-          case _Combination.importBasic:
-            return gs.ImportBasicView(
-              exporter: exporter,
-              notifier: stateNotifier,
-            );
-        }
-      case TransitMethod.plainText:
-        switch (combination) {
-          case _Combination.exportBasic:
-            return const pt.ExportBasicView();
-          case _Combination.exportOrder:
-            return pt.ExportOrderView(
-              notifier: ValueNotifier(widget.range ?? Util.getDateRange()),
-            );
-          case _Combination.importBasic:
-            return const pt.ImportBasicView();
-        }
+    if (widget.catalog == TransitCatalog.exportModel) {
+      return switch (widget.method) {
+        TransitMethod.googleSheet => gs.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        TransitMethod.excel => excel.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        TransitMethod.csv => csv.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        TransitMethod.plainText => pt.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+      };
     }
+
+    return switch (widget.method) {
+      TransitMethod.googleSheet => gs.ExportOrderView(ranger: _ranger),
+      TransitMethod.excel => excel.ExportOrderView(ranger: _ranger),
+      TransitMethod.csv => csv.ExportOrderView(ranger: _ranger),
+      TransitMethod.plainText => pt.ExportOrderView(ranger: _ranger),
+    };
   }
 }
-
-enum _Combination { exportBasic, importBasic, exportOrder }

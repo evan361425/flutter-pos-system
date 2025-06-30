@@ -103,9 +103,8 @@ class _GoalsCardViewState extends State<GoalsCardView> {
               child: Stack(children: [
                 AspectRatio(
                   aspectRatio: 1.0,
-                  child: CircularProgressIndicator(
+                  child: CircularProgressIndicator.adaptive(
                     value: metric.profit / goal!.profit,
-                    color: Colors.pink,
                     backgroundColor: Colors.grey.withAlpha(51),
                     strokeWidth: 20,
                   ),

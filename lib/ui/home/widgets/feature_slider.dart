@@ -56,7 +56,7 @@ class _FeatureSliderState extends State<FeatureSlider> {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Text(widget.title, style: const TextStyle(fontSize: 16.0)),
       ),
-      Slider(
+      Slider.adaptive(
         key: widget.sliderKey,
         autofocus: widget.autofocus,
         value: value.toDouble(),

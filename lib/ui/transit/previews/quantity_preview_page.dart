@@ -8,12 +8,16 @@ import 'preview_page.dart';
 class QuantityPreviewPage extends PreviewPage<Quantity> {
   const QuantityPreviewPage({
     super.key,
+    required super.model,
     required super.items,
+    super.progress,
+    super.physics,
   });
 
   @override
-  Widget getItem(BuildContext context, Quantity item) {
+  Widget buildItem(BuildContext context, Quantity item) {
     return ListTile(
+      key: Key('transit_preview.quantities.${item.id}'),
       title: ImporterColumnStatus(
         name: item.name,
         status: item.statusName,
@@ -25,7 +29,5 @@ class QuantityPreviewPage extends PreviewPage<Quantity> {
   }
 
   @override
-  Widget getHeader(BuildContext context) {
-    return Text(S.transitImportPreviewQuantityHeader);
-  }
+  String get helpMessage => S.transitImportPreviewQuantityConfirm;
 }

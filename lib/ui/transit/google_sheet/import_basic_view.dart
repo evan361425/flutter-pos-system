@@ -1,302 +1,141 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
-import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/formatter/field_formatter.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
-import 'sheet_preview_page.dart';
-import 'sheet_selector.dart';
-import 'spreadsheet_selector.dart';
-
-const _cacheKey = 'importer_google_sheet';
-
-class ImportBasicView extends StatefulWidget {
-  final ValueNotifier<String> notifier;
-
+class ImportBasicHeader extends StatelessWidget {
   final GoogleSheetExporter exporter;
+  final ValueNotifier<FormattableModel?> selected;
+  final TransitStateNotifier stateNotifier;
+  final ValueNotifier<PreviewFormatter?> formatter;
 
-  const ImportBasicView({
+  const ImportBasicHeader({
     super.key,
     required this.exporter,
-    required this.notifier,
+    required this.selected,
+    required this.stateNotifier,
+    required this.formatter,
   });
 
   @override
-  State<ImportBasicView> createState() => _ImportBasicViewState();
+  Widget build(BuildContext context) {
+    return SignInButton(
+      signedInWidget: _ImportBasicHeader(
+        exporter: exporter,
+        stateNotifier: stateNotifier,
+        selected: selected,
+        formatter: formatter,
+      ),
+    );
+  }
 }
 
-class _ImportBasicViewState extends State<ImportBasicView> {
-  final sheets = <Formattable, GlobalKey<SheetSelectorState>>{
-    Formattable.menu: GlobalKey<SheetSelectorState>(),
-    Formattable.stock: GlobalKey<SheetSelectorState>(),
-    Formattable.quantities: GlobalKey<SheetSelectorState>(),
-    Formattable.replenisher: GlobalKey<SheetSelectorState>(),
-    Formattable.orderAttr: GlobalKey<SheetSelectorState>(),
-  };
+class _ImportBasicHeader extends ImportBasicBaseHeader {
+  final GoogleSheetExporter exporter;
 
-  final selector = GlobalKey<SpreadsheetSelectorState>();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SignInButton(
-            signedInWidget: SpreadsheetSelector(
-              key: selector,
-              exporter: widget.exporter,
-              notifier: widget.notifier,
-              cacheKey: _cacheKey,
-              existLabel: S.transitGSSpreadsheetImportExistLabel,
-              existHint: (_) => S.transitGSSpreadsheetImportExistHint,
-              emptyLabel: S.transitGSSpreadsheetImportEmptyLabel,
-              emptyHint: S.transitGSSpreadsheetImportEmptyHint,
-              onUpdated: reloadSheetHints,
-              onChosen: reloadSheets,
-            ),
-          ),
-        ),
-        ListTile(
-          key: const Key('gs_export.import_all'),
-          title: Text(S.transitGSSpreadsheetImportAllBtn),
-          subtitle: Text(S.transitGSSpreadsheetImportAllHint),
-          trailing: const Icon(Icons.download_for_offline_outlined),
-          onTap: () async {
-            final confirmed = await ConfirmDialog.show(
-              context,
-              title: S.transitGSSpreadsheetImportAllConfirmTitle,
-              content: S.transitGSSpreadsheetImportAllConfirmContent,
-            );
-
-            if (confirmed) {
-              import(null);
-            }
-          },
-        ),
-        TextDivider(label: S.transitGSSpreadsheetModelImportDivider),
-        for (final entry in sheets.entries)
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Expanded(
-                child: SheetSelector(
-                  key: entry.value,
-                  label: entry.key.name,
-                  defaultValue: _getSheetName(entry.key.name),
-                ),
-              ),
-              const SizedBox(width: 8.0),
-              IconButton(
-                tooltip: S.transitImportPreviewBtn,
-                icon: const Icon(KIcons.preview),
-                onPressed: () => import(entry.key),
-              ),
-            ]),
-          ),
-      ],
-    );
-  }
+  const _ImportBasicHeader({
+    required this.exporter,
+    required super.stateNotifier,
+    required super.selected,
+    required super.formatter,
+    super.icon = const Icon(Icons.cloud_download_sharp),
+    super.allowAll = true,
+  });
 
   @override
-  void dispose() {
-    for (var sheet in sheets.values) {
-      sheet.currentState?.dispose();
-    }
-    super.dispose();
-  }
+  String get label => S.transitImportBtnGoogleSheet;
+  @override
+  String get errorMessage => S.transitImportErrorGoogleSheetFetchDataTitle;
+  @override
+  String get moreMessage => S.transitImportErrorGoogleSheetFetchDataHelper;
 
-  /// Reload the sheet names for later import.
-  Future<void> reloadSheets(GoogleSpreadsheet ss) async {
-    final exist = await widget.exporter.getSheets(ss);
-
-    for (var sheet in sheets.values) {
-      sheet.currentState?.setSheets(exist);
-    }
-
-    if (mounted) {
-      showSnackBar(S.actSuccess, context: context);
-    }
-  }
-
-  Future<void> import(Formattable? type) async {
-    final ss = selector.currentState?.spreadsheet;
-    if (ss == null) {
-      showSnackBar(S.transitGSErrorImportEmptySpreadsheet, context: context);
-      return;
-    }
-
-    final selected = sheets.entries
-        .where((e) => e.value.currentState?.selected != null)
-        .where((e) => type == null || type == e.key)
-        .map((e) => MapEntry(e.key, e.value.currentState!.selected!))
-        .toList();
-    if (selected.isEmpty) {
-      showSnackBar(S.transitGSErrorImportEmptySheet, context: context);
-      return;
-    }
-
-    widget.notifier.value = '_start';
-
-    await showSnackbarWhenFutureError(
-      _importSheets(ss, selected),
-      'gs_import_failed',
-      context: context,
+  /// 1. Ask user to select a spreadsheet.
+  /// 2. Verify all sheets are exist.
+  /// 3. Import each sheet one by one.
+  @override
+  Future<PreviewFormatter?> onImport(BuildContext context) async {
+    // Step 1
+    GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
+      context,
+      exporter: exporter,
+      cacheKey: importCacheKey,
+      allowCreateNew: false,
+      fallbackCacheKey: exportCacheKey,
     );
-
-    widget.notifier.value = '_finish';
-  }
-
-  /// After verifying the basic data, start importing.
-  Future<void> _importSheets(
-    GoogleSpreadsheet ss,
-    List<MapEntry<Formattable, GoogleSheetProperties>> ableSheets,
-  ) async {
-    final needPreview = ableSheets.length == 1;
-    for (final entry in ableSheets) {
-      final able = entry.key;
-      final sheet = entry.value;
-      widget.notifier.value = S.transitGSModelStatus(able.name);
-
-      if (!await _importData(ss, able, sheet, needPreview)) {
-        return;
-      }
-    }
-
-    if (mounted) {
-      showSnackBar(S.actSuccess, context: context);
-    }
-  }
-
-  Future<void> reloadSheetHints(GoogleSpreadsheet? other) async {
-    for (var sheet in sheets.values) {
-      sheet.currentState?.setSheets(other!.sheets);
-    }
-  }
-
-  /// Import the specified form.
-  ///
-  /// The process is as follows:
-  /// 1. Get data
-  /// 2. Cache (if possible, preview)
-  /// 3. Parse data and import
-  Future<bool> _importData(
-    GoogleSpreadsheet ss,
-    Formattable able,
-    GoogleSheetProperties sheet,
-    bool needPreview,
-  ) async {
-    Log.ger('gs_import', {'spreadsheet': ss.id, 'sheet': sheet.title});
-    // step 1
-    final source = await _requestData(able, ss, sheet);
-    if (source == null) {
-      if (mounted) {
-        showMoreInfoSnackBar(
-          S.transitGSErrorImportNotFoundSheets(sheet.title),
-          Text(S.transitGSErrorImportNotFoundHelper),
-          context: context,
-        );
-      }
-      return false;
-    }
-
-    // step 2
-    Log.out('received data length: ${source.length}', 'gs_import');
-    await _cacheSheetName(able.name, sheet);
-
-    bool? approved = true;
-    if (needPreview) {
-      approved = await _previewSheetData(able, source);
-      if (approved != true) return false;
-
-      approved = await _previewBeforeMerge(able, source);
-    } else {
-      // merge to stage only (without preview)
-      const GoogleSheetFormatter().format(able, source);
-    }
-
-    // step 3
-    Log.out('parsing table: ${able.name}', 'gs_import');
-    await Formatter.finishFormat(able, approved);
-
-    return approved ?? false;
-  }
-
-  /// Request the data from the sheet.
-  Future<List<List<Object?>>?> _requestData(
-    Formattable able,
-    GoogleSpreadsheet ss,
-    GoogleSheetProperties sheet,
-  ) async {
-    widget.notifier.value = S.transitGSProgressStatusVerifyUser;
-    await widget.exporter.auth();
-
-    const formatter = GoogleSheetFormatter();
-    final neededColumns = formatter.getHeader(able).length;
-    final sheetData = await widget.exporter.getSheetData(
-      ss,
-      sheet.title,
-      neededColumns: neededColumns,
-    );
-
-    // remove header
-    final data = sheetData?.sublist(1);
-    if (data?.isEmpty != false) {
+    if (ss == null || !context.mounted) {
       return null;
     }
 
-    return data;
-  }
-
-  Future<bool?> _previewSheetData(
-    Formattable able,
-    List<List<Object?>> source,
-  ) async {
-    const formatter = GoogleSheetFormatter();
-    final result = await showAdaptiveDialog(
-      context: context,
-      builder: (context) => SheetPreviewPage(
-        source: SheetPreviewerDataTableSource(source),
-        header: formatter.getHeader(able),
-        title: S.transitModelName(able.name),
-        action: TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(S.transitImportPreviewBtn),
-        ),
-      ),
-    );
-
-    return result;
-  }
-
-  Future<bool?> _previewBeforeMerge(
-    Formattable able,
-    List<List<Object?>> source,
-  ) {
-    const formatter = GoogleSheetFormatter();
-    final formatted = formatter.format(able, source);
-
-    return PreviewPage.show(context, able, formatted);
-  }
-
-  GoogleSheetProperties? _getSheetName(String label) {
-    final nameId = Cache.instance.get<String>('$_cacheKey.$label');
-
-    return GoogleSheetProperties.fromCacheValue(nameId);
-  }
-
-  Future<void> _cacheSheetName(String label, GoogleSheetProperties sheet) async {
-    final key = '$_cacheKey.$label';
-    if (sheet.toCacheValue() != Cache.instance.get<String>(key)) {
-      await Cache.instance.set<String>(key, sheet.toCacheValue());
+    // Step 2
+    final titles = selected.value?.toL10nNames() ?? FormattableModel.allL10nNames;
+    if (await showSnackbarWhenFutureError(
+          _prepareSheets(ss, titles),
+          'import_sheet_preparing',
+          context: context,
+          showIfFalse: true,
+          message: S.transitImportErrorGoogleSheetMissingTitle(titles.join(', ')),
+          more: S.transitImportErrorGoogleSheetMissingHelper,
+        ) !=
+        true) {
+      return null;
     }
+
+    // Step 3
+    stateNotifier.value = S.transitImportProgressGoogleSheetStart;
+    Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
+
+    final ables = selected.value?.toList() ?? FormattableModel.values;
+    final sheets = titles.map((title) => ss.sheets.firstWhere((e) => e.title == title)).toList();
+    final data = await _requestData(ss, ables, sheets);
+
+    return (FormattableModel able) {
+      final rows = data[able];
+      if (rows == null) {
+        return null;
+      }
+
+      return findFieldFormatter(able).format(rows);
+    };
+  }
+
+  Future<bool> _prepareSheets(GoogleSpreadsheet ss, List<String> titles) async {
+    final wanted = titles.toSet();
+    if (!ss.containsAll(wanted)) {
+      stateNotifier.value = S.transitImportProgressGoogleSheetPrepare;
+      final requested = await exporter.getSheets(ss);
+      ss.merge(requested);
+    }
+
+    final exist = ss.sheets.map((e) => e.title).toSet();
+    final missing = wanted.difference(exist);
+    return missing.isEmpty;
+  }
+
+  /// Request the data from the sheet.
+  Future<Map<FormattableModel, List<List<Object?>>?>> _requestData(
+    GoogleSpreadsheet ss,
+    List<FormattableModel> ables,
+    List<GoogleSheetProperties> sheets,
+  ) async {
+    final futures = sheets
+        .mapIndexed((i, sheet) => exporter.getSheetData(
+              ss,
+              sheet.title,
+              neededColumns: findFieldFormatter(ables[i]).getHeader().length,
+            ))
+        .toList();
+
+    final data = await Future.wait(futures);
+    return {
+      for (final (i, rows) in data.indexed) ables[i]: rows?.sublist(1),
+    };
   }
 }

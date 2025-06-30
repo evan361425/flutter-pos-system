@@ -82,7 +82,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       onPopInvokedWithResult: onPopInvoked,
       child: fullScreen
           ? Dialog.fullscreen(child: body)
-          : AlertDialog(
+          : AlertDialog.adaptive(
               contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
               scrollable: false,
               title: appBar == null ? Text(S.imageGalleryTitle) : null,
@@ -94,7 +94,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   Widget _buildBody(Breakpoint bp) {
     if (images == null) {
       return const SingleChildScrollView(
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: CircularProgressIndicator.adaptive()),
       );
     }
 
@@ -148,7 +148,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
         final inkwell = selecting
             ? Material(
                 color: Colors.black.withAlpha(100),
-                child: Checkbox(
+                child: Checkbox.adaptive(
                   value: selectedImages.contains(index),
                   onChanged: (bool? value) {
                     setState(() {
@@ -240,7 +240,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
     final result = await showSnackbarWhenFutureError(
       Future.wait(target.map((image) => image.file.delete())),
-      'image_gallery_delete',
+      'image_gallery_deletion',
       key: messenger,
     );
 

@@ -9,15 +9,19 @@ import 'preview_page.dart';
 class ReplenishmentPreviewPage extends PreviewPage<Replenishment> {
   const ReplenishmentPreviewPage({
     super.key,
+    required super.model,
     required super.items,
+    super.progress,
+    super.physics,
   });
 
   @override
-  Widget getItem(
+  Widget buildItem(
     BuildContext context,
     Replenishment item,
   ) {
     return ExpansionTile(
+      key: Key('transit_preview.replenisher.${item.id}'),
       title: ImporterColumnStatus(
         name: item.name,
         status: item.statusName,
@@ -29,7 +33,7 @@ class ReplenishmentPreviewPage extends PreviewPage<Replenishment> {
   }
 
   Iterable<Widget> _getData(BuildContext context, Replenishment item) sync* {
-    for (var entry in item.data.entries) {
+    for (final entry in item.data.entries) {
       final ingredient = (Stock.instance.getItem(entry.key) ?? Stock.instance.getStaged(entry.key));
       final amount = (entry.value > 0 ? '+' : '') + entry.value.toString();
 

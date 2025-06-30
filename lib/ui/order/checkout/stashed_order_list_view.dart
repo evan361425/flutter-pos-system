@@ -191,7 +191,7 @@ class StashedOrderListView extends StatelessWidget {
       if (context.mounted) {
         await showSnackbarWhenFutureError(
           StashedOrders.instance.delete(order.id ?? 0),
-          'stashed_order_finished',
+          'stashed_order_evicted',
           context: context,
         );
 

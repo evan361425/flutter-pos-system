@@ -1,72 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/transit/transit_order_list.dart';
-import 'package:possystem/ui/transit/transit_order_range.dart';
+import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
+import 'package:possystem/ui/transit/order_widgets.dart';
 
-class ExportOrderView extends StatelessWidget {
-  final ValueNotifier<DateTimeRange> notifier;
-
-  const ExportOrderView({
+class ExportOrderHeader extends TransitOrderHeader {
+  const ExportOrderHeader({
     super.key,
-    required this.notifier,
+    required super.stateNotifier,
+    required super.ranger,
+    super.settings,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TransitOrderList(
-      notifier: notifier,
-      formatOrder: (order) => Text(formatOrder(order)),
-      memoryPredictor: memoryPredictor,
-      leading: Column(
-        children: [
-          const SizedBox(height: 16.0),
-          Card(
-            key: const Key('export_btn'),
-            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListTile(
-              title: Text(S.transitPTCopyBtn),
-              subtitle: Text(S.transitPTCopyWarning),
-              trailing: const Icon(Icons.copy_outlined),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              ),
-              onTap: () {
-                showSnackbarWhenFutureError(
-                  export(),
-                  'pt_export_failed',
-                  context: context,
-                ).then((value) {
-                  if (context.mounted) {
-                    showSnackBar(S.transitPTCopySuccess, context: context);
-                  }
-                });
-              },
-            ),
-          ),
-          TransitOrderRange(notifier: notifier),
-        ],
-      ),
-    );
-  }
+  String get title => S.transitExportOrderTitlePlainText;
 
-  Future<void> export() async {
-    final orders = await Seller.instance.getDetailedOrders(
-      notifier.value.start,
-      notifier.value.end,
-    );
-
-    const exporter = PlainTextExporter();
-    await exporter.exportToClipboard(orders
+  @override
+  Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
+    await const PlainTextExporter().exportToClipboard(orders
         .map((o) => [
               S.transitOrderItemTitle(o.createdAt),
-              formatOrder(o),
+              ExportOrderView.formatOrder(o),
             ].join('\n'))
         .join('\n\n'));
+
+    if (context.mounted) {
+      showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
+    }
+  }
+}
+
+class ExportOrderView extends TransitOrderList {
+  const ExportOrderView({
+    super.key,
+    required super.ranger,
+  });
+
+  @override
+  String get helpMessage => S.transitExportOrderSubtitlePlainText;
+
+  @override
+  int memoryPredictor(OrderMetrics metrics) => _memoryPredictor(metrics);
+
+  @override
+  Widget buildOrderView(BuildContext context, OrderObject order) {
+    return Text(formatOrder(order));
   }
 
   /// Actual result depends on language, here is English version:
@@ -76,23 +57,23 @@ class ExportOrderView extends StatelessWidget {
   /// Customer's dining location is Dine-in, age is 30.
   /// There are 3 (2 kinds) products including:
   /// Cheese Burger (Burger) 1, total $200, ingredients are Cheese (Large, use 3).
-  static int memoryPredictor(OrderMetrics m) {
+  static int _memoryPredictor(OrderMetrics m) {
     return (m.count * 60 + m.attrCount! * 18 + m.productCount! * 25 + m.ingredientCount! * 10).toInt();
   }
 
   static String formatOrder(OrderObject order) {
     final attributes = order.attributes.map((a) {
-      return S.transitPTFormatOrderOrderAttributeItem(a.name, a.optionName);
+      return S.transitFormatTextOrderOrderAttributeItem(a.name, a.optionName);
     }).join('、');
     final products = order.products.map((p) {
       final ing = p.ingredients.map((i) {
-        return S.transitPTFormatOrderIngredient(
+        return S.transitFormatTextOrderIngredient(
           i.amount,
           i.ingredientName,
-          i.quantityName ?? S.transitPTFormatOrderNoQuantity,
+          i.quantityName ?? S.transitFormatTextOrderNoQuantity,
         );
       }).join('、');
-      return S.transitPTFormatOrderProduct(
+      return S.transitFormatTextOrderProduct(
         p.ingredients.length,
         p.productName,
         p.catalogName,
@@ -105,14 +86,14 @@ class ExportOrderView extends StatelessWidget {
     final totalCount = order.productsCount;
 
     return [
-      S.transitPTFormatOrderPrice(
+      S.transitFormatTextOrderPrice(
         order.productsPrice == order.price ? 0 : 1,
         order.price.toCurrency(),
         order.productsPrice.toCurrency(),
       ),
-      S.transitPTFormatOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
-      if (attributes != '') S.transitPTFormatOrderOrderAttribute(attributes),
-      S.transitPTFormatOrderProductCount(totalCount, setCount, products)
+      S.transitFormatTextOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
+      if (attributes != '') S.transitFormatTextOrderOrderAttribute(attributes),
+      S.transitFormatTextOrderProductCount(totalCount, setCount, products)
     ].join('\n');
   }
 }

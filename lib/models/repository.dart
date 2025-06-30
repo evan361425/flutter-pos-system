@@ -58,6 +58,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
   ///
   /// It is use for import/export data
   Future<void> commitStaged({bool save = true, bool reset = true}) async {
+    Log.out('start commit staged data of $runtimeType', 'repository');
     if (reset) {
       _items.clear();
       if (save) {

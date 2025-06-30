@@ -60,19 +60,17 @@ class ChartCardView extends StatelessWidget {
       );
     }
 
-    switch (chart.type) {
-      case AnalysisChartType.cartesian:
-        return _CartesianChart(
+    return switch (chart.type) {
+      AnalysisChartType.cartesian => _CartesianChart(
           chart: chart,
           metrics: metrics as List<OrderSummary>,
           interval: MetricsIntervalType.fromDays(range.value.duration.inDays),
-        );
-      case AnalysisChartType.circular:
-        return _CircularChart(
+        ),
+      AnalysisChartType.circular => _CircularChart(
           chart: chart,
           metrics: metrics as List<OrderMetricPerItem>,
-        );
-    }
+        ),
+    };
   }
 }
 

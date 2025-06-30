@@ -25,14 +25,11 @@ class HomePage extends StatelessWidget {
         listenable: mode,
         builder: (context, _) {
           SpotlightShow.of(context).reset();
-          switch (mode.value) {
-            case HomeMode.bottomNavigationBar:
-              return _WithTab(shell: shell);
-            case HomeMode.drawer:
-              return _WithDrawer(shell: shell);
-            case HomeMode.rail:
-              return _WithRail(shell: shell);
-          }
+          return switch (mode.value) {
+            HomeMode.bottomNavigationBar => _WithTab(shell: shell),
+            HomeMode.drawer => _WithDrawer(shell: shell),
+            HomeMode.rail => _WithRail(shell: shell),
+          };
         },
       ),
     );
@@ -405,19 +402,11 @@ enum _Tab {
   });
 
   Widget wrap(Widget child, [void Function()? action]) {
-    switch (this) {
-      case _Tab.menu:
-        return MenuTutorial(
-          child: child,
-        );
-      case _Tab.orderAttributes:
-        // after finish this tutorial, we will close the drawer
-        return OrderAttrTutorial(
-          onDismissed: action,
-          child: child,
-        );
-      default:
-        return child;
-    }
+    return switch (this) {
+      _Tab.menu => MenuTutorial(child: child),
+      // after finish this tutorial, we will close the drawer
+      _Tab.orderAttributes => OrderAttrTutorial(onDismissed: action, child: child),
+      _ => child,
+    };
   }
 }

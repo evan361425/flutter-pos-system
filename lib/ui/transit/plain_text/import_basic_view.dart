@@ -1,86 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
-import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/exporter/plain_text_exporter.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/formatter/plain_text_formatter.dart';
 import 'package:possystem/ui/transit/previews/preview_page.dart';
 
-class ImportBasicView extends StatefulWidget {
-  final PlainTextExporter exporter;
+class ImportBasicHeader extends StatefulWidget {
+  final ValueNotifier<FormattableModel?> selected;
+  final ValueNotifier<PreviewFormatter?> formatter;
 
-  const ImportBasicView({
+  const ImportBasicHeader({
     super.key,
-    this.exporter = const PlainTextExporter(),
+    required this.selected,
+    required this.formatter,
   });
 
   @override
-  State<ImportBasicView> createState() => _ImportBasicViewState();
+  State<ImportBasicHeader> createState() => _ImportBasicHeaderState();
 }
 
-class _ImportBasicViewState extends State<ImportBasicView> with AutomaticKeepAliveClientMixin {
-  final TextEditingController controller = TextEditingController();
+class _ImportBasicHeaderState extends State<ImportBasicHeader> {
+  String text = '';
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        const SizedBox(height: 16.0),
-        Card(
-          key: const Key('import_btn'),
-          margin: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: ListTile(
-            title: Text(S.transitImportPreviewTitle),
-            trailing: const Icon(KIcons.preview),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            ),
-            onTap: importData,
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: TextField(
-            key: const Key('import_text'),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListTile(
+        title: Text(S.transitImportBtnPlainTextAction),
+        onTap: _showTextField,
+        trailing: const Icon(Icons.copy_rounded),
+      ),
+    );
+  }
+
+  void _showTextField() async {
+    Log.ger('transit_import_plaintext');
+    final controller = TextEditingController(text: text);
+    final ok = await showAdaptiveDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: TextField(
+            key: const Key('transit.pt_text'),
             controller: controller,
             keyboardType: TextInputType.multiline,
             minLines: 3,
-            maxLines: 6,
+            maxLines: 5,
             decoration: InputDecoration(
               border: const OutlineInputBorder(
                 borderSide: BorderSide(width: 5.0),
               ),
-              hintText: S.transitPTImportHint,
-              helperText: S.transitPTImportHelper,
+              hintText: S.transitImportBtnPlainTextHint,
               helperMaxLines: 2,
             ),
           ),
-        ),
-      ]),
+          actions: [
+            PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+            TextButton(
+              key: const Key('transit.pt_preview'),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(MaterialLocalizations.of(context).okButtonLabel),
+            ),
+          ],
+        );
+      },
     );
+
+    if (ok == true && mounted) {
+      text = controller.text;
+      _onLoad();
+    }
   }
 
-  @override
-  bool get wantKeepAlive => true;
-
-  void importData() async {
-    final lines = controller.text.trim().split('\n');
+  void _onLoad() async {
+    final lines = text.trim().split('\n');
     final first = lines.isEmpty ? '' : lines.removeAt(0);
-    final able = widget.exporter.formatter.whichFormattable(first);
+    final able = findPlainTextFormattable(first);
 
     if (able == null) {
-      showSnackBar(S.transitPTImportErrorNotFound, context: context);
+      showSnackBar(S.transitImportErrorPlainTextNotFound, context: context);
+      widget.formatter.value = null;
       return;
     }
 
-    final formatted = widget.exporter.formatter.format(able, [lines]);
-    final allow = await PreviewPage.show(context, able, formatted);
-    await Formatter.finishFormat(able, allow);
-
-    if (mounted && allow == true) {
-      showSnackBar(S.actSuccess, context: context);
-    }
+    widget.selected.value = able;
+    widget.formatter.value = (FormattableModel _) => findPlainTextFormatter(able).format([lines]);
   }
 }

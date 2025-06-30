@@ -2,180 +2,129 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/style/snackbar_actions.dart';
-import 'package:possystem/components/style/text_divider.dart';
-import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
-import 'package:possystem/helpers/formatter/formatter.dart';
-import 'package:possystem/helpers/formatter/google_sheet_formatter.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/formatter/field_formatter.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
+import 'package:possystem/ui/transit/google_sheet/spreadsheet_dialog.dart';
+import 'package:possystem/ui/transit/widgets.dart';
 
-import 'sheet_namer.dart';
-import 'sheet_preview_page.dart';
-import 'spreadsheet_selector.dart';
-
-const _cacheKey = 'exporter_google_sheet';
-const _importKey = 'importer_google_sheet';
-
-class ExportBasicView extends StatefulWidget {
-  final ValueNotifier<String> notifier;
-
+class ExportBasicHeader extends StatelessWidget {
   final GoogleSheetExporter exporter;
+  final ValueNotifier<FormattableModel?> selected;
+  final TransitStateNotifier stateNotifier;
 
-  const ExportBasicView({
+  const ExportBasicHeader({
     super.key,
     required this.exporter,
-    required this.notifier,
+    required this.selected,
+    required this.stateNotifier,
   });
 
   @override
-  State<ExportBasicView> createState() => _ExportBasicViewState();
+  Widget build(BuildContext context) {
+    return SignInButton(
+      signedInWidget: _ExportBasicHeader(
+        exporter: exporter,
+        stateNotifier: stateNotifier,
+        selected: selected,
+      ),
+    );
+  }
 }
 
-class _ExportBasicViewState extends State<ExportBasicView> {
-  late final List<SheetNamerProperties> sheets;
+class _ExportBasicHeader extends BasicModelPicker {
+  final GoogleSheetExporter exporter;
 
-  final selector = GlobalKey<SpreadsheetSelectorState>();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(children: [
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SignInButton(
-          signedInWidget: SpreadsheetSelector(
-            key: selector,
-            exporter: widget.exporter,
-            notifier: widget.notifier,
-            cacheKey: _cacheKey,
-            existLabel: S.transitGSSpreadsheetExportExistLabel,
-            existHint: S.transitGSSpreadsheetExportExistHint,
-            emptyLabel: S.transitGSSpreadsheetExportEmptyLabel,
-            emptyHint: S.transitGSSpreadsheetExportEmptyHint(S.transitGSSpreadsheetModelDefaultName),
-            defaultName: S.transitGSSpreadsheetModelDefaultName,
-            requiredSheetTitles: requiredSheetTitles,
-            onUpdated: onSpreadsheetUpdate,
-            onPrepared: exportData,
-          ),
-        ),
-      ),
-      TextDivider(label: S.transitGSSpreadsheetModelExportDivider),
-      for (final sheet in sheets)
-        SheetNamer(
-          prop: sheet,
-          action: (prop) => previewData(prop.type),
-          actionIcon: KIcons.preview,
-          actionTitle: S.transitExportPreviewTitle,
-        ),
-    ]);
-  }
+  const _ExportBasicHeader({
+    required super.selected,
+    required super.stateNotifier,
+    required this.exporter,
+    super.icon = const Icon(Icons.cloud_upload_sharp),
+  });
 
   @override
-  void initState() {
-    super.initState();
-    sheets = [
-      SheetType.menu,
-      SheetType.stock,
-      SheetType.quantities,
-      SheetType.replenisher,
-      SheetType.orderAttr,
-    ].map((e) {
-      final name = Cache.instance.get<String>('$_cacheKey.${e.name}') ?? S.transitModelName(e.name);
-      final data = Formatter.getTarget(Formatter.nameToFormattable(e.name));
+  String get label => S.transitExportBasicBtnGoogleSheet;
 
-      return SheetNamerProperties(
-        e,
-        name: name,
-        checked: data.isNotEmpty,
-        hints: spreadsheet?.sheets.map((e) => e.title),
-      );
-    }).toList();
-  }
+  @override
+  Future<void> onExport(BuildContext context, FormattableModel? able) async {
+    final link = await _startExport(context, able);
 
-  GoogleSpreadsheet? get spreadsheet {
-    if (selector.currentState == null) {
-      final cached = Cache.instance.get<String>(_cacheKey);
-      if (cached != null) {
-        return GoogleSpreadsheet.fromString(cached);
-      }
-    }
-
-    return selector.currentState?.spreadsheet;
-  }
-
-  void previewData(SheetType type) {
-    const formatter = GoogleSheetFormatter();
-    final able = Formatter.nameToFormattable(type.name);
-    showAdaptiveDialog(
-      context: context,
-      builder: (_) => SheetPreviewPage(
-        source: SheetPreviewerDataTableSource(formatter.getRows(able)),
-        header: formatter.getHeader(able),
-        title: S.transitModelName(able.name),
-      ),
-    );
-  }
-
-  /// It is used to let [SpreadsheetSelector] help to create the form.
-  Map<SheetType, String> requiredSheetTitles() => {
-        for (var sheet in sheets.where((sheet) => sheet.checked)) sheet.type: sheet.name,
-      };
-
-  /// [SpreadsheetSelector] will check the basic data before actually exporting.
-  Future<void> exportData(
-    GoogleSpreadsheet ss,
-    Map<SheetType, GoogleSheetProperties> kv,
-  ) async {
-    Log.ger('gs_export', {'spreadsheet': ss.id, 'target': kv.keys.map((e) => e.name).join(',')});
-    const formatter = GoogleSheetFormatter();
-
-    // cache the sheet names
-    final prepared = kv.map((key, value) => MapEntry(
-          Formattable.values.firstWhere((e) => e.name == key.name),
-          value,
-        ));
-    for (final e in prepared.entries) {
-      await _cacheSheetName(e.key.name, e.value.title);
-    }
-
-    // go
-    await widget.exporter.updateSheet(
-      ss,
-      prepared.values,
-      prepared.keys.map((key) => formatter.getRows(key)),
-      prepared.keys.map((key) => formatter.getHeader(key)),
-    );
-
-    Log.out('export finish', 'gs_export');
-    if (mounted) {
+    if (context.mounted && link != null) {
       showSnackBar(
-        S.actSuccess,
+        S.transitExportBasicSuccessGoogleSheet,
         context: context,
         action: LauncherSnackbarAction(
-          label: S.transitGSSpreadsheetSnackbarAction,
-          link: ss.toLink(),
+          label: S.transitExportBasicSuccessActionGoogleSheet,
+          link: link,
           logCode: 'gs_export',
         ),
       );
     }
   }
 
-  Future<void> onSpreadsheetUpdate(GoogleSpreadsheet? other) async {
-    for (final sheet in sheets) {
-      sheet.hints = other?.sheets.map((e) => e.title);
+  /// Export data to the spreadsheet
+  ///
+  /// 1. Ask user to select a spreadsheet.
+  /// 2. Prepare the spreadsheet, make all sheets ready.
+  /// 3. Export data to the spreadsheet.
+  Future<String?> _startExport(BuildContext context, FormattableModel? able) async {
+    // Step 1
+    GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
+      context,
+      exporter: exporter,
+      cacheKey: exportCacheKey,
+      allowCreateNew: true,
+      fallbackCacheKey: importCacheKey,
+    );
+    if (ss == null || !context.mounted) {
+      return null;
     }
 
-    // auto set the title to import, to make user easier to import
-    if (other != null && Cache.instance.get<String>(_importKey) == null) {
-      await Cache.instance.set(_importKey, other.toString());
+    // Step 2
+    final names = able?.toL10nNames() ?? FormattableModel.allL10nNames;
+    ss = await prepareSpreadsheet(
+      context: context,
+      exporter: exporter,
+      stateNotifier: stateNotifier,
+      defaultName: S.transitExportBasicFileName,
+      cacheKey: exportCacheKey,
+      sheets: names,
+      spreadsheet: ss,
+    );
+    if (ss == null || !context.mounted) {
+      return null;
     }
+
+    // Step 3
+    final data = getAllFormattedFieldData(able);
+    final headers = getAllFormattedFieldHeaders(able);
+    Log.ger('gs_export', {'spreadsheet': ss.id, 'sheets': names});
+
+    await exporter.updateSheet(
+      ss,
+      names.map((e) => ss!.sheets.firstWhere((sheet) => sheet.title == e)),
+      data.map((rows) => rows.map((row) => row.map((cell) => GoogleSheetCellData.fromCellData(cell)))),
+      headers.map((row) => row.map((cell) => GoogleSheetCellData.fromCellData(cell))),
+    );
+
+    Log.out('export finish', 'gs_export');
+    return ss.toLink();
   }
+}
 
-  Future<void> _cacheSheetName(String label, String title) async {
-    final key = '$_cacheKey.$label';
-    if (title != Cache.instance.get<String>(key)) {
-      await Cache.instance.set<String>(key, title);
-    }
+class ExportBasicView extends ExportView {
+  const ExportBasicView({
+    super.key,
+    required super.selected,
+    required super.stateNotifier,
+  });
+
+  @override
+  ModelData getSourceAndHeaders(FormattableModel able) {
+    final formatter = findFieldFormatter(able);
+    final headers = formatter.getHeader();
+    return ModelData(headers, formatter.getRows());
   }
 }

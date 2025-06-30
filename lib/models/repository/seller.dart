@@ -32,22 +32,23 @@ class Seller extends ChangeNotifier {
   }) async {
     final begin = Util.toUTC(now: start);
     final finish = Util.toUTC(now: end);
-    final queries = [
-      Database.instance.query(
-        orderTable,
-        columns: [
-          'COUNT(*) count',
-          'SUM(price) revenue',
-          'SUM(cost) cost',
-          'SUM(revenue) profit',
-        ],
-        where: 'createdAt BETWEEN ? AND ?',
-        whereArgs: [begin, finish],
-      ),
-    ];
+    final orderMeta = (await Database.instance.query(
+      orderTable,
+      columns: [
+        'COUNT(*) count',
+        'SUM(price) revenue',
+        'SUM(cost) cost',
+        'SUM(revenue) profit',
+      ],
+      where: 'createdAt BETWEEN ? AND ?',
+      whereArgs: [begin, finish],
+    ))[0];
 
-    if (countingAll) {
-      queries.addAll([
+    int? productCount;
+    int? ingredientCount;
+    int? attrCount;
+    if (countingAll && orderMeta['count'] != 0) {
+      final result = await Future.wait([
         Database.instance.query(
           productTable,
           columns: ['COUNT(*) count'],
@@ -67,22 +68,14 @@ class Seller extends ChangeNotifier {
           whereArgs: [begin, finish],
         ),
       ]);
-    }
 
-    final result = await Future.wait(queries);
-
-    final order = result[0][0];
-    int? productCount;
-    int? ingredientCount;
-    int? attrCount;
-    if (countingAll) {
-      productCount = result[1][0]['count'] as int;
-      ingredientCount = result[2][0]['count'] as int;
-      attrCount = result[3][0]['count'] as int;
+      productCount = result[0][0]['count'] as int;
+      ingredientCount = result[1][0]['count'] as int;
+      attrCount = result[2][0]['count'] as int;
     }
 
     return OrderMetrics.fromMap(
-      order,
+      orderMeta,
       productCount: productCount,
       ingredientCount: ingredientCount,
       attrCount: attrCount,
@@ -579,33 +572,23 @@ enum OrderMetricTarget {
   ///
   /// - [selection] null and empty means select all
   List<Model> getItems([List<String>? selection]) {
-    late final List<Model> result;
-    switch (this) {
-      case OrderMetricTarget.product:
-        result = Menu.instance.products.toList();
-        break;
-      case OrderMetricTarget.catalog:
-        result = Menu.instance.itemList;
-        break;
-      case OrderMetricTarget.ingredient:
-        result = Stock.instance.itemList;
-        break;
-      case OrderMetricTarget.attribute:
-        if (selection != null) {
-          if (selection.isEmpty) {
-            return OrderAttributes.instance.itemList.expand((e) => e.itemList).toList();
-          }
+    if (this == OrderMetricTarget.attribute && selection != null) {
+      if (selection.isEmpty) {
+        return OrderAttributes.instance.itemList.expand((e) => e.itemList).toList();
+      }
 
-          return selection
-              .expand<OrderAttributeOption>((id) => OrderAttributes.instance.getItemByName(id)?.itemList ?? const [])
-              .toList();
-        }
-
-        result = OrderAttributes.instance.itemList;
-        break;
-      default:
-        return const [];
+      return selection
+          .expand<OrderAttributeOption>((id) => OrderAttributes.instance.getItemByName(id)?.itemList ?? const [])
+          .toList();
     }
+
+    final result = switch (this) {
+      OrderMetricTarget.product => Menu.instance.products.toList() as List<Model>,
+      OrderMetricTarget.catalog => Menu.instance.itemList,
+      OrderMetricTarget.ingredient => Stock.instance.itemList,
+      OrderMetricTarget.attribute => OrderAttributes.instance.itemList,
+      _ => const <Model>[],
+    };
 
     // null and empty means select all
     if (selection == null || selection.isEmpty) {

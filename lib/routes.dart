@@ -562,7 +562,7 @@ class Routes {
         routes: [
           GoRoute(
             name: transitStation,
-            path: ':method/:type',
+            path: ':method/:catalog',
             parentNavigatorKey: rootNavigatorKey,
             builder: (ctx, state) {
               final method = _findEnum(
@@ -570,15 +570,15 @@ class Routes {
                 state.pathParameters['method'],
                 TransitMethod.plainText,
               );
-              final type = _findEnum(
+              final catalog = _findEnum(
                 TransitCatalog.values,
-                state.pathParameters['type'],
-                TransitCatalog.model,
+                state.pathParameters['catalog'],
+                TransitCatalog.exportOrder,
               );
               final range = _parseRange(state.uri.queryParameters['range']);
 
               return _l(
-                TransitStation(method: method, catalog: type, range: range),
+                TransitStation(method: method, catalog: catalog, range: range),
                 state,
               );
             },

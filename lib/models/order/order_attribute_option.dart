@@ -72,14 +72,11 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
   num calculatePrice(num price) {
     if (modeValue == null) return price;
 
-    switch (attribute.mode) {
-      case OrderAttributeMode.changeDiscount:
-        return price * modeValue! / 100;
-      case OrderAttributeMode.changePrice:
-        return price + modeValue!;
-      default:
-        return price;
-    }
+    return switch (attribute.mode) {
+      OrderAttributeMode.changeDiscount => price * modeValue! / 100,
+      OrderAttributeMode.changePrice => price + modeValue!,
+      _ => price,
+    };
   }
 
   @override

@@ -22,34 +22,28 @@ class DefaultFirebaseOptions {
         'you can reconfigure this by running the FlutterFire CLI again.',
       );
     }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return isProd ? android : androidDebug;
-      case TargetPlatform.iOS:
-        throw UnsupportedError(
+    return switch (defaultTargetPlatform) {
+      TargetPlatform.android => isProd ? android : androidDebug,
+      TargetPlatform.iOS => throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for ios - '
           'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.macOS:
-        throw UnsupportedError(
+        ),
+      TargetPlatform.macOS => throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
           'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.windows:
-        throw UnsupportedError(
+        ),
+      TargetPlatform.windows => throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
           'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.linux:
-        throw UnsupportedError(
+        ),
+      TargetPlatform.linux => throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
           'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      default:
-        throw UnsupportedError(
+        ),
+      _ => throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
-        );
-    }
+        ),
+    };
   }
 
   static const FirebaseOptions androidDebug = FirebaseOptions(

@@ -61,7 +61,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         for (final device in searched) _buildDeviceTile(device),
         const SizedBox(height: kInternalSpacing),
         scanStream != null
-            ? const CircularProgressIndicator()
+            ? const CircularProgressIndicator.adaptive()
             : TextButton(
                 onPressed: scan,
                 child: Text(S.printerScanRetry),

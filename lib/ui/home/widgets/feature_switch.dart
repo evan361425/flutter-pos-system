@@ -23,7 +23,7 @@ class _FeatureSwitchState extends State<FeatureSwitch> {
 
   @override
   Widget build(BuildContext context) {
-    return Switch(
+    return Switch.adaptive(
         value: isEnable,
         autofocus: widget.autofocus,
         onChanged: (value) {

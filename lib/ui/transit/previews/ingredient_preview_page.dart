@@ -8,12 +8,16 @@ import 'preview_page.dart';
 class IngredientPreviewPage extends PreviewPage<Ingredient> {
   const IngredientPreviewPage({
     super.key,
+    required super.model,
     required super.items,
+    super.progress,
+    super.physics,
   });
 
   @override
-  Widget getItem(BuildContext context, Ingredient item) {
+  Widget buildItem(BuildContext context, Ingredient item) {
     return ListTile(
+      key: Key('transit_preview.stock.${item.id}'),
       title: ImporterColumnStatus(
         name: item.name,
         status: item.statusName,
@@ -26,7 +30,5 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
   }
 
   @override
-  Widget getHeader(BuildContext context) {
-    return Text(S.transitImportPreviewIngredientHeader);
-  }
+  String get helpMessage => S.transitImportPreviewIngredientConfirm;
 }

@@ -89,12 +89,10 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
   }
 
   Future<List> load(DateTimeRange range) {
-    switch (type) {
-      case AnalysisChartType.cartesian:
-        return _loadCartesian(range);
-      case AnalysisChartType.circular:
-        return _loadCircular(range);
-    }
+    return switch (type) {
+      AnalysisChartType.cartesian => _loadCartesian(range),
+      AnalysisChartType.circular => _loadCircular(range),
+    };
   }
 
   Future<List<OrderSummary>> _loadCartesian(DateTimeRange range) {

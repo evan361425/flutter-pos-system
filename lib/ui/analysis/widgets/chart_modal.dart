@@ -205,9 +205,8 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
   }
 
   Widget _buildExampleChart() {
-    switch (type) {
-      case AnalysisChartType.cartesian:
-        return SfCartesianChart(
+    return switch (type) {
+      AnalysisChartType.cartesian => SfCartesianChart(
           plotAreaBorderWidth: 0.7,
           enableAxisAnimation: false,
           selectionGesture: ActivationMode.none,
@@ -225,9 +224,8 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
               dataSource: const [3, 1, 4, 6, 5, 2, 5],
             ),
           ],
-        );
-      case AnalysisChartType.circular:
-        return SfCircularChart(
+        ),
+      AnalysisChartType.circular => SfCircularChart(
           title: const ChartTitle(),
           selectionGesture: ActivationMode.none,
           series: <CircularSeries>[
@@ -237,8 +235,8 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
               yValueMapper: (int data, _) => data,
             ),
           ],
-        );
-    }
+        ),
+    };
   }
 
   @override
@@ -289,30 +287,22 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
   }
 
   Iterable<OrderMetricTarget> get _allowedTargets {
-    switch (type) {
-      case AnalysisChartType.circular:
-        return [
+    return switch (type) {
+      AnalysisChartType.circular => [
           OrderMetricTarget.catalog,
           OrderMetricTarget.product,
           OrderMetricTarget.ingredient,
           OrderMetricTarget.attribute,
-        ];
-      case AnalysisChartType.cartesian:
-        return OrderMetricTarget.values;
-    }
+        ],
+      AnalysisChartType.cartesian => OrderMetricTarget.values,
+    };
   }
 
   Iterable<OrderMetricType> get _allowedMetrics {
-    switch (target) {
-      case OrderMetricTarget.order:
-      case OrderMetricTarget.catalog:
-      case OrderMetricTarget.product:
-        return OrderMetricType.values;
-      default:
-        return [
-          OrderMetricType.count,
-        ];
-    }
+    return switch (target) {
+      OrderMetricTarget.order || OrderMetricTarget.catalog || OrderMetricTarget.product => OrderMetricType.values,
+      _ => [OrderMetricType.count],
+    };
   }
 
   bool get _singleMetric => target != OrderMetricTarget.order;

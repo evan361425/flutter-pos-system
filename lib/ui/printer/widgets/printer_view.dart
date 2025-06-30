@@ -44,7 +44,7 @@ class _PrinterViewState extends State<PrinterView> {
         listenable: waiting,
         builder: (context, child) {
           if (waiting.value) {
-            return const _Backdrop(child: CircularProgressIndicator());
+            return const _Backdrop(child: CircularProgressIndicator.adaptive());
           }
 
           return const SizedBox.shrink();

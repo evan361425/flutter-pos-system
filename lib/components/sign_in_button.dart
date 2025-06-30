@@ -26,7 +26,8 @@ class SignInButton extends StatelessWidget {
     return StreamBuilder<firebase.User?>(
       stream: Auth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        User user = User(user: snapshot.data);
+        // final user = User(displayName: 'Test User');
+        final user = User(user: snapshot.data);
 
         // User is not signed in
         if (user.notSignedIn) {
@@ -130,7 +131,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                     child: SizedBox(
                       width: size,
                       height: size,
-                      child: CircularProgressIndicator(
+                      child: CircularProgressIndicator.adaptive(
                         value: size,
                         strokeWidth: borderWidth * 2,
                       ),

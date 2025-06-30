@@ -12,7 +12,6 @@ class ResponsiveDialog extends StatelessWidget {
   final Widget? floatingActionButton;
   final bool scrollable;
   final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
-  final Size? fixedSizeOnDialog;
 
   const ResponsiveDialog({
     super.key,
@@ -22,7 +21,6 @@ class ResponsiveDialog extends StatelessWidget {
     this.action,
     this.scrollable = true,
     this.scaffoldMessengerKey,
-    this.fixedSizeOnDialog,
   });
 
   @override
@@ -31,14 +29,7 @@ class ResponsiveDialog extends StatelessWidget {
     final dialog = size.width > Breakpoint.medium.max;
 
     if (dialog) {
-      final realContent = fixedSizeOnDialog == null
-          ? content
-          : SizedBox(
-              width: fixedSizeOnDialog!.width == 0 ? null : fixedSizeOnDialog!.width,
-              height: fixedSizeOnDialog!.height == 0 ? null : fixedSizeOnDialog!.height,
-              child: content,
-            );
-      final dialog = AlertDialog(
+      final dialog = AlertDialog.adaptive(
         title: title,
         contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
         scrollable: scrollable,
@@ -46,7 +37,7 @@ class ResponsiveDialog extends StatelessWidget {
           children: [
             ConstrainedBox(
               constraints: BoxConstraints(minWidth: Breakpoint.compact.max),
-              child: realContent,
+              child: content,
             ),
             const Positioned(
               bottom: 0,

@@ -2,10 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/sheets/v4.dart' as gs;
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/helpers/exporter/google_sheet_exporter.dart';
+import 'package:possystem/ui/transit/exporter/google_sheet_exporter.dart';
 
-import '../../mocks/mock_auth.dart';
-import '../../mocks/mock_google_api.dart';
+import '../../../mocks/mock_auth.dart';
+import '../../../mocks/mock_google_api.dart';
 
 void main() {
   group('Google Sheet Exporter', () {
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('GoogleSheetCellData #dataValidation', () async {
-      final data = GoogleSheetCellData(stringValue: 'a', options: ['b', 'c']);
+      final data = GoogleSheetCellData(string: 'a', options: ['b', 'c']);
 
       final result = data.toGoogleFormat();
 
