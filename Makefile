@@ -7,7 +7,7 @@ help: ## Display this help
 ##@ Development
 .PHONY: format
 format: ## Format code
-	dart format --set-exit-if-changed --line-length 120 .
+	dart format --line-length 120 .
 
 .PHONY: lint
 lint: ## Lint code

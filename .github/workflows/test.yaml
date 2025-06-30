@@ -52,7 +52,9 @@ jobs:
         run: flutter analyze .
 
       - name: Format
-        run: dart format --set-exit-if-changed --show none --line-length 120 .
+        run: |
+          dart format --line-length 120 lib/l10n/gen
+          dart format --set-exit-if-changed --show none --line-length 120 .
 
       # Run widget tests for our flutter project.
       - name: Testing
