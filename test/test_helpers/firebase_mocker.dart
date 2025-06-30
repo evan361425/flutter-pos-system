@@ -10,6 +10,7 @@ import 'package:firebase_core_platform_interface/src/pigeon/mocks.dart';
 import 'package:firebase_core_platform_interface/src/pigeon/test_api.dart';
 // ignore: depend_on_referenced_packages
 import 'package:firebase_crashlytics_platform_interface/firebase_crashlytics_platform_interface.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // https://github.com/FirebaseExtended/flutterfire/blob/master/packages/firebase_auth/firebase_auth/test/mock.dart
@@ -42,11 +43,20 @@ Map<String, List<String>> setupFirebaseAnalyticsMocks() {
   setupFirebaseCoreMocks();
 
   final record = <String, List<String>>{'methods': []};
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(MethodChannelFirebaseAnalytics.channel, (c) async {
-    record['methods']!.add(c.method);
-    return false;
-  });
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    MethodChannelFirebaseAnalytics.channel,
+    (MethodCall methodCall) async {
+      print('MockAnalytics: $methodCall');
+      record['methods']!.add(methodCall.method);
+      switch (methodCall.method) {
+        case 'Analytics#getAppInstanceId':
+          return 'ABCD1234';
+
+        default:
+          return false;
+      }
+    },
+  );
 
   return record;
 }

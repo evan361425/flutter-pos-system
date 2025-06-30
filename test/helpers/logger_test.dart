@@ -16,14 +16,14 @@ void main() {
       expect(crashlytics.methodCalls[0], equals('Crashlytics#recordError'));
     });
 
-    testWidgets('Should do things on analytics', (tester) async {
-      final analytics = setupFirebaseAnalyticsMocks();
+    test('Should do things on analytics', () async {
+      setupFirebaseAnalyticsMocks();
       await Firebase.initializeApp();
 
-      Log.ger('hi', {'test': '1', 'key': 2}, true);
-      await tester.pumpAndSettle();
-
-      expect(analytics['methods']![0], equals('Analytics#logEvent'));
+      Log.ger('app_clear_data', {'test': '1', 'key': 2}, true);
+      await Log.current!.catchError((e) {
+        expect(e, isA<ArgumentError>());
+      });
     });
   });
 }

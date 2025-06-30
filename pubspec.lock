@@ -285,9 +285,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: e53493fb5adfb6f5c60df985b28c7c884144de0e
-      url: "https://github.com/andrzejchm/excel"
+      ref: patch-1
+      resolved-ref: "45183642a597735a2bf47f1024807970b10bc711"
+      url: "https://github.com/evan361425/excel"
     source: git
     version: "5.0.0"
   extension_google_sign_in_as_googleapis_auth:

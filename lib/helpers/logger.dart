@@ -8,6 +8,8 @@ import 'package:possystem/constants/constant.dart';
 const _isDebug = kDebugMode || isLocalTest;
 
 class Log {
+  static Future<void>? current;
+
   static void out(
     String msg,
     String code, {
@@ -35,10 +37,7 @@ class Log {
         }
       });
 
-      await FirebaseAnalytics.instance.logEvent(
-        name: event,
-        parameters: filtered,
-      );
+      current = FirebaseAnalytics.instance.logEvent(name: event, parameters: filtered);
     }
   }
 

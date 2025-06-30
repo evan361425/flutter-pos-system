@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/l10n/app_localizations.dart';
+import 'package:possystem/l10n/gen/app_localizations.dart';
 
 import 'constants/app_themes.dart';
 import 'routes.dart';
