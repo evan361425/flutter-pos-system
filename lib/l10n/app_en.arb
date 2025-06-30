@@ -378,7 +378,6 @@
   "transitExportBasicSuccessGoogleSheet": "Uploaded successfully",
   "transitExportBasicSuccessPlainText": "Copied successfully",
   "transitExportBasicSuccessActionGoogleSheet": "Open",
-  "transitExportBasicErrorOnlyOneFileExported": "Only {name} exported successfully, other files failed since folder is not permitted.",
   "transitExportOrderTitleCsv": "Export CSV files",
   "transitExportOrderTitleExcel": "Export Excel file",
   "transitExportOrderTitleGoogleSheet": "Upload to Google Sheets",

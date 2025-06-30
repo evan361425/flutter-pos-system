@@ -1,7 +1,7 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/l10n/app_localizations.dart';
+import 'package:possystem/l10n/app_localizations_en.dart';
 
 AppLocalizations S = setAppLocalizations(AppLocalizationsEn());
 
