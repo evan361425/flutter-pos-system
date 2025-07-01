@@ -148,6 +148,8 @@ jobs:
           echo "https://oauth:$GH_READ_PAT@github.com" > ~/.git-credentials
           git config --global credential.helper store
           flutter pub get
+          # https://github.com/syncfusion/flutter-widgets/issues/2385
+          mkdir ~/.pub-cache/hosted/pub.dev/syncfusion_flutter_charts-30.1.37/images/
 
       # Setup Java environment in order to build the Android app.
       - uses: actions/setup-java@v4
