@@ -92,6 +92,6 @@ flutter {
 dependencies {
   implementation 'com.android.support:multidex:1.0.3'
   // kotlin version
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.21"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.21"
   implementation "androidx.multidex:multidex:2.0.1"
 }
