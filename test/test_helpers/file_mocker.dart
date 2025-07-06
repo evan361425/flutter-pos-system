@@ -26,6 +26,10 @@ String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
   when(picker.pickFiles(
     type: anyNamed('type'),
     withReadStream: anyNamed('withReadStream'),
+    compressionQuality: anyNamed('compressionQuality'),
+    allowCompression: anyNamed('allowCompression'),
+    allowMultiple: anyNamed('allowMultiple'),
+    withData: anyNamed('withData'),
   )).thenAnswer((_) async {
     if (bytes == null) {
       return null;

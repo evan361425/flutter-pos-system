@@ -5,7 +5,6 @@ buildscript {
     }
 
     dependencies {
-        // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.21"
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
     }
 }
