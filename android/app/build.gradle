@@ -1,10 +1,12 @@
 plugins {
   id "com.android.application"
+    // START: FlutterFire Configuration
+  id "com.google.gms.google-services"
+  id "com.google.firebase.crashlytics"
+  id 'com.google.firebase.firebase-perf'
+    // END: FlutterFire Configuration
   id "kotlin-android"
   id "dev.flutter.flutter-gradle-plugin"
-  id "com.google.gms.google-services"
-    id 'com.google.firebase.firebase-perf'
-  id "com.google.firebase.crashlytics"
 }
 
 def localProperties = new Properties()
@@ -23,12 +25,12 @@ android {
   ndkVersion flutter.ndkVersion
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
   kotlinOptions {
-    jvmTarget = '1.8'
+    jvmTarget = JavaVersion.VERSION_17
   }
 
   sourceSets {
@@ -39,7 +41,7 @@ android {
     applicationId "com.evanlu.possystem"
     // default: flutter.minSdkVersion
     // but firebase auth requires 23
-    minSdkVersion 23
+    minSdk = 23
     targetSdkVersion flutter.targetSdkVersion
     multiDexEnabled true
     versionCode flutterVersionCode.toInteger()
@@ -95,3 +97,6 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.21"
   implementation "androidx.multidex:multidex:2.0.1"
 }
+
+// This must appear at the bottom of the file
+apply plugin: 'com.google.firebase.crashlytics'

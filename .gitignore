@@ -58,3 +58,4 @@ android/build/*
 site/
 Pipfile.lock
 /*.key
+/lib/firebase_options.dart
