@@ -31,7 +31,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
       child: ListTile(
         title: Text(S.transitImportBtnPlainTextAction),
         onTap: _showTextField,
-        trailing: const Icon(Icons.copy_rounded),
+        trailing: const Icon(Icons.content_paste_rounded),
       ),
     );
   }
@@ -79,6 +79,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
     final lines = text.trim().split('\n');
     final first = lines.isEmpty ? '' : lines.removeAt(0);
     final able = findPlainTextFormattable(first);
+    Log.out('get $first and consider as $able', 'transit_import_plaintext');
 
     if (able == null) {
       showSnackBar(S.transitImportErrorPlainTextNotFound, context: context);

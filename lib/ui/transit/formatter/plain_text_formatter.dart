@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -12,6 +13,7 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 const _reDig = r' *-?\d+\.?\d*';
 const _reInt = r'[0-9 ]+';
 const _rePre = r'^';
+const _any = '<_ANY_>';
 
 ModelFormatter<Repository, String> findPlainTextFormatter(FormattableModel able) {
   final parser = able.toParser();
@@ -241,11 +243,14 @@ class _StockFormatter extends ModelFormatter<Stock, String> {
   @override
   List<List<String>> transformRows(List<List<Object?>> rows) {
     final reBase = RegExp(_rePre +
-        S.transitFormatTextStockIngredient(
-          _reInt,
-          r'(?<name>.+?)',
-          '(?<amount>$_reDig)',
-          r'(?<details>.*)',
+        _removeSuffixAfterAny(
+          S.transitFormatTextStockIngredient(
+            _reInt,
+            r'(?<name>.+?)',
+            '(?<amount>$_reDig)',
+            _any,
+          ),
+          'details',
         ));
     final reMax = RegExp(S.transitFormatTextStockIngredientMaxAmount(1, '(?<max>$_reDig)'));
     final reRestock = RegExp(
@@ -255,22 +260,25 @@ class _StockFormatter extends ModelFormatter<Stock, String> {
     final result = <List<String>>[];
     for (final line in rows[0]) {
       final base = reBase.firstMatch(line.toString());
-      if (base != null) {
-        final parsed = [base.namedGroup('name')!, base.namedGroup('amount')!];
-        final details = base.namedGroup('details');
-
-        if (details != null && details.isNotEmpty) {
-          final max = reMax.firstMatch(details);
-          parsed.add(max != null ? max.namedGroup('max')! : 'null');
-
-          final restock = reRestock.firstMatch(details);
-          if (restock != null) {
-            parsed.add(restock.namedGroup('p')!);
-            parsed.add(restock.namedGroup('q')!);
-          }
-        }
-        result.add(parsed);
+      if (base == null) {
+        Log.out('unknown stock: $line', 'transit_import_plaintext');
+        continue;
       }
+
+      final parsed = [base.namedGroup('name')!, base.namedGroup('amount')!];
+      final details = base.namedGroup('details');
+
+      if (details != null && details.isNotEmpty) {
+        final max = reMax.firstMatch(details);
+        parsed.add(max != null ? max.namedGroup('max')! : 'null');
+
+        final restock = reRestock.firstMatch(details);
+        if (restock != null) {
+          parsed.add(restock.namedGroup('p')!);
+          parsed.add(restock.namedGroup('q')!);
+        }
+      }
+      result.add(parsed);
     }
 
     return result;
@@ -314,12 +322,15 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, String> {
     final result = <List<String>>[];
     for (final line in rows[0]) {
       final match = re.firstMatch(line.toString());
-      if (match != null) {
-        result.add([
-          match.namedGroup('name')!,
-          match.namedGroup('prop')!,
-        ]);
+      if (match == null) {
+        Log.out('unknown quantity: $line', 'transit_import_plaintext');
+        continue;
       }
+
+      result.add([
+        match.namedGroup('name')!,
+        match.namedGroup('prop')!,
+      ]);
     }
 
     return result;
@@ -354,35 +365,36 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, String> {
 
   @override
   List<List<String>> transformRows(List<List<Object?>> rows) {
-    final reBase = RegExp(
-      _rePre +
-          S.transitFormatTextReplenisherReplenishment(
-            _reInt,
-            r'(?<name>.+?)',
-            '.*',
-          ),
-    );
+    final reBase = RegExp(_rePre +
+        _removeSuffixAfterAny(S.transitFormatTextReplenisherReplenishment(
+          _reInt,
+          r'(?<name>.+?)',
+          _any,
+        )));
     final reIngredient = RegExp('$_rePre(?<name>.*)（(?<amount>$_reDig)）');
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
       final lineSplit = line.toString().split(ingredientDelimiter);
       final baseMatch = reBase.firstMatch(lineSplit[0]);
-      if (baseMatch != null) {
-        String ingredients = '';
-        if (lineSplit.length > 1) {
-          final lineIng = lineSplit[1].replaceFirst(RegExp(r'[^）]*$'), '');
-          for (final ing in lineIng.split('、')) {
-            final match = reIngredient.firstMatch(ing);
-            if (match != null) {
-              ingredients = '$ingredients\n- ${match.namedGroup('name')!},'
-                  '${match.namedGroup('amount')!}';
-            }
+      if (baseMatch == null) {
+        Log.out('unknown replenisher: $lineSplit', 'transit_import_plaintext');
+        continue;
+      }
+
+      String ingredients = '';
+      if (lineSplit.length > 1) {
+        final lineIng = lineSplit[1].replaceFirst(RegExp(r'[^）]*$'), '');
+        for (final ing in lineIng.split('、')) {
+          final match = reIngredient.firstMatch(ing);
+          if (match != null) {
+            ingredients = '$ingredients\n- ${match.namedGroup('name')!},'
+                '${match.namedGroup('amount')!}';
           }
         }
-
-        result.add([baseMatch.namedGroup('name')!, ingredients]);
       }
+
+      result.add([baseMatch.namedGroup('name')!, ingredients]);
     }
 
     return result;
@@ -423,44 +435,53 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, String> {
   @override
   List<List<String>> transformRows(List<List<Object?>> rows) {
     final reOA = RegExp(_rePre +
-        S.transitFormatTextOaOa(
+        _removeSuffixAfterAny(S.transitFormatTextOaOa(
           _reInt,
           r'(?<name>.+?)',
-          r'(?<mode>.+)',
-          '.*',
-        ));
+          r'(?<mode>.+?)',
+          _any,
+        )));
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
       final lineSplit = line.toString().split('：');
       final oaMatch = reOA.firstMatch(lineSplit[0]);
-      if (oaMatch != null) {
-        String options = '';
-        if (lineSplit.length > 1) {
-          for (final opt in lineSplit[1].split('、')) {
-            final infoIdx = opt.indexOf('（');
-            final name = infoIdx == -1 ? opt : opt.substring(0, infoIdx);
-            String info = 'false';
-            if (infoIdx != -1) {
-              final infoStr = opt.substring(infoIdx + 1, opt.length - 1);
-              if (infoStr.startsWith(S.transitFormatTextOaDefaultOption)) {
-                info = 'true';
-              }
-              final v = RegExp(_reDig).firstMatch(infoStr)?.group(0) ?? '';
-              info = '$info,$v';
-            }
-            options = '$options\n- $name,$info';
-          }
-        }
-
-        result.add([
-          oaMatch.namedGroup('name')!,
-          oaMatch.namedGroup('mode')!,
-          options,
-        ]);
+      if (oaMatch == null) {
+        Log.out('unknown order attribute: $lineSplit', 'transit_import_plaintext');
+        continue;
       }
+
+      String options = '';
+      if (lineSplit.length > 1) {
+        for (final opt in lineSplit[1].split('、')) {
+          final infoIdx = opt.indexOf('（');
+          final name = infoIdx == -1 ? opt : opt.substring(0, infoIdx);
+          String info = 'false';
+          if (infoIdx != -1) {
+            final infoStr = opt.substring(infoIdx + 1, opt.length - 1);
+            if (infoStr.startsWith(S.transitFormatTextOaDefaultOption)) {
+              info = 'true';
+            }
+            final v = RegExp(_reDig).firstMatch(infoStr)?.group(0) ?? '';
+            info = '$info,$v';
+          }
+          options = '$options\n- $name,$info';
+        }
+      }
+
+      result.add([
+        oaMatch.namedGroup('name')!,
+        oaMatch.namedGroup('mode')!,
+        options,
+      ]);
     }
 
     return result;
   }
+}
+
+String _removeSuffixAfterAny(String text, [String? name]) {
+  final idx = text.lastIndexOf(_any);
+  final replace = name == null ? '.*' : '(?<$name>.*)';
+  return '${text.substring(0, idx)}$replace';
 }
