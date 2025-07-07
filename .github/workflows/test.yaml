@@ -62,7 +62,7 @@ jobs:
       - name: Testing with Coverage
         if: github.event_name != 'pull_request'
         run: |
-          apt-get install -y lcov
+          sudo apt-get install -y lcov
           flutter test --coverage
           lcov --remove coverage/lcov.info "lib/l10n/gen/*" 
 
