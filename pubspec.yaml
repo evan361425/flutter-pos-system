@@ -43,7 +43,7 @@ dependencies:
 
   # components
   table_calendar: ^3.2.0  # 25, 01-08
-  syncfusion_flutter_charts: ^30.1.37
+  syncfusion_flutter_charts: ^30.1.38
   spotlight_ant: ^1.4.3
 
   # image
