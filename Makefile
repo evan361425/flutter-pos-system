@@ -61,14 +61,14 @@ bump-dev: ## Bump development version
 .PHONY: bump
 bump: ## Bump beta version
 	@version=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f1); \
-	read -p "This will bump to beta lane, are you sure? (y/n): " confirm; \
+	read -p "This will bump to beta lane, are you sure? (y/N): " confirm; \
 	if [[ $$confirm != "y" ]]; then exit 1; fi; \
 	code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
 	code=$$(($$code + 1)); \
 	sed -i.bk '5s/version: .*/version: '$$version+$$code'/' pubspec.yaml; \
 	rm pubspec.yaml.bk; \
 	bash scripts/bump-after.sh v$$version $$code; \
-	read -p "Are you satisfied with the changes? (y/n): " confirm; \
+	read -p "Are you satisfied with the changes? (y/N): " confirm; \
 	if [[ $$confirm != "y" ]]; then exit 1; fi; \
 	git add .; \
 	git commit -m "chore: bump to $$version+$$code"; \
