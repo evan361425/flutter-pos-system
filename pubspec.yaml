@@ -2,7 +2,7 @@ name: possystem
 description: POS system by Flutter
 publish_to: "none"
 homepage: https://github.com/evan361425/flutter-pos-system
-version: 2.11.0+21100001
+version: 2.11.0+21100002
 
 environment:
   flutter: ">=3.32.0 <3.33.0"
