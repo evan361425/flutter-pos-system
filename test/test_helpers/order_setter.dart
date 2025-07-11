@@ -15,6 +15,7 @@ class OrderSetter {
   }) {
     return OrderObject(
       id: id,
+      periodSeq: id,
       price: price,
       cost: 30,
       productsPrice: 20,

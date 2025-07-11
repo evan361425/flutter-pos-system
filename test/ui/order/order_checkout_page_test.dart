@@ -314,6 +314,7 @@ void main() {
           Cart.timer = () => now;
           final checker = OrderSetter.setPushed(OrderObject(
             id: 1,
+            periodSeq: 1,
             paid: 90,
             price: 28,
             cost: 5,
@@ -412,6 +413,7 @@ void main() {
           Cart.timer = () => now;
           final checker = OrderSetter.setPushed(OrderObject(
             id: 1,
+            periodSeq: 1,
             paid: 38,
             price: 38,
             cost: 5,

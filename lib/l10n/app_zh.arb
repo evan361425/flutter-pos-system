@@ -344,7 +344,7 @@
     "placeholders": {
       "date": {
         "type": "DateTime",
-        "format": "MMM d HH:mm:ss",
+        "format": "MMMM d HH:mm:ss",
         "isCustomDateFormat": "true"
       }
     }
@@ -1720,9 +1720,11 @@
   "analysisHistoryTitleEmpty": "查無點餐紀錄",
   "analysisHistoryCalendarTutorialTitle": "日曆",
   "analysisHistoryCalendarTutorialContent": "上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。",
-  "analysisHistoryExportBtn": "匯出",
-  "analysisHistoryExportTutorialTitle": "訂單資料匯出",
-  "analysisHistoryExportTutorialContent": "把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「資料轉移」去匯出多日訂單。",
+  "analysisHistoryActionExport": "匯出",
+  "analysisHistoryActionClean": "打掃",
+  "analysisHistoryActionResetID": "重置訂單編號",
+  "analysisHistoryActionTutorialTitle": "訂單資料匯出",
+  "analysisHistoryActionTutorialContent": "把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「資料轉移」去匯出多日訂單。",
   "analysisHistoryOrderListMetaId": "編號：{id}",
   "@analysisHistoryOrderListMetaId": {
     "description": "Order ID for specific order in the order list.",

@@ -16,7 +16,7 @@ class MoreButton extends StatelessWidget {
       onPressed: () => onPressed(context),
       enableFeedback: true,
       tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
-      icon: const Icon(KIcons.more),
+      icon: const Icon(KIcons.more, blendMode: BlendMode.difference),
     );
   }
 }

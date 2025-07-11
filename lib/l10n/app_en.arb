@@ -344,7 +344,7 @@
     "placeholders": {
       "date": {
         "type": "DateTime",
-        "format": "MMM d HH:mm:ss",
+        "format": "MMMM d HH:mm:ss",
         "isCustomDateFormat": "true"
       }
     }
@@ -1718,9 +1718,11 @@
   "analysisHistoryTitleEmpty": "No Order History Found",
   "analysisHistoryCalendarTutorialTitle": "Calendar",
   "analysisHistoryCalendarTutorialContent": "Swipe up and down to adjust the time period, such as month or week.\nSwipe left and right to adjust the date range.",
-  "analysisHistoryExportBtn": "Export",
-  "analysisHistoryExportTutorialTitle": "Export Orders Data",
-  "analysisHistoryExportTutorialContent": "Export orders externally for further analysis or backup.\nYou can export multi-day orders in the \"Transit\" page.",
+  "analysisHistoryActionExport": "Export",
+  "analysisHistoryActionClean": "Clean",
+  "analysisHistoryActionResetID": "Reset Order ID",
+  "analysisHistoryActionTutorialTitle": "Export Orders Data",
+  "analysisHistoryActionTutorialContent": "Export orders externally for further analysis or backup.\nYou can export multi-day orders in the \"Transit\" page.",
   "analysisHistoryOrderListMetaId": "ID: {id}",
   "@analysisHistoryOrderListMetaId": {
     "description": "Order ID for specific order in the order list.",

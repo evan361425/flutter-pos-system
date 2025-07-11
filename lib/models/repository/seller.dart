@@ -7,6 +7,7 @@ import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/stock.dart';
+import 'package:possystem/services/cache.dart';
 import 'package:possystem/services/database.dart';
 
 /// Help I/O from order DB.
@@ -23,6 +24,35 @@ class Seller extends ChangeNotifier {
   static Seller instance = Seller._();
 
   Seller._();
+
+  int? _idOffset;
+
+  DateTime? _resetIdNext;
+
+  int get idOffset => _idOffset ??= Cache.instance.get<int>('order.idOffset') ?? 0;
+
+  DateTime get resetIdNext => _resetIdNext ??= Period.fromCache().nextDateFromCache();
+
+  Future<void> updateResetIdPeriod(Period period) async {
+    _resetIdNext = await period.saveToCache();
+  }
+
+  Future<void> resetId() async {
+    final response = await Database.instance.query(orderTable, columns: ['MAX(id) id']);
+    _idOffset = (response.firstOrNull?['id'] as num?)?.toInt() ?? 0;
+    await Cache.instance.set('order.idOffset', _idOffset);
+  }
+
+  Future<void> checkResetIdByPeriod() async {
+    final today = Period.today();
+    if (resetIdNext == today || resetIdNext.isBefore(today)) {
+      // If today is the next reset date, we need to reset the ID.
+      _resetIdNext = Period.fromCache().nextDate(resetIdNext, today);
+
+      await Period.cacheNext(resetIdNext);
+      await resetId();
+    }
+  }
 
   /// Get the metrics(e.g. count, price) of orders from time range.
   Future<OrderMetrics> getMetrics(
@@ -349,7 +379,9 @@ class Seller extends ChangeNotifier {
   Future<void> push(OrderObject order) async {
     await Database.instance.transaction((txn) async {
       final orderMap = order.toMap();
+
       final id = await txn.insert(orderTable, orderMap);
+      await txn.update(orderTable, {'periodSeq': id - idOffset});
 
       for (final product in order.products) {
         final map = product.toMap();
@@ -389,6 +421,20 @@ class Seller extends ChangeNotifier {
       await txn.delete(orderTable, where: 'id = $id');
 
       final w = 'orderId = $id';
+      await txn.delete(productTable, where: w);
+      await txn.delete(ingredientTable, where: w);
+      await txn.delete(attributeTable, where: w);
+    });
+
+    notifyListeners();
+  }
+
+  Future<void> clean(DateTime notAfter) async {
+    await Database.instance.transaction((txn) async {
+      final begin = Util.toUTC(now: notAfter);
+      final w = 'createdAt < $begin';
+
+      await txn.delete(orderTable, where: w);
       await txn.delete(productTable, where: w);
       await txn.delete(ingredientTable, where: w);
       await txn.delete(attributeTable, where: w);
@@ -507,6 +553,94 @@ class OrderMetricPerItem {
   OrderMetricPerItem(this.name, this.value, num total) : percent = total == 0 ? 0 : value / total;
 }
 
+class Period {
+  final List<int> values;
+  final PeriodUnit unit;
+
+  const Period({required this.values, required this.unit});
+
+  factory Period.fromCache() {
+    final idx = Cache.instance.get<int>('order.resetIdPeriod.unit');
+    final values = Cache.instance.get<String>('order.resetIdPeriod.values')?.split(',').map(int.tryParse).toList();
+    if (values?.every((e) => e != null) == true && idx != null) {
+      return Period(unit: PeriodUnit.values[idx], values: values!.cast<int>());
+    }
+
+    return const Period(unit: PeriodUnit.everyXDays, values: []);
+  }
+
+  static DateTime today() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
+  static Future<bool> cacheNext(DateTime next) {
+    return Cache.instance.set<int>('order.resetIdPeriod.next', next.millisecondsSinceEpoch);
+  }
+
+  Future<DateTime> saveToCache() async {
+    final today = Period.today();
+    final next = nextDate(today, today);
+
+    await Cache.instance.set<int>('order.resetIdPeriod.unit', unit.index);
+    await Cache.instance.set<String>('order.resetIdPeriod.values', values.join(','));
+    await Cache.instance.set<int>('order.resetIdPeriod.next', next.millisecondsSinceEpoch);
+
+    return next;
+  }
+
+  DateTime nextDateFromCache() {
+    final next = Cache.instance.get<int>('order.resetIdPeriod.next');
+    if (next == null) {
+      return DateTime(9999);
+    }
+
+    return DateTime.fromMillisecondsSinceEpoch(next);
+  }
+
+  DateTime nextDate(DateTime last, DateTime today) {
+    assert(last.isBefore(today), 'Last date must be before today');
+
+    switch (unit) {
+      case PeriodUnit.everyXDays:
+        // (x / y).floor() * y + y == x - (x % y) + y
+        final x = today.difference(last).inDays;
+        final y = values.first;
+        return last.add(Duration(days: x - (x % y) + y));
+      case PeriodUnit.everyXWeeks:
+        final x = today.difference(last).inDays;
+        final y = values.first * 7;
+        return last.add(Duration(days: x - (x % y) + y));
+      case PeriodUnit.xDayOfEachWeek:
+        final todayDay = today.weekday;
+        final nextDay = values.firstWhereOrNull((day) => day > todayDay);
+
+        if (nextDay == null) {
+          // If no next day in this week, go to the first day of the next week
+          return today.add(Duration(days: 7 - todayDay + values.first));
+        }
+
+        // If there is a next day in this week, return that day
+        return today.add(Duration(days: nextDay - todayDay));
+      case PeriodUnit.xDayOfEachMonth:
+        final todayDay = today.day;
+        final nextDay = values.firstWhereOrNull((day) => day > todayDay);
+
+        if (nextDay != null) {
+          return DateTime(today.year, today.month, nextDay);
+        }
+
+        // If no next day in this month, go to the first day of the next month
+        return DateTime(today.year, today.month + 1, values.first);
+    }
+  }
+
+  @override
+  String toString() {
+    return '${unit.name}: ${values.join(', ')}';
+  }
+}
+
 enum OrderMetricUnit {
   money(r'${value}', r'$point.y'),
   count(r'{value}', r'point.y');
@@ -620,4 +754,15 @@ enum MetricsIntervalType {
   }
 
   const MetricsIntervalType(this.seconds, this.format);
+}
+
+enum PeriodUnit {
+  everyXDays(),
+  everyXWeeks(),
+  xDayOfEachWeek(onlyOneValue: false),
+  xDayOfEachMonth(onlyOneValue: false);
+
+  final bool onlyOneValue;
+
+  const PeriodUnit({this.onlyOneValue = true});
 }

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/style/pop_button.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/components/tutorial.dart';
+import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/analysis/widgets/history_actions.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -33,26 +38,18 @@ class _HistoryPageState extends State<HistoryPage> {
           actions: [
             Tutorial(
               id: 'history.export',
-              title: S.analysisHistoryExportTutorialTitle,
-              message: S.analysisHistoryExportTutorialContent,
+              title: S.analysisHistoryActionTutorialTitle,
+              message: S.analysisHistoryActionTutorialContent,
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
-              child: PopupMenuButton<TransitMethod>(
-                key: const Key('history.export'),
-                icon: const Icon(Icons.upload_file_outlined),
-                tooltip: S.analysisHistoryExportBtn,
-                itemBuilder: (context) => TransitMethod.values
-                    .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
-                          value: value,
-                          child: Text(value.l10nName),
-                        ))
-                    .toList(),
-                onSelected: (value) {
-                  context.pushNamed(Routes.transitStation, pathParameters: {
-                    'method': value.name,
-                    'catalog': 'order',
-                  }, queryParameters: {
-                    'range': serializeRange(notifier.value)
-                  });
+              child: PopupMenuButton<_Action>(
+                key: const Key('history.action'),
+                icon: const Icon(KIcons.more),
+                itemBuilder: _buildActions,
+                onSelected: (value) async {
+                  final success = await _onActionSelected(value);
+                  if (success && context.mounted) {
+                    showSnackBar(S.actSuccess, context: context);
+                  }
                 },
               ),
             ),
@@ -73,6 +70,41 @@ class _HistoryPageState extends State<HistoryPage> {
   void dispose() {
     notifier.dispose();
     super.dispose();
+  }
+
+  List<PopupMenuItem<_Action>> _buildActions(BuildContext context) {
+    return [
+      PopupMenuItem<_Action>(
+        value: _Action.export,
+        child: PopupMenuButton<TransitMethod>(
+          key: const Key('history.action.export'),
+          icon: const Icon(Icons.upload_file_outlined),
+          itemBuilder: (context) => TransitMethod.values
+              .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
+                    value: value,
+                    child: Text(value.l10nName),
+                  ))
+              .toList(),
+          onSelected: (value) => _onActionSelected(_Action.export, pathParameters: {
+            'method': value.name,
+            'catalog': 'order',
+          }),
+          child: Text(S.analysisHistoryActionExport),
+        ),
+      ),
+      PopupMenuItem<_Action>(
+        value: _Action.clean,
+        child: Text(S.analysisHistoryActionClean),
+      ),
+      PopupMenuItem<_Action>(
+        value: _Action.resetID,
+        child: Text(S.analysisHistoryActionResetID),
+      ),
+      PopupMenuItem<_Action>(
+        value: _Action.scheduleResetID,
+        child: Text(S.analysisHistoryActionResetID),
+      ),
+    ];
   }
 
   Widget _buildTwoColumns() {
@@ -113,4 +145,46 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildOrderList() {
     return HistoryOrderList(notifier: notifier);
   }
+
+  Future<bool> _onActionSelected(_Action action, {Map<String, String>? pathParameters}) async {
+    switch (action) {
+      case _Action.export:
+        if (pathParameters != null) {
+          // Close the parent popup menu
+          Navigator.pop(context);
+          await context.pushNamed(
+            Routes.transitStation,
+            pathParameters: pathParameters,
+            queryParameters: {'range': serializeRange(notifier.value)},
+          );
+        }
+      case _Action.clean:
+        final notAfter = await HistoryCleanDialog.show(context);
+        if (notAfter != null && mounted) {
+          return HistoryCleanDialog.confirm(context, notAfter);
+        }
+      case _Action.resetID:
+        final ok = await ConfirmDialog.show(context, title: S.analysisHistoryActionResetID);
+        if (ok) {
+          await Seller.instance.resetId();
+          return true;
+        }
+        break;
+      case _Action.scheduleResetID:
+        final period = await HistoryScheduleResetIDDialog.show(context);
+        if (period != null && context.mounted) {
+          await Seller.instance.updateResetIdPeriod(period);
+          return true;
+        }
+    }
+
+    return false;
+  }
+}
+
+enum _Action {
+  export,
+  clean,
+  resetID,
+  scheduleResetID,
 }

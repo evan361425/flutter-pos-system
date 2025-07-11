@@ -12,8 +12,11 @@ history:
       content: |-
         Swipe up and down to adjust the time period, such as month or week.
         Swipe left and right to adjust the date range.
-  export:
-    btn: Export
+  action:
+    export: Export
+    clean: Clean
+    resetID: Reset Order ID
+    scheduleResetID: Schedule Reset ID
     tutorial:
       title: Export Orders Data
       content: |-
