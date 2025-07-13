@@ -37,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
           title: Text(S.analysisHistoryTitle),
           actions: [
             Tutorial(
-              id: 'history.export',
+              id: 'history.action',
               title: S.analysisHistoryActionTutorialTitle,
               message: S.analysisHistoryActionTutorialContent,
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
@@ -78,7 +78,6 @@ class _HistoryPageState extends State<HistoryPage> {
         value: _Action.export,
         child: PopupMenuButton<TransitMethod>(
           key: const Key('history.action.export'),
-          icon: const Icon(Icons.upload_file_outlined),
           itemBuilder: (context) => TransitMethod.values
               .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
                     value: value,
@@ -93,16 +92,16 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       ),
       PopupMenuItem<_Action>(
-        value: _Action.clean,
-        child: Text(S.analysisHistoryActionClean),
+        value: _Action.clear,
+        child: Text(S.analysisHistoryActionClear),
       ),
       PopupMenuItem<_Action>(
-        value: _Action.resetID,
-        child: Text(S.analysisHistoryActionResetID),
+        value: _Action.resetNo,
+        child: Text(S.analysisHistoryActionResetNo),
       ),
       PopupMenuItem<_Action>(
-        value: _Action.scheduleResetID,
-        child: Text(S.analysisHistoryActionResetID),
+        value: _Action.scheduleResetNo,
+        child: Text(S.analysisHistoryActionScheduleResetNo),
       ),
     ];
   }
@@ -158,20 +157,26 @@ class _HistoryPageState extends State<HistoryPage> {
             queryParameters: {'range': serializeRange(notifier.value)},
           );
         }
-      case _Action.clean:
-        final notAfter = await HistoryCleanDialog.show(context);
-        if (notAfter != null && mounted) {
-          return HistoryCleanDialog.confirm(context, notAfter);
+      case _Action.clear:
+        final dateTime = await HistoryCleanDialog.show(context);
+        if (dateTime != null && context.mounted) {
+          await Seller.instance.clean(dateTime);
+          return true;
         }
-      case _Action.resetID:
-        final ok = await ConfirmDialog.show(context, title: S.analysisHistoryActionResetID);
+        break;
+      case _Action.resetNo:
+        final ok = await ConfirmDialog.show(
+          context,
+          title: S.analysisHistoryActionResetNo,
+          content: S.analysisHistoryActionResetNoHint,
+        );
         if (ok) {
           await Seller.instance.resetId();
           return true;
         }
         break;
-      case _Action.scheduleResetID:
-        final period = await HistoryScheduleResetIDDialog.show(context);
+      case _Action.scheduleResetNo:
+        final period = await HistoryScheduleResetNoDialog.show(context);
         if (period != null && context.mounted) {
           await Seller.instance.updateResetIdPeriod(period);
           return true;
@@ -184,7 +189,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
 enum _Action {
   export,
-  clean,
-  resetID,
-  scheduleResetID,
+  clear,
+  resetNo,
+  scheduleResetNo,
 }

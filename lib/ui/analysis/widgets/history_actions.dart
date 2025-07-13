@@ -5,51 +5,145 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/translator.dart';
 
-class HistoryCleanDialog {
-  static Future<DateTime?> show(BuildContext context) async {
-    final result = await showDatePicker(
+class HistoryCleanDialog extends StatefulWidget {
+  const HistoryCleanDialog({super.key});
+
+  static Future<DateTime?> show(BuildContext context) {
+    return showAdaptiveDialog<DateTime>(
+      context: context,
+      builder: (context) => const HistoryCleanDialog(),
+    );
+  }
+
+  @override
+  State<HistoryCleanDialog> createState() => _HistoryCleanDialogState();
+}
+
+enum _Mode {
+  lastYear,
+  sixMonthsAgo,
+  custom;
+}
+
+class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
+  _Mode mode = _Mode.lastYear;
+  DateTime? customDate;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final local = MaterialLocalizations.of(context);
+
+    return AlertDialog.adaptive(
+      title: Text(S.analysisHistoryActionClear),
+      scrollable: true,
+      content: Column(children: [
+        RadioListTile.adaptive(
+          groupValue: mode,
+          value: _Mode.lastYear,
+          title: Text(S.analysisHistoryActionClearLastYear),
+          subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year - 1, now.month, now.day))),
+          onChanged: _setMode,
+        ),
+        RadioListTile.adaptive(
+          groupValue: mode,
+          value: _Mode.sixMonthsAgo,
+          title: Text(S.analysisHistoryActionClearLast6Months),
+          subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year, now.month - 6, now.day))),
+          onChanged: _setMode,
+        ),
+        RadioListTile.adaptive(
+          groupValue: mode,
+          value: _Mode.custom,
+          title: Text(S.analysisHistoryActionClearCustom),
+          subtitle: Text(customDate == null
+              ? S.analysisHistoryActionClearCustomSubtitle
+              : S.analysisHistoryActionClearSubtitle(customDate!)),
+          toggleable: true,
+          onChanged: _setMode,
+        ),
+      ]),
+      actions: [
+        PopButton(title: local.cancelButtonLabel),
+        TextButton(
+          onPressed: () => _onOk(context),
+          child: Text(local.okButtonLabel),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _onOk(BuildContext context) async {
+    final date = switch (mode) {
+      _Mode.lastYear => DateTime(DateTime.now().year - 1, DateTime.now().month, DateTime.now().day),
+      _Mode.sixMonthsAgo => DateTime(DateTime.now().year, DateTime.now().month - 6, DateTime.now().day),
+      _Mode.custom => customDate,
+    };
+
+    if (date != null) {
+      final ok = await _confirmClean(context, date);
+      if (context.mounted && ok) {
+        context.pop(date);
+      }
+    }
+  }
+
+  void _setMode(_Mode? value) async {
+    if (mounted) {
+      // only custom mode toggleable (nullable)
+      if (value == _Mode.custom || value == null) {
+        await _selectCustomDate(context);
+      } else {
+        setState(() => mode = value);
+      }
+    }
+  }
+
+  Future<void> _selectCustomDate(BuildContext context) async {
+    final selected = await showDatePicker(
       context: context,
       firstDate: DateTime(2021, 1),
       lastDate: DateTime.now(),
-      helpText: '選擇日期來清除該日以前（不含）的訂單紀錄。',
     );
 
-    return result;
+    if (selected != null) {
+      setState(() {
+        mode = _Mode.custom;
+        customDate = DateTime(selected.year, selected.month, selected.day);
+      });
+    }
   }
 
-  static Future<bool> confirm(BuildContext context, DateTime notAfter) async {
+  Future<bool> _confirmClean(BuildContext context, DateTime notAfter) async {
     final metric = await Seller.instance.getMetrics(DateTime(2021, 1), notAfter);
 
     var ok = false;
     if (context.mounted) {
       ok = await ConfirmDialog.show(
         context,
-        title: '清除訂單紀錄？',
-        content: '確定要清除到 ${notAfter.toLocal().toString().split(' ')[0]} 以前（不含當日）的訂單紀錄嗎？\n'
-            '這將會清除 ${metric.count} 筆訂單。',
+        title: S.analysisHistoryActionClearConfirmTitle,
+        content: S.analysisHistoryActionClearConfirmContent(notAfter, metric.count),
       );
     }
 
-    if (ok) {
-      await Seller.instance.clean(notAfter);
-      return true;
-    }
-
-    return false;
+    return ok;
   }
 }
 
-class HistoryScheduleResetIDDialog extends StatelessWidget {
+class HistoryScheduleResetNoDialog extends StatelessWidget {
   final GlobalKey<_PeriodSelectorState> _periodKey;
+  final Period? initialPeriod;
 
-  const HistoryScheduleResetIDDialog._(GlobalKey<_PeriodSelectorState> key) : _periodKey = key;
+  const HistoryScheduleResetNoDialog._(GlobalKey<_PeriodSelectorState> key, this.initialPeriod) : _periodKey = key;
 
   static Future<Period?> show(BuildContext context) async {
     final key = GlobalKey<_PeriodSelectorState>();
+    final origin = Period.fromCache();
     final period = await showAdaptiveDialog<Period>(
       context: context,
-      builder: (context) => HistoryScheduleResetIDDialog._(key),
+      builder: (context) => HistoryScheduleResetNoDialog._(key, origin.isInvalid ? null : origin),
     );
 
     return period;
@@ -59,12 +153,13 @@ class HistoryScheduleResetIDDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
     return AlertDialog.adaptive(
-      title: const Text('自動重置訂單編號'),
+      title: Text(S.analysisHistoryActionScheduleResetNoTitle),
+      scrollable: true,
       content: Column(children: [
-        const HintText('選擇區間來安排未來的訂單編號重置。'),
+        HintText(S.analysisHistoryActionScheduleResetNoHint),
         _PeriodSelector(
           key: _periodKey,
-          initialPeriod: const Period(values: [1], unit: PeriodUnit.xDayOfEachMonth),
+          initialPeriod: initialPeriod ?? const Period(values: [1], unit: PeriodUnit.xDayOfEachMonth),
         ),
       ]),
       actions: [
@@ -102,11 +197,13 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
   late Set<int> _values;
   late PeriodUnit _unit;
 
+  Period get period => Period(values: _values.toList()..sort(), unit: _unit);
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         DropdownButtonFormField<PeriodUnit>(
           value: _unit,
           icon: const Icon(Icons.arrow_drop_down),
@@ -115,13 +212,14 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
             for (final unit in PeriodUnit.values)
               DropdownMenuItem<PeriodUnit>(
                 value: unit,
-                child: Text(unit.name),
+                child: Text(S.analysisHistoryActionScheduleResetNoPeriod(unit.name)),
               ),
           ],
           onChanged: _updateUnit,
         ),
         const SizedBox(width: 8),
         _buildNumberField(),
+        if (_values.isNotEmpty) _buildNextHint(),
       ]),
     );
   }
@@ -132,11 +230,18 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
     _unit = widget.initialPeriod.unit;
     _values = widget.initialPeriod.values.toSet();
     _numberController = TextEditingController(text: _values.first.toString());
+    _numberController.addListener(() {
+      _values
+        ..clear()
+        ..add(int.tryParse(_numberController.text) ?? 1);
+      _notifier.value++;
+    });
   }
 
   @override
   void dispose() {
     _numberController.dispose();
+    _notifier.dispose();
     super.dispose();
   }
 
@@ -145,8 +250,8 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
       PeriodUnit.everyXDays || PeriodUnit.everyXWeeks => TextFormField(
           controller: _numberController,
           keyboardType: TextInputType.number,
-          decoration: const InputDecoration(prefixText: 'x = '),
-          validator: Validator.positiveInt('x', minimum: 1),
+          decoration: const InputDecoration(prefixText: 'X = '),
+          validator: Validator.positiveInt('x', minimum: 1, maximum: 10000),
         ),
       PeriodUnit.xDayOfEachWeek => DropdownButtonFormField<int>(
           hint: _buildValuesHint(),
@@ -156,14 +261,18 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
             for (var day = 1; day <= 7; day++)
               DropdownMenuItem<int>(
                 value: day,
-                child: StatefulBuilder(
-                  builder: (context, setState) {
-                    return CheckboxListTile(
-                      value: _values.contains(day),
-                      title: Text('星期 $day'),
-                      onChanged: _updateValuesCallback(day),
-                    );
-                  },
+                child: SizedBox(
+                  width: 230,
+                  child: StatefulBuilder(
+                    builder: (context, rebuild) {
+                      return CheckboxListTile(
+                        dense: true,
+                        value: _values.contains(day),
+                        title: Text(S.analysisHistoryActionScheduleResetNoWeekday(DateTime(2025, 9, day))),
+                        onChanged: _updateValuesCallback(day, rebuild),
+                      );
+                    },
+                  ),
                 ),
               ),
           ],
@@ -178,20 +287,25 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
               for (var day = 1; day <= 31; day++)
                 DropdownMenuItem<int>(
                   value: day,
-                  child: StatefulBuilder(
-                    builder: (context, setState) {
-                      return CheckboxListTile(
-                        value: _values.contains(day),
-                        title: Text('第 $day 天'),
-                        onChanged: _updateValuesCallback(day),
-                      );
-                    },
+                  child: Center(
+                    child: SizedBox(
+                      width: 220,
+                      child: StatefulBuilder(
+                        builder: (context, rebuild) {
+                          return CheckboxListTile(
+                            value: _values.contains(day),
+                            title: Text(S.analysisHistoryActionScheduleResetNoMonthDay(day)),
+                            onChanged: _updateValuesCallback(day, rebuild),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
             ],
             onChanged: (_) {},
           ),
-          const HintText('若選擇第 31 天，則每月自動調整為最後一天，如 2 月和 4 月'),
+          HintText(S.analysisHistoryActionScheduleResetNoMonthDayHint),
         ]),
     };
   }
@@ -200,12 +314,35 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
     return ValueListenableBuilder(
       valueListenable: _notifier,
       builder: (context, value, child) {
-        return Text(_values.isEmpty ? '無' : _values.join(', '));
+        if (_values.isEmpty) {
+          return Text(S.analysisHistoryActionScheduleResetNoDaysEmpty);
+        }
+
+        final v = _values.toList();
+        v.sort();
+        return Text(v.join(', '));
       },
     );
   }
 
-  void Function(bool?) _updateValuesCallback(int day) {
+  Widget _buildNextHint() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: ValueListenableBuilder(
+        valueListenable: _notifier,
+        builder: (context, value, child) {
+          final today = Period.today();
+          final next = period.nextDate(today, today);
+          return Text(
+            S.analysisHistoryActionScheduleResetNoNext(next),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+          );
+        },
+      ),
+    );
+  }
+
+  void Function(bool?) _updateValuesCallback(int day, void Function(void Function()) rebuild) {
     return (bool? checked) {
       if (checked == true) {
         _values.add(day);
@@ -213,6 +350,7 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
         _values.remove(day);
       }
       _notifier.value++;
+      rebuild(() {});
     };
   }
 
@@ -226,12 +364,12 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
   }
 
   String? _validateValues(int? value) {
-    return _values.isEmpty ? '請至少選擇一個日子' : null;
+    return _values.isEmpty ? S.analysisHistoryActionScheduleResetNoErrorDaysEmpty : null;
   }
 
   Period? submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      return Period(values: _values.toList(), unit: _unit);
+      return period;
     }
     return null;
   }

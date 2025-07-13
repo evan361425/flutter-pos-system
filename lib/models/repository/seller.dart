@@ -578,6 +578,8 @@ class Period {
     return Cache.instance.set<int>('order.resetIdPeriod.next', next.millisecondsSinceEpoch);
   }
 
+  bool get isInvalid => values.isEmpty;
+
   Future<DateTime> saveToCache() async {
     final today = Period.today();
     final next = nextDate(today, today);
@@ -599,7 +601,7 @@ class Period {
   }
 
   DateTime nextDate(DateTime last, DateTime today) {
-    assert(last.isBefore(today), 'Last date must be before today');
+    assert(last.isBefore(today) || last == today, 'Last date must be before today');
 
     switch (unit) {
       case PeriodUnit.everyXDays:

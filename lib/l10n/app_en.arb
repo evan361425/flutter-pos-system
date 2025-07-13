@@ -899,7 +899,7 @@
   "transitGoogleSheetErrorIdEmpty": "ID cannot be empty",
   "transitGoogleSheetErrorIdInvalid": "Invalid ID. It must include:\n• /spreadsheets/d/<ID>/\n• Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).",
   "appTitle": "POS System",
-  "actSuccess": "Successful!",
+  "actSuccess": "Done Successfully!",
   "@actSuccess": {
     "description": "Action executed successfully and displayed on the Snackbar."
   },
@@ -1719,15 +1719,69 @@
   "analysisHistoryCalendarTutorialTitle": "Calendar",
   "analysisHistoryCalendarTutorialContent": "Swipe up and down to adjust the time period, such as month or week.\nSwipe left and right to adjust the date range.",
   "analysisHistoryActionExport": "Export",
-  "analysisHistoryActionClean": "Clean",
-  "analysisHistoryActionResetID": "Reset Order ID",
-  "analysisHistoryActionTutorialTitle": "Export Orders Data",
-  "analysisHistoryActionTutorialContent": "Export orders externally for further analysis or backup.\nYou can export multi-day orders in the \"Transit\" page.",
-  "analysisHistoryOrderListMetaId": "ID: {id}",
-  "@analysisHistoryOrderListMetaId": {
+  "analysisHistoryActionClear": "Clear History Orders",
+  "analysisHistoryActionClearLastYear": "Clear Before Last Year",
+  "analysisHistoryActionClearLast6Months": "Clear Before Last 6 Months",
+  "analysisHistoryActionClearCustom": "Clear Before Specific Date",
+  "analysisHistoryActionClearCustomSubtitle": "Click to select the date.",
+  "analysisHistoryActionClearSubtitle": "Before {date} 00:00",
+  "@analysisHistoryActionClearSubtitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "analysisHistoryActionClearConfirmTitle": "Sure to Clear Orders?",
+  "analysisHistoryActionClearConfirmContent": "Are you sure you want to clear orders before {date} 00:00?\nThis will remove {count} orders.",
+  "@analysisHistoryActionClearConfirmContent": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      },
+      "count": {
+        "type": "int",
+        "format": "compactLong"
+      }
+    }
+  },
+  "analysisHistoryActionResetNo": "Reset Order No.",
+  "analysisHistoryActionResetNoHint": "Order numbers will reset to 1, but historical orders will retain their original numbers.",
+  "analysisHistoryActionScheduleResetNo": "Schedule Reset No.",
+  "analysisHistoryActionScheduleResetNoPeriod": "{name, select, everyXDays{Every X Days} everyXWeeks{Every X Weeks} xDayOfEachWeek{Every X Day of Each Week} xDayOfEachMonth{Every X Day of Each Month} other{UNKNOWN}}",
+  "analysisHistoryActionScheduleResetNoTitle": "Schedule Reset Order No.",
+  "analysisHistoryActionScheduleResetNoHint": "Select a period to schedule future order number resets.",
+  "analysisHistoryActionScheduleResetNoNext": "Next Date to Reset: {date}",
+  "@analysisHistoryActionScheduleResetNoNext": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "analysisHistoryActionScheduleResetNoWeekday": "{day}",
+  "@analysisHistoryActionScheduleResetNoWeekday": {
+    "placeholders": {
+      "day": {
+        "type": "DateTime",
+        "format": "EEEE"
+      }
+    }
+  },
+  "analysisHistoryActionScheduleResetNoMonthDay": "{day} Day of Month",
+  "analysisHistoryActionScheduleResetNoMonthDayHint": "If you select the 31st day, it will automatically adjust to the last day of the month, such as February and April.",
+  "analysisHistoryActionScheduleResetNoDaysEmpty": "No Day Selected",
+  "analysisHistoryActionScheduleResetNoErrorDaysEmpty": "Please select at least one day",
+  "analysisHistoryActionTutorialTitle": "Do More with Orders",
+  "analysisHistoryActionTutorialContent": "You can export orders to an external file for further analysis or backup\nor you can clear orders before a certain date\nor schedule a reset of order numbers.",
+  "analysisHistoryOrderListMetaNo": "No. {no}",
+  "@analysisHistoryOrderListMetaNo": {
     "description": "Order ID for specific order in the order list.",
     "placeholders": {
-      "id": {
+      "no": {
         "type": "String"
       }
     }
@@ -1771,15 +1825,7 @@
       }
     }
   },
-  "analysisHistoryOrderTitle": "ID: {id}",
-  "@analysisHistoryOrderTitle": {
-    "description": "Order ID for specific order in the order detailed page.",
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
+  "analysisHistoryOrderTitle": "Order Details",
   "analysisHistoryOrderNotFound": "No relevant orders found",
   "analysisHistoryOrderDeleteDialog": "Are you sure you want to delete the order for {name}?\nCash register and inventory data cannot be recovered.\nThis action cannot be undone.",
   "@analysisHistoryOrderDeleteDialog": {

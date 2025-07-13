@@ -1,7 +1,7 @@
 appTitle: POS System
 act:
   success:
-  - Successful!
+  - Done Successfully!
   - Action executed successfully and displayed on the Snackbar.
   error:
   - Error
