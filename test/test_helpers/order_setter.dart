@@ -248,8 +248,11 @@ class OrderSetter {
 
     final om = order.toMap();
     when(txn.insert(Seller.orderTable, om)).thenAnswer((_) => Future.value(1));
-    when(txn.update(Seller.orderTable, argThat(predicate((v) => v is Map && v.containsKey('periodSeq')))))
-        .thenAnswer((_) => Future.value(1));
+    when(txn.update(
+      Seller.orderTable,
+      argThat(predicate((v) => v is Map && v.containsKey('periodSeq'))),
+      where: argThat(equals('id = 1')),
+    )).thenAnswer((_) => Future.value(1));
 
     for (var i = 0; i < order.products.length; i++) {
       final p = order.products[i];

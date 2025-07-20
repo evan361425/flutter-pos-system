@@ -46,8 +46,8 @@ class Seller extends ChangeNotifier {
       where: 'name = ?',
       whereArgs: [orderTable],
     );
-    _idOffset = (response.firstOrNull?['seq'] as num?)?.toInt() ?? 0;
-    await Cache.instance.set('order.idOffset', _idOffset);
+    final offset = _idOffset = (response.firstOrNull?['seq'] as num?)?.toInt() ?? 0;
+    await Cache.instance.set('order.idOffset', offset);
   }
 
   Future<void> checkResetIdByPeriod() async {
@@ -392,7 +392,7 @@ class Seller extends ChangeNotifier {
       final orderMap = order.toMap();
 
       final id = await txn.insert(orderTable, orderMap);
-      await txn.update(orderTable, {'periodSeq': id - idOffset});
+      await txn.update(orderTable, {'periodSeq': id - idOffset}, where: 'id = $id');
 
       for (final product in order.products) {
         final map = product.toMap();
