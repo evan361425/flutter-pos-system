@@ -4,10 +4,12 @@ import 'package:possystem/translator.dart';
 
 class MoreButton extends StatelessWidget {
   final void Function(BuildContext) onPressed;
+  final bool backgroundIsImage;
 
   const MoreButton({
     super.key,
     required this.onPressed,
+    this.backgroundIsImage = false,
   });
 
   @override
@@ -16,7 +18,7 @@ class MoreButton extends StatelessWidget {
       onPressed: () => onPressed(context),
       enableFeedback: true,
       tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
-      icon: const Icon(KIcons.more, blendMode: BlendMode.difference),
+      icon: Icon(KIcons.more, blendMode: backgroundIsImage ? BlendMode.difference : null),
     );
   }
 }

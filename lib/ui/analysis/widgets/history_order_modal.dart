@@ -38,12 +38,12 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
             return Center(child: Text(S.analysisHistoryOrderNotFound));
           }
 
-          createdAt = DateFormat.MMMEd(S.localeName).format(order.createdAt) +
+          createdAt = S.analysisHistoryOrderListMetaNo(order.periodSeq.toString()) +
+              MetaBlock.string +
+              DateFormat.MMMEd(S.localeName).format(order.createdAt) +
               MetaBlock.string +
               DateFormat.Hms(S.localeName).format(order.createdAt);
           return Column(children: [
-            const SizedBox(height: kTopSpacing),
-            Text(S.analysisHistoryOrderListMetaNo(order.periodSeq.toString())),
             Padding(
               padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
               child: Row(

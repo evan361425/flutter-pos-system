@@ -314,7 +314,6 @@ void main() {
           Cart.timer = () => now;
           final checker = OrderSetter.setPushed(OrderObject(
             id: 1,
-            periodSeq: 1,
             paid: 90,
             price: 28,
             cost: 5,
@@ -389,10 +388,13 @@ void main() {
           }
         });
 
-        testWidgets('Order with attributes', (tester) async {
+        testWidgets('Order with attributes and reset period sequence', (tester) async {
           deviceAs(device, tester);
           prepareOrderAttributes();
           Cart.instance.note = 'note';
+
+          // prepare reset period
+          final resetPeriodVerifier = OrderSetter.prepareResetPeriod(withCache: true);
 
           await tester.pumpWidget(buildApp());
 
@@ -413,7 +415,6 @@ void main() {
           Cart.timer = () => now;
           final checker = OrderSetter.setPushed(OrderObject(
             id: 1,
-            periodSeq: 1,
             paid: 38,
             price: 38,
             cost: 5,
@@ -491,6 +492,7 @@ void main() {
                 data['i-2.currentAmount'] == 97 &&
                 !data.containsKey('i-2.updatedAt');
           }))));
+          resetPeriodVerifier();
 
           expect(find.text(S.actSuccess), findsOneWidget);
           expect(Cart.instance.isEmpty, isTrue);
@@ -615,6 +617,7 @@ void main() {
     });
 
     setUp(() {
+      reset(cache);
       // disable any features
       when(cache.get(any)).thenReturn(null);
       // disable tutorial

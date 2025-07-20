@@ -169,6 +169,7 @@ class _ProductPageState extends State<ProductPage> {
     return MoreButton(
       key: const Key('product.more'),
       onPressed: _showActions,
+      backgroundIsImage: true,
     );
   }
 

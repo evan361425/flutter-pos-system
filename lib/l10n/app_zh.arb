@@ -471,7 +471,7 @@
   "transitFormatFieldReplenishmentNote": "每次補貨時特定成分的量，格式如下：\n- 成分1,補貨量\n- 成分2,補貨量",
   "transitFormatFieldAttributeOptionTitle": "顧客設定選項",
   "transitFormatFieldAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
-  "transitFormatFieldOrderTs": "時間戳記",
+  "transitFormatFieldOrderNo": "編號",
   "transitFormatFieldOrderTime": "時間",
   "transitFormatFieldOrderPrice": "總價",
   "transitFormatFieldOrderProductPrice": "產品總價",

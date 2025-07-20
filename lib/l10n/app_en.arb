@@ -471,7 +471,7 @@
   "transitFormatFieldReplenishmentNote": "The amount of specific ingredients during each replenishment, format as follows:\n- Ingredient 1, Replenishment amount\n- Ingredient 2, Replenishment amount",
   "transitFormatFieldAttributeOptionTitle": "Customer Setting Options",
   "transitFormatFieldAttributeOptionNote": "\"Options\" will have different meanings depending on the type of customer settings, format as follows:\n- Option 1, Is default, Option value\n- Option 2, Is default, Option value",
-  "transitFormatFieldOrderTs": "Timestamp",
+  "transitFormatFieldOrderNo": "No.",
   "transitFormatFieldOrderTime": "Time",
   "transitFormatFieldOrderPrice": "Price",
   "transitFormatFieldOrderProductPrice": "Product Price",

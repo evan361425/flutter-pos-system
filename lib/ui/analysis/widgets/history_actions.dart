@@ -163,8 +163,9 @@ class HistoryScheduleResetNoDialog extends StatelessWidget {
         ),
       ]),
       actions: [
-        PopButton(key: const Key('pop'), title: local.cancelButtonLabel),
+        PopButton(title: local.cancelButtonLabel),
         TextButton(
+          key: const Key('history.action.schedule_reset_no.ok'),
           onPressed: () {
             final period = _periodKey.currentState?.submit();
             if (period != null && context.mounted) {
@@ -248,6 +249,7 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
   Widget _buildNumberField() {
     return switch (_unit) {
       PeriodUnit.everyXDays || PeriodUnit.everyXWeeks => TextFormField(
+          key: const Key('history.action.schedule_reset_no.x_text_field'),
           controller: _numberController,
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(prefixText: 'X = '),
@@ -276,10 +278,11 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
                 ),
               ),
           ],
-          onChanged: (_) {},
+          onChanged: _noop,
         ),
       PeriodUnit.xDayOfEachMonth => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           DropdownButtonFormField<int>(
+            key: const Key('history.action.schedule_reset_no.month_day'),
             hint: _buildValuesHint(),
             icon: const Icon(Icons.arrow_drop_down),
             validator: _validateValues,
@@ -303,7 +306,7 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
                   ),
                 ),
             ],
-            onChanged: (_) {},
+            onChanged: _noop,
           ),
           HintText(S.analysisHistoryActionScheduleResetNoMonthDayHint),
         ]),
@@ -332,9 +335,8 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
         valueListenable: _notifier,
         builder: (context, value, child) {
           final today = Period.today();
-          final next = period.nextDate(today, today);
           return Text(
-            S.analysisHistoryActionScheduleResetNoNext(next),
+            _values.isEmpty ? '' : S.analysisHistoryActionScheduleResetNoNext(period.nextDate(today, today)),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           );
         },
@@ -368,9 +370,13 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
   }
 
   Period? submit() {
+    Period? result;
     if (_formKey.currentState?.validate() ?? false) {
-      return period;
+      result = period;
     }
-    return null;
+
+    return result;
   }
 }
+
+void _noop(int? _) {}

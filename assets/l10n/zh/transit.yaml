@@ -222,7 +222,7 @@ format:
         - 選項1,是否為預設,選項值
         - 選項2,是否為預設,選項值
     order:
-      ts: 時間戳記
+      no: 編號
       time: 時間
       price: 總價
       productPrice: 產品總價
@@ -236,13 +236,13 @@ format:
       attribute:
         title: 訂單顧客設定
         header:
-          ts: 時間戳記
+          no: 編號
           name: 設定類別
           option: 選項
       product:
         title: 訂單產品細項
         header:
-          ts: 時間戳記
+          no: 編號
           name: 產品
           catalog: 種類
           count: 數量
@@ -252,7 +252,7 @@ format:
       ingredient:
         title: 訂單成分細項
         header:
-          ts: 時間戳記
+          no: 編號
           name: 成分
           quantity: 份量
           amount: 數量

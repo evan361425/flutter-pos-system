@@ -215,12 +215,14 @@ void main() {
     tearDown(resetImageable);
   });
 
+  setUp(() {
+    reset(cache);
+    when(cache.get(any)).thenReturn(true);
+  });
+
   setUpAll(() {
     Printers();
     initializeCache();
     initializeTranslator();
-
-    // disable tutorial
-    when(cache.get(any)).thenReturn(true);
   });
 }

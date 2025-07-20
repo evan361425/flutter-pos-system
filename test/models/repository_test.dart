@@ -4,6 +4,7 @@ import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/cashier.dart';
+import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/settings/currency_setting.dart';
 
 import '../mocks/mock_cache.dart';
@@ -148,6 +149,49 @@ void main() {
 
         result = await cashier.paid(100, 65);
         expect(result, equals(CashierUpdateStatus.notEnough));
+      });
+    });
+
+    group('Seller', () {
+      test('period should have correct next date', () async {
+        final today = DateTime(2025, 10, 6); // monday
+        const periods = [
+          Period(unit: PeriodUnit.everyXDays, values: [2]),
+          Period(unit: PeriodUnit.everyXDays, values: [200]),
+          Period(unit: PeriodUnit.everyXWeeks, values: [2]),
+          Period(unit: PeriodUnit.everyXWeeks, values: [200]),
+          Period(unit: PeriodUnit.xDayOfEachWeek, values: [1]),
+          Period(unit: PeriodUnit.xDayOfEachWeek, values: [1, 3]),
+          Period(unit: PeriodUnit.xDayOfEachMonth, values: [1]),
+          Period(unit: PeriodUnit.xDayOfEachMonth, values: [1, 15]),
+        ];
+        final lasts = [
+          DateTime(2025, 10, 2),
+          today,
+          DateTime(2025, 6, 2),
+          today,
+          today,
+          today,
+          today,
+          today,
+        ];
+        final nextDates = [
+          DateTime(2025, 10, 8),
+          DateTime(2026, 4, 24),
+          DateTime(2025, 10, 20),
+          DateTime(2029, 8, 6),
+          DateTime(2025, 10, 13),
+          DateTime(2025, 10, 8),
+          DateTime(2025, 11, 1),
+          DateTime(2025, 10, 15),
+        ];
+
+        for (var i = 0; i < periods.length; i++) {
+          final period = periods[i];
+          final nextDate = period.nextDate(lasts[i], today);
+          expect(nextDate, nextDates[i],
+              reason: 'Period: $period, Last: ${lasts[i]}, expected: ${nextDates[i]}, actual: $nextDate');
+        }
       });
     });
 

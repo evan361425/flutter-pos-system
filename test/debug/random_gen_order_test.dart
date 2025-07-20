@@ -18,6 +18,7 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:provider/provider.dart';
 
+import '../mocks/mock_cache.dart';
 import '../mocks/mock_database.dart';
 import '../mocks/mock_database.mocks.dart';
 
@@ -54,6 +55,7 @@ void main() {
       when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
       when(txn.batch()).thenReturn(batch);
       when(txn.insert(Seller.orderTable, any)).thenAnswer((_) => Future.value(1));
+      when(txn.update(Seller.orderTable, any)).thenAnswer((_) => Future.value(1));
       when(txn.insert(Seller.productTable, any)).thenAnswer((_) => Future.value(1));
       when(batch.commit(noResult: anyNamed('noResult'))).thenAnswer((_) => Future.value([]));
 
@@ -83,6 +85,11 @@ void main() {
 
       verify(txn.insert(Seller.orderTable, any)).called(15);
     });
+  });
+
+  setUp(() {
+    reset(cache);
+    when(cache.get(any)).thenReturn(null);
   });
 
   setUpAll(() {
@@ -175,5 +182,6 @@ void main() {
     });
 
     initializeDatabase();
+    initializeCache();
   });
 }

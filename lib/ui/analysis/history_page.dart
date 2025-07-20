@@ -41,16 +41,39 @@ class _HistoryPageState extends State<HistoryPage> {
               title: S.analysisHistoryActionTutorialTitle,
               message: S.analysisHistoryActionTutorialContent,
               spotlightBuilder: const SpotlightRectBuilder(borderRadius: 8.0),
-              child: PopupMenuButton<_Action>(
-                key: const Key('history.action'),
-                icon: const Icon(KIcons.more),
-                itemBuilder: _buildActions,
-                onSelected: (value) async {
-                  final success = await _onActionSelected(value);
-                  if (success && context.mounted) {
-                    showSnackBar(S.actSuccess, context: context);
-                  }
-                },
+              child: MenuAnchor(
+                builder: (context, controller, child) => IconButton(
+                  key: const Key('history.action'),
+                  onPressed: controller.open,
+                  icon: const Icon(KIcons.more),
+                ),
+                menuChildren: [
+                  SubmenuButton(
+                    key: const Key('history.action.export'),
+                    menuChildren: TransitMethod.values
+                        .map((e) => MenuItemButton(
+                              onPressed: () => _onExport(e),
+                              child: Text(e.l10nName),
+                            ))
+                        .toList(),
+                    child: Text(S.analysisHistoryActionExport),
+                  ),
+                  MenuItemButton(
+                    key: const Key('history.action.clear'),
+                    onPressed: _onClear,
+                    child: Text(S.analysisHistoryActionClear),
+                  ),
+                  MenuItemButton(
+                    key: const Key('history.action.reset_no'),
+                    onPressed: _onResetNo,
+                    child: Text(S.analysisHistoryActionResetNo),
+                  ),
+                  MenuItemButton(
+                    key: const Key('history.action.schedule_reset_no'),
+                    onPressed: _onScheduleResetNo,
+                    child: Text(S.analysisHistoryActionScheduleResetNo),
+                  ),
+                ],
               ),
             ),
           ],
@@ -70,40 +93,6 @@ class _HistoryPageState extends State<HistoryPage> {
   void dispose() {
     notifier.dispose();
     super.dispose();
-  }
-
-  List<PopupMenuItem<_Action>> _buildActions(BuildContext context) {
-    return [
-      PopupMenuItem<_Action>(
-        value: _Action.export,
-        child: PopupMenuButton<TransitMethod>(
-          key: const Key('history.action.export'),
-          itemBuilder: (context) => TransitMethod.values
-              .map((TransitMethod value) => PopupMenuItem<TransitMethod>(
-                    value: value,
-                    child: Text(value.l10nName),
-                  ))
-              .toList(),
-          onSelected: (value) => _onActionSelected(_Action.export, pathParameters: {
-            'method': value.name,
-            'catalog': 'order',
-          }),
-          child: Text(S.analysisHistoryActionExport),
-        ),
-      ),
-      PopupMenuItem<_Action>(
-        value: _Action.clear,
-        child: Text(S.analysisHistoryActionClear),
-      ),
-      PopupMenuItem<_Action>(
-        value: _Action.resetNo,
-        child: Text(S.analysisHistoryActionResetNo),
-      ),
-      PopupMenuItem<_Action>(
-        value: _Action.scheduleResetNo,
-        child: Text(S.analysisHistoryActionScheduleResetNo),
-      ),
-    ];
   }
 
   Widget _buildTwoColumns() {
@@ -145,51 +134,42 @@ class _HistoryPageState extends State<HistoryPage> {
     return HistoryOrderList(notifier: notifier);
   }
 
-  Future<bool> _onActionSelected(_Action action, {Map<String, String>? pathParameters}) async {
-    switch (action) {
-      case _Action.export:
-        if (pathParameters != null) {
-          // Close the parent popup menu
-          Navigator.pop(context);
-          await context.pushNamed(
-            Routes.transitStation,
-            pathParameters: pathParameters,
-            queryParameters: {'range': serializeRange(notifier.value)},
-          );
-        }
-      case _Action.clear:
-        final dateTime = await HistoryCleanDialog.show(context);
-        if (dateTime != null && context.mounted) {
-          await Seller.instance.clean(dateTime);
-          return true;
-        }
-        break;
-      case _Action.resetNo:
-        final ok = await ConfirmDialog.show(
-          context,
-          title: S.analysisHistoryActionResetNo,
-          content: S.analysisHistoryActionResetNoHint,
-        );
-        if (ok) {
-          await Seller.instance.resetId();
-          return true;
-        }
-        break;
-      case _Action.scheduleResetNo:
-        final period = await HistoryScheduleResetNoDialog.show(context);
-        if (period != null && context.mounted) {
-          await Seller.instance.updateResetIdPeriod(period);
-          return true;
-        }
-    }
-
-    return false;
+  void _onExport(TransitMethod method) async {
+    await context.pushNamed(
+      Routes.transitStation,
+      pathParameters: {'method': method.name, 'catalog': 'order'},
+      queryParameters: {'range': serializeRange(notifier.value)},
+    );
   }
-}
 
-enum _Action {
-  export,
-  clear,
-  resetNo,
-  scheduleResetNo,
+  void _onClear() async {
+    final dateTime = await HistoryCleanDialog.show(context);
+    if (dateTime != null && context.mounted) {
+      await Seller.instance.clear(dateTime);
+      // ignore: use_build_context_synchronously
+      showSnackBar(S.actSuccess, context: context);
+    }
+  }
+
+  void _onResetNo() async {
+    final ok = await ConfirmDialog.show(
+      context,
+      title: S.analysisHistoryActionResetNo,
+      content: S.analysisHistoryActionResetNoHint,
+    );
+    if (ok) {
+      await Seller.instance.resetId();
+      // ignore: use_build_context_synchronously
+      showSnackBar(S.actSuccess, context: context);
+    }
+  }
+
+  void _onScheduleResetNo() async {
+    final period = await HistoryScheduleResetNoDialog.show(context);
+    if (period != null && context.mounted) {
+      await Seller.instance.updateResetIdPeriod(period);
+      // ignore: use_build_context_synchronously
+      showSnackBar(S.actSuccess, context: context);
+    }
+  }
 }

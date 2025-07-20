@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/routes.dart';
@@ -19,8 +20,6 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('History Page', () {
     Widget buildApp({themeMode = ThemeMode.light}) {
-      // setup currency and cashier relation
-      when(cache.get(any)).thenReturn(null);
       // disable tutorial
       when(cache.get(
         argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
@@ -142,24 +141,141 @@ void main() {
       verify(cache.set('history.calendar_format', CalendarFormat.twoWeeks.index));
     });
 
-    testWidgets('should navigate to exporter', (tester) async {
-      mockGetCountPerDay([]);
-      OrderSetter.setOrders([]);
+    group('Actions', () {
+      testWidgets('should navigate to exporter', (tester) async {
+        mockGetCountPerDay([]);
+        OrderSetter.setOrders([]);
 
-      await tester.pumpWidget(buildApp());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(buildApp());
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('history.export')));
-      await tester.pumpAndSettle();
-      // dropdown have multiple child for items
-      await tester.tap(find.text(S.transitMethodName('plainText')).last);
-      await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('history.action')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('history.action.export')));
+        await tester.pumpAndSettle();
+        // dropdown have multiple child for items
+        await tester.tap(find.text(S.transitMethodName('plainText')).last);
+        await tester.pumpAndSettle();
 
-      expect(find.text(S.transitMethodName('plainText')), findsOneWidget);
+        expect(find.text(S.transitMethodName('plainText')), findsOneWidget);
+      });
+
+      testWidgets('clear orders history', (tester) async {
+        final now = DateTime.now();
+        final firstOfThisMonth = DateTime(now.year, now.month, 1);
+        mockGetCountPerDay([]);
+        OrderSetter.setOrders([]);
+        OrderSetter.setMetrics([OrderObject(createdAt: now)]);
+        final verifier = OrderSetter.setDelete(firstOfThisMonth);
+
+        await tester.pumpWidget(buildApp());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('history.action')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('history.action.clear')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.analysisHistoryActionClearLast6Months));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.analysisHistoryActionClearCustom));
+        await tester.pumpAndSettle();
+        // custom date, select first of this month
+        await tester.tap(find.text('1').first);
+        await tester.tap(find.text('OK').last);
+        await tester.pumpAndSettle();
+
+        expect(find.text(S.analysisHistoryActionClearSubtitle(firstOfThisMonth)), findsOneWidget);
+
+        await tester.tap(find.text('OK'));
+        await tester.pumpAndSettle();
+
+        expect(find.text(S.analysisHistoryActionClearConfirmContent(firstOfThisMonth, 1)), findsOneWidget);
+
+        await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+        await tester.pumpAndSettle();
+
+        verifier();
+      });
+
+      testWidgets('reset order no', (tester) async {
+        mockGetCountPerDay([]);
+        OrderSetter.setOrders([]);
+        OrderSetter.setMetrics([]);
+        OrderSetter.prepareResetPeriod();
+
+        await tester.pumpWidget(buildApp());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('history.action')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('history.action.reset_no')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
+        await tester.pumpAndSettle();
+
+        verify(cache.set('order.idOffset', 100)).called(1);
+      });
+
+      testWidgets('schedule reset order no', (tester) async {
+        mockGetCountPerDay([]);
+        OrderSetter.setOrders([]);
+        OrderSetter.setMetrics([]);
+        when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+
+        await tester.pumpWidget(buildApp());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('history.action')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('history.action.schedule_reset_no')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('history.action.schedule_reset_no.month_day')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.analysisHistoryActionScheduleResetNoMonthDay(2)));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.analysisHistoryActionScheduleResetNoMonthDay(2)));
+        await tester.tap(find.text(S.analysisHistoryActionScheduleResetNoMonthDay(1)));
+        await tester.tapAt(const Offset(100, 100));
+        await tester.pumpAndSettle();
+
+        // verified failed for missing selected date
+        await tester.tap(find.byKey(const Key('history.action.schedule_reset_no.ok')));
+        await tester.pumpAndSettle();
+        verifyNever(cache.set('order.resetIdPeriod.unit', any));
+
+        await tester.tap(find.text(S.analysisHistoryActionScheduleResetNoPeriod(PeriodUnit.xDayOfEachMonth.name)));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.analysisHistoryActionScheduleResetNoPeriod(PeriodUnit.xDayOfEachWeek.name)));
+        await tester.pumpAndSettle();
+
+        final today = Period.today();
+        final nextWeek = DateTime(today.year, today.month, today.day + 7 - today.weekday + 1);
+        expect(find.text(S.analysisHistoryActionScheduleResetNoNext(nextWeek)), findsOneWidget);
+
+        await tester.tap(find.text(S.analysisHistoryActionScheduleResetNoPeriod(PeriodUnit.xDayOfEachWeek.name)));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.analysisHistoryActionScheduleResetNoPeriod(PeriodUnit.everyXDays.name)));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byKey(const Key('history.action.schedule_reset_no.x_text_field')), '2');
+        await tester.pumpAndSettle();
+
+        final twoDaysLater = DateTime(today.year, today.month, today.day + 2);
+        expect(find.text(S.analysisHistoryActionScheduleResetNoNext(twoDaysLater)), findsOneWidget);
+
+        // save
+        await tester.tap(find.byKey(const Key('history.action.schedule_reset_no.ok')));
+        await tester.pumpAndSettle();
+
+        verify(cache.set('order.resetIdPeriod.unit', PeriodUnit.everyXDays.index)).called(1);
+        verify(cache.set('order.resetIdPeriod.values', '2')).called(1);
+        verify(cache.set('order.resetIdPeriod.next', twoDaysLater.millisecondsSinceEpoch)).called(1);
+      });
     });
 
     setUp(() {
       reset(cache);
+      when(cache.get(any)).thenReturn(null);
     });
 
     setUpAll(() {

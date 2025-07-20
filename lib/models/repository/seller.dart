@@ -31,26 +31,35 @@ class Seller extends ChangeNotifier {
 
   int get idOffset => _idOffset ??= Cache.instance.get<int>('order.idOffset') ?? 0;
 
-  DateTime get resetIdNext => _resetIdNext ??= Period.fromCache().nextDateFromCache();
+  DateTime? get resetIdNext => _resetIdNext ??= Period.fromCache().nextDateFromCache();
+  @visibleForTesting
+  set resetIdNext(DateTime? value) => _resetIdNext = value;
 
   Future<void> updateResetIdPeriod(Period period) async {
     _resetIdNext = await period.saveToCache();
   }
 
   Future<void> resetId() async {
-    final response = await Database.instance.query(orderTable, columns: ['MAX(id) id']);
-    _idOffset = (response.firstOrNull?['id'] as num?)?.toInt() ?? 0;
+    final response = await Database.instance.query(
+      'sqlite_sequence',
+      columns: ['seq'],
+      where: 'name = ?',
+      whereArgs: [orderTable],
+    );
+    _idOffset = (response.firstOrNull?['seq'] as num?)?.toInt() ?? 0;
     await Cache.instance.set('order.idOffset', _idOffset);
   }
 
   Future<void> checkResetIdByPeriod() async {
-    final today = Period.today();
-    if (resetIdNext == today || resetIdNext.isBefore(today)) {
-      // If today is the next reset date, we need to reset the ID.
-      _resetIdNext = Period.fromCache().nextDate(resetIdNext, today);
+    if (resetIdNext != null) {
+      final today = Period.today();
+      if (resetIdNext == today || resetIdNext!.isBefore(today)) {
+        // If today is the next reset date, we need to reset the ID.
+        _resetIdNext = Period.fromCache().nextDate(resetIdNext!, today);
 
-      await Period.cacheNext(resetIdNext);
-      await resetId();
+        await Period.cacheNext(resetIdNext!);
+        await resetId();
+      }
     }
   }
 
@@ -377,6 +386,8 @@ class Seller extends ChangeNotifier {
 
   /// Push order to the DB.
   Future<void> push(OrderObject order) async {
+    await checkResetIdByPeriod();
+
     await Database.instance.transaction((txn) async {
       final orderMap = order.toMap();
 
@@ -429,7 +440,7 @@ class Seller extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> clean(DateTime notAfter) async {
+  Future<void> clear(DateTime notAfter) async {
     await Database.instance.transaction((txn) async {
       final begin = Util.toUTC(now: notAfter);
       final w = 'createdAt < $begin';
@@ -591,10 +602,10 @@ class Period {
     return next;
   }
 
-  DateTime nextDateFromCache() {
+  DateTime? nextDateFromCache() {
     final next = Cache.instance.get<int>('order.resetIdPeriod.next');
     if (next == null) {
-      return DateTime(9999);
+      return null;
     }
 
     return DateTime.fromMillisecondsSinceEpoch(next);
