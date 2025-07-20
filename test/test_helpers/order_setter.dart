@@ -251,7 +251,7 @@ class OrderSetter {
     when(txn.update(
       Seller.orderTable,
       argThat(predicate((v) => v is Map && v.containsKey('periodSeq'))),
-      where: argThat(equals('id = 1')),
+      where: argThat(equals('id = 1'), named: 'where'),
     )).thenAnswer((_) => Future.value(1));
 
     for (var i = 0; i < order.products.length; i++) {
