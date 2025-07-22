@@ -12,21 +12,64 @@ history:
       content: |-
         上下滑動可以調整週期單位，如月或週。
         左右滑動可以調整日期起訖。
-  export:
-    btn: 匯出
+  action:
+    export: 匯出
+    clear: 清除訂單紀錄
+    _clear:
+      $prefix: clear
+      lastYear: 清除去年以前的訂單
+      last6Months: 清除半年以前的訂單
+      custom: 清除特定日期前的訂單
+      customSubtitle: 點擊以選擇日期
+      subtitle:
+      - '{date} 0點前'
+      confirm:
+        title: 確定要清除訂單？
+        content:
+        - |-
+          確定要清除到 {date} 0點以前的訂單紀錄嗎？
+          這將會清除 {count} 筆訂單。
+    resetNo: Reset Order No.
+    _resultNo:
+      $prefix: resetNo
+      hint: 重置後編號將會從 1 開始，歷史訂單仍維持原本的編號。
+    scheduleResetNo: 排程自動重置
+    _scheduleResetNo:
+      $prefix: scheduleResetNo
+      period:
+      - everyXDays: 每 X 天
+        everyXWeeks: 每 X 週
+        xDayOfEachWeek: 每週星期 X
+        xDayOfEachMonth: 每月第 X 天
+      title: 排程重置訂單編號
+      hint: 選擇區間來安排未來的訂單編號重置。
+      next:
+      - '下次重置日期：{date}'
+      weekday:
+      - '{day}'
+      monthDay:
+      - '第 {day} 天'
+      monthDayHint: 若選擇第 31 天，則每月自動調整為最後一天，如 2 月和 4 月
+      daysEmpty: 無
+      error:
+        daysEmpty: 請至少選擇一個日子
     tutorial:
-      title: 訂單資料匯出
+      title: 對訂單做更多事
+      # You can export orders to an external file for further analysis or backup
+      # or you can clear orders before a certain date
+      # or schedule a reset of order numbers.
       content: |-
-        把訂單匯出到外部，讓你可以做進一步分析或保存。
-        你可以到「資料轉移」去匯出多日訂單。
+        你可以把訂單匯出到外部檔案，進行進一步分析或備份，
+        或清除特定日期前的訂單紀錄，
+        或排程自動重置訂單編號。
   orderList:
     meta:
-      id: 編號：{id}
+      no: 編號：{no}
       price: 售價：{price}
       paid: 付額：{paid}
       profit: 淨利：{profit}
   order:
-    title: 編號：{id}
+    title: 訂單細節
     notFound: 找不到相關訂單
     deleteDialog: |-
       確定要刪除 {name} 的訂單嗎？

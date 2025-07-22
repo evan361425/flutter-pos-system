@@ -1,10 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/services/database.dart';
 
+import '../mocks/mock_cache.dart';
 import '../mocks/mock_database.dart';
 import '../mocks/mock_database.mocks.dart';
 
@@ -15,6 +17,7 @@ class OrderSetter {
   }) {
     return OrderObject(
       id: id,
+      periodSeq: id,
       price: price,
       cost: 30,
       productsPrice: 20,
@@ -245,6 +248,11 @@ class OrderSetter {
 
     final om = order.toMap();
     when(txn.insert(Seller.orderTable, om)).thenAnswer((_) => Future.value(1));
+    when(txn.update(
+      Seller.orderTable,
+      argThat(predicate((v) => v is Map && v.containsKey('periodSeq'))),
+      where: argThat(equals('id = 1'), named: 'where'),
+    )).thenAnswer((_) => Future.value(1));
 
     for (var i = 0; i < order.products.length; i++) {
       final p = order.products[i];
@@ -282,6 +290,54 @@ class OrderSetter {
       for (final checker in checkers) {
         checker();
       }
+    };
+  }
+
+  static void Function() setDelete(DateTime dt) {
+    final txn = MockDatabaseExecutor();
+
+    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
+    final begin = Util.toUTC(now: dt);
+    final w = 'createdAt < $begin';
+
+    when(txn.delete(Seller.orderTable, where: w)).thenAnswer((_) => Future.value(1));
+    when(txn.delete(Seller.productTable, where: w)).thenAnswer((_) => Future.value(1));
+    when(txn.delete(Seller.ingredientTable, where: w)).thenAnswer((_) => Future.value(1));
+    when(txn.delete(Seller.attributeTable, where: w)).thenAnswer((_) => Future.value(1));
+
+    return () {
+      verify(txn.delete(Seller.orderTable, where: w));
+      verify(txn.delete(Seller.productTable, where: w));
+      verify(txn.delete(Seller.ingredientTable, where: w));
+      verify(txn.delete(Seller.attributeTable, where: w));
+    };
+  }
+
+  static void Function() prepareResetPeriod({bool withCache = false}) {
+    Seller.instance.resetIdNext = null; // reset cached value
+
+    if (withCache) {
+      final today = Period.today();
+      when(cache.get('order.resetIdPeriod.unit')).thenReturn(PeriodUnit.everyXDays.index);
+      when(cache.get('order.resetIdPeriod.values')).thenReturn('1');
+      when(cache.get('order.resetIdPeriod.next')).thenReturn(today.millisecondsSinceEpoch);
+    }
+
+    when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
+    when(database.query(
+      'sqlite_sequence',
+      columns: argThat(equals(['seq']), named: 'columns'),
+      where: argThat(equals('name = ?'), named: 'where'),
+      whereArgs: argThat(equals([Seller.orderTable]), named: 'whereArgs'),
+    )).thenAnswer((_) => Future.value([
+          {'seq': 100}
+        ]));
+
+    return () {
+      verify(cache.set('order.resetIdPeriod.next', any)).called(1);
+      verifyNever(cache.set('order.resetIdPeriod.values', any));
+      verifyNever(cache.set('order.resetIdPeriod.unit', any));
+      verify(cache.set('order.idOffset', 100)).called(1);
     };
   }
 }

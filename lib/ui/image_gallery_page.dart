@@ -204,6 +204,15 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   }
 
   void createImage() async {
+    await showSnackbarWhenFutureError<void>(
+      _createImage(),
+      'create_image',
+      context: context,
+      key: messenger,
+    );
+  }
+
+  Future<void> _createImage() async {
     final image = await ImageDumper.instance.pick();
 
     if (image != null) {

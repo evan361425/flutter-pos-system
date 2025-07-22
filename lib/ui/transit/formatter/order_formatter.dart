@@ -7,7 +7,7 @@ class OrderFormatter {
   static List<List<CellData>> formatBasic(OrderObject order) {
     return [
       [
-        CellData(number: Util.toUTC(now: order.createdAt)),
+        CellData(number: order.periodSeq),
         CellData(string: order.createdAt.toIso8601String()),
         CellData(number: order.price),
         CellData(number: order.productsPrice),
@@ -24,7 +24,7 @@ class OrderFormatter {
     return [
       for (final attr in order.attributes)
         [
-          CellData(number: Util.toUTC(now: order.createdAt)),
+          CellData(number: order.periodSeq),
           CellData(string: attr.name),
           CellData(string: attr.optionName),
         ],
@@ -35,7 +35,7 @@ class OrderFormatter {
     return [
       for (final product in order.products)
         [
-          CellData(number: Util.toUTC(now: order.createdAt)),
+          CellData(number: order.periodSeq),
           CellData(string: product.productName),
           CellData(string: product.catalogName),
           CellData(number: product.count),
@@ -47,12 +47,11 @@ class OrderFormatter {
   }
 
   static List<List<CellData>> formatIngredient(OrderObject order) {
-    final createdAt = order.createdAt.millisecondsSinceEpoch ~/ 1000;
     return [
       for (final product in order.products)
         for (final ing in product.ingredients)
           [
-            CellData(number: createdAt),
+            CellData(number: order.periodSeq),
             CellData(string: ing.ingredientName),
             CellData(string: ing.quantityName ?? ''),
             CellData(number: ing.amount),
@@ -61,7 +60,7 @@ class OrderFormatter {
   }
 
   static List<String> get basicHeaders => [
-        S.transitFormatFieldOrderTs,
+        S.transitFormatFieldOrderNo,
         S.transitFormatFieldOrderTime,
         S.transitFormatFieldOrderPrice,
         S.transitFormatFieldOrderProductPrice,

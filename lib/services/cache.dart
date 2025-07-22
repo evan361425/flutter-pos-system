@@ -1,3 +1,4 @@
+import 'package:possystem/helpers/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Cache {
@@ -38,6 +39,7 @@ class Cache {
   }
 
   Future<bool> set<T>(String key, T value) {
+    Log.out('set: $key = $value', 'cache');
     if (T == bool) {
       return service.setBool(key, value as bool);
     } else if (T == String) {

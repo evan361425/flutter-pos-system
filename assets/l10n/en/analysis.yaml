@@ -12,19 +12,64 @@ history:
       content: |-
         Swipe up and down to adjust the time period, such as month or week.
         Swipe left and right to adjust the date range.
-  export:
-    btn: Export
+  action:
+    export: Export
+    clear: Clear History Orders
+    _clear:
+      $prefix: clear
+      lastYear: Clear Before Last Year
+      last6Months: Clear Before Last 6 Months
+      custom: Clear Before Specific Date
+      customSubtitle: Click to select the date.
+      subtitle:
+      - Before {date} 00:00
+      - date: {type: DateTime, format: yMMMd}
+      confirm:
+        title: Sure to Clear Orders?
+        content:
+        - |-
+          Are you sure you want to clear orders before {date} 00:00?
+          This will remove {count} orders.
+        - date: {type: DateTime, format: yMMMd}
+          count: {type: int, format: compactLong}
+    resetNo: Reset Order No.
+    _resultNo:
+      $prefix: resetNo
+      hint: Order numbers will reset to 1, but historical orders will retain their original numbers.
+    scheduleResetNo: Schedule Reset No.
+    _scheduleResetNo:
+      $prefix: scheduleResetNo
+      period:
+      - everyXDays: Every X Days
+        everyXWeeks: Every X Weeks
+        xDayOfEachWeek: Every X Day of Each Week
+        xDayOfEachMonth: Every X Day of Each Month
+      title: Schedule Reset Order No.
+      hint: Select a period to schedule future order number resets.
+      next:
+      - 'Next Date to Reset: {date}'
+      - date: {type: DateTime, format: yMMMd}
+      weekday:
+      - '{day}'
+      - day: {type: DateTime, format: EEEE}
+      monthDay:
+      - '{day} Day of Month'
+      monthDayHint: If you select the 31st day, it will automatically adjust to the last day of the month, such as February and April.
+      daysEmpty: No Day Selected
+      error:
+        daysEmpty: Please select at least one day
     tutorial:
-      title: Export Orders Data
+      title: Do More with Orders
       content: |-
-        Export orders externally for further analysis or backup.
-        You can export multi-day orders in the "Transit" page.
+        You can export orders to an external file for further analysis or backup
+        or you can clear orders before a certain date
+        or schedule a reset of order numbers.
   orderList:
     meta:
-      id:
-      - 'ID: {id}'
+      no:
+      - 'No. {no}'
       - Order ID for specific order in the order list.
-      - id:
+      - no:
       price:
       - 'Price: {price}'
       - Price of specific orders in the order list.
@@ -38,10 +83,7 @@ history:
       - Net profit for specific orders in the order list.
       - profit: {type: num, format: compactCurrency, symbol: '$'}
   order:
-    title:
-    - 'ID: {id}'
-    - Order ID for specific order in the order detailed page.
-    - id:
+    title: Order Details
     notFound: No relevant orders found
     deleteDialog:
     - |-

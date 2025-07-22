@@ -14,6 +14,9 @@ class OrderObject extends _Object {
   /// ID of database row
   final int? id;
 
+  /// Periodic sequence, number of each order and may reset periodically.
+  final int? periodSeq;
+
   /// Money paid from customer.
   final num paid;
 
@@ -44,6 +47,7 @@ class OrderObject extends _Object {
   /// Should not use the default value which only for help on test.
   const OrderObject({
     this.id,
+    this.periodSeq = 0,
     this.paid = 0,
     this.cost = 0,
     this.price = 0,
@@ -105,6 +109,7 @@ class OrderObject extends _Object {
   @override
   Map<String, Object?> toMap() {
     return {
+      'periodSeq': periodSeq,
       'paid': paid,
       'price': price,
       'cost': cost,
@@ -137,6 +142,7 @@ class OrderObject extends _Object {
     // null-safety to make test easy
     return OrderObject(
       id: order['id'] as int? ?? 0,
+      periodSeq: order['periodSeq'] as int? ?? 0,
       paid: order['paid'] as num? ?? 0,
       cost: order['cost'] as num? ?? 0,
       price: order['price'] as num? ?? 0,

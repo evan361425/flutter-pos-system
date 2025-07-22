@@ -73,7 +73,7 @@ order:
   item:
     title:
     - "{date}"
-    - date: {type: DateTime, format: "MMM d HH:mm:ss", isCustomDateFormat: true}
+    - date: {type: DateTime, format: "MMMM d HH:mm:ss", isCustomDateFormat: true}
     meta:
       productCount:
       - 'Product Count: {count}'
@@ -243,7 +243,7 @@ format:
         - Option 1, Is default, Option value
         - Option 2, Is default, Option value
     order:
-      ts: Timestamp
+      no: No.
       time: Time
       price: Price
       productPrice: Product Price
@@ -261,13 +261,13 @@ format:
       attribute:
         title: Order Customer Settings
         header:
-          ts: Timestamp
+          no: No.
           name: Setting Category
           option: Option
       product:
         title: Order Product Details
         header:
-          ts: Timestamp
+          no: No.
           name: Product
           catalog: Category
           count: Quantity
@@ -277,7 +277,7 @@ format:
       ingredient:
         title: Order Ingredient Details
         header:
-          ts: Timestamp
+          no: No.
           name: Ingredient
           quantity: Quantity
           amount: Amount

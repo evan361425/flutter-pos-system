@@ -344,7 +344,7 @@
     "placeholders": {
       "date": {
         "type": "DateTime",
-        "format": "MMM d HH:mm:ss",
+        "format": "MMMM d HH:mm:ss",
         "isCustomDateFormat": "true"
       }
     }
@@ -471,7 +471,7 @@
   "transitFormatFieldReplenishmentNote": "每次補貨時特定成分的量，格式如下：\n- 成分1,補貨量\n- 成分2,補貨量",
   "transitFormatFieldAttributeOptionTitle": "顧客設定選項",
   "transitFormatFieldAttributeOptionNote": "「選項值」會根據顧客設定種類不同而有不同意義，格式如下：\n- 選項1,是否為預設,選項值\n- 選項2,是否為預設,選項值",
-  "transitFormatFieldOrderTs": "時間戳記",
+  "transitFormatFieldOrderNo": "編號",
   "transitFormatFieldOrderTime": "時間",
   "transitFormatFieldOrderPrice": "總價",
   "transitFormatFieldOrderProductPrice": "產品總價",
@@ -1720,14 +1720,70 @@
   "analysisHistoryTitleEmpty": "查無點餐紀錄",
   "analysisHistoryCalendarTutorialTitle": "日曆",
   "analysisHistoryCalendarTutorialContent": "上下滑動可以調整週期單位，如月或週。\n左右滑動可以調整日期起訖。",
-  "analysisHistoryExportBtn": "匯出",
-  "analysisHistoryExportTutorialTitle": "訂單資料匯出",
-  "analysisHistoryExportTutorialContent": "把訂單匯出到外部，讓你可以做進一步分析或保存。\n你可以到「資料轉移」去匯出多日訂單。",
-  "analysisHistoryOrderListMetaId": "編號：{id}",
-  "@analysisHistoryOrderListMetaId": {
+  "analysisHistoryActionExport": "匯出",
+  "analysisHistoryActionClear": "清除訂單紀錄",
+  "analysisHistoryActionClearLastYear": "清除去年以前的訂單",
+  "analysisHistoryActionClearLast6Months": "清除半年以前的訂單",
+  "analysisHistoryActionClearCustom": "清除特定日期前的訂單",
+  "analysisHistoryActionClearCustomSubtitle": "點擊以選擇日期",
+  "analysisHistoryActionClearSubtitle": "{date} 0點前",
+  "@analysisHistoryActionClearSubtitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "analysisHistoryActionClearConfirmTitle": "確定要清除訂單？",
+  "analysisHistoryActionClearConfirmContent": "確定要清除到 {date} 0點以前的訂單紀錄嗎？\n這將會清除 {count} 筆訂單。",
+  "@analysisHistoryActionClearConfirmContent": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      },
+      "count": {
+        "type": "int",
+        "format": "compactLong"
+      }
+    }
+  },
+  "analysisHistoryActionResetNo": "Reset Order No.",
+  "analysisHistoryActionResetNoHint": "重置後編號將會從 1 開始，歷史訂單仍維持原本的編號。",
+  "analysisHistoryActionScheduleResetNo": "排程自動重置",
+  "analysisHistoryActionScheduleResetNoPeriod": "{name, select, everyXDays{每 X 天} everyXWeeks{每 X 週} xDayOfEachWeek{每週星期 X} xDayOfEachMonth{每月第 X 天} other{UNKNOWN}}",
+  "analysisHistoryActionScheduleResetNoTitle": "排程重置訂單編號",
+  "analysisHistoryActionScheduleResetNoHint": "選擇區間來安排未來的訂單編號重置。",
+  "analysisHistoryActionScheduleResetNoNext": "下次重置日期：{date}",
+  "@analysisHistoryActionScheduleResetNoNext": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "analysisHistoryActionScheduleResetNoWeekday": "{day}",
+  "@analysisHistoryActionScheduleResetNoWeekday": {
+    "placeholders": {
+      "day": {
+        "type": "DateTime",
+        "format": "EEEE"
+      }
+    }
+  },
+  "analysisHistoryActionScheduleResetNoMonthDay": "第 {day} 天",
+  "analysisHistoryActionScheduleResetNoMonthDayHint": "若選擇第 31 天，則每月自動調整為最後一天，如 2 月和 4 月",
+  "analysisHistoryActionScheduleResetNoDaysEmpty": "無",
+  "analysisHistoryActionScheduleResetNoErrorDaysEmpty": "請至少選擇一個日子",
+  "analysisHistoryActionTutorialTitle": "對訂單做更多事",
+  "analysisHistoryActionTutorialContent": "你可以把訂單匯出到外部檔案，進行進一步分析或備份，\n或清除特定日期前的訂單紀錄，\n或排程自動重置訂單編號。",
+  "analysisHistoryOrderListMetaNo": "編號：{no}",
+  "@analysisHistoryOrderListMetaNo": {
     "description": "Order ID for specific order in the order list.",
     "placeholders": {
-      "id": {
+      "no": {
         "type": "String"
       }
     }
@@ -1771,15 +1827,7 @@
       }
     }
   },
-  "analysisHistoryOrderTitle": "編號：{id}",
-  "@analysisHistoryOrderTitle": {
-    "description": "Order ID for specific order in the order detailed page.",
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
+  "analysisHistoryOrderTitle": "訂單細節",
   "analysisHistoryOrderNotFound": "找不到相關訂單",
   "analysisHistoryOrderDeleteDialog": "確定要刪除 {name} 的訂單嗎？\n將不會復原收銀機和庫存資料。\n此動作無法復原。",
   "@analysisHistoryOrderDeleteDialog": {

@@ -552,7 +552,7 @@ void main() {
     });
 
     setUp(() {
-      cache.reset();
+      reset(cache);
       // disable any features
       when(cache.get(any)).thenReturn(null);
       // disable tutorial

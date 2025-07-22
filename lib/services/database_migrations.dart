@@ -59,4 +59,8 @@ const dbMigrationUp = <int, List<String>>{
     'ALTER TABLE `order_records` ADD COLUMN `note` BLOB DEFAULT "";',
     'ALTER TABLE `order_stash` ADD COLUMN `note` BLOB DEFAULT "";',
   ],
+  10: <String>[
+    '''ALTER TABLE `order_records` ADD COLUMN `periodSeq` INTEGER DEFAULT 0;''',
+    '''UPDATE order_records SET `periodSeq` = `id`;''',
+  ],
 };
