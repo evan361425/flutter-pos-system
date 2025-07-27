@@ -33,7 +33,7 @@ class Log {
       final Map<String, Object> filtered = <String, Object>{};
       parameters?.forEach((String key, Object? value) {
         if (value != null) {
-          filtered[key] = value;
+          filtered[key] = value is List ? value.join(',') : value;
         }
       });
 
