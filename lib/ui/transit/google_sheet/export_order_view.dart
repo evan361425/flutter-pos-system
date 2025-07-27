@@ -26,7 +26,10 @@ class ExportOrderHeader extends TransitOrderHeader {
 
   @override
   Widget build(BuildContext context) {
-    return SignInButton(signedInWidget: super.build(context));
+    return SignInButton(
+      padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 4.0),
+      signedInWidget: super.build(context),
+    );
   }
 
   /// Export all data to spreadsheet.
@@ -66,7 +69,7 @@ class ExportOrderHeader extends TransitOrderHeader {
     }
 
     // Step 3
-    Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
+    Log.ger('gs_export', {'spreadsheet': ss.id, 'sheets': titles});
     final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
     final data = ables.map((able) => orders.expand((order) {
           return able.formatRows(order).map((l) {

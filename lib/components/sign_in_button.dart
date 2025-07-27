@@ -11,12 +11,14 @@ const _googleDark = Color(0xff757575);
 
 class SignInButton extends StatelessWidget {
   final Widget? signedInWidget;
+  final EdgeInsetsGeometry padding;
 
   // if we are in local test it might be null, but it should be fine.
   final Widget Function(User? user)? signedInWidgetBuilder;
 
   const SignInButton({
     super.key,
+    this.padding = const EdgeInsets.all(0),
     this.signedInWidget,
     this.signedInWidgetBuilder,
   }) : assert(signedInWidget != null || signedInWidgetBuilder != null);
@@ -31,7 +33,10 @@ class SignInButton extends StatelessWidget {
 
         // User is not signed in
         if (user.notSignedIn) {
-          return const _GoogleSignInButton(key: Key('google_sign_in'));
+          return Padding(
+            padding: padding,
+            child: const _GoogleSignInButton(key: Key('google_sign_in')),
+          );
         }
 
         // Render widget if authenticated

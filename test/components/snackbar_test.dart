@@ -43,6 +43,9 @@ void main() {
         return Future.error(BluetoothException(BluetoothExceptionFrom.android, 'test', index, 'message'));
       }
 
+      await showSnackbarWhenFutureError(
+          Future.error(PlatformException(code: 'test', message: 'com.google.android.gms.common.api.ApiException: 7: ')),
+          'test');
       await showSnackbarWhenFutureError(Future.error(BluetoothOffException()), 'test');
       await showSnackbarWhenFutureError(
           Future.error(PlatformException(code: 'connect', message: 'bluetooth must turning on')), 'test');

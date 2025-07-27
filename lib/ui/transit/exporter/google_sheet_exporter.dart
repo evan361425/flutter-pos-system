@@ -163,7 +163,7 @@ class GoogleSheetExporter extends DataExporter {
     }).toList();
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    final types = sheets.map((e) => e.typeName).join(' ');
+    final types = sheets.map((e) => e.title).join(' ');
     Log.out('update_sheet $types', _logCode);
     await sheetsApi?.spreadsheets.batchUpdate(
       gs.BatchUpdateSpreadsheetRequest(requests: requests),
@@ -192,7 +192,7 @@ class GoogleSheetExporter extends DataExporter {
     });
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    final types = sheets.map((e) => e.typeName).join(' ');
+    final types = sheets.map((e) => e.title).join(' ');
     Log.out('update_values $types', _logCode);
     await sheetsApi?.spreadsheets.values.batchUpdate(
       gs.BatchUpdateValuesRequest(
@@ -212,7 +212,7 @@ class GoogleSheetExporter extends DataExporter {
     Iterable<List<Object>> data,
   ) async {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
-    Log.out('append_values ${sheet.typeName}', _logCode);
+    Log.out('append_values ${sheet.title}', _logCode);
     await sheetsApi?.spreadsheets.values.append(
       gs.ValueRange(
         majorDimension: 'ROWS',
@@ -332,9 +332,7 @@ class GoogleSheetProperties {
 
   final String title;
 
-  final String typeName;
-
-  GoogleSheetProperties(this.id, this.title, {this.typeName = ''});
+  GoogleSheetProperties(this.id, this.title);
 
   static List<GoogleSheetProperties> fromSheet(List<gs.Sheet>? sheets) {
     return sheets

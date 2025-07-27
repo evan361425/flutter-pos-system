@@ -45,7 +45,10 @@ abstract class TransitOrderList extends StatelessWidget {
     Widget leading = OrderRangeView(notifier: ranger);
     if (helpMessage != null) {
       leading = Column(children: [
-        HintText(helpMessage!),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+          child: HintText(helpMessage!),
+        ),
         leading,
       ]);
     }

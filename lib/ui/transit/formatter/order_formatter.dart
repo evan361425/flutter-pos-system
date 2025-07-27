@@ -78,13 +78,13 @@ class OrderFormatter {
   static const productPosition = 9;
 
   static List<String> get attrHeaders => [
-        S.transitFormatFieldOrderAttributeHeaderTs,
+        S.transitFormatFieldOrderAttributeHeaderNo,
         S.transitFormatFieldOrderAttributeHeaderName,
         S.transitFormatFieldOrderAttributeHeaderOption,
       ];
 
   static List<String> get productHeaders => [
-        S.transitFormatFieldOrderProductHeaderTs,
+        S.transitFormatFieldOrderProductHeaderNo,
         S.transitFormatFieldOrderProductHeaderName,
         S.transitFormatFieldOrderProductHeaderCatalog,
         S.transitFormatFieldOrderProductHeaderCount,
@@ -97,7 +97,7 @@ class OrderFormatter {
   static const ingredientPosition = 6;
 
   static List<String> get ingredientHeaders => [
-        S.transitFormatFieldOrderIngredientHeaderTs,
+        S.transitFormatFieldOrderIngredientHeaderNo,
         S.transitFormatFieldOrderIngredientHeaderName,
         S.transitFormatFieldOrderIngredientHeaderQuantity,
         S.transitFormatFieldOrderIngredientHeaderAmount,

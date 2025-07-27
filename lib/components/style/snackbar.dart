@@ -139,6 +139,12 @@ void _prettierError(
     );
   }
 
+  if (e is PlatformException) {
+    if (e.message == 'com.google.android.gms.common.api.ApiException: 7: ') {
+      return show(S.transitGoogleSheetErrorNetwork);
+    }
+  }
+
   if (e is BluetoothOffException) {
     return show(S.printerErrorBluetoothOff);
   }

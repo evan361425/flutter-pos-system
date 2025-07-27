@@ -377,3 +377,5 @@ googleSheet:
         不合法的 ID，必須包含：
         • /spreadsheets/d/<ID>/
         • 或者直接給 ID（英文+數字+底線+減號的組合）
+    network: |-
+      網路錯誤，無法連接到 Google 試算表。

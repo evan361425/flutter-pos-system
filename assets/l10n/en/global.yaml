@@ -4,7 +4,7 @@ act:
   - Done Successfully!
   - Action executed successfully and displayed on the Snackbar.
   error:
-  - Error
+  - Happening Error
   - Error message displayed on the Snackbar when an error occurs.
   moreInfo:
   - More

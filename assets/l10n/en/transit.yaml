@@ -513,3 +513,5 @@ googleSheet:
         Invalid ID. It must include:
         • /spreadsheets/d/<ID>/
         • Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).
+    network: |-
+      Network error, unable to connect to Google Sheets.

@@ -180,7 +180,7 @@ void main() {
         await tester.tap(find.text(S.analysisHistoryActionClearCustom));
         await tester.pumpAndSettle();
         // custom date, select first of this month
-        await tester.tap(find.text('1').first);
+        await tester.tap(find.text('1').last);
         await tester.tap(find.text('OK').last);
         await tester.pumpAndSettle();
 

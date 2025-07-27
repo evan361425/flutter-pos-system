@@ -71,6 +71,7 @@ class _TransitStationState extends State<TransitStation> {
 
   ValueNotifier<FormattableModel?>? _model;
   ValueNotifier<PreviewFormatter?>? _formatter;
+  ValueNotifier<DateTimeRange>? _ranger;
 
   /// This is used to display the "in progress" information to avoid interruption during export.
   late final TransitStateNotifier stateNotifier;
@@ -133,8 +134,8 @@ class _TransitStationState extends State<TransitStation> {
     return ValueNotifier<TransitOrderSettings>(TransitOrderSettings.fromCache());
   }
 
-  ValueNotifier<DateTimeRange> get _ranger {
-    return ValueNotifier(widget.range ?? Util.getDateRange());
+  ValueNotifier<DateTimeRange> get ranger {
+    return _ranger ??= ValueNotifier(widget.range ?? Util.getDateRange());
   }
 
   ValueNotifier<FormattableModel?> get model {
@@ -173,11 +174,10 @@ class _TransitStationState extends State<TransitStation> {
 
     return switch (widget.method) {
       TransitMethod.googleSheet => gs.ExportOrderHeader(
-          stateNotifier: stateNotifier, exporter: _googleSheetExporter, ranger: _ranger, settings: _settings),
-      TransitMethod.excel =>
-        excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger, settings: _settings),
-      TransitMethod.csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger),
-      TransitMethod.plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: _ranger),
+          stateNotifier: stateNotifier, exporter: _googleSheetExporter, ranger: ranger, settings: _settings),
+      TransitMethod.excel => excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger, settings: _settings),
+      TransitMethod.csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
+      TransitMethod.plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
     };
   }
 
@@ -203,10 +203,10 @@ class _TransitStationState extends State<TransitStation> {
     }
 
     return switch (widget.method) {
-      TransitMethod.googleSheet => gs.ExportOrderView(ranger: _ranger),
-      TransitMethod.excel => excel.ExportOrderView(ranger: _ranger),
-      TransitMethod.csv => csv.ExportOrderView(ranger: _ranger),
-      TransitMethod.plainText => pt.ExportOrderView(ranger: _ranger),
+      TransitMethod.googleSheet => gs.ExportOrderView(ranger: ranger),
+      TransitMethod.excel => excel.ExportOrderView(ranger: ranger),
+      TransitMethod.csv => csv.ExportOrderView(ranger: ranger),
+      TransitMethod.plainText => pt.ExportOrderView(ranger: ranger),
     };
   }
 }

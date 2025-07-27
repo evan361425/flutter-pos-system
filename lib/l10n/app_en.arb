@@ -487,11 +487,11 @@
     "description": "how many types of products in the order"
   },
   "transitFormatFieldOrderAttributeTitle": "Order Customer Settings",
-  "transitFormatFieldOrderAttributeHeaderTs": "Timestamp",
+  "transitFormatFieldOrderAttributeHeaderNo": "No.",
   "transitFormatFieldOrderAttributeHeaderName": "Setting Category",
   "transitFormatFieldOrderAttributeHeaderOption": "Option",
   "transitFormatFieldOrderProductTitle": "Order Product Details",
-  "transitFormatFieldOrderProductHeaderTs": "Timestamp",
+  "transitFormatFieldOrderProductHeaderNo": "No.",
   "transitFormatFieldOrderProductHeaderName": "Product",
   "transitFormatFieldOrderProductHeaderCatalog": "Category",
   "transitFormatFieldOrderProductHeaderCount": "Quantity",
@@ -499,7 +499,7 @@
   "transitFormatFieldOrderProductHeaderCost": "Single Cost",
   "transitFormatFieldOrderProductHeaderOrigin": "Original Price",
   "transitFormatFieldOrderIngredientTitle": "Order Ingredient Details",
-  "transitFormatFieldOrderIngredientHeaderTs": "Timestamp",
+  "transitFormatFieldOrderIngredientHeaderNo": "No.",
   "transitFormatFieldOrderIngredientHeaderName": "Ingredient",
   "transitFormatFieldOrderIngredientHeaderQuantity": "Quantity",
   "transitFormatFieldOrderIngredientHeaderAmount": "Amount",
@@ -898,12 +898,13 @@
   "transitGoogleSheetErrorIdNotFoundHelper": "Don't worry, it's usually easy to solve!\nPossible reasons include:\n• Unstable network conditions;\n• POS system not authorized to read sheets;\n• Misspelled spreadsheet ID, try copying the entire URL and pasting it;\n• The spreadsheet has been deleted.",
   "transitGoogleSheetErrorIdEmpty": "ID cannot be empty",
   "transitGoogleSheetErrorIdInvalid": "Invalid ID. It must include:\n• /spreadsheets/d/<ID>/\n• Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).",
+  "transitGoogleSheetErrorNetwork": "Network error, unable to connect to Google Sheets.",
   "appTitle": "POS System",
   "actSuccess": "Done Successfully!",
   "@actSuccess": {
     "description": "Action executed successfully and displayed on the Snackbar."
   },
-  "actError": "Error",
+  "actError": "Happening Error",
   "@actError": {
     "description": "Error message displayed on the Snackbar when an error occurs."
   },
