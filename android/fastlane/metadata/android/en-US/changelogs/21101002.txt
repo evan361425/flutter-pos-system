@@ -1,0 +1,3 @@
+ 📦 Others
+
+- Allow reset order sequence number and clear order in batch #222 : evan361425
