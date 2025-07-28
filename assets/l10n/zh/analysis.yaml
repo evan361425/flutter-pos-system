@@ -29,7 +29,7 @@ history:
         - |-
           確定要清除到 {date} 0點以前的訂單紀錄嗎？
           這將會清除 {count} 筆訂單。
-    resetNo: Reset Order No.
+    resetNo: 重置訂單編號
     _resultNo:
       $prefix: resetNo
       hint: 重置後編號將會從 1 開始，歷史訂單仍維持原本的編號。
