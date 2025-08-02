@@ -344,7 +344,7 @@
     "placeholders": {
       "date": {
         "type": "DateTime",
-        "format": "MMMM d HH:mm:ss",
+        "format": "MMMEd HH:mm:ss",
         "isCustomDateFormat": "true"
       }
     }

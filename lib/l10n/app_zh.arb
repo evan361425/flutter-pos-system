@@ -344,7 +344,7 @@
     "placeholders": {
       "date": {
         "type": "DateTime",
-        "format": "MMMM d HH:mm:ss",
+        "format": "MMMEd HH:mm:ss",
         "isCustomDateFormat": "true"
       }
     }
@@ -1750,7 +1750,7 @@
       }
     }
   },
-  "analysisHistoryActionResetNo": "Reset Order No.",
+  "analysisHistoryActionResetNo": "重置訂單編號",
   "analysisHistoryActionResetNoHint": "重置後編號將會從 1 開始，歷史訂單仍維持原本的編號。",
   "analysisHistoryActionScheduleResetNo": "排程自動重置",
   "analysisHistoryActionScheduleResetNoPeriod": "{name, select, everyXDays{每 X 天} everyXWeeks{每 X 週} xDayOfEachWeek{每週星期 X} xDayOfEachMonth{每月第 X 天} other{UNKNOWN}}",

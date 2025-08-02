@@ -73,7 +73,7 @@ order:
   item:
     title:
     - "{date}"
-    - date: {type: DateTime, format: "MMMM d HH:mm:ss", isCustomDateFormat: true}
+    - date: {type: DateTime, format: "MMMEd HH:mm:ss", isCustomDateFormat: true}
     meta:
       productCount:
       - 'Product Count: {count}'
