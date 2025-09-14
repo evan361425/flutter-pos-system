@@ -23,9 +23,13 @@ status:
   name:
   - good: All Good
     writeFailed: Last Print Failed
+    unrecoverable: Unrecoverable Error, Restart Required
+    paperJams: Paper Jammed
     paperNotFound: Paper Not Found
     tooHot: Printer Overheated
     lowBattery: Low Battery
+    uncovering: Uncovering
+    noResponse: No Response
     printing: Printing
     unknown: Unknown
 signal:

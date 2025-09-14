@@ -64,9 +64,14 @@ const signalIcons = {
 
 const statusIcons = {
   PrinterStatus.good: Icon(Icons.check_circle_outline, color: Colors.green),
-  PrinterStatus.lowBattery: Icon(Icons.warning_amber_outlined, color: Colors.orange),
+  PrinterStatus.unrecoverable: Icon(Icons.error_outline, color: Colors.red),
+  PrinterStatus.writeFailed: Icon(Icons.error_outline, color: Colors.red),
+  PrinterStatus.paperJams: Icon(Icons.error_outline, color: Colors.red),
   PrinterStatus.paperNotFound: Icon(Icons.error_outline, color: Colors.red),
-  PrinterStatus.printing: SizedBox.square(dimension: 16, child: CircularProgressIndicator.adaptive(strokeWidth: 2)),
+  PrinterStatus.lowBattery: Icon(Icons.warning_amber_outlined, color: Colors.orange),
   PrinterStatus.tooHot: Icon(Icons.warning_amber_outlined, color: Colors.orange),
+  PrinterStatus.uncovering: Icon(Icons.warning_amber_outlined, color: Colors.orange),
+  PrinterStatus.noResponse: Icon(Icons.warning_amber_outlined, color: Colors.orange),
   PrinterStatus.unknown: Icon(Icons.warning_amber_outlined, color: Colors.orange),
+  PrinterStatus.printing: SizedBox.square(dimension: 16, child: CircularProgressIndicator.adaptive(strokeWidth: 2)),
 };

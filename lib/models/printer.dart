@@ -29,6 +29,9 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
 
   Printers() {
     instance = this;
+    if (kDebugMode) {
+      bt.Logger.level = bt.LogLevel.debug;
+    }
   }
 
   @override
@@ -292,14 +295,18 @@ class PrinterObject extends ModelObject<Printer> {
 
 enum PrinterProvider {
   cat1(bt.CatPrinter(feedPaperByteSize: 1)),
-  cat2(bt.CatPrinter(feedPaperByteSize: 2));
+  cat2(bt.CatPrinter(feedPaperByteSize: 2)),
+  epsonPrinter(bt.EpsonPrinter()),
+  xPrinter(bt.XPrinter());
 
   final PrinterManufactory manufactory;
 
   const PrinterProvider(this.manufactory);
 
   static PrinterProvider? tryGuess(String name) {
+    Log.out('guess printer name: $name', 'printer');
     final v = (PrinterManufactory.tryGuess(name)).toString();
+    Log.out('guessed printer manufactory: $v', 'printer');
 
     return PrinterProvider.values.firstWhereOrNull((e) => e.manufactory.toString() == v);
   }

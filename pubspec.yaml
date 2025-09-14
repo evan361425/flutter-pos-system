@@ -34,7 +34,7 @@ dependencies:
   packages:
     git:
       url: https://github.com/evan361425/flutter-pos-packages
-      ref: master
+      ref: 2025.09.14-01
 
   # google services
   googleapis: ^14.0.0

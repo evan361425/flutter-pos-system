@@ -222,7 +222,7 @@
   "printerStatusConnecting": "連線中",
   "printerStatusStandby": "尚未進行連線",
   "printerStatusPrinted": "列印完成",
-  "printerStatusName": "{name, select, good{正常} writeFailed{上次列印失敗} paperNotFound{缺紙} tooHot{出單機過熱} lowBattery{電量不足} printing{列印中} unknown{未知} other{UNKNOWN}}",
+  "printerStatusName": "{name, select, good{正常} writeFailed{上次列印失敗} unrecoverable{錯誤，請重新啟動} paperJams{出單機卡紙} paperNotFound{缺紙} tooHot{出單機過熱} lowBattery{電量不足} uncovering{未蓋殼} noResponse{無回應} printing{列印中} unknown{未知} other{UNKNOWN}}",
   "printerSignalName": "{name, select, good{良好} normal{一般} weak{微弱} other{UNKNOWN}}",
   "printerScanIng": "搜尋藍牙設備中...",
   "printerScanCount": "搜尋到 {count} 個裝置",
@@ -344,7 +344,7 @@
     "placeholders": {
       "date": {
         "type": "DateTime",
-        "format": "MMMEd HH:mm:ss",
+        "format": "MMMd HH:mm:ss",
         "isCustomDateFormat": "true"
       }
     }

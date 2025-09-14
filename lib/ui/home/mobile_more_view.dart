@@ -23,73 +23,78 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
   Widget build(BuildContext context) {
     super.build(context);
 
-    return Scaffold(
-      body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
-        const _HeaderInfoList(),
-        if (!isProd)
-          _buildRouteTile(
-            id: 'debug',
-            icon: Icons.bug_report_outlined,
-            route: 'debug',
-            title: 'Debug',
-            subtitle: 'For developer only',
-          ),
-        OrderAttrTutorial(
-          child: _buildRouteTile(
-            id: 'orderAttributes',
-            icon: Icons.assignment_ind_outlined,
-            route: Routes.orderAttr,
-            title: S.orderAttributeTitle,
-            subtitle: S.orderAttributeDescription,
-          ),
-        ),
-        MenuTutorial(
-          child: _buildRouteTile(
-            id: 'menu',
-            icon: Icons.collections_outlined,
-            route: Routes.menu,
-            title: S.menuTitle,
-            subtitle: S.menuSubtitle,
-          ),
-        ),
-        _buildRouteTile(
-          id: 'printers',
-          icon: Icons.print_outlined,
-          route: Routes.printer,
-          title: S.printerTitle,
-          subtitle: S.printerDescription,
-          beta: true,
-        ),
-        _buildRouteTile(
-          id: 'transit',
-          icon: Icons.upload_file_outlined,
-          route: Routes.transit,
-          title: S.transitTitle,
-          subtitle: S.transitDescription,
-        ),
-        _buildRouteTile(
-          id: 'stockQuantities',
-          icon: Icons.exposure_outlined,
-          route: Routes.quantities,
-          title: S.stockQuantityTitle,
-          subtitle: S.stockQuantityDescription,
-        ),
-        _buildRouteTile(
-          id: 'elf',
-          icon: Icons.lightbulb_outlined,
-          route: Routes.elf,
-          title: S.settingElfTitle,
-          subtitle: S.settingElfDescription,
-        ),
-        _buildRouteTile(
-          id: 'settings',
-          icon: Icons.settings_outlined,
-          route: Routes.settings,
-          title: S.settingFeatureTitle,
-          subtitle: S.settingFeatureDescription,
-        ),
-        const Footer(),
-      ]),
+    return ListenableBuilder(
+      listenable: localeNotifier,
+      builder: (context, child) {
+        return Scaffold(
+          body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
+            const _HeaderInfoList(),
+            if (!isProd)
+              _buildRouteTile(
+                id: 'debug',
+                icon: Icons.bug_report_outlined,
+                route: 'debug',
+                title: 'Debug',
+                subtitle: 'For developer only',
+              ),
+            OrderAttrTutorial(
+              child: _buildRouteTile(
+                id: 'orderAttributes',
+                icon: Icons.assignment_ind_outlined,
+                route: Routes.orderAttr,
+                title: S.orderAttributeTitle,
+                subtitle: S.orderAttributeDescription,
+              ),
+            ),
+            MenuTutorial(
+              child: _buildRouteTile(
+                id: 'menu',
+                icon: Icons.collections_outlined,
+                route: Routes.menu,
+                title: S.menuTitle,
+                subtitle: S.menuSubtitle,
+              ),
+            ),
+            _buildRouteTile(
+              id: 'printers',
+              icon: Icons.print_outlined,
+              route: Routes.printer,
+              title: S.printerTitle,
+              subtitle: S.printerDescription,
+              beta: true,
+            ),
+            _buildRouteTile(
+              id: 'transit',
+              icon: Icons.upload_file_outlined,
+              route: Routes.transit,
+              title: S.transitTitle,
+              subtitle: S.transitDescription,
+            ),
+            _buildRouteTile(
+              id: 'stockQuantities',
+              icon: Icons.exposure_outlined,
+              route: Routes.quantities,
+              title: S.stockQuantityTitle,
+              subtitle: S.stockQuantityDescription,
+            ),
+            _buildRouteTile(
+              id: 'elf',
+              icon: Icons.lightbulb_outlined,
+              route: Routes.elf,
+              title: S.settingElfTitle,
+              subtitle: S.settingElfDescription,
+            ),
+            _buildRouteTile(
+              id: 'settings',
+              icon: Icons.settings_outlined,
+              route: Routes.settings,
+              title: S.settingFeatureTitle,
+              subtitle: S.settingFeatureDescription,
+            ),
+            const Footer(),
+          ]),
+        );
+      },
     );
   }
 

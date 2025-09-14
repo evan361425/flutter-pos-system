@@ -37,7 +37,7 @@ class PrinterReceiptView extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       const SizedBox(height: 4),
-      Text(DateFormat('yyyy MMM dd - HH:mm:ss').format(order.createdAt), textAlign: TextAlign.center),
+      Text(DateFormat.yMMMd().addPattern(' ').add_Hms().format(order.createdAt), textAlign: TextAlign.center),
       const SizedBox(height: 4),
       DefaultTextStyle(
         style: theme.bodyMedium!.copyWith(height: 1.8, overflow: TextOverflow.clip, color: text),

@@ -71,9 +71,6 @@ order:
     warn: Capacity Warning
     danger: Capacity Danger
   item:
-    title:
-    - "{date}"
-    - date: {type: DateTime, format: "MMMEd HH:mm:ss", isCustomDateFormat: true}
     meta:
       productCount:
       - 'Product Count: {count}'

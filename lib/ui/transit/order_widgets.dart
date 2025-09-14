@@ -135,7 +135,7 @@ abstract class TransitOrderList extends StatelessWidget {
         padding: const EdgeInsets.only(top: 4.0),
         child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
       ),
-      title: Text(S.transitOrderItemTitle(order.createdAt)),
+      title: Text(DateFormat.MMMd().addPattern(' ').add_Hms().format(order.createdAt)),
       subtitle: MetaBlock.withString(context, [
         S.transitOrderItemMetaProductCount(order.productsCount),
         S.transitOrderItemMetaPrice(order.price.toCurrency()),

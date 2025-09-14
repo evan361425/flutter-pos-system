@@ -181,7 +181,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
   void _addConnected(Iterable<Printer> printers) {
     for (final printer in printers) {
-      Log.out('connect_order_printer', 'printer ${printer.name}(${printer.address}) connected');
+      Log.out('printer ${printer.name}(${printer.address}) connected', 'connect_order_printer');
       connected.add(printer);
 
       signalRecords[printer.id] = _Record(BluetoothSignal.normal, _listenSignal(printer));

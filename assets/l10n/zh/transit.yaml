@@ -64,7 +64,6 @@ order:
     warn: 容量警告
     danger: 容量危險
   item:
-    title: "{date}"
     meta:
       productCount: 餐點數：{count}
       price: 總價：{price}

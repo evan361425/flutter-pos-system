@@ -222,7 +222,7 @@
   "printerStatusConnecting": "Connecting",
   "printerStatusStandby": "Not connected",
   "printerStatusPrinted": "Print complete",
-  "printerStatusName": "{name, select, good{All Good} writeFailed{Last Print Failed} paperNotFound{Paper Not Found} tooHot{Printer Overheated} lowBattery{Low Battery} printing{Printing} unknown{Unknown} other{UNKNOWN}}",
+  "printerStatusName": "{name, select, good{All Good} writeFailed{Last Print Failed} unrecoverable{Unrecoverable Error, Restart Required} paperJams{Paper Jammed} paperNotFound{Paper Not Found} tooHot{Printer Overheated} lowBattery{Low Battery} uncovering{Uncovering} noResponse{No Response} printing{Printing} unknown{Unknown} other{UNKNOWN}}",
   "printerSignalName": "{name, select, good{Good} normal{Normal} weak{Weak} other{UNKNOWN}}",
   "printerScanIng": "Scanning for Bluetooth Devices...",
   "printerScanCount": "{count, plural, =1{{count} Device Found} other{{count} Devices Found}}",
@@ -344,7 +344,7 @@
     "placeholders": {
       "date": {
         "type": "DateTime",
-        "format": "MMMEd HH:mm:ss",
+        "format": "MMMd HH:mm:ss",
         "isCustomDateFormat": "true"
       }
     }
