@@ -2,10 +2,10 @@ name: possystem
 description: POS system by Flutter
 publish_to: "none"
 homepage: https://github.com/evan361425/flutter-pos-system
-version: 2.11.1+21101002
+version: 2.11.1+21101003
 
 environment:
-  flutter: ">=3.32.0 <3.33.0"
+  flutter: ">=3.35.0 <3.36.0"
   sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
@@ -15,22 +15,22 @@ dependencies:
     sdk: flutter
 
   # core helper
-  go_router: ^16.0.0
+  go_router: ^16.2.1
   provider: ^6.1.5
   intl: ^0.20.2
   collection: ^1.19.1
-  firebase_core: ^3.14.0
-  firebase_analytics: ^11.5.2
-  firebase_auth: ^5.6.2
-  firebase_crashlytics: ^4.3.9
-  firebase_in_app_messaging: ^0.8.1+9
-  firebase_performance: ^0.10.1+9
+  firebase_core: ^3.15.2
+  firebase_analytics: ^11.6.0
+  firebase_auth: ^5.7.0
+  firebase_crashlytics: ^4.3.10
+  firebase_in_app_messaging: ^0.8.1+10
+  firebase_performance: ^0.10.1+10
 
   # services
   sqflite: ^2.4.2  # 25, 02-13
   sembast: ^3.8.5  # 25, 05-23
   shared_preferences: ^2.5.3
-  http: ^1.4.0
+  http: ^1.5.0
   packages:
     git:
       url: https://github.com/evan361425/flutter-pos-packages
@@ -43,16 +43,16 @@ dependencies:
 
   # components
   table_calendar: ^3.2.0  # 25, 01-08
-  syncfusion_flutter_charts: ^30.1.41
+  syncfusion_flutter_charts: ^30.2.6+1
   spotlight_ant: ^1.4.3
 
   # image
   image: ^4.5.4
-  image_picker: ^1.1.2
-  file_picker: ^10.2.0  # 25, 06-12
+  image_picker: ^1.2.0
+  file_picker: ^10.3.3  # 25, 06-12
   image_cropper: ^9.1.0
   cached_network_image: ^3.4.1  # 24, 08-13, downgrade for firebase
-  flutter_svg: ^2.2.0  # 25, 06-16
+  flutter_svg: ^2.2.1  # 25, 06-16
 
   # Make it easy to test
   file: ^7.0.1  # 24, 10-08
@@ -62,7 +62,7 @@ dependencies:
   wakelock_plus: ^1.3.2  # 25, 04-24
   characters: ^1.4.0  # 25, 06-25
   path_provider: ^2.1.5  # 24, 10-29
-  url_launcher: ^6.3.1  # 24, 10-08
+  url_launcher: ^6.3.2  # 25, 07-10
   flutter_native_splash: ^2.4.6  # 25, 04-06
   package_info_plus: ^8.3.0  # 25, 02-25
   visibility_detector: ^0.4.0+2  # 23, 03-09
