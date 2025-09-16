@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -36,6 +38,12 @@ class PrinterPage extends StatelessWidget {
           icon: const Icon(Icons.settings),
           label: S.printerTitleSettings,
         ),
+        IconButton(
+          key: const Key('printer.supported_types'),
+          onPressed: () => _showSupportedPrinterTypes(context),
+          icon: const Icon(Icons.info_outline),
+          tooltip: S.printerBtnSupportedTypes,
+        ),
         RouteElevatedIconButton(
           key: const Key('printer.create'),
           route: Routes.printerCreate,
@@ -52,6 +60,33 @@ class PrinterPage extends StatelessWidget {
         warningContentBuilder: (_, printer) => Text(S.dialogDeletionContent(printer.name, '')),
       ),
     );
+  }
+
+  void _showSupportedPrinterTypes(BuildContext context) {
+    showCircularBottomSheet<String>(
+      context,
+      actions: [
+        BottomSheetAction<String>(
+          key: const Key('printer_type.xprinter'),
+          title: Text(S.printerTypeXPrinter),
+          leading: const Icon(Icons.print),
+          returnValue: 'xprinter',
+        ),
+        BottomSheetAction<String>(
+          key: const Key('printer_type.catprinter'),
+          title: Text(S.printerTypeCatPrinter),
+          leading: const Icon(Icons.print),
+          returnValue: 'catprinter',
+        ),
+      ],
+    ).then((result) {
+      // Handle the tap to launch URL
+      if (result == 'xprinter') {
+        Launcher.launch('https://example.com/xprinter');
+      } else if (result == 'catprinter') {
+        Launcher.launch('https://example.com/catprinter');
+      }
+    });
   }
 }
 

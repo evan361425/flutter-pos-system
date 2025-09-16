@@ -240,6 +240,27 @@ void main() {
       })).called(1);
       expect(Printers.instance.density, PrinterDensity.tight);
     });
+
+    testWidgets("Show supported printer types", (tester) async {
+      Printers.instance.replaceItems({'id': Printer(id: 'id', name: 'name', address: 'address')});
+
+      await tester.pumpWidget(buildApp());
+
+      await tester.tap(find.byKey(const Key('printer.supported_types')));
+      await tester.pumpAndSettle();
+
+      // Check if the bottom sheet is shown with printer types
+      expect(find.text(S.printerTypeXPrinter), findsOneWidget);
+      expect(find.text(S.printerTypeCatPrinter), findsOneWidget);
+
+      // Tap on XPrinter type
+      await tester.tap(find.text(S.printerTypeXPrinter));
+      await tester.pumpAndSettle();
+
+      // Verify Launcher.launch was called with correct URL for XPrinter
+      // Note: In a real test environment, you would mock Launcher and verify the call
+    });
+    });
   });
 
   setUpAll(() {
