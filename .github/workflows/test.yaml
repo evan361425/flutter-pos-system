@@ -10,7 +10,6 @@ on:
       - "**.md"
       - "docs/**"
       - "scripts/**"
-      - "android/**"
       - "pubspec.yaml"
       - "pubspec.lock"
       - "mkdocs.yaml"
@@ -71,3 +70,36 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           file: coverage/lcov.info
+
+  ios-build-test:
+    name: iOS Build Test
+    runs-on: macos-latest
+    if: ${{ !startsWith(github.head_ref , 'refs/heads/ci/') }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Setup the flutter environment.
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.x"
+          cache: true
+          channel: "stable"
+
+      # Get flutter dependencies.
+      - name: Install dependencies
+        env:
+          GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
+        run: |
+          echo "https://oauth:$GH_READ_PAT@github.com" > ~/.git-credentials
+          git config --global credential.helper store
+          flutter pub get
+
+      # Test iOS build
+      - name: Build iOS (no codesign)
+        run: flutter build ios --no-codesign --dart-define=appFlavor=dev
+
+      # Test that pods can be installed
+      - name: Pod install
+        run: |
+          cd ios
+          pod install
