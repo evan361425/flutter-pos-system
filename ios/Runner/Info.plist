@@ -43,5 +43,19 @@
 		<false/>
 		<key>UIStatusBarHidden</key>
 		<true/>
+		<key>NSCameraUsageDescription</key>
+		<string>This app needs access to camera to scan QR codes and take photos of products</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>This app needs access to photo library to select product images</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>This app may need microphone access for barcode scanning features</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>This app may use location to provide location-based services for the point of sale system</string>
+		<key>NSBluetoothAlwaysUsageDescription</key>
+		<string>This app may connect to Bluetooth devices like printers and card readers</string>
+		<key>NSBluetoothPeripheralUsageDescription</key>
+		<string>This app may connect to Bluetooth peripherals like printers and payment devices</string>
+		<key>NSLocalNetworkUsageDescription</key>
+		<string>This app needs to access local network to connect to printers and other POS devices</string>
 	</dict>
 </plist>
