@@ -15,6 +15,7 @@ btn:
   testPrint: Test Print
   retry: Re-Connect
   print: Print
+  supportedTypes: Supported Printer Types
 status:
   success: Printer connected
   connecting: Connecting
@@ -105,3 +106,6 @@ info:
   address: Location
   signal: Signal
   status: Status
+type:
+  xPrinter: XPrinter Series
+  catPrinter: Cat Printer Series
