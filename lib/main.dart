@@ -11,6 +11,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/device.dart';
+import 'package:possystem/services/network.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
@@ -71,6 +72,8 @@ void main() async {
       await Analysis().initialize();
       await Printers().initialize();
       await Devices().initialize();
+      // Start network discovery server for device connections
+      await NetworkService.instance.startDiscoveryServer();
       // Last for setup ingredient and quantity
       await Menu().initialize();
 

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:possystem/helpers/logger.dart';
 
 /// Network service for device-to-device communication
@@ -94,6 +95,23 @@ class NetworkService {
       _connections.remove(connectionId);
       Log.out('Connection from $address:$port disconnected', 'network_service');
     };
+
+    // Handle discovery probe messages
+    connection.messages.listen((message) {
+      if (message['type'] == 'discovery_probe') {
+        _respondToDiscoveryProbe(connection);
+      }
+    });
+  }
+
+  /// Respond to discovery probe with device information
+  Future<void> _respondToDiscoveryProbe(DeviceConnection connection) async {
+    await connection.sendMessage({
+      'type': 'discovery_response',
+      'device_name': 'POS System', // TODO: Make this configurable
+      'device_type': 'pos_device',
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+    });
   }
 
   /// Discover devices on the local network
@@ -286,5 +304,3 @@ class DiscoveredDevice {
   @override
   int get hashCode => Object.hash(address, port);
 }
-
-typedef VoidCallback = void Function();

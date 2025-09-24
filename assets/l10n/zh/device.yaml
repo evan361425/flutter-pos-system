@@ -1,0 +1,90 @@
+title: "設備連接"
+titleCreate: "添加設備"
+titleUpdate: "編輯設備"
+
+statusConnected: "已連接"
+statusDisconnected: "已斷開"
+statusConnecting: "連接中..."
+statusPaired: "已配對"
+statusNotPaired: "未配對"
+
+typeLabel: "設備類型"
+typeCashier: "收銀台"
+typeKitchen: "廚房顯示器"
+typeDisplay: "顯示器"
+typeUnknown: "未知"
+
+fieldName: "設備名稱"
+fieldNameHint: "廚房顯示器"
+fieldAddress: "IP地址"
+fieldAddressHint: "192.168.1.100"
+fieldPort: "端口"
+fieldPortHint: "8765"
+fieldAutoConnect: "自動連接"
+fieldAutoConnectSubtitle: "開始點餐時自動連接"
+
+actionConnect: "連接"
+actionDisconnect: "斷開"
+actionPair: "配對"
+actionEdit: "編輯"
+actionDelete: "刪除"
+actionAddManually: "手動添加"
+
+discoveryTitle: "搜索設備中..."
+discoverySubtitle: "選擇要連接的設備："
+discoveryNoDevices: "未找到設備"
+
+pairingTitle: "配對設備"
+pairingMessage: "輸入另一台設備上顯示的4位數PIN碼："
+pairingPinLabel: "PIN碼"
+pairingPinHint: "1234"
+pairingActionCancel: "取消"
+pairingActionPair: "配對"
+
+emptyStateTitle: "未添加設備"
+emptyStateMessage: "添加設備以在收銀台和廚房間\n共享訂單數據"
+emptyStateAction: "添加設備"
+
+buttonStatus:
+  connected: "{count} 個設備已連接"
+  connecting: "正在連接 {count} 個設備..."
+  none: "無可用設備"
+
+helpTitle: "設備連接"
+helpContent: |
+  連接多個設備
+  
+  連接兩個或更多設備以共享訂單信息。一個設備可以接單，另一個設備可以顯示訂單。
+  
+  設備類型：
+  • 收銀台：接受和處理訂單
+  • 廚房顯示器：顯示需要準備的訂單
+  • 顯示器：向客戶顯示訂單狀態
+  
+  配對：
+  為了安全，設備必須使用PIN碼配對後才能共享訂單數據。
+  
+  自動連接：
+  啟用自動連接可在開始點餐時自動連接到設備。
+
+messages:
+  connected: "已連接到 {name}"
+  disconnected: "設備已斷開：{name}"
+  connectionFailed: "無法連接到 {name}"
+  pairingRequested: "配對請求已發送"
+  pairingFailed: "配對失敗"
+  orderDataSent: "訂單數據已發送到已連接的設備"
+  orderDataFailed: "無法向某些設備發送訂單數據"
+
+errors:
+  invalidAddress: "無效的IP地址格式"
+  invalidPort: "端口必須在1到65535之間"
+  deviceNotConnected: "配對前設備必須先連接"
+  noDeviceType: "請選擇設備類型"
+  nameRequired: "請輸入設備名稱"
+  addressRequired: "請輸入IP地址"
+  portRequired: "請輸入端口號"
+
+tutorial:
+  title: "設備連接"
+  message: "連接到其他設備以在收銀台和廚房間共享訂單數據。"
