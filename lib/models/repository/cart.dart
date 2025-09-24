@@ -8,6 +8,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/device.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
@@ -135,6 +136,9 @@ class Cart extends ChangeNotifier {
     if (receipt != null) {
       Printers.instance.printReceipts(receipt);
     }
+
+    // Broadcast order data to connected devices
+    await Devices.instance.broadcastOrderData(data.toMap());
 
     await Seller.instance.push(data);
     await Stock.instance.order(data);
