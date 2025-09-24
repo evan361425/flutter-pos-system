@@ -10,6 +10,7 @@ import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/device.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -49,6 +50,8 @@ import 'package:possystem/ui/order_attr/widgets/order_attribute_reorder.dart';
 import 'package:possystem/ui/printer/printer_modal.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
 import 'package:possystem/ui/printer/printer_settings_modal.dart';
+import 'package:possystem/ui/device/device_modal.dart';
+import 'package:possystem/ui/device/device_page.dart';
 import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
@@ -135,6 +138,7 @@ class Routes {
                   if (!isProd) _debugRoute(inShell: false),
                   _menuRoute(inShell: false),
                   _printerRoute(inShell: false),
+                  _deviceRoute(inShell: false),
                   _quantitiesRoute(inShell: false),
                   _orderAttrsRoute(inShell: false),
                   _elfRoute(inShell: false),
@@ -163,6 +167,7 @@ class Routes {
             StatefulShellBranch(routes: [_orderAttrsRoute(inShell: true)]),
             StatefulShellBranch(routes: [_menuRoute(inShell: true)]),
             StatefulShellBranch(routes: [_printerRoute(inShell: true)]),
+            StatefulShellBranch(routes: [_deviceRoute(inShell: true)]),
             StatefulShellBranch(routes: [_quantitiesRoute(inShell: true)]),
             StatefulShellBranch(routes: [_transitRoute(inShell: true)]),
             StatefulShellBranch(routes: [_elfRoute(inShell: true)]),
@@ -524,6 +529,38 @@ class Routes {
           ),
         ],
       );
+
+  static GoRoute _deviceRoute({required bool inShell}) => GoRoute(
+        name: device,
+        path: '${(inShell ? '_/' : '')}device',
+        parentNavigatorKey: inShell ? null : rootNavigatorKey,
+        builder: (ctx, state) => _w(_l(const DevicePage(), state), 'Devices'),
+        routes: [
+          GoRoute(
+            name: deviceCreate,
+            path: 'create',
+            parentNavigatorKey: rootNavigatorKey,
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const DeviceModal(), state)),
+          ),
+          GoRoute(
+            path: 'a/:id',
+            parentNavigatorKey: rootNavigatorKey,
+            redirect: _redirectIfMissed(path: 'device', hasItem: (id) => Devices.instance.hasItem(id)),
+            routes: [
+              GoRoute(
+                name: deviceUpdate,
+                path: 'update',
+                parentNavigatorKey: rootNavigatorKey,
+                pageBuilder: (ctx, state) {
+                  final d = Devices.instance.getItem(state.pathParameters['id']!)!;
+                  return MaterialDialogPage(child: _l(DeviceModal(device: d), state));
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+
   static GoRoute _quantitiesRoute({required bool inShell}) => GoRoute(
         name: quantities,
         path: '${(inShell ? '_/' : '')}quantities',
@@ -704,6 +741,9 @@ class Routes {
   static const printerCreate = 'printer.create';
   static const printerSettings = 'printer.settings';
   static const printerUpdate = 'printer.update';
+  static const device = 'device';
+  static const deviceCreate = 'device.create';
+  static const deviceUpdate = 'device.update';
 }
 
 T _findEnum<T extends Enum>(Iterable<T> values, String? path, T other) {
