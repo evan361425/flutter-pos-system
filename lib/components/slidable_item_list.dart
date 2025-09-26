@@ -74,7 +74,7 @@ class SlidableItemDelegate<T, U> {
 
   final bool disableSlide;
 
-  SlidableItemDelegate(
+  const SlidableItemDelegate(
       {required this.items,
       required this.tileBuilder,
       required this.handleDelete,

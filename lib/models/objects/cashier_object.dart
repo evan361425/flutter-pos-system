@@ -48,6 +48,11 @@ class CashierChangeEntryObject {
       'count': count!,
     };
   }
+
+  @override
+  String toString() {
+    return 'CashierChangeEntryObject(unit: $unit, count: $count)';
+  }
 }
 
 class CashierUnitObject {
