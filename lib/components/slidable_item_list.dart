@@ -6,8 +6,8 @@ import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 
-class SlidableItemList<T, Action> extends StatelessWidget {
-  final SlidableItemDelegate<T, Action> delegate;
+class SlidableItemList<T, U> extends StatelessWidget {
+  final SlidableItemDelegate<T, U> delegate;
   final String? hintText;
   final Widget? leading;
   final Widget? action;

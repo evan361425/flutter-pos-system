@@ -104,17 +104,19 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
 
   Widget _buildTab(_TabType tab) {
     return switch (tab) {
-      _TabType.day || _TabType.week || _TabType.month => ListView(
-          children: [
-            for (final e in ranges[tab]!.entries)
-              RadioListTile(
-                title: Text(e.key),
-                subtitle: Text(e.value.format(S.localeName)),
-                value: e.value,
-                groupValue: select,
-                onChanged: (value) => setState(() => select = value!),
-              ),
-          ],
+      _TabType.day || _TabType.week || _TabType.month => RadioGroup(
+          groupValue: select,
+          onChanged: (value) => setState(() => select = value!),
+          child: ListView(
+            children: [
+              for (final e in ranges[tab]!.entries)
+                RadioListTile(
+                  title: Text(e.key),
+                  subtitle: Text(e.value.format(S.localeName)),
+                  value: e.value,
+                ),
+            ],
+          ),
         ),
       _TabType.custom => ListView(children: [
           ListTile(

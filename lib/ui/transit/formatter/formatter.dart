@@ -127,7 +127,7 @@ abstract class ModelFormatter<T extends Repository, U> {
 
   List<FormattedItem<M>> format<M extends Model>(List<List<Object?>> rows) {
     final data = rows.map((row) => row.map((e) => e.toString().trim()).toList()).toList();
-    final transformed = this.transformRows(data);
+    final transformed = transformRows(data);
 
     final result = <FormattedItem<M>>[];
 

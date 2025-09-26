@@ -47,20 +47,23 @@ class ChangerFavoriteViewState extends State<ChangerFavoriteView> {
         item,
         index,
         actorBuilder,
-        (item) => setState(() => selected = item),
       ),
     );
 
-    return Column(children: [
-      const SizedBox(height: kTopSpacing),
-      HintText(S.cashierChangerFavoriteHint),
-      const SizedBox(height: kInternalSpacing),
-      for (final widget in delegate.items.mapIndexed(
-        (index, item) => delegate.build(item, index),
-      ))
-        widget,
-      const SizedBox(height: kFABSpacing),
-    ]);
+    return RadioGroup(
+      groupValue: selected,
+      onChanged: (item) => setState(() => selected = item),
+      child: Column(children: [
+        const SizedBox(height: kTopSpacing),
+        HintText(S.cashierChangerFavoriteHint),
+        const SizedBox(height: kInternalSpacing),
+        for (final widget in delegate.items.mapIndexed(
+          (index, item) => delegate.build(item, index),
+        ))
+          widget,
+        const SizedBox(height: kFABSpacing),
+      ]),
+    );
   }
 
   @override
@@ -95,9 +98,8 @@ class _Tile extends StatelessWidget {
   final FavoriteItem item;
   final int index;
   final ActorBuilder actorBuilder;
-  final void Function(FavoriteItem?) onChanged;
 
-  const _Tile(this.item, this.index, this.actorBuilder, this.onChanged);
+  const _Tile(this.item, this.index, this.actorBuilder);
 
   @override
   Widget build(BuildContext context) {
@@ -114,9 +116,6 @@ class _Tile extends StatelessWidget {
           textOverflow: TextOverflow.visible,
         ),
         secondary: EntryMoreButton(onPressed: actor),
-        groupValue: ChangerFavoriteViewState.selected,
-        selected: ChangerFavoriteViewState.selected == item,
-        onChanged: onChanged,
       ),
     );
   }
