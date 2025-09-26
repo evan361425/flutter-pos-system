@@ -60,3 +60,7 @@ Pipfile.lock
 /*.key
 /lib/firebase_options.dart
 .metadata
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md
