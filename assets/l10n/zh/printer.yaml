@@ -13,7 +13,6 @@ btn:
   testPrint: 列印測試
   retry: 重新連線
   print: 列印
-  supportedTypes: 支援的出單機類型
 status:
   success: 成功連結出單機
   connecting: 連線中
@@ -97,6 +96,9 @@ info:
   address: 位置
   signal: 訊號強度
   status: 狀態
-type:
-  xPrinter: XPrinter 系列
-  catPrinter: 貓印機系列
+supported:
+  title: 支援的出單機
+  name:
+  - xPrinter: 芯燁 XPrinter
+    epsonPrinter: 愛普生 Epson
+    catPrinter: 迷你口袋打印機

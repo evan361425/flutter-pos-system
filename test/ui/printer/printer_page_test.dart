@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -242,24 +243,23 @@ void main() {
     });
 
     testWidgets("Show supported printer types", (tester) async {
-      Printers.instance.replaceItems({'id': Printer(id: 'id', name: 'name', address: 'address')});
-
       await tester.pumpWidget(buildApp());
 
-      await tester.tap(find.byKey(const Key('printer.supported_types')));
+      await tester.tap(find.text('Add demo'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('printer.supported_list')));
       await tester.pumpAndSettle();
 
-      // Check if the bottom sheet is shown with printer types
-      expect(find.text(S.printerTypeXPrinter), findsOneWidget);
-      expect(find.text(S.printerTypeCatPrinter), findsOneWidget);
+      expect(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)), findsOneWidget);
+      expect(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)), findsOneWidget);
 
-      // Tap on XPrinter type
-      await tester.tap(find.text(S.printerTypeXPrinter));
+      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)));
       await tester.pumpAndSettle();
+      expect(Launcher.lastUrl, equals('https://www.google.com/search?q=Portable Mini Printer'));
 
-      // Verify Launcher.launch was called with correct URL for XPrinter
-      // Note: In a real test environment, you would mock Launcher and verify the call
-    });
+      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)));
+      await tester.pumpAndSettle();
+      expect(Launcher.lastUrl, equals('https://www.xprinter.net/'));
     });
   });
 

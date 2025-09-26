@@ -80,7 +80,7 @@ void main() {
 
       expect(
         copied?.text,
-        equals([S.transitOrderItemTitle(order.createdAt), message].join('\n')),
+        equals([order.createDateTimeString, message].join('\n')),
       );
     });
 
