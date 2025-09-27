@@ -77,6 +77,21 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
           TextButton(onPressed: scan, child: Text(S.printerScanRetry)),
         ]),
       PrinterView(printer: printer!),
+      // Add printer type change button
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+        child: Card(
+          child: ListTile(
+            leading: const Icon(Icons.print),
+            title: Text(S.printerTypeSelectLabel),
+            subtitle: Text(S.printerTypeSelectName(printer!.provider.name)),
+            trailing: TextButton(
+              onPressed: _changePrinterType,
+              child: const Text('Change'),
+            ),
+          ),
+        ),
+      ),
       p(TextFormField(
         key: const Key('printer.name'),
         controller: nameController,
@@ -263,6 +278,35 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       autoConnect: autoConnect,
     );
   }
+
+  Future<void> _changePrinterType() async {
+    if (printer == null) return;
+
+    // Create a dummy device for the dialog (device parameter is not actually used in the widget)
+    final dummyDevice = BluetoothDevice.demo();
+
+    final selected = await _ManualTypeSelection.show(context, dummyDevice);
+    if (selected == null) {
+      // user cancelled
+      return;
+    }
+
+    if (selected != printer!.provider) {
+      // Update the printer with new provider
+      Log.out('change printer type: ${printer!.name} from ${printer!.provider.name} to ${selected.name}', 'printer_modal_change_type');
+      
+      setState(() {
+        printer = Printer(
+          id: printer!.id,
+          name: printer!.name,
+          address: printer!.address,
+          autoConnect: printer!.autoConnect,
+          provider: selected,
+          other: printer!.p,
+        );
+      });
+    }
+  }
 }
 
 class _ManualTypeSelection extends StatefulWidget {
@@ -302,22 +346,20 @@ class _ManualTypeSelectionState extends State<_ManualTypeSelection> {
 
   @override
   Widget build(BuildContext context) {
-    return RadioGroup<PrinterProvider>(
-      groupValue: selected,
-      onChanged: (PrinterProvider? value) {
-        if (value != null) {
-          setState(() {
-            selected = value;
-          });
-        }
-      },
-      child: Column(children: [
-        for (final provider in PrinterProvider.values)
-          RadioListTile(
-            value: provider,
-            title: Text(S.printerTypeSelectName(provider.name)),
-          ),
-      ]),
-    );
+    return Column(children: [
+      for (final provider in PrinterProvider.values)
+        RadioListTile<PrinterProvider>(
+          value: provider,
+          groupValue: selected,
+          onChanged: (PrinterProvider? value) {
+            if (value != null) {
+              setState(() {
+                selected = value;
+              });
+            }
+          },
+          title: Text(S.printerTypeSelectName(provider.name)),
+        ),
+    ]);
   }
 }
