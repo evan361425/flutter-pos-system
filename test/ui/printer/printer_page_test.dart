@@ -274,6 +274,57 @@ void main() {
       await tester.pumpAndSettle();
       expect(Launcher.lastUrl, equals('https://www.xprinter.net/'));
     });
+
+    testWidgets('Change printer type button', (tester) async {
+      // Create a printer with catPrinter type
+      final printer = Printer(
+        id: 'test-printer',
+        name: 'Test Printer',
+        address: 'test:address',
+        provider: PrinterProvider.catPrinter,
+      );
+      Printers.instance.replaceItems({'test-printer': printer});
+
+      await tester.pumpWidget(buildApp());
+
+      // Open printer edit modal
+      await tester.tap(find.text('Test Printer'));
+      await tester.pumpAndSettle();
+
+      // Verify current printer type is displayed
+      expect(find.text(S.printerTypeSelectLabel), findsOneWidget);
+      expect(find.text(S.printerTypeSelectName(PrinterProvider.catPrinter.name)), findsOneWidget);
+
+      // Tap the "Change" button
+      await tester.tap(find.text('Change'));
+      await tester.pumpAndSettle();
+
+      // Should show type selection dialog
+      expect(find.text(S.printerTypeSelectTitle), findsOneWidget);
+      expect(find.text(S.printerTypeSelectHint), findsOneWidget);
+
+      // Select a different type (xPrinter58)
+      await tester.tap(find.text(S.printerTypeSelectName(PrinterProvider.xPrinter58.name)));
+      await tester.pump();
+
+      // Confirm the selection
+      await tester.tap(find.text(MaterialLocalizations.of(tester.element(find.text(S.printerTypeSelectTitle))).okButtonLabel));
+      await tester.pump();
+
+      // Should update the display to show new type
+      expect(find.text(S.printerTypeSelectName(PrinterProvider.xPrinter58.name)), findsOneWidget);
+      expect(find.text(S.printerTypeSelectName(PrinterProvider.catPrinter.name)), findsNothing);
+
+      // Save the printer
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
+      // Verify the printer was updated with new provider (xPrinter58 = index 2)
+      verify(storage.set(any, {
+        'printer.test-printer.name': 'Test Printer',
+        'printer.test-printer.autoConnect': false
+      })).called(1);
+    });
   });
 
   setUpAll(() {
