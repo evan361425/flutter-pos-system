@@ -62,6 +62,15 @@ name:
 autoConn:
   label: 自動連線
   helper: 當進入訂單頁時自動連線
+typeSelect:
+  title: 選擇出單機類型
+  helper: 選擇與您的出單機相符的類型
+  label: 出單機類型
+type:
+  cat1: CAT 出單機 (1 位元組)
+  cat2: CAT 出單機 (2 位元組)
+  epson: Epson 出單機
+  xPrinter: XPrinter 出單機
 meta:
   connected: 已連線
   exist: 已建立，無法新增

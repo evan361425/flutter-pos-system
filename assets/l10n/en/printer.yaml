@@ -71,6 +71,15 @@ name:
 autoConn:
   label: Auto-Connect
   helper: Automatically connect when entering the order page
+typeSelect:
+  title: Select Printer Type
+  helper: Choose the type that matches your printer
+  label: Printer Type
+type:
+  cat1: CAT Printer (1 byte)
+  cat2: CAT Printer (2 bytes)
+  epson: Epson Printer
+  xPrinter: XPrinter
 meta:
   connected: Connected
   exist: Existing, cannot add
