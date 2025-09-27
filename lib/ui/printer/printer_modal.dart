@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -36,7 +37,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
   // field variable
   bool autoConnect = false;
-  // PrinterProvider? provider;
   final nameController = TextEditingController(text: '');
   final nameFocusNode = FocusNode();
 
@@ -45,6 +45,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
   @override
   List<Widget> buildFormFields() {
+    // Scan result
     if (printer == null) {
       if (searched.isEmpty) {
         return [
@@ -69,6 +70,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       ];
     }
 
+    // Selected printer
     return [
       if (widget.isNew)
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -104,7 +106,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   Widget _buildDeviceTile(BluetoothDevice device) {
     final exist = Printers.instance.hasAddress(device.address);
     return ListTile(
-      title: Text(device.name),
+      title: Text(device.name == '' ? '<unknown>' : device.name),
       subtitle: MetaBlock.withString(context, [
         if (device.connected) S.printerMetaConnected,
         if (exist) S.printerMetaExist,
@@ -163,6 +165,11 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       'printer_modal_scan',
     ).listen((devices) {
       if (mounted) {
+        // if there has any device scanned, demo device will be replaced.
+        if (kDebugMode && devices.isEmpty) {
+          devices.add(BluetoothDevice.demo());
+        }
+
         setState(() {
           searched = devices;
         });
@@ -196,19 +203,21 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   }
 
   Future<void> selectDevice(BluetoothDevice device) async {
-    final provider = PrinterProvider.tryGuess(device.name);
+    var provider = PrinterProvider.tryGuess(device.name);
     if (provider == null) {
-      Log.ger('invalid_printer', {'device': device.name});
-      showMoreInfoSnackBar(
-        S.printerErrorNotSupportTitle,
-        Linkify.fromString(S.printerErrorNotSupportContent),
-        key: scaffoldMessengerKey,
-      );
-      return;
+      final selected = await _ManualTypeSelection.show(context, device);
+      if (selected == null) {
+        // user cancel
+        return;
+      }
+
+      Log.out('manual select device: ${device.name} provider: ${selected.name}', 'printer_modal_select');
+      provider = selected;
+    } else {
+      Log.out('auto select device: ${device.name} provider: ${provider.name}', 'printer_modal_select');
     }
 
     // advertise name is the default name
-    Log.ger('select_printer', {'device': device.name, 'provider': provider.name});
     nameController.text = device.name;
     printer = Printer(
       name: device.name,
@@ -217,7 +226,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     );
 
     scanDone();
-    await Bluetooth.instance.stopScan();
+    Bluetooth.instance.stopScan();
   }
 
   @override
@@ -252,6 +261,63 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     return PrinterObject(
       name: nameController.text,
       autoConnect: autoConnect,
+    );
+  }
+}
+
+class _ManualTypeSelection extends StatefulWidget {
+  final BluetoothDevice device;
+
+  const _ManualTypeSelection({super.key, required this.device});
+
+  static Future<PrinterProvider?> show(BuildContext context, BluetoothDevice device) async {
+    final key = GlobalKey<_ManualTypeSelectionState>();
+    return showAdaptiveDialog<PrinterProvider>(
+      context: context,
+      builder: (context) => AlertDialog.adaptive(
+        title: Text(S.printerTypeSelectTitle),
+        scrollable: true,
+        content: Column(children: [
+          HintText(S.printerTypeSelectHint),
+          const SizedBox(height: kInternalSpacing),
+          _ManualTypeSelection(key: key, device: device),
+        ]),
+        actions: [
+          PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(key.currentState?.selected),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  State<_ManualTypeSelection> createState() => _ManualTypeSelectionState();
+}
+
+class _ManualTypeSelectionState extends State<_ManualTypeSelection> {
+  PrinterProvider? selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return RadioGroup<PrinterProvider>(
+      groupValue: selected,
+      onChanged: (PrinterProvider? value) {
+        if (value != null) {
+          setState(() {
+            selected = value;
+          });
+        }
+      },
+      child: Column(children: [
+        for (final provider in PrinterProvider.values)
+          RadioListTile(
+            value: provider,
+            title: Text(S.printerTypeSelectName(provider.name)),
+          ),
+      ]),
     );
   }
 }

@@ -298,15 +298,17 @@ class PrinterObject extends ModelObject<Printer> {
 enum PrinterProvider {
   catPrinter(bt.CatPrinter(feedPaperByteSize: 1)),
   catPrinter2(bt.CatPrinter(feedPaperByteSize: 2)),
-  epsonPrinter(
-    bt.EpsonPrinter(),
-    link: 'https://epson.com/Support/Point-of-Sale/Thermal-Printers/sh/s530',
-  ),
-  xPrinter(
+  // epsonPrinter(
+  //   bt.EpsonPrinter(),
+  //   link: 'https://epson.com/Support/Point-of-Sale/Thermal-Printers/sh/s530',
+  // ),
+  xPrinter58(
     bt.XPrinter(),
     link: 'https://www.xprinter.net/',
     markers: ['XP-58', 'XP-76', 'XP-80'],
-  );
+  ),
+  xPrinter76(bt.XPrinter(widthMM: 76, widthBits: 528)),
+  xPrinter80(bt.XPrinter(widthMM: 80, widthBits: 560));
 
   final PrinterManufactory manufactory;
   final String? link;

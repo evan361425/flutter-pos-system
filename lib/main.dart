@@ -87,7 +87,7 @@ void main() async {
           ChangeNotifierProvider.value(value: Cart.instance),
           ChangeNotifierProvider.value(value: Printers.instance),
         ],
-        child: const App(),
+        child: App(),
       ));
     },
     (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),

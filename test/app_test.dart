@@ -26,7 +26,7 @@ void main() {
         ChangeNotifierProvider.value(value: OrderAttributes()),
         ChangeNotifierProvider.value(value: Printers()),
       ],
-      builder: (_, __) => const App(),
+      builder: (_, __) => App(),
     );
 
     await tester.pumpWidget(app);
