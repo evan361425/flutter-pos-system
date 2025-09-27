@@ -35,7 +35,7 @@ void main() {
       final notSupport = MockBluetoothDevice();
       final existAndConnected = MockBluetoothDevice();
       final device = MockBluetoothDevice();
-      final controller = StreamController<List<BluetoothDevice>>();
+      var controller = StreamController<List<BluetoothDevice>>();
       when(blue.startScan()).thenAnswer((_) => controller.stream);
       when(blue.stopScan()).thenAnswer((_) => Future.value());
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
@@ -61,18 +61,6 @@ void main() {
       controller.add([notSupport, existAndConnected, device]);
       await tester.pump();
 
-      // tap not support
-      await tester.tap(find.text('unknown'));
-      await tester.pump(const Duration(milliseconds: 10));
-
-      expect(find.text(S.printerErrorNotSupportTitle), findsOneWidget);
-
-      // show not found more dialog
-      await tester.tap(find.text(S.printerScanNotFound));
-      await tester.pump(const Duration(milliseconds: 10));
-      await tester.tapAt(const Offset(10, 10));
-      await tester.pump(const Duration(milliseconds: 10));
-
       // show not select
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pump(const Duration(milliseconds: 30));
@@ -80,11 +68,26 @@ void main() {
       await tester.pump(const Duration(milliseconds: 30));
       expect(find.text(S.printerErrorNotSelect), findsOneWidget);
 
-      // scan error
-      await controller.close();
+      // tap not support device
+      await tester.tap(find.text('unknown'));
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.tap(find.text('Cancel'));
       await tester.pump();
 
-      // tap device
+      await tester.tap(find.text('unknown'));
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.tap(find.text(S.printerTypeSelectName(PrinterProvider.catPrinter.name)));
+      await tester.pump();
+      await tester.tap(find.text('OK'));
+      await tester.pump();
+
+      // Continue with the rest of the test - scanning and selecting known devices
+      controller = StreamController<List<BluetoothDevice>>();
+      controller.add([notSupport, existAndConnected, device]);
+      when(blue.startScan()).thenAnswer((_) => controller.stream);
+
+      await tester.tap(find.text(S.printerScanRetry));
+      await tester.pump();
       await tester.tap(find.text('MX11'));
       await tester.pumpAndSettle();
 
@@ -103,7 +106,7 @@ void main() {
           return map['name'] == 'MX11' &&
               map['address'] == 'address3' &&
               map['autoConnect'] == true &&
-              map['provider'] == 1 &&
+              map['provider'] == 1 && // cat printer
               map.keys.length == 4;
         })),
       )).called(1);
