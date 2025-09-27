@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/constants/icons.dart';
+import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -239,6 +240,26 @@ void main() {
         'setting': {'density': 1}
       })).called(1);
       expect(Printers.instance.density, PrinterDensity.tight);
+    });
+
+    testWidgets("Show supported printer types", (tester) async {
+      await tester.pumpWidget(buildApp());
+
+      await tester.tap(find.text('Add demo'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('printer.supported_list')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)), findsOneWidget);
+      expect(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)), findsOneWidget);
+
+      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)));
+      await tester.pumpAndSettle();
+      expect(Launcher.lastUrl, equals('https://www.google.com/search?q=Portable Mini Printer'));
+
+      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)));
+      await tester.pumpAndSettle();
+      expect(Launcher.lastUrl, equals('https://www.xprinter.net/'));
     });
   });
 

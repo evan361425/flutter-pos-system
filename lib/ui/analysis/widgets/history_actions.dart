@@ -39,32 +39,30 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
     return AlertDialog.adaptive(
       title: Text(S.analysisHistoryActionClear),
       scrollable: true,
-      content: Column(children: [
-        RadioListTile.adaptive(
-          groupValue: mode,
-          value: _Mode.lastYear,
-          title: Text(S.analysisHistoryActionClearLastYear),
-          subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year - 1, now.month, now.day))),
-          onChanged: _setMode,
-        ),
-        RadioListTile.adaptive(
-          groupValue: mode,
-          value: _Mode.sixMonthsAgo,
-          title: Text(S.analysisHistoryActionClearLast6Months),
-          subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year, now.month - 6, now.day))),
-          onChanged: _setMode,
-        ),
-        RadioListTile.adaptive(
-          groupValue: mode,
-          value: _Mode.custom,
-          title: Text(S.analysisHistoryActionClearCustom),
-          subtitle: Text(customDate == null
-              ? S.analysisHistoryActionClearCustomSubtitle
-              : S.analysisHistoryActionClearSubtitle(customDate!)),
-          toggleable: true,
-          onChanged: _setMode,
-        ),
-      ]),
+      content: RadioGroup(
+        groupValue: mode,
+        onChanged: _setMode,
+        child: Column(children: [
+          RadioListTile.adaptive(
+            value: _Mode.lastYear,
+            title: Text(S.analysisHistoryActionClearLastYear),
+            subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year - 1, now.month, now.day))),
+          ),
+          RadioListTile.adaptive(
+            value: _Mode.sixMonthsAgo,
+            title: Text(S.analysisHistoryActionClearLast6Months),
+            subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year, now.month - 6, now.day))),
+          ),
+          RadioListTile.adaptive(
+            value: _Mode.custom,
+            title: Text(S.analysisHistoryActionClearCustom),
+            subtitle: Text(customDate == null
+                ? S.analysisHistoryActionClearCustomSubtitle
+                : S.analysisHistoryActionClearSubtitle(customDate!)),
+            toggleable: true,
+          ),
+        ]),
+      ),
       actions: [
         PopButton(title: local.cancelButtonLabel),
         TextButton(
@@ -206,7 +204,7 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
       key: _formKey,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         DropdownButtonFormField<PeriodUnit>(
-          value: _unit,
+          initialValue: _unit,
           icon: const Icon(Icons.arrow_drop_down),
           isExpanded: true,
           items: [

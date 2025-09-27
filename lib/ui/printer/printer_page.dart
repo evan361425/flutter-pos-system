@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/route_buttons.dart';
@@ -29,18 +32,24 @@ class PrinterPage extends StatelessWidget {
 
     return SlidableItemList(
       hintText: '', // disabling hint text, no need to show count
-      leading: ButtonGroup(buttons: [
+      leading: ButtonGroup(spacerAt: 2, buttons: [
+        RouteIconButton(
+          key: const Key('printer.create'),
+          route: Routes.printerCreate,
+          icon: const Icon(KIcons.add),
+          label: S.printerTitleCreate,
+        ),
+        IconButton(
+          key: const Key('printer.supported_list'),
+          onPressed: _showSupportedPrinters(context),
+          icon: const Icon(Icons.info_outline),
+          tooltip: S.printerSupportedTitle,
+        ),
         RouteIconButton(
           key: const Key('printer.settings'),
           route: Routes.printerSettings,
           icon: const Icon(Icons.settings),
           label: S.printerTitleSettings,
-        ),
-        RouteElevatedIconButton(
-          key: const Key('printer.create'),
-          route: Routes.printerCreate,
-          icon: const Icon(KIcons.add),
-          label: S.printerTitleCreate,
         ),
       ]),
       delegate: SlidableItemDelegate(
@@ -82,6 +91,18 @@ class _EmptyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final buttons = Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      FilledButton(
+        onPressed: () => context.pushNamed(Routes.printerCreate),
+        child: Text(S.printerTitleCreate),
+      ),
+      const SizedBox(width: kInternalSpacing),
+      OutlinedButton(
+        onPressed: _showSupportedPrinters(context),
+        child: Text(S.printerSupportedTitle),
+      ),
+    ]);
+
     return Stack(children: [
       Positioned.fill(
         child: DecoratedBox(
@@ -140,19 +161,26 @@ class _EmptyBody extends StatelessWidget {
           const Spacer(),
           Expanded(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 300),
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(
-                  S.printerMetaHelper,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.titleMedium,
-                ),
-                const SizedBox(height: kInternalSpacing),
-                FilledButton(
-                  onPressed: () => context.pushNamed(Routes.printerCreate),
-                  child: Text(S.printerTitleCreate),
-                ),
-              ]),
+              constraints: const BoxConstraints(maxWidth: 340),
+              child: SingleChildScrollView(
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    S.printerMetaHelper,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: kInternalSpacing),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: buttons,
+                  ),
+                  if (kDebugMode)
+                    OutlinedButton(
+                      onPressed: () => Printers.instance.addItem(Printer(id: 'demo', name: 'Demo Printer')),
+                      child: const Text('Add demo'),
+                    ),
+                ]),
+              ),
             ),
           ),
         ]),
@@ -199,4 +227,23 @@ class _Wave2 extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper oldClipper) => false;
+}
+
+VoidCallback _showSupportedPrinters(BuildContext context) {
+  return () => showAdaptiveDialog(
+        context: context,
+        builder: (context) => ResponsiveDialog(
+          title: Text(S.printerSupportedTitle),
+          content: Column(children: [
+            for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter])
+              ListTile(
+                key: Key('printer.supported.${printer.name}'),
+                title: Text(S.printerSupportedName(printer.name)),
+                subtitle: MetaBlock.withString(context, printer.markers),
+                trailing: const Icon(Icons.open_in_new),
+                onTap: printer.launchUrl,
+              ),
+          ]),
+        ),
+      );
 }

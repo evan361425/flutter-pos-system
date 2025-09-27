@@ -62,7 +62,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
       ),
       DropdownButtonFormField<num>(
         key: const Key('changer.custom.source.unit'),
-        value: sourceUnit,
+        initialValue: sourceUnit,
         hint: Text(S.cashierChangerCustomUnitLabel),
         isDense: true,
         style: Theme.of(context).textTheme.bodyMedium,
@@ -86,7 +86,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
               ),
               DropdownButtonFormField<num>(
                 key: Key('changer.custom.target.${entry.key}.unit'),
-                value: entry.value.unit,
+                initialValue: entry.value.unit,
                 hint: Text(S.cashierChangerCustomCountLabel),
                 style: Theme.of(context).textTheme.bodyMedium,
                 onChanged: (value) => setState(() => entry.value.unit = value),

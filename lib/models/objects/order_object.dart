@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
@@ -95,6 +96,10 @@ class OrderObject extends _Object {
   Map<String, String> get selectedAttributes => {
         for (final attr in attributes) attr.attributeId: attr.optionId,
       };
+
+  String get createDateTimeString => DateFormat.MMMd().addPattern(' ').add_Hms().format(createdAt);
+
+  String get createTimeString => DateFormat.Hm().format(createdAt);
 
   /// Update the amounts of stock by the ordered ingredients.
   void applyToStock(Map<String, num> amounts, {required bool add}) {

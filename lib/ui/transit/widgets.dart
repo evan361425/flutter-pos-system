@@ -267,7 +267,7 @@ class _BasicModelPickerState extends State<BasicModelPicker> {
           Expanded(
             child: DropdownButtonFormField<FormattableModel?>(
               key: const Key('transit.model_picker'),
-              value: widget.selected.value,
+              initialValue: widget.selected.value,
               decoration: InputDecoration(
                 label: Text(S.transitImportModelSelectionLabel),
                 floatingLabelBehavior: FloatingLabelBehavior.always,

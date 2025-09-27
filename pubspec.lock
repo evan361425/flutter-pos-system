@@ -986,8 +986,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2025.09.14-01"
-      resolved-ref: c6b02d62410f566bb4622bf1b06cd781591bf8c6
+      ref: "2025.09.25-01"
+      resolved-ref: dd59134303890aa49e99ccb396a5eed7c7c683f7
       url: "https://github.com/evan361425/flutter-pos-packages"
     source: git
     version: "0.0.1"

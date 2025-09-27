@@ -7,6 +7,7 @@ import 'package:packages/bluetooth.dart' as bt;
 import 'package:possystem/app.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/model_object.dart';
@@ -14,6 +15,7 @@ import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository.dart';
 import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/services/storage.dart';
+import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/widgets/checkout_receipt_dialog.dart';
 
 typedef BluetoothDevice = bt.BluetoothDevice;
@@ -161,7 +163,7 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
     super.name = 'printer',
     this.address = '',
     this.autoConnect = false,
-    this.provider = PrinterProvider.cat1,
+    this.provider = PrinterProvider.catPrinter,
     bt.Printer? other,
   }) : p = bt.Printer(address: address, manufactory: provider.manufactory, other: other) {
     p.addListener(notifyItem);
@@ -294,14 +296,23 @@ class PrinterObject extends ModelObject<Printer> {
 }
 
 enum PrinterProvider {
-  cat1(bt.CatPrinter(feedPaperByteSize: 1)),
-  cat2(bt.CatPrinter(feedPaperByteSize: 2)),
-  epsonPrinter(bt.EpsonPrinter()),
-  xPrinter(bt.XPrinter());
+  catPrinter(bt.CatPrinter(feedPaperByteSize: 1)),
+  catPrinter2(bt.CatPrinter(feedPaperByteSize: 2)),
+  epsonPrinter(
+    bt.EpsonPrinter(),
+    link: 'https://epson.com/Support/Point-of-Sale/Thermal-Printers/sh/s530',
+  ),
+  xPrinter(
+    bt.XPrinter(),
+    link: 'https://www.xprinter.net/',
+    markers: ['XP-58', 'XP-76', 'XP-80'],
+  );
 
   final PrinterManufactory manufactory;
+  final String? link;
+  final List<String> markers;
 
-  const PrinterProvider(this.manufactory);
+  const PrinterProvider(this.manufactory, {this.link, this.markers = const []});
 
   static PrinterProvider? tryGuess(String name) {
     Log.out('guess printer name: $name', 'printer');
@@ -309,5 +320,13 @@ enum PrinterProvider {
     Log.out('guessed printer manufactory: $v', 'printer');
 
     return PrinterProvider.values.firstWhereOrNull((e) => e.manufactory.toString() == v);
+  }
+
+  void launchUrl() {
+    if (link == null) {
+      Launcher.launch('https://www.google.com/search?q=${S.printerSupportedName(name)}').ignore();
+    } else {
+      Launcher.launch(link!).ignore();
+    }
   }
 }

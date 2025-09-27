@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
@@ -133,9 +132,9 @@ abstract class TransitOrderList extends StatelessWidget {
     return ListTile(
       leading: Padding(
         padding: const EdgeInsets.only(top: 4.0),
-        child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
+        child: Text(order.createTimeString),
       ),
-      title: Text(DateFormat.MMMd().addPattern(' ').add_Hms().format(order.createdAt)),
+      title: Text(order.createDateTimeString),
       subtitle: MetaBlock.withString(context, [
         S.transitOrderItemMetaProductCount(order.productsCount),
         S.transitOrderItemMetaPrice(order.price.toCurrency()),

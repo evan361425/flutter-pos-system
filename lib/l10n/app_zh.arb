@@ -282,6 +282,8 @@
   "printerInfoAddress": "位置",
   "printerInfoSignal": "訊號強度",
   "printerInfoStatus": "狀態",
+  "printerSupportedTitle": "支援的出單機",
+  "printerSupportedName": "{name, select, xPrinter{芯燁 XPrinter} epson{愛普生 Epson} catPrinter{迷你口袋打印機} other{UNKNOWN}}",
   "transitTitle": "資料轉移",
   "transitDescription": "匯入、匯出店家資訊和訂單",
   "transitDescriptionCsv": "用逗號分隔的列表，輕量級的匯出和匯入資料，幾乎兼容所有軟體。",
@@ -339,16 +341,6 @@
   "transitOrderCapacityOk": "容量剛好",
   "transitOrderCapacityWarn": "容量警告",
   "transitOrderCapacityDanger": "容量危險",
-  "transitOrderItemTitle": "{date}",
-  "@transitOrderItemTitle": {
-    "placeholders": {
-      "date": {
-        "type": "DateTime",
-        "format": "MMMd HH:mm:ss",
-        "isCustomDateFormat": "true"
-      }
-    }
-  },
   "transitOrderItemMetaProductCount": "餐點數：{count}",
   "@transitOrderItemMetaProductCount": {
     "placeholders": {

@@ -105,3 +105,9 @@ info:
   address: Location
   signal: Signal
   status: Status
+supported:
+  title: Supported Printers
+  name:
+  - xPrinter: XPrinter
+    epsonPrinter: Epson
+    catPrinter: Portable Mini Printer

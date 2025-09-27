@@ -11,6 +11,8 @@ class RouteElevatedIconButton extends StatelessWidget {
 
   final String? route;
 
+  final ButtonStyle? style;
+
   final Map<String, String> pathParameters;
 
   final Map<String, String> queryParameters;
@@ -20,6 +22,7 @@ class RouteElevatedIconButton extends StatelessWidget {
     required this.icon,
     required this.route,
     required this.label,
+    this.style,
     this.pathParameters = const {},
     this.queryParameters = const {},
   });
@@ -29,6 +32,7 @@ class RouteElevatedIconButton extends StatelessWidget {
     return ElevatedButton.icon(
       icon: icon,
       label: Text(label),
+      style: style,
       onPressed: () => context.pushNamed(
         route!,
         pathParameters: pathParameters,

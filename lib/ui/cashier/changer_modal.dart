@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
+import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/objects/cashier_object.dart';
+import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/translator.dart';
 
 import 'widgets/changer_custom_view.dart';
@@ -18,7 +22,7 @@ class ChangerModal extends StatefulWidget {
 class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMixin {
   late TabController controller;
   final customState = GlobalKey<ChangerCustomViewState>();
-  final favoriteState = GlobalKey<ChangerFavoriteViewState>();
+  final favoriteSelected = ValueNotifier<FavoriteItem?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +77,7 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
               child: Padding(
                 padding: const EdgeInsets.only(top: kTopSpacing),
                 child: ChangerFavoriteView(
-                  key: favoriteState,
+                  selectedItem: favoriteSelected,
                   emptyAction: () => controller.animateTo(1),
                 ),
               ),
@@ -99,7 +103,7 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
         builder: (context, child) {
           if (controller.index == 0) {
             return ChangerFavoriteView(
-              key: favoriteState,
+              selectedItem: favoriteSelected,
               emptyAction: _moveToCustom,
             );
           }
@@ -119,9 +123,7 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
   }
 
   void handleApply() async {
-    final isValid = controller.index == 1
-        ? await customState.currentState?.handleApply()
-        : await favoriteState.currentState?.handleApply();
+    final isValid = await (controller.index == 1 ? customState.currentState?.handleApply() : _handleFavoriteApply());
 
     if (isValid == true && mounted && context.canPop()) {
       context.pop(true);
@@ -140,5 +142,21 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
 
   void _moveToFavorite() {
     controller.index = 0;
+  }
+
+  Future<bool> _handleFavoriteApply() async {
+    if (favoriteSelected.value == null) {
+      showSnackBar(S.cashierChangerErrorNoSelection, context: context);
+      return false;
+    }
+
+    final isValid = await Cashier.instance.applyFavorite(favoriteSelected.value!.item);
+
+    if (!isValid && mounted) {
+      showSnackBar(S.cashierChangerErrorNotEnough(favoriteSelected.value!.source.unit?.toCurrency() ?? ''),
+          context: context);
+    }
+
+    return isValid;
   }
 }

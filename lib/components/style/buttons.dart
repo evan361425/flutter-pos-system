@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
@@ -59,10 +61,12 @@ class NavToButton extends StatelessWidget {
 
 class ButtonGroup extends StatelessWidget {
   final List<Widget> buttons;
+  final int? spacerAt;
 
   const ButtonGroup({
     super.key,
     required this.buttons,
+    this.spacerAt,
   });
 
   @override
@@ -71,6 +75,10 @@ class ButtonGroup extends StatelessWidget {
     for (var i = 1; i < buttons.length; i++) {
       children.add(const SizedBox(height: 28, child: VerticalDivider()));
       children.add(buttons[i]);
+    }
+
+    if (spacerAt != null && spacerAt! <= buttons.length) {
+      children[max(spacerAt! * 2 - 1, 0)] = const Spacer();
     }
 
     return Material(

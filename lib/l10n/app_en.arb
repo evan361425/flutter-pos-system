@@ -282,6 +282,8 @@
   "printerInfoAddress": "Location",
   "printerInfoSignal": "Signal",
   "printerInfoStatus": "Status",
+  "printerSupportedTitle": "Supported Printers",
+  "printerSupportedName": "{name, select, xPrinter{XPrinter} epson{Epson} catPrinter{Portable Mini Printer} other{UNKNOWN}}",
   "transitTitle": "Data Transfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
   "transitDescriptionCsv": "Commas Separate Values, lightweight to export and import data, compatible with most software.",
@@ -339,16 +341,6 @@
   "transitOrderCapacityOk": "Capacity Okay",
   "transitOrderCapacityWarn": "Capacity Warning",
   "transitOrderCapacityDanger": "Capacity Danger",
-  "transitOrderItemTitle": "{date}",
-  "@transitOrderItemTitle": {
-    "placeholders": {
-      "date": {
-        "type": "DateTime",
-        "format": "MMMd HH:mm:ss",
-        "isCustomDateFormat": "true"
-      }
-    }
-  },
   "transitOrderItemMetaProductCount": "Product Count: {count}",
   "@transitOrderItemMetaProductCount": {
     "placeholders": {

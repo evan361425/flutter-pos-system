@@ -96,3 +96,9 @@ info:
   address: 位置
   signal: 訊號強度
   status: 狀態
+supported:
+  title: 支援的出單機
+  name:
+  - xPrinter: 芯燁 XPrinter
+    epsonPrinter: 愛普生 Epson
+    catPrinter: 迷你口袋打印機

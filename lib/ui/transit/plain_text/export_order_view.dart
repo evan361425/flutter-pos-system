@@ -22,7 +22,7 @@ class ExportOrderHeader extends TransitOrderHeader {
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     await const PlainTextExporter().exportToClipboard(orders
         .map((o) => [
-              S.transitOrderItemTitle(o.createdAt),
+              o.createDateTimeString,
               ExportOrderView.formatOrder(o),
             ].join('\n'))
         .join('\n\n'));
