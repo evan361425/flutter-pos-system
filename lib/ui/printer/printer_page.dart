@@ -235,7 +235,7 @@ VoidCallback _showSupportedPrinters(BuildContext context) {
         builder: (context) => ResponsiveDialog(
           title: Text(S.printerSupportedTitle),
           content: Column(children: [
-            for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter])
+            for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter58])
               ListTile(
                 key: Key('printer.supported.${printer.name}'),
                 title: Text(S.printerSupportedName(printer.name)),

@@ -64,13 +64,13 @@ autoConn:
   helper: 當進入訂單頁時自動連線
 typeSelect:
   title: 選擇出單機類型
-  helper: 選擇與您的出單機相符的類型
-  label: 出單機類型
-type:
-  cat1: CAT 出單機 (1 位元組)
-  cat2: CAT 出單機 (2 位元組)
-  epson: Epson 出單機
-  xPrinter: XPrinter 出單機
+  hint: 無法確認裝置的型號，請手動選擇
+  name:
+  - catPrinter: 迷你口袋打印機
+    catPrinter2: 迷你口袋打印機 2
+    xPrinter58: 芯燁 58 系列
+    xPrinter76: 芯燁 76 系列
+    xPrinter80: 芯燁 80 系列
 meta:
   connected: 已連線
   exist: 已建立，無法新增
@@ -108,6 +108,5 @@ info:
 supported:
   title: 支援的出單機
   name:
-  - xPrinter: 芯燁 XPrinter
-    epsonPrinter: 愛普生 Epson
+  - xPrinter58: 芯燁 XPrinter
     catPrinter: 迷你口袋打印機

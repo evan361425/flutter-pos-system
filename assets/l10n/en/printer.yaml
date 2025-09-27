@@ -73,13 +73,13 @@ autoConn:
   helper: Automatically connect when entering the order page
 typeSelect:
   title: Select Printer Type
-  helper: Choose the type that matches your printer
-  label: Printer Type
-type:
-  cat1: CAT Printer (1 byte)
-  cat2: CAT Printer (2 bytes)
-  epson: Epson Printer
-  xPrinter: XPrinter
+  hint: Unable to confirm the device model, please select manually
+  name:
+  - catPrinter: Portable Mini Printer
+    catPrinter2: Portable Mini Printer 2
+    xPrinter58: XPrinter 58 Series
+    xPrinter76: XPrinter 76 Series
+    xPrinter80: XPrinter 80 Series
 meta:
   connected: Connected
   exist: Existing, cannot add
@@ -117,6 +117,5 @@ info:
 supported:
   title: Supported Printers
   name:
-  - xPrinter: XPrinter
-    epsonPrinter: Epson
+  - xPrinter58: XPrinter
     catPrinter: Portable Mini Printer

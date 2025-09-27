@@ -61,32 +61,24 @@ void main() {
       controller.add([notSupport, existAndConnected, device]);
       await tester.pump();
 
-      // tap not support device - should now show type selection instead of error
+      // tap not support
       await tester.tap(find.text('unknown'));
       await tester.pump(const Duration(milliseconds: 10));
 
-      // Should show type selection UI instead of error
-      expect(find.text(S.printerTypeSelectTitle), findsOneWidget);
-      expect(find.text(S.printerTypeCat1), findsOneWidget);
-      expect(find.text(S.printerTypeEpson), findsOneWidget);
-      
-      // Select a printer type
-      await tester.tap(find.text(S.printerTypeCat1));
-      await tester.pump();
-      
-      // Confirm the selection
-      await tester.tap(find.text(MaterialLocalizations.of(tester.element(find.text(S.printerTypeCat1))).okButtonLabel));
+      expect(find.text(S.printerErrorNotSupportTitle), findsOneWidget);
+
+      // show not found more dialog
+      await tester.tap(find.text(S.printerScanNotFound));
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.tapAt(const Offset(10, 10));
       await tester.pump(const Duration(milliseconds: 10));
 
-      // Should now show the printer configuration form
-      expect(find.text(S.printerNameLabel), findsOneWidget);
-
-      // Test canceling the type selection by going back to scanning
-      await tester.tap(find.text(S.printerScanRetry));
-      await tester.pump();
-      
-      // Should be back to scanning state
-      controller.add([notSupport, existAndConnected, device]);
+      // show not select
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pump(const Duration(milliseconds: 30));
+      await tester.pump(const Duration(milliseconds: 30));
+      await tester.pump(const Duration(milliseconds: 30));
+      expect(find.text(S.printerErrorNotSelect), findsOneWidget);
 
       // scan error
       await controller.close();
@@ -115,82 +107,6 @@ void main() {
               map.keys.length == 4;
         })),
       )).called(1);
-    });
-
-    testWidgets('Create printer with manual type selection', (tester) async {
-      final unknownDevice = MockBluetoothDevice();
-      final controller = StreamController<List<BluetoothDevice>>();
-      when(blue.startScan()).thenAnswer((_) => controller.stream);
-      when(blue.stopScan()).thenAnswer((_) => Future.value());
-      when(storage.set(any, any)).thenAnswer((_) => Future.value());
-
-      when(unknownDevice.name).thenReturn('MyUnknownPrinter');
-      when(unknownDevice.address).thenReturn('unknown:address');
-      when(unknownDevice.connected).thenReturn(false);
-
-      await tester.pumpWidget(buildApp());
-
-      await tester.tap(find.text(S.printerTitleCreate));
-      await tester.pump(const Duration(milliseconds: 10));
-
-      controller.add([unknownDevice]);
-      await tester.pump();
-
-      // Tap the unknown device
-      await tester.tap(find.text('MyUnknownPrinter'));
-      await tester.pump();
-
-      // Should show type selection UI
-      expect(find.text(S.printerTypeSelectTitle), findsOneWidget);
-      expect(find.text(S.printerTypeSelectHelper), findsOneWidget);
-      expect(find.text(S.printerTypeCat1), findsOneWidget);
-      expect(find.text(S.printerTypeCat2), findsOneWidget);
-      expect(find.text(S.printerTypeEpson), findsOneWidget);
-      expect(find.text(S.printerTypeXPrinter), findsOneWidget);
-
-      // Test cancel functionality
-      await tester.tap(find.text(MaterialLocalizations.of(tester.element(find.text(S.printerTypeCat1))).cancelButtonLabel));
-      await tester.pump();
-
-      // Should be back to device list
-      expect(find.text('MyUnknownPrinter'), findsOneWidget);
-
-      // Select the device again and choose a type
-      await tester.tap(find.text('MyUnknownPrinter'));
-      await tester.pump();
-
-      // Select Epson printer type
-      await tester.tap(find.text(S.printerTypeEpson));
-      await tester.pump();
-
-      // Confirm the selection
-      await tester.tap(find.text(MaterialLocalizations.of(tester.element(find.text(S.printerTypeEpson))).okButtonLabel));
-      await tester.pump();
-
-      // Should now show the printer configuration form with Epson as provider
-      expect(find.text(S.printerNameLabel), findsOneWidget);
-      expect(find.text(S.printerAutoConnLabel), findsOneWidget);
-
-      // Save the printer
-      await tester.tap(find.byKey(const Key('modal.save')));
-      await tester.pumpAndSettle();
-
-      // Verify the correct provider (epsonPrinter = index 2) was saved
-      verify(storage.set(
-        any,
-        argThat(predicate((v) {
-          if (!(v is Map<String, Object?> && v.keys.length == 1 && v.keys.first.startsWith('printer.'))) return false;
-
-          final map = v.values.first as Map<String, Object?>;
-          return map['name'] == 'MyUnknownPrinter' &&
-              map['address'] == 'unknown:address' &&
-              map['autoConnect'] == false &&
-              map['provider'] == 2 && // epsonPrinter
-              map.keys.length == 4;
-        })),
-      )).called(1);
-
-      await controller.close();
     });
 
     testWidgets("Edit printer with connection handling", (tester) async {
@@ -335,13 +251,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)), findsOneWidget);
-      expect(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)), findsOneWidget);
+      expect(find.text(S.printerSupportedName(PrinterProvider.xPrinter58.name)), findsOneWidget);
 
       await tester.tap(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)));
       await tester.pumpAndSettle();
       expect(Launcher.lastUrl, equals('https://www.google.com/search?q=Portable Mini Printer'));
 
-      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)));
+      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.xPrinter58.name)));
       await tester.pumpAndSettle();
       expect(Launcher.lastUrl, equals('https://www.xprinter.net/'));
     });

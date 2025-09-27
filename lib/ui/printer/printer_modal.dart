@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
@@ -36,8 +37,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
   // field variable
   bool autoConnect = false;
-  PrinterProvider? selectedProvider;
-  BluetoothDevice? devicePendingTypeSelection;
   final nameController = TextEditingController(text: '');
   final nameFocusNode = FocusNode();
 
@@ -46,11 +45,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
   @override
   List<Widget> buildFormFields() {
-    // Show printer type selection if we have a device pending type selection
-    if (devicePendingTypeSelection != null) {
-      return _buildTypeSelectionFields();
-    }
-
+    // Scan result
     if (printer == null) {
       if (searched.isEmpty) {
         return [
@@ -75,6 +70,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       ];
     }
 
+    // Selected printer
     return [
       if (widget.isNew)
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -107,72 +103,10 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     ];
   }
 
-  List<Widget> _buildTypeSelectionFields() {
-    return [
-      p(Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            S.printerTypeSelectTitle,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: kInternalSpacing),
-          Text(
-            S.printerTypeSelectHelper,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: kInternalLargeSpacing),
-          Text(
-            'Device: ${devicePendingTypeSelection!.name}',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: kInternalLargeSpacing),
-        ],
-      )),
-      for (final provider in PrinterProvider.values)
-        RadioListTile<PrinterProvider>(
-          title: Text(_getProviderDisplayName(provider)),
-          value: provider,
-          groupValue: selectedProvider,
-          onChanged: (value) => setState(() => selectedProvider = value),
-        ),
-      const SizedBox(height: kInternalLargeSpacing),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton(
-            onPressed: _cancelTypeSelection,
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-          const SizedBox(width: kInternalSpacing),
-          ElevatedButton(
-            onPressed: selectedProvider != null ? _confirmTypeSelection : null,
-            child: Text(MaterialLocalizations.of(context).okButtonLabel),
-          ),
-        ],
-      ),
-    ];
-  }
-
-  String _getProviderDisplayName(PrinterProvider provider) {
-    switch (provider) {
-      case PrinterProvider.cat1:
-        return S.printerTypeCat1;
-      case PrinterProvider.cat2:
-        return S.printerTypeCat2;
-      case PrinterProvider.epsonPrinter:
-        return S.printerTypeEpson;
-      case PrinterProvider.xPrinter:
-        return S.printerTypeXPrinter;
-    }
-  }
-
   Widget _buildDeviceTile(BluetoothDevice device) {
     final exist = Printers.instance.hasAddress(device.address);
     return ListTile(
-      title: Text(device.name),
+      title: Text(device.name == '' ? '<unknown>' : device.name),
       subtitle: MetaBlock.withString(context, [
         if (device.connected) S.printerMetaConnected,
         if (exist) S.printerMetaExist,
@@ -211,8 +145,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     printer = widget.printer;
     nameController.text = widget.printer?.name ?? '';
     autoConnect = widget.printer?.autoConnect ?? false;
-    devicePendingTypeSelection = null;
-    selectedProvider = null;
 
     if (widget.isNew) {
       scan();
@@ -233,6 +165,11 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       'printer_modal_scan',
     ).listen((devices) {
       if (mounted) {
+        // if there has any device scanned, demo device will be replaced.
+        if (kDebugMode && devices.isEmpty) {
+          devices.add(BluetoothDevice.demo());
+        }
+
         setState(() {
           searched = devices;
         });
@@ -249,8 +186,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
     setState(() {
       printer = null;
-      devicePendingTypeSelection = null;
-      selectedProvider = null;
     });
   }
 
@@ -268,24 +203,21 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   }
 
   Future<void> selectDevice(BluetoothDevice device) async {
-    final provider = PrinterProvider.tryGuess(device.name);
+    var provider = PrinterProvider.tryGuess(device.name);
     if (provider == null) {
-      // Instead of showing error, trigger manual type selection
-      Log.ger('unknown_printer_trigger_selection', {'device': device.name});
-      setState(() {
-        devicePendingTypeSelection = device;
-        selectedProvider = null;
-      });
-      return;
+      final selected = await _ManualTypeSelection.show(context, device);
+      if (selected == null) {
+        // user cancel
+        return;
+      }
+
+      Log.out('manual select device: ${device.name} provider: ${selected.name}', 'printer_modal_select');
+      provider = selected;
+    } else {
+      Log.out('auto select device: ${device.name} provider: ${provider.name}', 'printer_modal_select');
     }
 
-    // Auto-detected printer type, proceed as before
-    _createPrinterWithProvider(device, provider);
-  }
-
-  void _createPrinterWithProvider(BluetoothDevice device, PrinterProvider provider) {
     // advertise name is the default name
-    Log.ger('select_printer', {'device': device.name, 'provider': provider.name});
     nameController.text = device.name;
     printer = Printer(
       name: device.name,
@@ -295,23 +227,6 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
     scanDone();
     Bluetooth.instance.stopScan();
-  }
-
-  void _cancelTypeSelection() {
-    setState(() {
-      devicePendingTypeSelection = null;
-      selectedProvider = null;
-    });
-  }
-
-  void _confirmTypeSelection() {
-    if (devicePendingTypeSelection != null && selectedProvider != null) {
-      _createPrinterWithProvider(devicePendingTypeSelection!, selectedProvider!);
-      setState(() {
-        devicePendingTypeSelection = null;
-        selectedProvider = null;
-      });
-    }
   }
 
   @override
@@ -346,6 +261,63 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     return PrinterObject(
       name: nameController.text,
       autoConnect: autoConnect,
+    );
+  }
+}
+
+class _ManualTypeSelection extends StatefulWidget {
+  final BluetoothDevice device;
+
+  const _ManualTypeSelection({super.key, required this.device});
+
+  static Future<PrinterProvider?> show(BuildContext context, BluetoothDevice device) async {
+    final key = GlobalKey<_ManualTypeSelectionState>();
+    return showAdaptiveDialog<PrinterProvider>(
+      context: context,
+      builder: (context) => AlertDialog.adaptive(
+        title: Text(S.printerTypeSelectTitle),
+        scrollable: true,
+        content: Column(children: [
+          HintText(S.printerTypeSelectHint),
+          const SizedBox(height: kInternalSpacing),
+          _ManualTypeSelection(key: key, device: device),
+        ]),
+        actions: [
+          PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(key.currentState?.selected),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  State<_ManualTypeSelection> createState() => _ManualTypeSelectionState();
+}
+
+class _ManualTypeSelectionState extends State<_ManualTypeSelection> {
+  PrinterProvider? selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return RadioGroup<PrinterProvider>(
+      groupValue: selected,
+      onChanged: (PrinterProvider? value) {
+        if (value != null) {
+          setState(() {
+            selected = value;
+          });
+        }
+      },
+      child: Column(children: [
+        for (final provider in PrinterProvider.values)
+          RadioListTile(
+            value: provider,
+            title: Text(S.printerTypeSelectName(provider.name)),
+          ),
+      ]),
     );
   }
 }

@@ -70,7 +70,7 @@ class _PrinterViewState extends State<PrinterView> {
       child: _wrapWithInkWell(Column(
         children: [
           ListTile(
-            title: Text(widget.printer.name),
+            title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
             leading: const Icon(Icons.bluetooth_connected),
             subtitle: Text(S.printerStatusSuccess),
             trailing: widget.trailing,
@@ -120,7 +120,7 @@ class _PrinterViewState extends State<PrinterView> {
       child: _wrapWithInkWell(Column(
         children: [
           ListTile(
-            title: Text(widget.printer.name),
+            title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
             leading: const Icon(Icons.bluetooth_disabled),
             subtitle: HintText(S.printerStatusStandby),
             trailing: widget.trailing,
