@@ -58,7 +58,7 @@ void main() {
 
       expect(find.text(S.printerScanIng), findsOneWidget);
 
-      controller.add([notSupport, existAndConnected, device]);
+      controller.add([]);
       await tester.pump();
 
       // show not select
@@ -68,13 +68,21 @@ void main() {
       await tester.pump(const Duration(milliseconds: 30));
       expect(find.text(S.printerErrorNotSelect), findsOneWidget);
 
+      // not found dialog
+
+      // show not found more dialog
+      await tester.tap(find.text(S.printerScanNotFound));
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pump(const Duration(milliseconds: 10));
+
       // tap not support device
-      await tester.tap(find.text('unknown'));
+      await tester.tap(find.text('<unknown>'));
       await tester.pump(const Duration(milliseconds: 10));
       await tester.tap(find.text('Cancel'));
       await tester.pump();
 
-      await tester.tap(find.text('unknown'));
+      await tester.tap(find.text('<unknown>'));
       await tester.pump(const Duration(milliseconds: 10));
       await tester.tap(find.text(S.printerTypeSelectName(PrinterProvider.catPrinter.name)));
       await tester.pump();
@@ -87,6 +95,8 @@ void main() {
       when(blue.startScan()).thenAnswer((_) => controller.stream);
 
       await tester.tap(find.text(S.printerScanRetry));
+      await tester.pump();
+      await controller.close();
       await tester.pump();
       await tester.tap(find.text('MX11'));
       await tester.pumpAndSettle();

@@ -63,6 +63,7 @@ void main() {
       expect(Cashier.instance.at(0).count, 15);
       expect(Cashier.instance.at(1).count, 4);
       expect(Cashier.instance.favoriteItems.first.hashCode, 0);
+      expect('${Cashier.instance.favoriteItems.first.item.source}', 'CashierChangeEntryObject(unit: 5, count: 1)');
     });
 
     testWidgets('should not show surplus if not initialized', (tester) async {
