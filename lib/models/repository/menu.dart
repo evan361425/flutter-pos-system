@@ -3,6 +3,7 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
+import 'package:possystem/models/menu/search_product_match.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository.dart';
@@ -128,6 +129,27 @@ class Menu extends ChangeNotifier with Repository<Catalog>, RepositoryStorage<Ca
   Iterable<Product> searchProducts({int limit = 10, String? text}) {
     final products = text == null || text.isEmpty ? _getSortedSearchedHistory() : _getSortedSimilarities(text);
     return products.take(limit);
+  }
+
+  /// Search products with match details for highlighting
+  ///
+  /// If text not provided, it will get latest searched products and sorted products
+  ///
+  /// [limit] will fire list.take.
+  Iterable<SearchProductMatch> searchProductsWithMatches({int limit = 10, String? text}) {
+    if (text == null || text.isEmpty) {
+      return _getSortedSearchedHistory().take(limit).map((product) => 
+          SearchProductMatch(
+            product: product,
+            searchPattern: '',
+            productNameMatches: false,
+            catalogNameMatches: false,
+            ingredientMatches: [],
+          ));
+    }
+
+    final products = _getSortedSimilarities(text).take(limit);
+    return products.map((product) => SearchProductMatch.analyze(product, text));
   }
 
   Iterable<MapEntry<Product, double>> _getProductSimilarities(String pattern) sync* {

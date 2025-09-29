@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/hint_text.dart';
+import 'package:possystem/components/style/highlight_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
+import 'package:possystem/models/menu/search_product_match.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -231,27 +234,72 @@ class _SearchAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SearchBarWrapper(
+    return SearchBarWrapper<SearchProductMatch>(
       key: const Key('menu.search'),
       hintText: S.menuSearchHint,
       text: withTextFiled ? '' : null,
-      initData: Menu.instance.searchProducts(),
-      search: (text) async => Menu.instance.searchProducts(text: text),
+      initData: Menu.instance.searchProductsWithMatches(),
+      search: (text) async => Menu.instance.searchProductsWithMatches(text: text),
       itemBuilder: _searchItemBuilder,
       emptyBuilder: _searchEmptyBuilder,
     );
   }
 
-  Widget _searchItemBuilder(BuildContext context, Product item) {
+  Widget _searchItemBuilder(BuildContext context, SearchProductMatch match) {
+    final product = match.product;
+    final searchPattern = match.searchPattern;
+    
     return ListTile(
-      key: Key('search.${item.id}'),
-      title: Text(item.name),
+      key: Key('search.${product.id}'),
+      title: HighlightText(
+        text: product.name,
+        pattern: searchPattern,
+      ),
+      subtitle: match.hasDetailedMatches ? _buildMatchDetails(match) : null,
       onTap: () {
-        item.searched();
+        product.searched();
         context.pushNamed(Routes.menuProduct, pathParameters: {
-          'id': item.id,
+          'id': product.id,
         });
       },
+    );
+  }
+
+  Widget _buildMatchDetails(SearchProductMatch match) {
+    final matchTexts = <String>[];
+    
+    // Add catalog name if it matches
+    if (match.catalogNameMatches) {
+      matchTexts.add('Catalog: ${match.product.catalog.name}');
+    }
+    
+    // Add ingredient matches
+    for (final ingredientMatch in match.ingredientMatches) {
+      if (ingredientMatch.nameMatches) {
+        matchTexts.add('Ingredient: ${ingredientMatch.ingredient.name}');
+      }
+      
+      for (final quantityMatch in ingredientMatch.quantityMatches) {
+        matchTexts.add('${ingredientMatch.ingredient.name} (${quantityMatch.quantity.name})');
+      }
+    }
+    
+    if (matchTexts.isEmpty) return null;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        HintText('Matches:'),
+        const SizedBox(height: 2),
+        ...matchTexts.map((text) => Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: HighlightText(
+            text: '• $text',
+            pattern: match.searchPattern,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        )).toList(),
+      ],
     );
   }
 
