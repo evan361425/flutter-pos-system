@@ -13,7 +13,6 @@ import 'settings/settings_provider.dart';
 import 'settings/theme_setting.dart';
 import 'translator.dart';
 
-// ignore: use_key_in_widget_constructors
 class App extends StatelessWidget {
   static final routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -23,6 +22,9 @@ class App extends StatelessWidget {
 
   // singleton be avoid recreate after hot reload.
   static RouterConfig<Object>? router;
+
+  // coverage:ignore-line
+  const App({super.key});
 
   // This widget is the root of your application.
   @override

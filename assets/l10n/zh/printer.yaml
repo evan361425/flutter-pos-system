@@ -63,8 +63,9 @@ autoConn:
   label: 自動連線
   helper: 當進入訂單頁時自動連線
 typeSelect:
-  title: 選擇出單機類型
-  hint: 無法確認裝置的型號，請手動選擇
+  title: 選擇出單機型號
+  hint: 目前正在研發 Epson 出單機的支援，敬請期待！
+  label: 出單機型號
   name:
   - catPrinter: 迷你口袋打印機
     catPrinter2: 迷你口袋打印機 2

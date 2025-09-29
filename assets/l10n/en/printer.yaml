@@ -72,8 +72,9 @@ autoConn:
   label: Auto-Connect
   helper: Automatically connect when entering the order page
 typeSelect:
-  title: Select Printer Type
-  hint: Unable to confirm the device model, please select manually
+  title: Select Printer Model
+  hint: Epson printer support is in development, stay tuned!
+  label: Printer Model
   name:
   - catPrinter: Portable Mini Printer
     catPrinter2: Portable Mini Printer 2
