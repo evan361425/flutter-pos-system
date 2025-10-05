@@ -104,19 +104,21 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
 
   Widget _buildTab(_TabType tab) {
     return switch (tab) {
-      _TabType.day || _TabType.week || _TabType.month => RadioGroup(
-          groupValue: select,
-          onChanged: (value) => setState(() => select = value!),
-          child: ListView(
-            children: [
-              for (final e in ranges[tab]!.entries)
-                RadioListTile(
-                  title: Text(e.key),
-                  subtitle: Text(e.value.format(S.localeName)),
-                  value: e.value,
-                ),
-            ],
-          ),
+      _TabType.day || _TabType.week || _TabType.month => ListView(
+          children: [
+            for (final e in ranges[tab]!.entries)
+              RadioListTile(
+                title: Text(e.key),
+                // TODO: change to RadioGroup when it is stable, see
+                // https://github.com/flutter/flutter/issues/175258
+                // ignore: deprecated_member_use
+                groupValue: select,
+                // ignore: deprecated_member_use
+                onChanged: (value) => setState(() => select = value!),
+                subtitle: Text(e.value.format(S.localeName)),
+                value: e.value,
+              ),
+          ],
         ),
       _TabType.custom => ListView(children: [
           ListTile(

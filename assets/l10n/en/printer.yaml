@@ -71,6 +71,17 @@ name:
 autoConn:
   label: Auto-Connect
   helper: Automatically connect when entering the order page
+typeSelect:
+  title: Select Printer Model
+  hint: Below are the currently supported printer models.
+  footer: Epson printer is in development. If you need other models, please [contact us](mailto:evanlu361425@gmail.com).
+  label: Printer Model
+  name:
+  - catPrinter: Portable Mini Printer
+    catPrinter2: Portable Mini Printer 2
+    xPrinter58: XPrinter 58 Series
+    xPrinter76: XPrinter 76 Series
+    xPrinter80: XPrinter 80 Series
 meta:
   connected: Connected
   exist: Existing, cannot add
@@ -108,6 +119,5 @@ info:
 supported:
   title: Supported Printers
   name:
-  - xPrinter: XPrinter
-    epsonPrinter: Epson
+  - xPrinter58: XPrinter
     catPrinter: Portable Mini Printer

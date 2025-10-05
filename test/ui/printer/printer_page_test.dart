@@ -35,7 +35,7 @@ void main() {
       final notSupport = MockBluetoothDevice();
       final existAndConnected = MockBluetoothDevice();
       final device = MockBluetoothDevice();
-      final controller = StreamController<List<BluetoothDevice>>();
+      var controller = StreamController<List<BluetoothDevice>>();
       when(blue.startScan()).thenAnswer((_) => controller.stream);
       when(blue.stopScan()).thenAnswer((_) => Future.value());
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
@@ -58,20 +58,8 @@ void main() {
 
       expect(find.text(S.printerScanIng), findsOneWidget);
 
-      controller.add([notSupport, existAndConnected, device]);
+      controller.add([]);
       await tester.pump();
-
-      // tap not support
-      await tester.tap(find.text('unknown'));
-      await tester.pump(const Duration(milliseconds: 10));
-
-      expect(find.text(S.printerErrorNotSupportTitle), findsOneWidget);
-
-      // show not found more dialog
-      await tester.tap(find.text(S.printerScanNotFound));
-      await tester.pump(const Duration(milliseconds: 10));
-      await tester.tapAt(const Offset(10, 10));
-      await tester.pump(const Duration(milliseconds: 10));
 
       // show not select
       await tester.tap(find.byKey(const Key('modal.save')));
@@ -80,12 +68,43 @@ void main() {
       await tester.pump(const Duration(milliseconds: 30));
       expect(find.text(S.printerErrorNotSelect), findsOneWidget);
 
-      // scan error
-      await controller.close();
+      // show not found more dialog
+      await tester.tap(find.text(S.printerScanNotFound));
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pump(const Duration(milliseconds: 10));
+
+      // tap not support device
+      await tester.tap(find.text('<unknown>'));
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.tap(find.text('Cancel'));
       await tester.pump();
 
-      // tap device
+      await tester.tap(find.text('<unknown>'));
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.tap(find.text(S.printerTypeSelectName(PrinterProvider.catPrinter.name)));
+      await tester.pump();
+      await tester.tap(find.text('OK'));
+      await tester.pump();
+
+      // Continue with the rest of the test - scanning and selecting known devices
+      controller = StreamController<List<BluetoothDevice>>();
+      controller.add([notSupport, existAndConnected, device]);
+      when(blue.startScan()).thenAnswer((_) => controller.stream);
+
+      await tester.tap(find.text(S.printerScanRetry));
+      await tester.pump();
+      await controller.close();
+      await tester.pump();
       await tester.tap(find.text('MX11'));
+      await tester.pumpAndSettle();
+
+      // change provider
+      await tester.tap(find.text(S.printerTypeSelectLabel));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerTypeSelectName(PrinterProvider.xPrinter58.name)));
+      await tester.pump();
+      await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(S.printerAutoConnLabel));
@@ -103,7 +122,7 @@ void main() {
           return map['name'] == 'MX11' &&
               map['address'] == 'address3' &&
               map['autoConnect'] == true &&
-              map['provider'] == 1 &&
+              map['provider'] == 2 && // XPrinter 58
               map.keys.length == 4;
         })),
       )).called(1);
@@ -251,13 +270,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)), findsOneWidget);
-      expect(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)), findsOneWidget);
+      expect(find.text(S.printerSupportedName(PrinterProvider.xPrinter58.name)), findsOneWidget);
 
       await tester.tap(find.text(S.printerSupportedName(PrinterProvider.catPrinter.name)));
       await tester.pumpAndSettle();
       expect(Launcher.lastUrl, equals('https://www.google.com/search?q=Portable Mini Printer'));
 
-      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.xPrinter.name)));
+      await tester.tap(find.text(S.printerSupportedName(PrinterProvider.xPrinter58.name)));
       await tester.pumpAndSettle();
       expect(Launcher.lastUrl, equals('https://www.xprinter.net/'));
     });

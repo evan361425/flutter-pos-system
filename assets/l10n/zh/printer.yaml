@@ -62,6 +62,17 @@ name:
 autoConn:
   label: 自動連線
   helper: 當進入訂單頁時自動連線
+typeSelect:
+  title: 選擇出單機型號
+  hint: 目前僅支援以下型號的出單機。
+  footer: 目前正在研發 Epson 出單機的支援，若需要其他機型請聯絡[我們](mailto:evanlu361425@gmail.com)。
+  label: 出單機型號
+  name:
+  - catPrinter: 迷你口袋打印機
+    catPrinter2: 迷你口袋打印機 2
+    xPrinter58: 芯燁 58 系列
+    xPrinter76: 芯燁 76 系列
+    xPrinter80: 芯燁 80 系列
 meta:
   connected: 已連線
   exist: 已建立，無法新增
@@ -99,6 +110,5 @@ info:
 supported:
   title: 支援的出單機
   name:
-  - xPrinter: 芯燁 XPrinter
-    epsonPrinter: 愛普生 Epson
+  - xPrinter58: 芯燁 XPrinter
     catPrinter: 迷你口袋打印機
