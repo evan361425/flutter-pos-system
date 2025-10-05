@@ -68,7 +68,7 @@ void main() {
           await tester.pumpAndSettle();
 
           final pattern = RegExp('menu_image/g[0-9]{8}T[0-9]{12}');
-          expect(pattern.hasMatch(imagePath!), isTrue);
+          expect(pattern.hasMatch(imagePath!), isTrue, reason: '$imagePath not match $pattern');
           expect(XFile('$imagePath-avator').file.existsSync(), isTrue);
         });
 
