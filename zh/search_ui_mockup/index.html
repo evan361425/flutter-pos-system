@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://evan361425.github.io/flutter-pos-system/zh/CONTRIBUTING/">
+        <link rel="canonical" href="https://evan361425.github.io/flutter-pos-system/zh/search_ui_mockup/">
       
       
       
@@ -20,7 +20,7 @@
     
     
       
-        <title>CONTRIBUTING - POS 系統 - 點餐結帳</title>
+        <title>Search UI Mockup - POS 系統 - 點餐結帳</title>
       
     
     
@@ -81,6 +81,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#search-ui-mockup" class="md-skip">
+          跳转至
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -112,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CONTRIBUTING
+              Search UI Mockup
             
           </span>
         </div>
@@ -159,7 +164,7 @@
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="../../CONTRIBUTING/" hreflang="en" class="md-select__link">
+            <a href="../../search_ui_mockup/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
@@ -703,6 +708,52 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#before-current-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before (Current Implementation)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#after-with-highlighting" class="md-nav__link">
+    <span class="md-ellipsis">
+      After (With Highlighting)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complex-search-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Search Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-ui-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key UI Improvements
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -721,9 +772,71 @@
   
 
 
-  <h1>CONTRIBUTING</h1>
+<h1 id="search-ui-mockup">Search UI Mockup<a class="headerlink" href="#search-ui-mockup" title="Permanent link">&para;</a></h1>
+<p>This document shows how the enhanced search interface will appear to users.</p>
+<h2 id="before-current-implementation">Before (Current Implementation)<a class="headerlink" href="#before-current-implementation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────┐
+│ 🔍 Search products...                   │
+└─────────────────────────────────────────┘
 
-<p>Detailed in <a href="https://evan361425.github.io/flutter-pos-system/docs/contribute">here</a>.</p>
+Search results for &quot;tomato&quot;:
+┌─────────────────────────────────────────┐
+│ 🍕 Pizza Margherita                     │
+│                                         │
+│ 🍝 Pasta Arrabbiata                     │
+│                                         │
+│ 🥗 Tomato Salad                         │
+└─────────────────────────────────────────┘
+</code></pre></div>
+<h2 id="after-with-highlighting">After (With Highlighting)<a class="headerlink" href="#after-with-highlighting" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────┐
+│ 🔍 Search products...                   │
+└─────────────────────────────────────────┘
+
+Search results for &quot;tomato&quot;:
+┌─────────────────────────────────────────┐
+│ 🍕 Pizza Margherita                     │
+│    Matches:                             │
+│    • Ingredient: [Tomato] Sauce         │
+│                                         │
+│ 🍝 Pasta Arrabbiata                     │
+│    Matches:                             │
+│    • Ingredient: [Tomato] Base          │
+│                                         │
+│ 🥗 [Tomato] Salad                       │
+└─────────────────────────────────────────┘
+</code></pre></div>
+<h2 id="complex-search-example">Complex Search Example<a class="headerlink" href="#complex-search-example" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>Search results for &quot;italian cheese&quot;:
+┌─────────────────────────────────────────┐
+│ 🍕 Margherita Pizza                     │
+│    Matches:                             │
+│    • Catalog: [Italian] Food            │
+│    • Ingredient: Mozzarella [Cheese]    │
+│                                         │
+│ 🧀 [Cheese] Platter                     │
+│    Matches:                             │
+│    • Catalog: [Italian] Appetizers      │
+│                                         │
+│ 🍝 [Cheese] Ravioli                     │
+│    Matches:                             │
+│    • Catalog: [Italian] Pasta           │
+│    • Ricotta [Cheese] (Extra Large)     │
+└─────────────────────────────────────────┘
+</code></pre></div>
+<p>Legend:
+- <code>[text]</code> = Highlighted/bold text (yellow background in actual app)
+- <code>🍕🍝🥗🧀</code> = Product type icons
+- <code>Matches:</code> = Subtitle showing what matched the search
+- <code>• Item</code> = Bulleted list of matching components</p>
+<h2 id="key-ui-improvements">Key UI Improvements<a class="headerlink" href="#key-ui-improvements" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Highlighted Text</strong>: Search terms are visually emphasized with background color</li>
+<li><strong>Match Details</strong>: Subtitle shows exactly what parts matched</li>
+<li><strong>Context Information</strong>: Users understand why each result appeared</li>
+<li><strong>Categorized Matches</strong>: Clear distinction between catalog, ingredient, and quantity matches</li>
+<li><strong>Preserved Layout</strong>: Familiar list structure with enhanced information</li>
+</ol>
 
 
 
@@ -744,7 +857,7 @@
     <span class="md-icon" title="最后更新">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    2024-12-28
+    2025-10-05
   </span>
 
     
