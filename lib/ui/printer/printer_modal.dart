@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -113,7 +114,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   Widget _buildDeviceTile(BluetoothDevice device) {
     final exist = Printers.instance.hasAddress(device.address);
     return ListTile(
-      title: Text(device.name == '' ? '<unknown>' : device.name),
+      title: device.name == '' ? const HintText('<unknown>') : Text(device.name),
       subtitle: MetaBlock.withString(context, [
         if (device.connected) S.printerMetaConnected,
         if (exist) S.printerMetaExist,
@@ -230,10 +231,10 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   }
 
   Future<void> changeProvider() async {
-    final provider = await _ManualTypeSelection.show(context);
+    final provider = await _ManualTypeSelection.show(context, initial: printer?.provider);
 
     if (mounted && provider != null && printer != null && provider != printer!.provider) {
-      Log.ger('printer_modal_change_type', {'from': printer!.provider.name, 'to': provider.name});
+      Log.ger('printer_modal_change_type', {'from': printer?.provider.name, 'to': provider.name});
 
       setState(() {
         printer = Printer(
@@ -283,9 +284,11 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 }
 
 class _ManualTypeSelection extends StatefulWidget {
-  const _ManualTypeSelection({super.key});
+  final PrinterProvider? initial;
 
-  static Future<PrinterProvider?> show(BuildContext context) async {
+  const _ManualTypeSelection({super.key, this.initial});
+
+  static Future<PrinterProvider?> show(BuildContext context, {PrinterProvider? initial}) async {
     final key = GlobalKey<_ManualTypeSelectionState>();
     return showAdaptiveDialog<PrinterProvider>(
       context: context,
@@ -295,7 +298,9 @@ class _ManualTypeSelection extends StatefulWidget {
         content: Column(children: [
           HintText(S.printerTypeSelectHint),
           const SizedBox(height: kInternalSpacing),
-          _ManualTypeSelection(key: key),
+          _ManualTypeSelection(key: key, initial: initial),
+          const SizedBox(height: kInternalSpacing),
+          Linkify.fromString(S.printerTypeSelectFooter),
         ]),
         actions: [
           PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
@@ -334,5 +339,11 @@ class _ManualTypeSelectionState extends State<_ManualTypeSelection> {
           ),
       ]),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selected = widget.initial;
   }
 }

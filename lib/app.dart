@@ -23,8 +23,7 @@ class App extends StatelessWidget {
   // singleton be avoid recreate after hot reload.
   static RouterConfig<Object>? router;
 
-  // coverage:ignore-line
-  const App({super.key});
+  const App({super.key}); // coverage:ignore-line
 
   // This widget is the root of your application.
   @override
