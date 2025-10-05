@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/search_bar_wrapper.dart';
 import 'package:possystem/components/style/empty_body.dart';
+import 'package:possystem/components/style/highlight_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
@@ -231,7 +232,7 @@ class _SearchAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SearchBarWrapper(
+    return SearchBarWrapper<ProductMatch>(
       key: const Key('menu.search'),
       hintText: S.menuSearchHint,
       text: withTextFiled ? '' : null,
@@ -242,14 +243,22 @@ class _SearchAction extends StatelessWidget {
     );
   }
 
-  Widget _searchItemBuilder(BuildContext context, Product item) {
+  Widget _searchItemBuilder(BuildContext context, String pattern, ProductMatch match) {
+    final details = match.detailedName;
     return ListTile(
-      key: Key('search.${item.id}'),
-      title: Text(item.name),
+      key: Key('search.${match.product.id}'),
+      title: details == null ? HighlightText(text: match.product.name, pattern: pattern) : Text(match.product.name),
+      subtitle: details != null
+          ? HighlightText(
+              text: details,
+              pattern: pattern,
+              prefix: S.menuSearchPrefix(match.detailedType!),
+            )
+          : null,
       onTap: () {
-        item.searched();
+        match.product.searched();
         context.pushNamed(Routes.menuProduct, pathParameters: {
-          'id': item.id,
+          'id': match.product.id,
         });
       },
     );

@@ -211,7 +211,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
     );
   }
 
-  Widget _searchItemBuilder(BuildContext context, Quantity quantity) {
+  Widget _searchItemBuilder(BuildContext context, String pattern, Quantity quantity) {
     return ListTile(
       title: Text(quantity.name),
       trailing: NavToButton(

@@ -35,3 +35,5 @@ providing well structured code and clear comments.
   - Use map in first element if using select mode, like: `key:\n  - key1: "value1"\n    key2: "value2"\n  - "description"` will generate ARB file as `{value, select, key1{value} key2{value} other{UNKNOWN}}`.
 3. Maintain existing code structure and organization.
 4. Write widget tests to fully cover new features and bug fixes.
+5. Tests should be wrapping into one `testWidgets` function if they are in the same page and can be done in one flow.
+   This helps to reduce the time of test execution.

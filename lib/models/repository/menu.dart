@@ -125,15 +125,17 @@ class Menu extends ChangeNotifier with Repository<Catalog>, RepositoryStorage<Ca
   /// If text not provided, it will get latest searched products and sorted products
   ///
   /// [limit] will fire list.take.
-  Iterable<Product> searchProducts({int limit = 10, String? text}) {
-    final products = text == null || text.isEmpty ? _getSortedSearchedHistory() : _getSortedSimilarities(text);
+  Iterable<ProductMatch> searchProducts({int limit = 10, String? text}) {
+    final products = text == null || text.isEmpty
+        ? _getSortedSearchedHistory().map((e) => ProductMatch(product: e))
+        : _getSortedSimilarities(text);
     return products.take(limit);
   }
 
-  Iterable<MapEntry<Product, double>> _getProductSimilarities(String pattern) sync* {
+  Iterable<ProductMatch> _getProductSimilarities(String pattern) sync* {
     for (final catalog in items) {
-      for (final entry in catalog.getItemsSimilarity(pattern)) {
-        yield entry;
+      for (final item in catalog.getItemsSimilarity(pattern)) {
+        yield item;
       }
     }
   }
@@ -151,11 +153,9 @@ class Menu extends ChangeNotifier with Repository<Catalog>, RepositoryStorage<Ca
   }
 
   /// Get desc similarity value of products
-  Iterable<Product> _getSortedSimilarities(String pattern) {
-    final sorted = _getProductSimilarities(pattern).where((entry) => entry.value > 0).toList()
-      ..sort((ent1, ent2) => ent2.value.compareTo(ent1.value));
-
-    return sorted.map<Product>((e) => e.key);
+  Iterable<ProductMatch> _getSortedSimilarities(String pattern) {
+    return _getProductSimilarities(pattern).where((item) => item.score > 0).toList()
+      ..sort((item1, item2) => item2.score.compareTo(item1.score));
   }
 
   Future<void> _removeBatch(List<Model> items) async {

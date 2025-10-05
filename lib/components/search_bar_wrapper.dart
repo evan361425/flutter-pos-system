@@ -17,9 +17,9 @@ class SearchBarWrapper<T> extends StatefulWidget {
 
   final Iterable<T> initData;
 
-  final Widget Function(BuildContext, T) itemBuilder;
+  final Widget Function(BuildContext context, String pattern, T item) itemBuilder;
 
-  final Widget Function(BuildContext, String) emptyBuilder;
+  final Widget Function(BuildContext context, String pattern) emptyBuilder;
 
   const SearchBarWrapper({
     super.key,
@@ -125,6 +125,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
         itemCount: items.length,
         itemBuilder: (context, index) => widget.itemBuilder(
           context,
+          searchController.text,
           items.elementAt(index),
         ),
       ),

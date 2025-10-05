@@ -7,6 +7,9 @@ tutorial:
   createExample: Help create an example menu to test.
 search:
   hint: Search for products, ingredients, quantities
+  prefix:
+  - ingredient: 'Ingredient: '
+    quantity: 'Quantity: '
   notFound: Couldn't find relevant information. Did you misspell something?
 example:
   catalog:

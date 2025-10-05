@@ -164,7 +164,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
     );
   }
 
-  Widget _searchItemBuilder(BuildContext context, Ingredient ingredient) {
+  Widget _searchItemBuilder(BuildContext context, String pattern, Ingredient ingredient) {
     return ListTile(
       key: Key('product_ingredient.search.${ingredient.id}'),
       title: Text(ingredient.name),
