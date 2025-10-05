@@ -1200,6 +1200,7 @@
   "menuTutorialContent": "首先我們來開始建立一份菜單吧！",
   "menuTutorialCreateExample": "幫助建立一份範例菜單以供測試。",
   "menuSearchHint": "搜尋產品、成分、份量",
+  "menuSearchPrefix": "{name, select, ingredient{成分：} quantity{份量：} other{UNKNOWN}}",
   "menuSearchNotFound": "搜尋不到相關資訊，打錯字了嗎？",
   "menuExampleCatalogBurger": "漢堡",
   "menuExampleCatalogDrink": "飲品",

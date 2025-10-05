@@ -74,13 +74,9 @@ class Catalog extends Model<CatalogObject>
   /// Get similarity from product
   ///
   /// Use product's score, if possible, instead of ingredient/quantity's score
-  Iterable<MapEntry<Product, double>> getItemsSimilarity(String pattern) sync* {
+  Iterable<ProductMatch> getItemsSimilarity(String pattern) sync* {
     for (final product in items) {
-      final score = product.getSimilarity(pattern);
-      yield MapEntry(
-        product,
-        score > 0 ? score * 1.5 : product.getItemsSimilarity(pattern).toDouble(),
-      );
+      yield product.getItemsSimilarity(pattern);
     }
   }
 

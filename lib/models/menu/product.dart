@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/services/storage.dart';
 
 import '../model.dart';
@@ -119,15 +118,19 @@ class Product extends Model<ProductObject>
     throw UnimplementedError();
   }
 
-  int getItemsSimilarity(String pattern) {
-    var maxScore = 0;
+  ProductMatch getItemsSimilarity(String pattern) {
+    final match = ProductMatch(product: this, score: getSimilarity(pattern) * 1.5);
+    if (match.score > 0) {
+      return match;
+    }
+
     for (final ingredient in items) {
-      maxScore = max(ingredient.getSimilarity(pattern), maxScore);
+      match.mayIngredient(ingredient, ingredient.getSimilarity(pattern).toDouble());
       for (final quantity in ingredient.items) {
-        maxScore = max(quantity.getSimilarity(pattern), maxScore);
+        match.mayQuantity(quantity, quantity.getSimilarity(pattern).toDouble());
       }
     }
-    return maxScore;
+    return match;
   }
 
   bool hasIngredient(String id) {
@@ -155,4 +158,37 @@ class Product extends Model<ProductObject>
         imagePath: imagePath,
         ingredients: items.map((e) => e.toObject()).toList(),
       );
+}
+
+class ProductMatch {
+  Product product;
+  ProductIngredient? ingredientMatched;
+  ProductQuantity? quantityMatched;
+  double score;
+
+  ProductMatch({
+    required this.product,
+    this.ingredientMatched,
+    this.quantityMatched,
+    this.score = 0,
+  });
+
+  String? get detailedName => ingredientMatched?.name ?? quantityMatched?.name;
+  String? get detailedType => ingredientMatched != null ? 'ingredient' : (quantityMatched != null ? 'quantity' : null);
+
+  void mayIngredient(ProductIngredient ingredient, double score) {
+    if (score > this.score) {
+      ingredientMatched = ingredient;
+      quantityMatched = null;
+      this.score = score;
+    }
+  }
+
+  void mayQuantity(ProductQuantity quantity, double score) {
+    if (score > this.score) {
+      ingredientMatched = null;
+      quantityMatched = quantity;
+      this.score = score;
+    }
+  }
 }

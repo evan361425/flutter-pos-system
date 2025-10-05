@@ -7,6 +7,9 @@ tutorial:
   createExample: 幫助建立一份範例菜單以供測試。
 search:
   hint: 搜尋產品、成分、份量
+  prefix:
+  - ingredient: '成分：'
+    quantity: '份量：'
   notFound: 搜尋不到相關資訊，打錯字了嗎？
 example:
   catalog:

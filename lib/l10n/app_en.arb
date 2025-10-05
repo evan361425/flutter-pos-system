@@ -1200,6 +1200,7 @@
   "menuTutorialContent": "Let's start by creating a menu!",
   "menuTutorialCreateExample": "Help create an example menu to test.",
   "menuSearchHint": "Search for products, ingredients, quantities",
+  "menuSearchPrefix": "{name, select, ingredient{Ingredient: } quantity{Quantity: } other{UNKNOWN}}",
   "menuSearchNotFound": "Couldn't find relevant information. Did you misspell something?",
   "menuExampleCatalogBurger": "Burgers",
   "menuExampleCatalogDrink": "Drinks",

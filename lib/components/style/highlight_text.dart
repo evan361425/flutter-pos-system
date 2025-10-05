@@ -1,72 +1,49 @@
 import 'package:flutter/material.dart';
 
 /// A widget that highlights matching text patterns within a string.
-/// 
+///
 /// This is useful for search results where you want to visually emphasize
 /// the parts of the text that match the search query.
 class HighlightText extends StatelessWidget {
   final String text;
   final String pattern;
-  final TextStyle? style;
-  final TextStyle? highlightStyle;
-  final TextAlign? textAlign;
-  final int? maxLines;
-  final TextOverflow? overflow;
+  final String? prefix;
 
   const HighlightText({
     super.key,
     required this.text,
     required this.pattern,
-    this.style,
-    this.highlightStyle,
-    this.textAlign,
-    this.maxLines,
-    this.overflow,
+    this.prefix,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (pattern.isEmpty) {
-      return Text(
-        text,
-        style: style,
-        textAlign: textAlign,
-        maxLines: maxLines,
-        overflow: overflow,
-      );
-    }
-
     final theme = Theme.of(context);
-    final defaultStyle = style ?? theme.textTheme.bodyMedium;
-    final defaultHighlightStyle = highlightStyle ?? 
-        defaultStyle?.copyWith(
-          backgroundColor: theme.highlightColor,
-          fontWeight: FontWeight.bold,
-        );
-
-    final spans = _buildHighlightedSpans(text, pattern, defaultStyle, defaultHighlightStyle);
-
-    return Text.rich(
-      TextSpan(children: spans),
-      textAlign: textAlign,
-      maxLines: maxLines,
-      overflow: overflow,
+    final normalStyle = theme.textTheme.bodyMedium;
+    final highlightStyle = normalStyle?.copyWith(
+      backgroundColor: theme.highlightColor,
+      fontWeight: FontWeight.bold,
     );
+
+    final spans = _buildHighlightedSpans(normalStyle, highlightStyle);
+
+    return Text.rich(TextSpan(children: spans));
   }
 
   /// Builds a list of TextSpan objects with highlighted matches
   List<TextSpan> _buildHighlightedSpans(
-    String text, 
-    String pattern, 
-    TextStyle? normalStyle, 
+    TextStyle? normalStyle,
     TextStyle? highlightStyle,
   ) {
-    final spans = <TextSpan>[];
+    final spans = <TextSpan>[
+      if (prefix != null)
+        TextSpan(
+          text: prefix,
+          style: normalStyle?.copyWith(fontWeight: FontWeight.bold),
+        ),
+    ];
     final textLower = text.toLowerCase();
-    final patternWords = pattern.toLowerCase().split(' ')
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toList();
+    final patternWords = pattern.toLowerCase().split(' ').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
 
     if (patternWords.isEmpty) {
       spans.add(TextSpan(text: text, style: normalStyle));
@@ -80,7 +57,7 @@ class HighlightText extends StatelessWidget {
       while (true) {
         final index = textLower.indexOf(word, startIndex);
         if (index == -1) break;
-        
+
         allMatches.add(_Match(index, index + word.length));
         startIndex = index + 1;
       }
