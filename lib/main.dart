@@ -10,6 +10,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/device.dart';
+import 'package:possystem/services/network.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
@@ -69,6 +71,9 @@ void main() async {
       await Cashier().reset();
       await Analysis().initialize();
       await Printers().initialize();
+      await Devices().initialize();
+      // Start network discovery server for device connections
+      await NetworkService.instance.startDiscoveryServer();
       // Last for setup ingredient and quantity
       await Menu().initialize();
 
@@ -86,6 +91,7 @@ void main() async {
           ChangeNotifierProvider.value(value: Cashier.instance),
           ChangeNotifierProvider.value(value: Cart.instance),
           ChangeNotifierProvider.value(value: Printers.instance),
+          ChangeNotifierProvider.value(value: Devices.instance),
         ],
         child: const App(),
       ));
