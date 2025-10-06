@@ -32,7 +32,7 @@ Design Principles:
 ## Download
 
 - **Android**: Download from [Google Play](https://play.google.com/store/apps/details?id=com.evanlu.possystem).
-- **iOS**: Coming soon.
+- **iOS**: iOS support is now available! See [iOS Setup Guide](docs/iOS-Setup.md) for build and deployment instructions.
 
 ## Develop & Contribute
 
