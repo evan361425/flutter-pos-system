@@ -1,7 +1,6 @@
-# https://docs.flutter.dev/development/accessibility-and-localization/internationalization#configuring-the-l10nyaml-file
+# https://docs.flutter.dev/development/accessibility-and-localization/internationalization#configuring-the-l10n-yaml-file
 arb-dir: lib/l10n
 template-arb-file: app_zh.arb
-synthetic-package: false
 output-dir: lib/l10n/gen
 output-localization-file: app_localizations.dart
 preferred-supported-locales:

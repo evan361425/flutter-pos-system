@@ -9,9 +9,9 @@ class SlideToDelete<T> extends StatelessWidget {
 
   final Future<void> Function() deleteCallback;
 
-  final Widget? Function(BuildContext context)? warningContentBuilder;
+  final String? Function(BuildContext context)? warningContentBuilder;
 
-  final Widget? warningContent;
+  final String? warningContent;
 
   const SlideToDelete({
     super.key,
@@ -41,7 +41,7 @@ class SlideToDelete<T> extends StatelessWidget {
           : (direction) => DeleteDialog.show(
                 context,
                 deleteCallback: deleteCallback,
-                warningContent: warningContent ?? warningContentBuilder!(context),
+                content: warningContent ?? warningContentBuilder!(context),
               ),
       child: child,
     );

@@ -286,6 +286,7 @@ class _FAB extends StatelessWidget {
       spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
       title: S.orderTutorialTitle,
       message: S.orderTutorialContent,
+      preferVertical: true,
       child: FloatingActionButton.extended(
         key: const Key('home.order'),
         heroTag: null,

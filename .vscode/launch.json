@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "pos-system",
+      "name": "android",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
@@ -15,6 +15,13 @@
         "--dart-define=appFlavor=debug",
         "--dart-define=logLevel=debug"
       ]
+    },
+    {
+      "name": "ios",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define=appFlavor=debug", "--dart-define=logLevel=debug"]
     }
   ]
 }

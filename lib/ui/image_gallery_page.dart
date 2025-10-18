@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/delete_dialog.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
@@ -33,7 +34,8 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+    final width = MediaQuery.sizeOf(context).width;
+    final bp = Breakpoint.find(width: width);
     final fullScreen = bp <= Breakpoint.medium;
 
     final PreferredSizeWidget? appBar = selecting
@@ -51,7 +53,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
                 onPressed: () {
                   DeleteDialog.show(
                     context,
-                    warningContent: Text(S.imageGallerySelectionDeleteConfirm(selectedImages.length)),
+                    content: S.imageGallerySelectionDeleteConfirm(selectedImages.length),
                     finishMessage: false,
                     deleteCallback: deleteImages,
                   );
@@ -64,7 +66,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
             ? AppBar(
                 title: Text(S.imageGalleryTitle),
                 primary: false,
-                leading: const CloseButton(key: Key('image_gallery.close')),
+                leading: const MyCloseButton(key: Key('image_gallery.close')),
               )
             : null;
 
@@ -73,7 +75,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       appBar: appBar,
       body: Padding(
         padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
-        child: _buildBody(bp),
+        child: _buildBody(bp, width),
       ),
     );
 
@@ -82,7 +84,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       onPopInvokedWithResult: onPopInvoked,
       child: fullScreen
           ? Dialog.fullscreen(child: body)
-          : AlertDialog.adaptive(
+          : AlertDialog(
               contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
               scrollable: false,
               title: appBar == null ? Text(S.imageGalleryTitle) : null,
@@ -91,7 +93,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     );
   }
 
-  Widget _buildBody(Breakpoint bp) {
+  Widget _buildBody(Breakpoint bp, double width) {
     if (images == null) {
       return const SingleChildScrollView(
         child: Center(child: CircularProgressIndicator.adaptive()),
@@ -110,7 +112,6 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     }
 
     final spacing = bp.lookup(compact: 4.0, expanded: 12.0);
-    // maximum width is 800
     final crossAxisCount = bp.lookup(compact: 3, medium: 4);
     return GridView.builder(
       primary: false,
@@ -132,7 +133,11 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
                 onPressed: createImage,
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                   const Icon(KIcons.add),
-                  Text(S.imageGalleryActionCreate, textAlign: TextAlign.center),
+                  Text(
+                    S.imageGalleryActionCreate,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
                 ]),
               ),
             );
@@ -148,7 +153,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
         final inkwell = selecting
             ? Material(
                 color: Colors.black.withAlpha(100),
-                child: Checkbox.adaptive(
+                child: Checkbox(
                   value: selectedImages.contains(index),
                   onChanged: (bool? value) {
                     setState(() {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/components/style/buttons.dart';
@@ -85,24 +85,24 @@ class OrderAttributeTile extends StatelessWidget {
   }
 
   void _showActions(BuildContext context) async {
-    await BottomSheetActions.withDelete<int>(
+    await MenuActionGroup.withDelete<int>(
       context,
       deleteValue: 0,
-      actions: <BottomSheetAction<int>>[
-        BottomSheetAction(
+      actions: <MenuAction<int>>[
+        MenuAction(
           title: Text(S.orderAttributeTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.orderAttrUpdate,
           routePathParameters: {'id': attr.id},
         ),
-        BottomSheetAction(
+        MenuAction(
           title: Text(S.orderAttributeOptionTitleReorder),
           leading: const Icon(KIcons.reorder),
           route: Routes.orderAttrReorderOption,
           routePathParameters: {'id': attr.id},
         ),
       ],
-      warningContent: Text(S.dialogDeletionContent(attr.name, '')),
+      warningContent: S.dialogDeletionContent(attr.name, ''),
       deleteCallback: () => attr.remove(),
     );
   }
@@ -118,16 +118,16 @@ class _OptionTile extends StatelessWidget {
     return SlideToDelete(
       item: option,
       deleteCallback: _remove,
-      warningContent: Text(S.dialogDeletionContent(option.name, '')),
+      warningContent: S.dialogDeletionContent(option.name, ''),
       child: ListTile(
         key: Key('order_attributes.${option.repository.id}.${option.id}'),
         title: Text(option.name),
         subtitle: OrderAttributeValueWidget.build(option.mode, option.modeValue),
         trailing: option.isDefault ? OutlinedText(S.orderAttributeOptionMetaDefault) : null,
-        onLongPress: () => BottomSheetActions.withDelete<int>(
+        onLongPress: () => MenuActionGroup.withDelete<int>(
           context,
           deleteValue: 0,
-          warningContent: Text(S.dialogDeletionContent(option.name, '')),
+          warningContent: S.dialogDeletionContent(option.name, ''),
           deleteCallback: _remove,
         ),
         onTap: () => context.pushNamed(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/repository/cart.dart';
@@ -92,34 +92,34 @@ class CartActions extends StatelessWidget {
   }
 
   static void showActions(BuildContext context) async {
-    final type = await showCircularBottomSheet<CartActionTypes>(
+    final type = await showPositionedMenu<CartActionTypes>(
       context,
-      actions: <BottomSheetAction<CartActionTypes>>[
-        BottomSheetAction(
+      actions: <MenuAction<CartActionTypes>>[
+        MenuAction(
           key: const Key('cart.action.discount'),
           leading: const Icon(Icons.loyalty_outlined),
           title: Text(S.orderCartActionDiscount),
           returnValue: CartActionTypes.discount,
         ),
-        BottomSheetAction(
+        MenuAction(
           key: const Key('cart.action.price'),
           leading: const Icon(Icons.attach_money_outlined),
           title: Text(S.orderCartActionChangePrice),
           returnValue: CartActionTypes.price,
         ),
-        BottomSheetAction(
+        MenuAction(
           key: const Key('cart.action.count'),
           leading: const Icon(Icons.exposure_outlined),
           title: Text(S.orderCartActionChangeCount),
           returnValue: CartActionTypes.count,
         ),
-        BottomSheetAction(
+        MenuAction(
           key: const Key('cart.action.free'),
           leading: const Icon(Icons.free_breakfast_outlined),
           title: Text(S.orderCartActionFree),
           returnValue: CartActionTypes.free,
         ),
-        BottomSheetAction(
+        MenuAction(
           key: const Key('cart.action.delete'),
           leading: const Icon(KIcons.delete),
           title: Text(S.orderCartActionDelete),

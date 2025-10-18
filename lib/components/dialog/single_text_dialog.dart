@@ -56,7 +56,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       textInputAction: TextInputAction.done,
     );
 
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: widget.title,
       scrollable: true,
       content: Column(children: [

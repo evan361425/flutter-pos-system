@@ -20,7 +20,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
   ///
   /// - [widths] is the width in pixels of the image.
   static Future<List<ConvertibleImage>?> show(BuildContext context, OrderObject order, List<int> widths) async {
-    final data = await showAdaptiveDialog(
+    final data = await showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
@@ -49,7 +49,7 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog.adaptive(
+    return AlertDialog(
       contentPadding: const EdgeInsets.all(0),
       content: Stack(alignment: Alignment.center, children: [
         Padding(

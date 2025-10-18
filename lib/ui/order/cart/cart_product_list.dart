@@ -44,6 +44,7 @@ class _CartProductListState extends State<CartProductList> {
           controller: scrollController,
           physics: value ? null : const NeverScrollableScrollPhysics(),
           prototypeItem: const ListTile(title: Text('a'), subtitle: Text('a')),
+          semanticChildCount: length,
           children: [
             if (length == 0)
               ListTile(
@@ -85,15 +86,20 @@ class _CartProductListState extends State<CartProductList> {
   Future<void> scrollToBottomIfAdded() async {
     final length = Cart.instance.products.length;
     final isAdded = lastLength < length;
-    lastLength = length;
 
-    if (isAdded && mounted) {
-      await scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 80,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+    if (isAdded && mounted && lastLength != 0 || length != 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent - 30, // +80?
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     }
+
+    lastLength = length;
   }
 }
 
@@ -107,7 +113,7 @@ class _CartProductListTile extends StatelessWidget {
     final product = context.watch<CartProduct>();
     final color = product.isSelected ? Theme.of(context).primaryColorLight : Colors.transparent;
 
-    final leading = Checkbox.adaptive(
+    final leading = Checkbox(
       key: Key('cart.product.$index.select'),
       value: product.isSelected,
       onChanged: (checked) {

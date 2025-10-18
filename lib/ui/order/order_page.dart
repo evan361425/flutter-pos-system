@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/linkify.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
@@ -143,22 +143,22 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _showActions(BuildContext context) async {
-    final result = await showCircularBottomSheet<_Action>(
+    final result = await showPositionedMenu<_Action>(
       context,
       actions: [
-        BottomSheetAction(
+        MenuAction(
           key: const Key('order.action.exchange'),
           title: Text(S.orderActionExchange),
           leading: const Icon(Icons.change_circle_outlined),
           returnValue: const _Action(route: Routes.cashierChanger),
         ),
-        BottomSheetAction(
+        MenuAction(
           key: const Key('order.action.stash'),
           title: Text(S.orderActionStash),
           leading: const Icon(Icons.archive_outlined),
           returnValue: _Action(action: _handleStash),
         ),
-        BottomSheetAction(
+        MenuAction(
           key: const Key('order.action.history'),
           title: Text(S.orderActionReview),
           leading: const Icon(Icons.history_outlined),

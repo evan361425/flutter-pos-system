@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:possystem/components/linkify.dart';
+import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
@@ -52,7 +53,12 @@ Stream<T> showSnackbarWhenStreamError<T>(
   VoidCallback? callback,
 }) {
   return stream.handleError((err) {
-    _prettierError(err);
+    _prettierError(
+      err,
+      // ignore: use_build_context_synchronously
+      context: context,
+      key: key,
+    );
     Log.err(err, code, err is Error ? err.stackTrace : null);
     callback?.call();
   });
@@ -111,10 +117,11 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
   showAdaptiveDialog(
     context: context,
     builder: (context) {
-      return SimpleDialog(
+      return AlertDialog.adaptive(
         title: Text(title),
         contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 16.0),
-        children: [body],
+        content: body,
+        actions: [PopButton(title: MaterialLocalizations.of(context).okButtonLabel)],
       );
     },
   );
@@ -128,8 +135,8 @@ void _prettierError(
 }) {
   void show(String msg, [String? more]) {
     if (kDebugMode) {
-      print('error: $msg');
-      print('stack: ${e is Error ? e.stackTrace : null}');
+      print('snackbar debug error: $msg');
+      print('snackbar debug stack: ${e is Error ? e.stackTrace : null}');
     }
     showMoreInfoSnackBar(
       msg,
@@ -149,7 +156,7 @@ void _prettierError(
     return show(S.printerErrorBluetoothOff);
   }
 
-  if (e is PlatformException && e.code == 'connect' && e.message?.contains('bluetooth') == true) {
+  if (e is PlatformException && ['connect', 'startScan'].contains(e.code) && e.message?.contains('bluetooth') == true) {
     return show(S.printerErrorBluetoothOff);
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 
 import '../test_helpers/translator.dart';
 
@@ -27,7 +27,7 @@ class _ExampleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => showCircularBottomSheet(context, actions: []),
+      onPressed: () => showPositionedMenu(context, actions: []),
       child: const Text('hi'),
     );
   }

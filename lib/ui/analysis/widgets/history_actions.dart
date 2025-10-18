@@ -11,7 +11,7 @@ class HistoryCleanDialog extends StatefulWidget {
   const HistoryCleanDialog({super.key});
 
   static Future<DateTime?> show(BuildContext context) {
-    return showAdaptiveDialog<DateTime>(
+    return showDialog<DateTime>(
       context: context,
       builder: (context) => const HistoryCleanDialog(),
     );
@@ -19,12 +19,6 @@ class HistoryCleanDialog extends StatefulWidget {
 
   @override
   State<HistoryCleanDialog> createState() => _HistoryCleanDialogState();
-}
-
-enum _Mode {
-  lastYear,
-  sixMonthsAgo,
-  custom;
 }
 
 class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
@@ -36,7 +30,7 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
     final now = DateTime.now();
     final local = MaterialLocalizations.of(context);
 
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: Text(S.analysisHistoryActionClear),
       scrollable: true,
       content: RadioGroup(
@@ -378,3 +372,9 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
 }
 
 void _noop(int? _) {}
+
+enum _Mode {
+  lastYear,
+  sixMonthsAgo,
+  custom;
+}

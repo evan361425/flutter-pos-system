@@ -43,7 +43,7 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
       if (context.mounted) {
         showMoreInfoSnackBar(
           S.transitGoogleSheetErrorCreateTitle,
-          Text(S.transitGoogleSheetErrorCreateHelper),
+          Text(S.transitGoogleSheetErrorCreateHelper, textAlign: TextAlign.start),
           context: context,
         );
       }
@@ -78,7 +78,7 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
     if (context.mounted) {
       showMoreInfoSnackBar(
         S.transitGoogleSheetErrorFulfillTitle,
-        Text(S.transitGoogleSheetErrorFulfillHelper),
+        Text(S.transitGoogleSheetErrorFulfillHelper, textAlign: TextAlign.start),
         context: context,
       );
     }
@@ -149,13 +149,13 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
       content: SingleChildScrollView(
         child: Column(children: [
           if (widget.allowCreateNew) ...[
-            CheckboxListTile.adaptive(
+            CheckboxListTile(
               dense: true,
               value: createNew,
               title: Text(S.transitGoogleSheetDialogCreate),
               onChanged: (v) => setState(() => createNew = v!),
             ),
-            CheckboxListTile.adaptive(
+            CheckboxListTile(
               dense: true,
               value: !createNew,
               title: Text(S.transitGoogleSheetDialogSelectExist),

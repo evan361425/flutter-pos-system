@@ -46,7 +46,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
       child = widget.builder!.call(child, onSubmit);
     }
 
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: widget.title,
       scrollable: true,
       content: Form(key: form, child: child),

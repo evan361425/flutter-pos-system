@@ -1,33 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/constants/icons.dart';
-import 'package:possystem/helpers/breakpoint.dart';
 
 import 'dialog/delete_dialog.dart';
 
-Future<T?> showCircularBottomSheet<T>(
+Future<T?> showPositionedMenu<T>(
   BuildContext context, {
-  required List<BottomSheetAction<T>> actions,
+  required List<MenuAction<T>> actions,
 }) {
-  Feedback.forLongPress(context);
-  final size = MediaQuery.sizeOf(context);
-  final bp = Breakpoint.find(width: size.width);
-
-  if (bp <= Breakpoint.medium) {
-    return showModalBottomSheet<T>(
-      context: context,
-      useRootNavigator: true,
-      clipBehavior: Clip.hardEdge,
-      constraints: BoxConstraints(maxWidth: size.width - 24),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      useSafeArea: true,
-      isScrollControlled: true,
-      builder: (context) => SingleChildScrollView(
-        child: BottomSheetActions(actions: actions),
-      ),
-    );
-  }
-
   // copy from [flutter/src/material/popup_menu.dart]
   final RenderBox widget = context.findRenderObject()! as RenderBox;
   final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
@@ -50,7 +30,7 @@ Future<T?> showCircularBottomSheet<T>(
   );
 }
 
-class BottomSheetAction<T> {
+class MenuAction<T> {
   final Widget title;
 
   final Widget leading;
@@ -65,7 +45,7 @@ class BottomSheetAction<T> {
 
   final Map<String, dynamic> routeQueryParameters;
 
-  const BottomSheetAction({
+  const MenuAction({
     this.key,
     required this.title,
     required this.leading,
@@ -110,15 +90,14 @@ class BottomSheetAction<T> {
   }
 }
 
-class BottomSheetActions extends StatelessWidget {
-  final List<BottomSheetAction> actions;
+class MenuActionGroup extends StatelessWidget {
+  final List<MenuAction> actions;
 
-  const BottomSheetActions({super.key, required this.actions});
+  const MenuActionGroup({super.key, required this.actions});
 
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      _buildHeading(context),
       ...[for (final action in actions) action.toListTile(context)],
       _buildCancelAction(context),
     ]);
@@ -132,18 +111,6 @@ class BottomSheetActions extends StatelessWidget {
     );
   }
 
-  Widget _buildHeading(BuildContext context) {
-    return Container(
-      height: 4.0,
-      width: 36.0,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).highlightColor,
-        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-      ),
-    );
-  }
-
   /// Add action with deletion
   ///
   /// [actions] - Custom actions
@@ -153,16 +120,16 @@ class BottomSheetActions extends StatelessWidget {
   /// [popAfterDeleted] - Whether `Navigator.of(context).pop` after deleted
   static Future<T?> withDelete<T>(
     BuildContext context, {
-    List<BottomSheetAction<T>> actions = const [],
+    List<MenuAction<T>> actions = const [],
     required T deleteValue,
-    Widget? warningContent,
+    String? warningContent,
     required Future<void> Function() deleteCallback,
     bool popAfterDeleted = false,
   }) async {
     final local = MaterialLocalizations.of(context);
-    final result = await showCircularBottomSheet<T>(context, actions: [
+    final result = await showPositionedMenu<T>(context, actions: [
       ...actions,
-      BottomSheetAction(
+      MenuAction(
         key: const Key('btn.delete'),
         title: Text(local.deleteButtonTooltip),
         leading: const Icon(KIcons.delete),
@@ -174,8 +141,8 @@ class BottomSheetActions extends StatelessWidget {
       if (context.mounted) {
         await DeleteDialog.show(
           context,
+          content: warningContent,
           deleteCallback: deleteCallback,
-          warningContent: warningContent,
           popAfterDeleted: popAfterDeleted,
         );
       }

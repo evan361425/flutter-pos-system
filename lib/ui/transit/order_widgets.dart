@@ -143,7 +143,7 @@ abstract class TransitOrderList extends StatelessWidget {
       onTap: () async {
         final detailedOrder = await Seller.instance.getOrder(order.id!);
         if (detailedOrder != null && context.mounted) {
-          await showAdaptiveDialog(
+          await showDialog(
             context: context,
             builder: (context) {
               return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [
@@ -286,7 +286,7 @@ abstract class TransitOrderHeader extends StatelessWidget {
   }
 
   void _showMetaSetting(BuildContext context) async {
-    final other = await showAdaptiveDialog<TransitOrderSettings>(
+    final other = await showDialog<TransitOrderSettings>(
       context: context,
       builder: (context) => _OrderSettingPage(properties: settings!.value),
     );

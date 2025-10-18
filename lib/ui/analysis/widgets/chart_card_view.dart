@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/analysis/chart.dart';
@@ -228,13 +228,13 @@ class _MoreButton extends StatelessWidget {
   }
 
   void _showActions(BuildContext context) async {
-    await BottomSheetActions.withDelete<int>(
+    await MenuActionGroup.withDelete<int>(
       context,
       deleteCallback: chart.remove,
       deleteValue: 0,
-      warningContent: Text(S.dialogDeletionContent(chart.name, '')),
-      actions: <BottomSheetAction<int>>[
-        BottomSheetAction(
+      warningContent: S.dialogDeletionContent(chart.name, ''),
+      actions: <MenuAction<int>>[
+        MenuAction(
           title: Text(S.analysisChartCardTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.chartUpdate,

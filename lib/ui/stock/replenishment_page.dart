@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/empty_body.dart';
@@ -60,18 +60,16 @@ class ReplenishmentPage extends StatelessWidget {
       delegate: SlidableItemDelegate(
         handleDelete: (item) => item.remove(),
         deleteValue: ReplenishActions.delete,
-        warningContentBuilder: (_, item) {
-          return Text(S.dialogDeletionContent(item.name, ''));
-        },
+        warningContentBuilder: (_, item) => S.dialogDeletionContent(item.name, ''),
         items: Replenisher.instance.itemList,
         actionBuilder: (item) => [
-          BottomSheetAction(
+          MenuAction(
             title: Text(S.stockReplenishmentTitleUpdate),
             leading: const Icon(KIcons.edit),
             route: Routes.stockReplUpdate,
             routePathParameters: {'id': item.id},
           ),
-          BottomSheetAction(
+          MenuAction(
             title: Text(S.stockReplenishmentApplyPreview),
             leading: const Icon(Icons.check_outlined),
             returnValue: ReplenishActions.preview,

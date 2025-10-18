@@ -80,7 +80,7 @@ option:
     helper: |-
       For 'age', possible options are:
       - ⇣ 20
-      - 20 ⇢ 30
+      - 20 - 30
     error:
       repeat: Name already exists
   mode:

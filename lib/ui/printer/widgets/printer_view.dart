@@ -208,9 +208,9 @@ class _PrinterViewState extends State<PrinterView> {
   void startPrint() async {
     final progress = ValueNotifier<double?>(null);
     final controller = ImageableManger.instance.create();
-    final done = await showAdaptiveDialog(
+    final done = await showDialog(
       context: context,
-      builder: (context) => AlertDialog.adaptive(
+      builder: (context) => AlertDialog(
         title: Text(S.printerBtnTestPrint),
         contentPadding: const EdgeInsets.all(0),
         actions: [

@@ -16,7 +16,6 @@ class Log {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    // print('$code: $msg, error: $error, stackTrace: $stackTrace');
     developer.log(msg, name: code, error: error, stackTrace: stackTrace);
   }
 

@@ -135,7 +135,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
             onPressed: () => showMoreInfoDialog(
               context,
               S.printerScanNotFound,
-              Text(S.printerErrorTimeoutMore),
+              Text(S.printerErrorTimeoutMore, textAlign: TextAlign.start),
             ),
             label: Text(S.printerScanNotFound),
           );
@@ -171,15 +171,12 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     scanStream = showSnackbarWhenStreamError(
       Bluetooth.instance.startScan(),
       'printer_modal_scan',
+      key: scaffoldMessengerKey,
     ).listen((devices) {
       if (mounted) {
-        // if there has any device scanned, demo device will be replaced.
-        if (kDebugMode && devices.isEmpty) {
-          devices.add(BluetoothDevice.demo());
-        }
-
         setState(() {
           searched = devices;
+          _makeSureDebugHasDemo();
         });
       }
     }, onDone: scanDone, cancelOnError: true);
@@ -202,6 +199,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       Log.out('done', 'printer_modal_scan');
       scanStream?.cancel();
       notFoundFAB.value = false;
+      _makeSureDebugHasDemo();
       setState(() {
         notFoundFuture?.ignore();
         notFoundFuture = null;
@@ -281,6 +279,13 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       autoConnect: autoConnect,
     );
   }
+
+  void _makeSureDebugHasDemo() {
+    // if there has any device scanned, demo device will be replaced.
+    if (kDebugMode && searched.isEmpty) {
+      searched.add(BluetoothDevice.demo());
+    }
+  }
 }
 
 class _ManualTypeSelection extends StatefulWidget {
@@ -290,9 +295,9 @@ class _ManualTypeSelection extends StatefulWidget {
 
   static Future<PrinterProvider?> show(BuildContext context, {PrinterProvider? initial}) async {
     final key = GlobalKey<_ManualTypeSelectionState>();
-    return showAdaptiveDialog<PrinterProvider>(
+    return showDialog<PrinterProvider>(
       context: context,
-      builder: (context) => AlertDialog.adaptive(
+      builder: (context) => AlertDialog(
         title: Text(S.printerTypeSelectTitle),
         scrollable: true,
         content: Column(children: [
@@ -333,7 +338,7 @@ class _ManualTypeSelectionState extends State<_ManualTypeSelection> {
       },
       child: Column(children: [
         for (final provider in PrinterProvider.values)
-          RadioListTile(
+          RadioListTile.adaptive(
             value: provider,
             title: Text(S.printerTypeSelectName(provider.name)),
           ),

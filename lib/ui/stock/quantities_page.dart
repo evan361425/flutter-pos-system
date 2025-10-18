@@ -28,18 +28,20 @@ class QuantitiesPage extends StatelessWidget {
       );
     }
 
-    return StockQuantityList(
-      quantities: Quantities.instance.itemList,
-      leading: Row(children: [
-        Expanded(
-          child: RouteElevatedIconButton(
-            key: const Key('quantity.add'),
-            route: Routes.quantityCreate,
-            label: S.stockQuantityTitleCreate,
-            icon: const Icon(KIcons.add),
+    return SafeArea(
+      child: StockQuantityList(
+        quantities: Quantities.instance.itemList,
+        leading: Row(children: [
+          Expanded(
+            child: RouteElevatedIconButton(
+              key: const Key('quantity.add'),
+              route: Routes.quantityCreate,
+              label: S.stockQuantityTitleCreate,
+              icon: const Icon(KIcons.add),
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

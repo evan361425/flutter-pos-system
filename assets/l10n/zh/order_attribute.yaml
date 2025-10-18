@@ -69,7 +69,7 @@ option:
     helper: |-
       以年齡為例，可能的選項有：
       - ⇣ 20
-      - 20 ⇢ 30
+      - 20 - 30
     error:
       repeat: 名稱不能重複
   mode:

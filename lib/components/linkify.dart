@@ -19,7 +19,7 @@ class Linkify extends StatelessWidget {
   ///   at new Linkify.fromString(linkify.dart:15)
   ///   at Tutorial.build(tutorial.dart:107)
   /// ```
-  factory Linkify.fromString(String text, {TextAlign? textAlign}) {
+  factory Linkify.fromString(String text, {TextAlign textAlign = TextAlign.start}) {
     return Linkify(_parseText(text), textAlign: textAlign);
   }
 

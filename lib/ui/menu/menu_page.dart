@@ -78,11 +78,13 @@ class _MenuPageState extends State<MenuPage> {
     }
 
     // no need to use Scaffold here, because this will be wrapped by HomePage
-    return Row(key: const Key('menu_page'), crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Expanded(child: firstView),
-      const VerticalDivider(),
-      Expanded(child: secondView),
-    ]);
+    return SafeArea(
+      child: Row(key: const Key('menu_page'), crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(child: firstView),
+        const VerticalDivider(),
+        Expanded(child: secondView),
+      ]),
+    );
   }
 
   @override

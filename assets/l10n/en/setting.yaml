@@ -50,5 +50,5 @@ orderAwakening:
   - Keep the screen on during ordering, even when idle
   description: If disabled, the screen will turn off based on system settings during ordering.
 report:
-  title: Collect Error Messages and Events
+  title: Collect Errors and Events
   description: Send error messages when the app encounters issues, helping the app improve

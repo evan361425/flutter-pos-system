@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 
 import '../test_helpers/translator.dart';
@@ -16,7 +16,7 @@ void main() {
               items: const ['1', '2'],
               deleteValue: 0,
               tileBuilder: (item, int index, __) => Text(item),
-              warningContentBuilder: (_, __) => const Text('hi'),
+              warningContentBuilder: (_, __) => 'hi',
               handleDelete: (_) async => deletionFired = true,
             ),
           ),
@@ -47,7 +47,7 @@ void main() {
               },
               handleDelete: (_) async {},
               actionBuilder: (item) => [
-                const BottomSheetAction<int>(
+                const MenuAction<int>(
                   title: Text('Hi'),
                   leading: Icon(Icons.ac_unit),
                   returnValue: 1,

@@ -12,56 +12,58 @@ class TransitPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
-      ListTile(
-        key: const Key('transit.google_sheet'),
-        leading: CircleAvatar(
-          radius: 24,
-          child: SvgPicture.asset('assets/google_sheet_icon.svg', width: 24),
+    return SafeArea(
+      child: ListView(children: [
+        ListTile(
+          key: const Key('transit.google_sheet'),
+          leading: CircleAvatar(
+            radius: 24,
+            child: SvgPicture.asset('assets/google_sheet_icon.svg', width: 24),
+          ),
+          title: Text(TransitMethod.googleSheet.l10nName),
+          subtitle: Text(S.transitDescriptionGoogleSheet),
+          onTap: () => _next(context, TransitMethod.googleSheet),
         ),
-        title: Text(TransitMethod.googleSheet.l10nName),
-        subtitle: Text(S.transitDescriptionGoogleSheet),
-        onTap: () => _next(context, TransitMethod.googleSheet),
-      ),
-      ListTile(
-        key: const Key('transit.excel'),
-        leading: CircleAvatar(
-          radius: 24,
-          child: SvgPicture.asset('assets/excel_icon.svg', width: 24),
+        ListTile(
+          key: const Key('transit.excel'),
+          leading: CircleAvatar(
+            radius: 24,
+            child: SvgPicture.asset('assets/excel_icon.svg', width: 24),
+          ),
+          title: Text(TransitMethod.excel.l10nName),
+          subtitle: Text(S.transitDescriptionExcel),
+          onTap: () => _next(context, TransitMethod.excel),
         ),
-        title: Text(TransitMethod.excel.l10nName),
-        subtitle: Text(S.transitDescriptionExcel),
-        onTap: () => _next(context, TransitMethod.excel),
-      ),
-      ListTile(
-        key: const Key('transit.csv'),
-        leading: const CircleAvatar(
-          radius: 24,
-          child: Text('CSV'),
+        ListTile(
+          key: const Key('transit.csv'),
+          leading: const CircleAvatar(
+            radius: 24,
+            child: Text('CSV'),
+          ),
+          title: Text(TransitMethod.csv.l10nName),
+          subtitle: Text(S.transitDescriptionCsv),
+          onTap: () => _next(context, TransitMethod.csv),
         ),
-        title: Text(TransitMethod.csv.l10nName),
-        subtitle: Text(S.transitDescriptionCsv),
-        onTap: () => _next(context, TransitMethod.csv),
-      ),
-      ListTile(
-        key: const Key('transit.plain_text'),
-        leading: const CircleAvatar(
-          radius: 24,
-          child: Text('Text'),
+        ListTile(
+          key: const Key('transit.plain_text'),
+          leading: const CircleAvatar(
+            radius: 24,
+            child: Text('Text'),
+          ),
+          title: Text(TransitMethod.plainText.l10nName),
+          subtitle: Text(S.transitDescriptionPlainText),
+          onTap: () => _next(context, TransitMethod.plainText),
         ),
-        title: Text(TransitMethod.plainText.l10nName),
-        subtitle: Text(S.transitDescriptionPlainText),
-        onTap: () => _next(context, TransitMethod.plainText),
-      ),
-      const SizedBox(height: kFABSpacing),
-    ]);
+        const SizedBox(height: kFABSpacing),
+      ]),
+    );
   }
 
   void _next(BuildContext context, TransitMethod method) async {
-    final catalog = await showAdaptiveDialog<TransitCatalog>(
+    final catalog = await showDialog<TransitCatalog>(
       context: context,
       builder: (context) {
-        return AlertDialog.adaptive(
+        return AlertDialog(
           title: Text(S.transitCatalogTitle(method.l10nName)),
           scrollable: true,
           content: Column(children: [

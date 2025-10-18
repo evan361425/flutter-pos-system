@@ -29,35 +29,37 @@ class OrderAttributePage extends StatelessWidget {
       );
     }
 
-    return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: <Widget>[
-      Row(children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-            child: RouteElevatedIconButton(
-              key: const Key('order_attributes.add'),
-              icon: const Icon(KIcons.add),
-              label: S.orderAttributeTitleCreate,
-              route: Routes.orderAttrCreate,
+    return SafeArea(
+      child: ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: <Widget>[
+        Row(children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+              child: RouteElevatedIconButton(
+                key: const Key('order_attributes.add'),
+                icon: const Icon(KIcons.add),
+                label: S.orderAttributeTitleCreate,
+                route: Routes.orderAttrCreate,
+              ),
             ),
           ),
-        ),
+        ]),
+        Row(children: [
+          Expanded(
+            child: Center(child: HintText(S.totalCount(OrderAttributes.instance.length))),
+          ),
+          RouteIconButton(
+            key: const Key('order_attributes.reorder'),
+            label: S.orderAttributeTitleReorder,
+            route: Routes.orderAttrReorder,
+            icon: const Icon(KIcons.reorder),
+            hideLabel: true,
+          ),
+          const SizedBox(width: kHorizontalSpacing),
+        ]),
+        const SizedBox(height: kInternalSpacing),
+        for (final attribute in OrderAttributes.instance.itemList) OrderAttributeTile(attr: attribute),
       ]),
-      Row(children: [
-        Expanded(
-          child: Center(child: HintText(S.totalCount(OrderAttributes.instance.length))),
-        ),
-        RouteIconButton(
-          key: const Key('order_attributes.reorder'),
-          label: S.orderAttributeTitleReorder,
-          route: Routes.orderAttrReorder,
-          icon: const Icon(KIcons.reorder),
-          hideLabel: true,
-        ),
-        const SizedBox(width: kHorizontalSpacing),
-      ]),
-      const SizedBox(height: kInternalSpacing),
-      for (final attribute in OrderAttributes.instance.itemList) OrderAttributeTile(attr: attribute),
-    ]);
+    );
   }
 }
