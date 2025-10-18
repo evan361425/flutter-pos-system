@@ -35,6 +35,7 @@ class ResponsiveDialog extends StatelessWidget {
         contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
         // M3 recommends max width 560
         constraints: const BoxConstraints(maxWidth: 560),
+        clipBehavior: Clip.hardEdge,
         scrollable: scrollable,
         content: Stack(
           children: [

@@ -23,6 +23,7 @@ class SlidableItemList<T, U> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.transparent,
       child: SingleChildScrollView(
         padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
         child: Column(children: <Widget>[

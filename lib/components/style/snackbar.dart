@@ -116,6 +116,7 @@ void showMoreInfoSnackBar(
 void showMoreInfoDialog(BuildContext context, String title, Widget body) {
   showAdaptiveDialog(
     context: context,
+    barrierDismissible: true,
     builder: (context) {
       return AlertDialog.adaptive(
         title: Text(title),

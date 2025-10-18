@@ -83,7 +83,7 @@ abstract class TransitOrderList extends StatelessWidget {
         : size < 1000000 // 1MB
             ? 1
             : 2;
-    showMemoryInfo() => showAdaptiveDialog(
+    showMemoryInfo() => showDialog(
           context: context,
           builder: (context) {
             return _buildWarningDialog(context, size, level);
@@ -161,7 +161,7 @@ abstract class TransitOrderList extends StatelessWidget {
 
   Widget _buildWarningDialog(BuildContext context, int size, int level) {
     const style = TextStyle(fontWeight: FontWeight.bold);
-    return AlertDialog.adaptive(
+    return AlertDialog(
       actions: [
         PopButton(title: MaterialLocalizations.of(context).okButtonLabel),
       ],

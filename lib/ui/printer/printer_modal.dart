@@ -338,7 +338,7 @@ class _ManualTypeSelectionState extends State<_ManualTypeSelection> {
       },
       child: Column(children: [
         for (final provider in PrinterProvider.values)
-          RadioListTile.adaptive(
+          RadioListTile(
             value: provider,
             title: Text(S.printerTypeSelectName(provider.name)),
           ),

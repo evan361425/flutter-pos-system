@@ -61,6 +61,7 @@ class DeleteDialog extends StatelessWidget {
 
     final isConfirmed = await showAdaptiveDialog<bool>(
       context: context,
+      barrierDismissible: true,
       builder: (BuildContext context) => DeleteDialog(content: content),
     );
 

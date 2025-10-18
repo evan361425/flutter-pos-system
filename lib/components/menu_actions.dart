@@ -9,16 +9,19 @@ Future<T?> showPositionedMenu<T>(
   required List<MenuAction<T>> actions,
 }) {
   // copy from [flutter/src/material/popup_menu.dart]
-  final RenderBox widget = context.findRenderObject()! as RenderBox;
-  final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-  final Offset offset = Offset(0, widget.size.height);
-  final RelativeRect position = RelativeRect.fromRect(
-    Rect.fromPoints(
-      widget.localToGlobal(offset, ancestor: overlay),
-      widget.localToGlobal(widget.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
-    ),
-    Offset.zero & overlay.size,
-  );
+  final widget = context.findRenderObject();
+  var position = const RelativeRect.fromLTRB(0, 0, 0, 0);
+  if (widget is RenderBox) {
+    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    final Offset offset = Offset(0, widget.size.height);
+    position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        widget.localToGlobal(offset, ancestor: overlay),
+        widget.localToGlobal(widget.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+  }
 
   return showMenu(
     context: context,
@@ -55,21 +58,6 @@ class MenuAction<T> {
     this.routeQueryParameters = const <String, dynamic>{},
   }) : assert(returnValue != null || route != null);
 
-  Widget toListTile(BuildContext context) {
-    return ListTile(
-      key: key,
-      enableFeedback: true,
-      leading: leading,
-      title: title,
-      onTap: () async {
-        if (context.mounted) {
-          Navigator.of(context).pop(returnValue);
-        }
-        await onTap(context);
-      },
-    );
-  }
-
   PopupMenuItem<T> toPopupMenuItem(BuildContext context) {
     return PopupMenuItem<T>(
       key: key,
@@ -90,27 +78,7 @@ class MenuAction<T> {
   }
 }
 
-class MenuActionGroup extends StatelessWidget {
-  final List<MenuAction> actions;
-
-  const MenuActionGroup({super.key, required this.actions});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      ...[for (final action in actions) action.toListTile(context)],
-      _buildCancelAction(context),
-    ]);
-  }
-
-  Widget _buildCancelAction(BuildContext context) {
-    return ListTile(
-      title: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-      leading: const Icon(KIcons.cancel),
-      onTap: () => Navigator.of(context).pop(),
-    );
-  }
-
+class MenuActionGroup {
   /// Add action with deletion
   ///
   /// [actions] - Custom actions

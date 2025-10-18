@@ -15,7 +15,6 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/settings/theme_setting.dart';
 import 'package:possystem/translator.dart';
-import 'package:possystem/ui/home/widgets/feature_switch.dart';
 
 class SettingsPage extends StatelessWidget {
   final String? focus;
@@ -114,16 +113,14 @@ class SettingsPage extends StatelessWidget {
           ListenableBuilder(
             listenable: OrderAwakeningSetting.instance,
             builder: (context, _) {
-              return ListTile(
-                leading: const Icon(Icons.remove_red_eye_outlined),
+              return SwitchListTile.adaptive(
+                key: const Key('feature.order_awakening'),
+                secondary: const Icon(Icons.remove_red_eye_outlined),
                 title: Text(S.settingOrderAwakeningTitle),
                 subtitle: Text(S.settingOrderAwakeningDescription),
-                trailing: FeatureSwitch(
-                  key: const Key('feature.order_awakening'),
-                  autofocus: focus == 'orderAwakening',
-                  value: OrderAwakeningSetting.instance.value,
-                  onChanged: (value) => OrderAwakeningSetting.instance.update(value),
-                ),
+                autofocus: focus == 'orderAwakening',
+                value: OrderAwakeningSetting.instance.value,
+                onChanged: (value) => OrderAwakeningSetting.instance.update(value),
               );
             },
           ),
@@ -131,16 +128,14 @@ class SettingsPage extends StatelessWidget {
           ListenableBuilder(
             listenable: CollectEventsSetting.instance,
             builder: (context, _) {
-              return ListTile(
-                leading: const Icon(Icons.report_outlined),
+              return SwitchListTile.adaptive(
+                key: const Key('feature.collect_events'),
+                secondary: const Icon(Icons.report_outlined),
                 title: Text(S.settingReportTitle),
                 subtitle: Text(S.settingReportDescription),
-                trailing: FeatureSwitch(
-                  key: const Key('feature.collect_events'),
-                  autofocus: focus == 'collectEvents',
-                  value: CollectEventsSetting.instance.value,
-                  onChanged: (value) => CollectEventsSetting.instance.update(value),
-                ),
+                autofocus: focus == 'collectEvents',
+                value: CollectEventsSetting.instance.value,
+                onChanged: (value) => CollectEventsSetting.instance.update(value),
               );
             },
           ),
@@ -163,25 +158,29 @@ class ItemListScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final hintStyle = TextStyle(color: Theme.of(context).hintColor);
 
-    final selected = feature.selected;
+    final selected = ValueNotifier<int>(feature.selected);
     return Scaffold(
       appBar: AppBar(
         title: Text(feature.title),
         leading: const PopButton(),
       ),
-      body: ListView(
-        children: IterableZip([feature.itemTitles, feature.itemSubtitles])
-            .mapIndexed((index, pair) => ListTile(
-                  title: Text(pair[0]),
-                  trailing: selected == index ? const Icon(Icons.check_outlined) : null,
-                  subtitle: Text(pair[1], style: hintStyle),
-                  onTap: () async {
-                    if (selected != index) {
-                      await feature.update(index);
-                    }
-                  },
-                ))
-            .toList(),
+      body: ValueListenableBuilder(
+        valueListenable: selected,
+        builder: (context, value, child) => ListView(
+          children: IterableZip([feature.itemTitles, feature.itemSubtitles])
+              .mapIndexed((index, pair) => ListTile(
+                    title: Text(pair[0]),
+                    trailing: value == index ? const Icon(Icons.check_outlined) : null,
+                    subtitle: Text(pair[1], style: hintStyle),
+                    onTap: () async {
+                      if (value != index) {
+                        selected.value = index;
+                        await feature.update(index);
+                      }
+                    },
+                  ))
+              .toList(),
+        ),
       ),
     );
   }

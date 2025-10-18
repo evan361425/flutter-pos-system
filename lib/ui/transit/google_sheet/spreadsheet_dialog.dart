@@ -109,7 +109,7 @@ class SpreadsheetDialog extends StatefulWidget {
     required bool allowCreateNew,
     String? fallbackCacheKey,
   }) {
-    return showAdaptiveDialog<GoogleSpreadsheet>(
+    return showDialog<GoogleSpreadsheet>(
       context: context,
       barrierColor: Colors.transparent,
       builder: (_) => SpreadsheetDialog._(
@@ -144,7 +144,7 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(
         child: Column(children: [

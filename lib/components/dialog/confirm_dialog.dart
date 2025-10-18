@@ -19,6 +19,7 @@ class ConfirmDialog extends StatelessWidget {
   }) async {
     final result = await showAdaptiveDialog<bool?>(
       context: context,
+      barrierDismissible: true,
       builder: (_) => ConfirmDialog(
         title: title,
         content: body ?? (content == null ? null : Text(content)),
