@@ -446,7 +446,10 @@ class Routes {
             redirect: _redirectIfMissed(path: 'menu', hasItem: (id) => Menu.instance.getProduct(id) != null),
             pageBuilder: (ctx, state) {
               final product = Menu.instance.getProduct(state.pathParameters['id']!)!;
-              return MaterialDialogPage(child: _l(ProductPage(product: product), state));
+              return MaterialDialogPage(
+                useSafeArea: false,
+                child: _l(ProductPage(product: product), state),
+              );
             },
             routes: [
               GoRoute(

@@ -37,40 +37,42 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       );
     }
 
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-        child: ListenableBuilder(
-          listenable: Stock.instance,
-          builder: (context, child) {
-            return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
-              Row(children: [
-                Expanded(child: Center(child: _buildMeta())),
-                _buildActions(),
-                const SizedBox(width: kHorizontalSpacing),
-              ]),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  kHorizontalSpacing,
-                  kInternalSpacing,
-                  kHorizontalSpacing,
-                  kInternalSpacing,
-                ),
-                child: Row(children: [
-                  Expanded(
-                    child: RouteElevatedIconButton(
-                      key: const Key('stock.add'),
-                      icon: const Icon(KIcons.add),
-                      label: S.stockIngredientTitleCreate,
-                      route: Routes.stockIngrCreate,
-                    ),
-                  ),
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+          child: ListenableBuilder(
+            listenable: Stock.instance,
+            builder: (context, child) {
+              return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
+                Row(children: [
+                  Expanded(child: Center(child: _buildMeta())),
+                  _buildActions(),
+                  const SizedBox(width: kHorizontalSpacing),
                 ]),
-              ),
-              for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
-            ]);
-          },
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    kHorizontalSpacing,
+                    kInternalSpacing,
+                    kHorizontalSpacing,
+                    kInternalSpacing,
+                  ),
+                  child: Row(children: [
+                    Expanded(
+                      child: RouteElevatedIconButton(
+                        key: const Key('stock.add'),
+                        icon: const Icon(KIcons.add),
+                        label: S.stockIngredientTitleCreate,
+                        route: Routes.stockIngrCreate,
+                      ),
+                    ),
+                  ]),
+                ),
+                for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
+              ]);
+            },
+          ),
         ),
       ),
     );

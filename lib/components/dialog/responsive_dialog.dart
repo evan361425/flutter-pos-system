@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/gradient_scroll_hint.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
@@ -29,9 +30,12 @@ class ResponsiveDialog extends StatelessWidget {
     final dialog = size.width > Breakpoint.medium.max;
 
     if (dialog) {
-      final dialog = AlertDialog.adaptive(
+      final dialog = AlertDialog(
         title: title,
         contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+        // M3 recommends max width 560
+        constraints: const BoxConstraints(maxWidth: 560),
+        clipBehavior: Clip.hardEdge,
         scrollable: scrollable,
         content: Stack(
           children: [
@@ -92,7 +96,7 @@ class ResponsiveDialog extends StatelessWidget {
           appBar: AppBar(
             primary: false,
             title: title,
-            leading: const CloseButton(key: Key('pop')),
+            leading: const MyCloseButton(key: Key('pop')),
             actions: action == null ? [] : [action!],
           ),
           body: scrollable ? SingleChildScrollView(child: content) : content,

@@ -5,7 +5,7 @@ import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/translator.dart';
 
 class DeleteDialog extends StatelessWidget {
-  final Widget content;
+  final String content;
 
   const DeleteDialog({super.key, required this.content});
 
@@ -14,13 +14,15 @@ class DeleteDialog extends StatelessWidget {
     final local = MaterialLocalizations.of(context);
     return AlertDialog.adaptive(
       title: Text(S.dialogDeletionTitle),
-      content: SingleChildScrollView(child: content),
+      content: SingleChildScrollView(
+        child: Text(content, textAlign: TextAlign.start),
+      ),
       actions: <Widget>[
         PopButton(title: local.cancelButtonLabel),
-        FilledButton(
+        TextButton(
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
-          style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
+          style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
           child: Text(local.deleteButtonTooltip),
         ),
       ],
@@ -29,7 +31,7 @@ class DeleteDialog extends StatelessWidget {
 
   /// Show [DeleteDialog]
   ///
-  /// [warningContent] - Content of warning in [DeleteDialog], `null` to disable confirm
+  /// [content] - Content of warning in [DeleteDialog], `null` to disable confirm
   /// [deleteCallback] - Callback after confirmed
   /// [popAfterDeleted] - Whether `Navigator.of(context).pop` after deleted
   static Future<bool?> show(
@@ -37,7 +39,7 @@ class DeleteDialog extends StatelessWidget {
     required Future<void> Function() deleteCallback,
     bool popAfterDeleted = false,
     bool finishMessage = true,
-    Widget? warningContent,
+    String? content,
   }) async {
     startDelete() async {
       await deleteCallback();
@@ -53,13 +55,14 @@ class DeleteDialog extends StatelessWidget {
     }
 
     // Directly delete if no content given
-    if (warningContent == null) {
+    if (content == null) {
       return startDelete();
     }
 
     final isConfirmed = await showAdaptiveDialog<bool>(
       context: context,
-      builder: (BuildContext context) => DeleteDialog(content: warningContent),
+      barrierDismissible: true,
+      builder: (BuildContext context) => DeleteDialog(content: content),
     );
 
     if (isConfirmed == true) {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/confirm_dialog.dart';
 import 'package:possystem/components/item_loader.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -81,23 +81,23 @@ class StashedOrderListView extends StatelessWidget {
   }
 
   void _showActions(BuildContext context, OrderObject order) async {
-    final action = await BottomSheetActions.withDelete(
+    final action = await MenuActionGroup.withDelete(
       context,
+      deleteValue: _Action.delete,
+      warningContent: S.dialogDeletionContent(S.orderCheckoutStashDialogDeleteName, ''),
+      deleteCallback: () => _act(_Action.delete, context, order),
       actions: [
-        BottomSheetAction(
+        MenuAction(
           title: Text(S.orderCheckoutStashActionCheckout),
           leading: const Icon(Icons.price_check_outlined),
           returnValue: _Action.checkout,
         ),
-        BottomSheetAction(
+        MenuAction(
           title: Text(S.orderCheckoutStashActionRestore),
           leading: const Icon(Icons.file_upload_outlined),
           returnValue: _Action.restore,
         ),
       ],
-      deleteValue: _Action.delete,
-      warningContent: Text(S.dialogDeletionContent(S.orderCheckoutStashDialogDeleteName, '')),
-      deleteCallback: () => _act(_Action.delete, context, order),
     );
 
     if (action != null) {

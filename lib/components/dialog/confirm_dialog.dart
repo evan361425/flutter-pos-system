@@ -19,6 +19,7 @@ class ConfirmDialog extends StatelessWidget {
   }) async {
     final result = await showAdaptiveDialog<bool?>(
       context: context,
+      barrierDismissible: true,
       builder: (_) => ConfirmDialog(
         title: title,
         content: body ?? (content == null ? null : Text(content)),
@@ -39,7 +40,7 @@ class ConfirmDialog extends StatelessWidget {
           key: const Key('confirm_dialog.cancel'),
           title: local.cancelButtonLabel,
         ),
-        FilledButton(
+        TextButton(
           key: const Key('confirm_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(local.okButtonLabel),

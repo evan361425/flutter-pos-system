@@ -43,7 +43,7 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
       if (context.mounted) {
         showMoreInfoSnackBar(
           S.transitGoogleSheetErrorCreateTitle,
-          Text(S.transitGoogleSheetErrorCreateHelper),
+          Text(S.transitGoogleSheetErrorCreateHelper, textAlign: TextAlign.start),
           context: context,
         );
       }
@@ -78,7 +78,7 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
     if (context.mounted) {
       showMoreInfoSnackBar(
         S.transitGoogleSheetErrorFulfillTitle,
-        Text(S.transitGoogleSheetErrorFulfillHelper),
+        Text(S.transitGoogleSheetErrorFulfillHelper, textAlign: TextAlign.start),
         context: context,
       );
     }
@@ -109,7 +109,7 @@ class SpreadsheetDialog extends StatefulWidget {
     required bool allowCreateNew,
     String? fallbackCacheKey,
   }) {
-    return showAdaptiveDialog<GoogleSpreadsheet>(
+    return showDialog<GoogleSpreadsheet>(
       context: context,
       barrierColor: Colors.transparent,
       builder: (_) => SpreadsheetDialog._(
@@ -144,18 +144,18 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(
         child: Column(children: [
           if (widget.allowCreateNew) ...[
-            CheckboxListTile.adaptive(
+            CheckboxListTile(
               dense: true,
               value: createNew,
               title: Text(S.transitGoogleSheetDialogCreate),
               onChanged: (v) => setState(() => createNew = v!),
             ),
-            CheckboxListTile.adaptive(
+            CheckboxListTile(
               dense: true,
               value: !createNew,
               title: Text(S.transitGoogleSheetDialogSelectExist),

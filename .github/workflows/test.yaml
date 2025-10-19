@@ -10,7 +10,6 @@ on:
       - "**.md"
       - "docs/**"
       - "scripts/**"
-      - "android/**"
       - "pubspec.yaml"
       - "pubspec.lock"
       - "mkdocs.yaml"

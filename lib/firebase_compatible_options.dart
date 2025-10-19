@@ -24,10 +24,7 @@ class DefaultFirebaseOptions {
     }
     return switch (defaultTargetPlatform) {
       TargetPlatform.android => isProd ? android : androidDebug,
-      TargetPlatform.iOS => throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        ),
+      TargetPlatform.iOS => isProd ? ios : iosDebug,
       TargetPlatform.macOS => throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
           'you can reconfigure this by running the FlutterFire CLI again.',
@@ -61,5 +58,27 @@ class DefaultFirebaseOptions {
     projectId: 'android-pos-syst-1553173065663',
     databaseURL: 'https://android-pos-syst-1553173065663.firebaseio.com',
     storageBucket: 'android-pos-syst-1553173065663.firebasestorage.app',
+  );
+
+  static const FirebaseOptions iosDebug = FirebaseOptions(
+    apiKey: 'AIzaSyAQr-sDzGl1phc9_ho9UGKhZoMfaXlTgUE',
+    appId: '1:53696347946:ios:c4979f024ab56b3b556853',
+    messagingSenderId: '53696347946',
+    projectId: 'flutter-pos-system-debug',
+    storageBucket: 'flutter-pos-system-debug.appspot.com',
+    androidClientId: '53696347946-5uu8r44qacg64slkfbjd0uld2mvnm3ro.apps.googleusercontent.com',
+    iosClientId: '53696347946-0s7ihh0n53gq227fbdv7allbn54nclfk.apps.googleusercontent.com',
+    iosBundleId: 'com.evanlu.possystem',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAQr-sDzGl1phc9_ho9UGKhZoMfaXlTgUE',
+    appId: '1:53696347946:ios:c4979f024ab56b3b556853',
+    messagingSenderId: '53696347946',
+    projectId: 'flutter-pos-system-debug',
+    storageBucket: 'flutter-pos-system-debug.appspot.com',
+    androidClientId: '53696347946-5uu8r44qacg64slkfbjd0uld2mvnm3ro.apps.googleusercontent.com',
+    iosClientId: '53696347946-0s7ihh0n53gq227fbdv7allbn54nclfk.apps.googleusercontent.com',
+    iosBundleId: 'com.evanlu.possystem',
   );
 }

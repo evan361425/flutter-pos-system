@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/hint_text.dart';
@@ -67,7 +67,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
 
   void _showActions(BuildContext context) async {
     if (createdAt != null) {
-      await BottomSheetActions.withDelete<_Action>(
+      await MenuActionGroup.withDelete<_Action>(
         context,
         deleteValue: _Action.delete,
         popAfterDeleted: true,
@@ -76,7 +76,7 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
           'analysis_deletion',
           context: context,
         ),
-        warningContent: Text(S.analysisHistoryOrderDeleteDialog(createdAt!)),
+        warningContent: S.analysisHistoryOrderDeleteDialog(createdAt!),
       );
     }
   }

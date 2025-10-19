@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
@@ -29,33 +29,35 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   Widget build(BuildContext context) {
     super.build(context);
 
-    return ListenableBuilder(
-      listenable: Analysis.instance,
-      builder: (context, child) {
-        return LayoutBuilder(builder: (context, constraints) {
-          final bp = Breakpoint.find(box: constraints);
-          return CustomScrollView(slivers: <Widget>[
-            child!,
-            SliverAppBar(
-              primary: false,
-              automaticallyImplyLeading: false, // avoid giving drawer's menu icon
-              title: Text(S.analysisChartTitle), actions: const [_MoreButton()],
+    return SafeArea(
+      child: ListenableBuilder(
+        listenable: Analysis.instance,
+        builder: (context, child) {
+          return LayoutBuilder(builder: (context, constraints) {
+            final bp = Breakpoint.find(box: constraints);
+            return CustomScrollView(slivers: <Widget>[
+              child!,
+              SliverAppBar(
+                primary: false,
+                automaticallyImplyLeading: false, // avoid giving drawer's menu icon
+                title: Text(S.analysisChartTitle), actions: const [_MoreButton()],
+              ),
+              _buildChartHeader(),
+              _buildCharts(Analysis.instance.itemList, bp),
+            ]);
+          });
+        },
+        child: SliverList.list(children: [
+          GoalsCardView(
+            action: RouteIconButton(
+              key: const Key('anal.history'),
+              route: Routes.history,
+              icon: const Icon(Icons.calendar_month_outlined),
+              label: S.analysisHistoryBtn,
             ),
-            _buildChartHeader(),
-            _buildCharts(Analysis.instance.itemList, bp),
-          ]);
-        });
-      },
-      child: SliverList.list(children: [
-        GoalsCardView(
-          action: RouteIconButton(
-            key: const Key('anal.history'),
-            route: Routes.history,
-            icon: const Icon(Icons.calendar_month_outlined),
-            label: S.analysisHistoryBtn,
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 
@@ -148,7 +150,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   }
 
   void _goToChartRange() async {
-    final val = await showAdaptiveDialog(
+    final val = await showDialog(
       context: context,
       builder: (context) => ChartRangePage(range: range.value),
     );
@@ -173,15 +175,15 @@ class _MoreButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       key: const Key('anal.more'),
-      onPressed: () => showCircularBottomSheet<int>(
+      onPressed: () => showPositionedMenu<int>(
         context,
-        actions: <BottomSheetAction<int>>[
-          BottomSheetAction(
+        actions: <MenuAction<int>>[
+          MenuAction(
             title: Text(S.analysisChartTitleReorder),
             leading: const Icon(KIcons.reorder),
             route: Routes.chartReorder,
           ),
-          BottomSheetAction(
+          MenuAction(
             title: Text(S.analysisChartTitleCreate),
             leading: const Icon(KIcons.add),
             route: Routes.chartCreate,

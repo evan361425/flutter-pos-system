@@ -37,3 +37,4 @@ providing well structured code and clear comments.
 4. Write widget tests to fully cover new features and bug fixes.
 5. Tests should be wrapping into one `testWidgets` function if they are in the same page and can be done in one flow.
    This helps to reduce the time of test execution.
+6. No need to write document in `docs/` unless I told so.

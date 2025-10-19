@@ -221,7 +221,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
   VoidCallback _showPrinterStatusDialog(Printer printer) {
     return () async {
-      final result = await showAdaptiveDialog(
+      final result = await showDialog(
         context: context,
         builder: (context) => PrinterInfoDialog(
           printer: printer,

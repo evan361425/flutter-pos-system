@@ -4,6 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/translator.dart';
 
+class MyCloseButton extends StatelessWidget {
+  final bool backgroundIsImage;
+
+  const MyCloseButton({super.key, this.backgroundIsImage = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () => Navigator.maybePop(context),
+      tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+      icon: Icon(
+        Icons.close,
+        blendMode: backgroundIsImage ? BlendMode.difference : null,
+        color: backgroundIsImage ? Colors.white : null,
+      ),
+    );
+  }
+}
+
 class MoreButton extends StatelessWidget {
   final void Function(BuildContext) onPressed;
   final bool backgroundIsImage;
@@ -20,7 +39,11 @@ class MoreButton extends StatelessWidget {
       onPressed: () => onPressed(context),
       enableFeedback: true,
       tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
-      icon: Icon(KIcons.more, blendMode: backgroundIsImage ? BlendMode.difference : null),
+      icon: Icon(
+        KIcons.more,
+        blendMode: backgroundIsImage ? BlendMode.difference : null,
+        color: backgroundIsImage ? Colors.white : null,
+      ),
     );
   }
 }

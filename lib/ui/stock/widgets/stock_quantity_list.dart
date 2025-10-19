@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
@@ -31,7 +31,7 @@ class StockQuantityList extends StatelessWidget {
         warningContentBuilder: _warningContentBuilder,
         handleDelete: _handleDelete,
         actionBuilder: (quantity) => [
-          BottomSheetAction(
+          MenuAction(
             key: const Key('btn.edit'),
             title: Text(S.menuQuantityTitleUpdate),
             leading: const Icon(KIcons.edit),
@@ -48,11 +48,11 @@ class StockQuantityList extends StatelessWidget {
     return Menu.instance.removeQuantities(quantity.id);
   }
 
-  Widget _warningContentBuilder(BuildContext context, Quantity quantity) {
+  String _warningContentBuilder(BuildContext context, Quantity quantity) {
     final count = Menu.instance.getQuantities(quantity.id).length;
     final more = S.stockQuantityDialogDeletionContent(count);
 
-    return Text(S.dialogDeletionContent(quantity.name, '$more\n\n'));
+    return S.dialogDeletionContent(quantity.name, '$more\n\n');
   }
 }
 

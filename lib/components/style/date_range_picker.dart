@@ -21,22 +21,6 @@ Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange
     firstDate: DateTime(2021, 1),
     lastDate: now,
     locale: LanguageSetting.instance.language.locale,
-
-    /// TODO: should fix this bug
-    /// Wrapping the design, because the background will use a slightly
-    /// transparent primary color when selecting a date, which will reduce
-    /// the expected contrast, making it difficult to see, so adjust the color
-    /// of onPrimary.
-    builder: (context, dialog) {
-      final theme = Theme.of(context);
-      final colorScheme = theme.colorScheme.copyWith(
-        onPrimary: theme.textTheme.bodyMedium?.color,
-      );
-      return Theme(
-        data: theme.copyWith(colorScheme: colorScheme),
-        child: dialog ?? const SizedBox.shrink(),
-      );
-    },
   );
 
   if (result != null) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
@@ -39,31 +39,27 @@ class MenuProductList extends StatelessWidget {
         deleteValue: 0,
         actionBuilder: _actionBuilder,
         tileBuilder: (product, _, actorBuilder) => _Tile(product, actorBuilder),
-        warningContentBuilder: _warningContentBuilder,
+        warningContentBuilder: (context, product) => S.dialogDeletionContent(product.name, ''),
         handleDelete: (item) => item.remove(),
       ),
     );
   }
 
-  Iterable<BottomSheetAction<int>> _actionBuilder(Product product) {
-    return <BottomSheetAction<int>>[
-      BottomSheetAction(
+  Iterable<MenuAction<int>> _actionBuilder(Product product) {
+    return <MenuAction<int>>[
+      MenuAction(
         title: Text(S.menuProductTitleUpdate),
         leading: const Icon(KIcons.modal),
         route: Routes.menuProductUpdate,
         routePathParameters: {'id': product.id},
       ),
-      BottomSheetAction(
+      MenuAction(
         title: Text(S.menuIngredientTitleReorder),
         leading: const Icon(KIcons.reorder),
         route: Routes.menuProductReorderIngredient,
         routePathParameters: {'id': product.id},
       ),
     ];
-  }
-
-  Widget _warningContentBuilder(BuildContext context, Product product) {
-    return Text(S.dialogDeletionContent(product.name, ''));
   }
 }
 

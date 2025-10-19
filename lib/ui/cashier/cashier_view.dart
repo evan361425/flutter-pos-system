@@ -18,24 +18,26 @@ class CashierView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-        child: ListenableBuilder(
-          listenable: Cashier.instance,
-          builder: (context, _) {
-            var i = 0;
-            return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
-              _buildActions(context),
-              const SizedBox(height: kInternalSpacing),
-              for (final item in Cashier.instance.currentUnits)
-                UnitListTile(
-                  item: item,
-                  index: i++,
-                ),
-            ]);
-          },
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+          child: ListenableBuilder(
+            listenable: Cashier.instance,
+            builder: (context, _) {
+              var i = 0;
+              return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
+                _buildActions(context),
+                const SizedBox(height: kInternalSpacing),
+                for (final item in Cashier.instance.currentUnits)
+                  UnitListTile(
+                    item: item,
+                    index: i++,
+                  ),
+              ]);
+            },
+          ),
         ),
       ),
     );

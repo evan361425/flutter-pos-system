@@ -39,7 +39,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
   void _showTextField() async {
     Log.ger('transit_import_plaintext');
     final controller = TextEditingController(text: text);
-    final ok = await showAdaptiveDialog<bool>(
+    final ok = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(

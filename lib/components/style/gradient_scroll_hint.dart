@@ -15,7 +15,7 @@ class GradientScrollHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = (isDialog ? theme.dialogTheme.backgroundColor : null) ?? theme.scaffoldBackgroundColor;
+    final color = (isDialog ? theme.dialogTheme.backgroundColor : null) ?? theme.colorScheme.surfaceContainerHigh;
     return IgnorePointer(
       child: DecoratedBox(
         decoration: BoxDecoration(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slidable_item_list.dart';
 import 'package:possystem/components/style/buttons.dart';
@@ -37,14 +37,14 @@ class MenuCatalogList extends StatelessWidget {
         deleteValue: _Action.delete,
         tileBuilder: (catalog, _, actorBuilder) => _Tile(catalog, actorBuilder, onSelected),
         warningContentBuilder: _warningContentBuilder,
-        actionBuilder: (Catalog catalog) => <BottomSheetAction<_Action>>[
-          BottomSheetAction(
+        actionBuilder: (Catalog catalog) => <MenuAction<_Action>>[
+          MenuAction(
             title: Text(S.menuCatalogTitleUpdate),
             leading: const Icon(KIcons.modal),
             routePathParameters: {'id': catalog.id},
             route: Routes.menuCatalogUpdate,
           ),
-          BottomSheetAction(
+          MenuAction(
             title: Text(S.menuProductTitleReorder),
             leading: const Icon(KIcons.reorder),
             route: Routes.menuProductReorder,
@@ -56,9 +56,9 @@ class MenuCatalogList extends StatelessWidget {
     );
   }
 
-  Widget _warningContentBuilder(BuildContext context, Catalog catalog) {
+  String _warningContentBuilder(BuildContext context, Catalog catalog) {
     final more = S.menuCatalogDialogDeletionContent(catalog.length);
-    return Text(S.dialogDeletionContent(catalog.name, '$more\n\n'));
+    return S.dialogDeletionContent(catalog.name, '$more\n\n');
   }
 }
 

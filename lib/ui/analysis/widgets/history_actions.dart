@@ -11,7 +11,7 @@ class HistoryCleanDialog extends StatefulWidget {
   const HistoryCleanDialog({super.key});
 
   static Future<DateTime?> show(BuildContext context) {
-    return showAdaptiveDialog<DateTime>(
+    return showDialog<DateTime>(
       context: context,
       builder: (context) => const HistoryCleanDialog(),
     );
@@ -19,12 +19,6 @@ class HistoryCleanDialog extends StatefulWidget {
 
   @override
   State<HistoryCleanDialog> createState() => _HistoryCleanDialogState();
-}
-
-enum _Mode {
-  lastYear,
-  sixMonthsAgo,
-  custom;
 }
 
 class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
@@ -36,24 +30,24 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
     final now = DateTime.now();
     final local = MaterialLocalizations.of(context);
 
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: Text(S.analysisHistoryActionClear),
       scrollable: true,
       content: RadioGroup(
         groupValue: mode,
         onChanged: _setMode,
         child: Column(children: [
-          RadioListTile.adaptive(
+          RadioListTile(
             value: _Mode.lastYear,
             title: Text(S.analysisHistoryActionClearLastYear),
             subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year - 1, now.month, now.day))),
           ),
-          RadioListTile.adaptive(
+          RadioListTile(
             value: _Mode.sixMonthsAgo,
             title: Text(S.analysisHistoryActionClearLast6Months),
             subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year, now.month - 6, now.day))),
           ),
-          RadioListTile.adaptive(
+          RadioListTile(
             value: _Mode.custom,
             title: Text(S.analysisHistoryActionClearCustom),
             subtitle: Text(customDate == null
@@ -139,7 +133,7 @@ class HistoryScheduleResetNoDialog extends StatelessWidget {
   static Future<Period?> show(BuildContext context) async {
     final key = GlobalKey<_PeriodSelectorState>();
     final origin = Period.fromCache();
-    final period = await showAdaptiveDialog<Period>(
+    final period = await showDialog<Period>(
       context: context,
       builder: (context) => HistoryScheduleResetNoDialog._(key, origin.isInvalid ? null : origin),
     );
@@ -150,7 +144,7 @@ class HistoryScheduleResetNoDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: Text(S.analysisHistoryActionScheduleResetNoTitle),
       scrollable: true,
       content: Column(children: [
@@ -378,3 +372,9 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
 }
 
 void _noop(int? _) {}
+
+enum _Mode {
+  lastYear,
+  sixMonthsAgo,
+  custom;
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/route_buttons.dart';
@@ -54,11 +54,11 @@ class ProductIngredientView extends StatelessWidget {
   }
 
   void showActions(BuildContext context) {
-    BottomSheetActions.withDelete<int>(
+    MenuActionGroup.withDelete<int>(
       context,
       deleteValue: 0,
-      actions: <BottomSheetAction<int>>[
-        BottomSheetAction(
+      actions: <MenuAction<int>>[
+        MenuAction(
           title: Text(S.menuIngredientTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.menuProductUpdateIngredient,
@@ -66,7 +66,7 @@ class ProductIngredientView extends StatelessWidget {
           routeQueryParameters: {'iid': ingredient.id},
         ),
       ],
-      warningContent: Text(S.dialogDeletionContent(ingredient.name, '')),
+      warningContent: S.dialogDeletionContent(ingredient.name, ''),
       deleteCallback: () => ingredient.remove(),
     );
   }
@@ -82,7 +82,7 @@ class _QuantityTile extends StatelessWidget {
     return SlideToDelete(
       item: quantity,
       deleteCallback: _remove,
-      warningContent: Text(S.dialogDeletionContent(quantity.name, '')),
+      warningContent: S.dialogDeletionContent(quantity.name, ''),
       child: ListTile(
         key: Key('product_quantity.${quantity.id}'),
         title: Text(quantity.name),
@@ -91,10 +91,10 @@ class _QuantityTile extends StatelessWidget {
           S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice.toCurrency()),
           S.menuQuantityMetaAdditionalCost(quantity.additionalCost.toCurrency()),
         ]),
-        onLongPress: () => BottomSheetActions.withDelete<int>(
+        onLongPress: () => MenuActionGroup.withDelete<int>(
           context,
           deleteValue: 0,
-          warningContent: Text(S.dialogDeletionContent(quantity.name, '')),
+          warningContent: S.dialogDeletionContent(quantity.name, ''),
           deleteCallback: _remove,
         ),
         onTap: () => context.pushNamed(

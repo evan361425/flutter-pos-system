@@ -30,35 +30,37 @@ class PrinterPage extends StatelessWidget {
       return const _EmptyBody();
     }
 
-    return SlidableItemList(
-      hintText: '', // disabling hint text, no need to show count
-      leading: ButtonGroup(spacerAt: 2, buttons: [
-        RouteIconButton(
-          key: const Key('printer.create'),
-          route: Routes.printerCreate,
-          icon: const Icon(KIcons.add),
-          label: S.printerTitleCreate,
+    return SafeArea(
+      child: SlidableItemList(
+        hintText: '', // disabling hint text, no need to show count
+        leading: ButtonGroup(spacerAt: 2, buttons: [
+          RouteIconButton(
+            key: const Key('printer.create'),
+            route: Routes.printerCreate,
+            icon: const Icon(KIcons.add),
+            label: S.printerTitleCreate,
+          ),
+          IconButton(
+            key: const Key('printer.supported_list'),
+            onPressed: _showSupportedPrinters(context),
+            icon: const Icon(Icons.info_outline),
+            tooltip: S.printerSupportedTitle,
+          ),
+          RouteIconButton(
+            key: const Key('printer.settings'),
+            route: Routes.printerSettings,
+            icon: const Icon(Icons.settings),
+            label: S.printerTitleSettings,
+          ),
+        ]),
+        delegate: SlidableItemDelegate(
+          disableSlide: true,
+          items: Printers.instance.itemList,
+          tileBuilder: (printer, _, actorBuilder) => _Tile(printer, actorBuilder),
+          handleDelete: (printer) => printer.remove(),
+          deleteValue: 0,
+          warningContentBuilder: (_, printer) => S.dialogDeletionContent(printer.name, ''),
         ),
-        IconButton(
-          key: const Key('printer.supported_list'),
-          onPressed: _showSupportedPrinters(context),
-          icon: const Icon(Icons.info_outline),
-          tooltip: S.printerSupportedTitle,
-        ),
-        RouteIconButton(
-          key: const Key('printer.settings'),
-          route: Routes.printerSettings,
-          icon: const Icon(Icons.settings),
-          label: S.printerTitleSettings,
-        ),
-      ]),
-      delegate: SlidableItemDelegate(
-        disableSlide: true,
-        items: Printers.instance.itemList,
-        tileBuilder: (printer, _, actorBuilder) => _Tile(printer, actorBuilder),
-        handleDelete: (printer) => printer.remove(),
-        deleteValue: 0,
-        warningContentBuilder: (_, printer) => Text(S.dialogDeletionContent(printer.name, '')),
       ),
     );
   }
@@ -162,24 +164,26 @@ class _EmptyBody extends StatelessWidget {
           Expanded(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 340),
-              child: SingleChildScrollView(
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    S.printerMetaHelper,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: kInternalSpacing),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: buttons,
-                  ),
-                  if (kDebugMode)
-                    OutlinedButton(
-                      onPressed: () => Printers.instance.addItem(Printer(id: 'demo', name: 'Demo Printer')),
-                      child: const Text('Add demo'),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(children: [
+                    Text(
+                      S.printerMetaHelper,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleMedium,
                     ),
-                ]),
+                    const SizedBox(height: kInternalSpacing),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: buttons,
+                    ),
+                    if (kDebugMode)
+                      OutlinedButton(
+                        onPressed: () => Printers.instance.addItem(Printer(id: 'demo', name: 'Demo Printer')),
+                        child: const Text('Add demo'),
+                      ),
+                  ]),
+                ),
               ),
             ),
           ),
@@ -230,7 +234,7 @@ class _Wave2 extends CustomClipper<Path> {
 }
 
 VoidCallback _showSupportedPrinters(BuildContext context) {
-  return () => showAdaptiveDialog(
+  return () => showDialog(
         context: context,
         builder: (context) => ResponsiveDialog(
           title: Text(S.printerSupportedTitle),

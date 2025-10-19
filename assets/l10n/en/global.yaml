@@ -44,7 +44,7 @@ dialog:
   - Delete Confirmation
   - Title displayed on the DeleteDialog.
   deletionContent:
-  - |
+  - |-
     Are you sure you want to delete "{name}"?
 
     {more}This action cannot be undone!

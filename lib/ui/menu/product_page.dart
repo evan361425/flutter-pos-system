@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/slivers/sliver_image_app_bar.dart';
 import 'package:possystem/components/style/buttons.dart';
@@ -46,6 +46,7 @@ class _ProductPageState extends State<ProductPage> {
     final items = widget.product.itemList;
     return Dialog.fullscreen(
       child: Scaffold(
+        primary: false,
         body: CustomScrollView(slivers: [
           SliverImageAppBar(
             model: widget.product,
@@ -95,7 +96,7 @@ class _ProductPageState extends State<ProductPage> {
       _buildActionButton(),
     ]);
 
-    final dialog = AlertDialog.adaptive(
+    final dialog = AlertDialog(
       contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
       scrollable: true,
       content: ConstrainedBox(
@@ -195,25 +196,25 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _showActions(BuildContext context) async {
-    final result = await BottomSheetActions.withDelete<_Action>(
+    final result = await MenuActionGroup.withDelete<_Action>(
       context,
       deleteCallback: widget.product.remove,
       deleteValue: _Action.delete,
       popAfterDeleted: true,
-      warningContent: Text(S.dialogDeletionContent(widget.product.name, '')),
-      actions: <BottomSheetAction<_Action>>[
-        BottomSheetAction(
+      warningContent: S.dialogDeletionContent(widget.product.name, ''),
+      actions: <MenuAction<_Action>>[
+        MenuAction(
           title: Text(S.menuProductTitleUpdate),
           leading: const Icon(KIcons.modal),
           route: Routes.menuProductUpdate,
           routePathParameters: {'id': widget.product.id},
         ),
-        BottomSheetAction(
+        MenuAction(
           title: Text(S.menuProductTitleUpdateImage),
           leading: const Icon(KIcons.image),
           returnValue: _Action.changeImage,
         ),
-        BottomSheetAction(
+        MenuAction(
           title: Text(S.menuIngredientTitleReorder),
           leading: const Icon(KIcons.reorder),
           route: Routes.menuProductReorderIngredient,

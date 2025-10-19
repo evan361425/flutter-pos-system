@@ -43,5 +43,19 @@
 		<false/>
 		<key>UIStatusBarHidden</key>
 		<true/>
+		<key>NSCameraUsageDescription</key>
+		<string>This app needs access to camera to take photos of products</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>mailto</string>
+		</array>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>This app needs access to photo library to select product images</string>
+		<key>NSBluetoothAlwaysUsageDescription</key>
+		<string>This app may connect to Bluetooth devices like printers</string>
+		<key>CADisableMinimumFrameDurationOnPhone</key>
+		<true/>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true/>
 	</dict>
 </plist>

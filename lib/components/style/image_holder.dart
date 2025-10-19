@@ -78,7 +78,6 @@ class ImageHolder extends StatelessWidget {
         aspectRatio: 1,
         child: Material(
           type: MaterialType.transparency,
-          textStyle: TextStyle(color: style?.color),
           child: Ink.image(
             padding: EdgeInsets.zero,
             image: image,

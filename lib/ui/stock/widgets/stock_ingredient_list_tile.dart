@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/bottom_sheet_actions.dart';
 import 'package:possystem/components/dialog/slider_text_dialog.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/style/empty_body.dart';
 import 'package:possystem/components/style/percentile_bar.dart';
 import 'package:possystem/constants/icons.dart';
@@ -51,18 +51,18 @@ class StockIngredientListTile extends StatelessWidget {
     final count = Menu.instance.getIngredients(item.id).length;
     final more = S.stockIngredientDialogDeletionContent(count);
 
-    final result = await BottomSheetActions.withDelete<_Actions>(
+    final result = await MenuActionGroup.withDelete<_Actions>(
       context,
       deleteValue: _Actions.delete,
-      warningContent: Text(S.dialogDeletionContent(item.name, '$more\n\n')),
+      warningContent: S.dialogDeletionContent(item.name, '$more\n\n'),
       deleteCallback: delete,
       actions: [
-        BottomSheetAction(
+        MenuAction(
           title: Text(S.stockIngredientTitleUpdateAmount),
           leading: const Icon(Icons.edit_square),
           returnValue: _Actions.edit,
         ),
-        BottomSheetAction(
+        MenuAction(
           key: const Key('btn.edit'),
           title: Text(S.stockIngredientTitleUpdate),
           leading: const Icon(KIcons.edit),
@@ -83,7 +83,7 @@ class StockIngredientListTile extends StatelessWidget {
   }
 
   Future<void> editAmount(BuildContext context) async {
-    final result = await showAdaptiveDialog<String>(
+    final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         final currentValue = ValueNotifier<String?>(null);
