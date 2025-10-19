@@ -9,18 +9,36 @@ import 'package:possystem/settings/language_setting.dart';
 Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange range) async {
   final end = range.end.subtract(const Duration(days: 1));
   final now = DateTime.now();
-  // TODO: using fullscreen and dialog
+  final size = MediaQuery.sizeOf(context);
   final result = await showDateRangePicker(
     context: context,
     initialDateRange: DateTimeRange(
       start: range.start,
-      // must be greater than [lastDate]
+      // must greater than [lastDate]
       end: end.microsecondsSinceEpoch > now.microsecondsSinceEpoch ? now : end,
     ),
     initialEntryMode: DatePickerEntryMode.calendarOnly,
     firstDate: DateTime(2021, 1),
     lastDate: now,
     locale: LanguageSetting.instance.language.locale,
+    builder: size.width < 840 || size.height < 600
+        ? null
+        : (context, child) => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Card(
+                  margin: const EdgeInsets.all(12.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 560, maxHeight: 540),
+                    child: child,
+                  ),
+                ),
+              ],
+            ),
   );
 
   if (result != null) {

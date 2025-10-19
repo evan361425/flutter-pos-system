@@ -79,8 +79,6 @@ class _OrderCatalogListViewState extends State<OrderCatalogListView> {
 
   ChoiceChip _buildChoiceChip(Catalog catalog, int index) {
     return ChoiceChip(
-      // TODO: should dynamic add this when it is select,
-      // wait to support the API.
       avatar: selectedId == catalog.id ? null : catalog.avator,
       key: Key('order.catalog.${catalog.id}'),
       onSelected: (isSelected) {
@@ -130,7 +128,7 @@ class _ProductListView extends StatelessWidget {
           borderRadius: BorderRadius.horizontal(right: Radius.circular(8)),
         ),
       ),
-      // TODO: use AnimatedIcon
+      // TODO: use AnimatedIcon, when switching between list and grid
       child: MenuAnchor(
         controller: controller,
         childFocusNode: focusNode,
