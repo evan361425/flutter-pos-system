@@ -1,0 +1,219 @@
+name: Deploy to App Store
+
+on:
+  workflow_dispatch:
+    # Enable manual run
+    inputs:
+      lane:
+        description: "Fastlane lane to use (internal, beta, promote_to_production)"
+        required: true
+        default: "internal"
+      tag:
+        description: "GitHub tag"
+        required: true
+        default: "latest"
+      ref:
+        description: "GitHub ref, if not provided, will use the tag"
+        required: false
+        default: ""
+  workflow_run:
+    workflows:
+      - Add Artifacts for Release
+      - Add Artifacts for Release Candidate
+    types: [completed]
+  release:
+    # The prereleased type will not trigger for pre-releases published from
+    # draft releases, but the published type will trigger. If you want a
+    # workflow to run when stable and pre-releases publish, subscribe to
+    # published instead of released and prereleased.
+    types: [published]
+
+jobs:
+  # Extract some useful variable
+  # 1. lane - Same as 'workflow_dispatch' inputs, auto generate from tag name
+  # 2. dev_build_number - extract number of RC
+  # 3. flavor - 'dev'(internal) or 'prod'(beta)
+  # 4. build_code - pubspec.yaml build code.
+  var:
+    name: Extracting variables
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      ref: ${{ github.event.inputs.ref || steps.tag.outputs.result }}
+      lane: ${{ steps.lane.outputs.result }}
+      dev_build_number: ${{ steps.dev_build_number.outputs.result }}
+      flavor: ${{ steps.flavor.outputs.value }}
+      build_code: ${{ steps.build_code.outputs.value }}
+    steps:
+      - name: Get latest tag
+        id: tag
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            if (context.eventName === 'release') {
+              return context.payload.release.tag_name;
+            }
+
+            if (context.eventName === 'workflow_dispatch') {
+              if (context.payload.inputs.tag !== 'latest') {
+                return context.payload.inputs.tag;
+              }
+            }
+
+            const res = await github.rest.repos.listTags({
+              owner: 'evan361425',
+              repo: 'flutter-pos-system',
+              per_page: 1,
+            });
+
+            return res.data[0].name;
+
+      - name: Extract lane
+        id: lane
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            return context.eventName === 'workflow_dispatch'
+              ? '${{ github.event.inputs.lane }}'
+              : context.eventName === 'release'
+                ? 'promote_to_production'
+                : '${{ steps.tag.outputs.result }}'.includes('-rc')
+                  ? 'internal'
+                  : 'beta';
+
+      - name: Extract Flavor
+        id: flavor
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ steps.lane.outputs.result == 'internal' }}
+          if_true: dev
+          if_false: prod
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: "refs/tags/${{ steps.tag.outputs.result }}"
+
+      - name: Extract build code
+        id: build_code
+        run: |
+          ver=$(grep -m 1 '^version: ' pubspec.yaml | cut -d' ' -f2)
+          echo "value=$(echo "$ver" | cut -f2- -d"+")" >> $GITHUB_OUTPUT
+
+      - name: Extract build number
+        id: dev_build_number
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const ref = '${{ steps.tag.outputs.result }}';
+            return ref.includes('-rc')
+              ? ref.substr(ref.indexOf('-rc') + 3)
+              : ''.concat(${{ steps.build_code.outputs.value }} % 100);
+
+  fastlane-deploy:
+    runs-on: macos-latest
+    needs: var
+    steps:
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.x"
+          cache: true
+          channel: "stable"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.var.outputs.ref }}
+
+      # Setup Ruby, Bundler, and Gemfile dependencies
+      - name: Setup Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+          working-directory: ios
+
+      - run: bundle exec fastlane --version
+        working-directory: ios
+
+      # Get flutter dependencies.
+      - name: Build dependencies
+        env:
+          GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
+        run: |
+          flutter clean
+          echo "https://oauth:$GH_READ_PAT@github.com" > ~/.git-credentials
+          git config --global credential.helper store
+          flutter pub get
+
+      # Configure App Store Connect API Key
+      - name: Configure App Store Connect API Key
+        run: echo "$APP_STORE_CONNECT_API_KEY" > fastlane-api-key.json
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+        working-directory: ios/fastlane
+
+      # Configure certificates and provisioning profiles
+      - name: Configure code signing
+        run: |
+          # Import certificates
+          echo "$IOS_CERTIFICATE_P12" | base64 --decode > certificate.p12
+          
+          # Create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          
+          # Import certificate to keychain
+          security import certificate.p12 -k build.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          
+          # Install provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_PROVISION_PROFILE" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+        env:
+          IOS_CERTIFICATE_P12: ${{ secrets.IOS_CERTIFICATE_P12 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISION_PROFILE: ${{ secrets.IOS_PROVISION_PROFILE }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+
+      # Create ExportOptions.plist
+      - name: Create ExportOptions.plist
+        run: |
+          cat > ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>$TEAM_ID</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
+        env:
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+        working-directory: ios
+
+      # Build and deploy with Fastlane (by default, to internal track) 🚀.
+      # Naturally, promote_to_production only deploys.
+      - name: Fastlane building
+        run: |
+          bundle exec fastlane ${{ needs.var.outputs.lane }}
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          BUILD_NUMBER: ${{ needs.var.outputs.dev_build_number }}
+          VERSION_CODE: ${{ needs.var.outputs.build_code }}
+        working-directory: ios
