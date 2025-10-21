@@ -28,17 +28,27 @@ class _ReceiptComponentEditorDialogState extends State<ReceiptComponentEditorDia
   Widget build(BuildContext context) {
     return ResponsiveDialog(
       title: Text(_getTitle()),
-      content: _buildEditor(),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(S.btnCancel),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(_component),
-          child: Text(S.btnSave),
-        ),
-      ],
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildEditor(),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(_component),
+                child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

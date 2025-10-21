@@ -89,14 +89,14 @@ class _ReceiptEditorPageState extends State<ReceiptEditorPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(S.btnCancel),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
           ),
           FilledButton(
             onPressed: () {
               ReceiptSetting.instance.resetToDefault();
               Navigator.of(context).pop();
             },
-            child: Text(S.btnConfirm),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
           ),
         ],
       ),

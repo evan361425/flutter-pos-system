@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/settings/setting.dart';
 
@@ -103,32 +105,12 @@ class ReceiptSetting extends Setting<List<ReceiptComponent>> {
   /// Encode components to JSON string
   String _encodeComponents(List<ReceiptComponent> components) {
     final json = components.map((c) => c.toJson()).toList();
-    // Use a simple encoding - in real app could use dart:convert
-    return json.map((item) => item.entries.map((e) => '${e.key}:${e.value}').join(',')).join(';');
+    return jsonEncode(json);
   }
 
   /// Decode components from JSON string
   List<Map<String, Object?>> _decodeComponents(String data) {
-    return data.split(';').map((item) {
-      final map = <String, Object?>{};
-      for (final pair in item.split(',')) {
-        final parts = pair.split(':');
-        if (parts.length == 2) {
-          final key = parts[0];
-          final value = parts[1];
-          // Parse the value based on key
-          if (key == 'type' || key == 'textAlign') {
-            map[key] = int.parse(value);
-          } else if (key == 'fontSize' || key == 'height') {
-            map[key] = double.parse(value);
-          } else if (key.startsWith('show')) {
-            map[key] = value == 'true';
-          } else {
-            map[key] = value;
-          }
-        }
-      }
-      return map;
-    }).toList();
+    final decoded = jsonDecode(data) as List;
+    return decoded.cast<Map<String, Object?>>();
   }
 }
