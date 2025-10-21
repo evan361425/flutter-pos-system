@@ -49,6 +49,7 @@ import 'package:possystem/ui/order_attr/widgets/order_attribute_reorder.dart';
 import 'package:possystem/ui/printer/printer_modal.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
 import 'package:possystem/ui/printer/printer_settings_modal.dart';
+import 'package:possystem/ui/printer/receipt_editor_page.dart';
 import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
@@ -546,6 +547,34 @@ class Routes {
               return MaterialDialogPage(child: _l(PrinterModal(printer: p), state));
             },
           ),
+          GoRoute(
+            name: printerSettings,
+            path: 'settings',
+            parentNavigatorKey: rootNavigatorKey,
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsModal(), state)),
+          ),
+          GoRoute(
+            name: printerReceiptEditor,
+            path: 'receipt-editor',
+            parentNavigatorKey: rootNavigatorKey,
+            builder: (ctx, state) => _l(const ReceiptEditorPage(), state),
+          ),
+          GoRoute(
+            path: 'a/:id',
+            parentNavigatorKey: rootNavigatorKey,
+            redirect: _redirectIfMissed(path: 'printer', hasItem: (id) => Printers.instance.hasItem(id)),
+            routes: [
+              GoRoute(
+                name: printerUpdate,
+                path: 'update',
+                parentNavigatorKey: rootNavigatorKey,
+                pageBuilder: (ctx, state) {
+                  final p = Printers.instance.getItem(state.pathParameters['id']!)!;
+                  return MaterialDialogPage(child: _l(PrinterModal(printer: p), state));
+                },
+              ),
+            ],
+          ),
         ],
       ),
     ],
@@ -711,6 +740,7 @@ class Routes {
   static const printer = 'printer';
   static const printerCreate = 'printer.create';
   static const printerSettings = 'printer.settings';
+  static const printerReceiptEditor = 'printer.receiptEditor';
   static const printerUpdate = 'printer.update';
 }
 
