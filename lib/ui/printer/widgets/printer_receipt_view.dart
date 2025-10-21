@@ -99,7 +99,7 @@ class PrinterReceiptView extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
           child: Text(
-            'Order ID: ${order.id}',
+            'Order ID: ${order.id ?? order.createdAt.millisecondsSinceEpoch}',
             style: theme.bodyMedium?.copyWith(color: text),
           ),
         );
