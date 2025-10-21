@@ -110,6 +110,35 @@ receipt:
   paid: Paid
   price: Price
   change: Change
+  editor:
+    title: Customize Receipt
+    reset: Reset
+    resetTitle: Reset to Default?
+    resetContent: This will restore the default receipt layout. All customizations will be lost.
+  component:
+    addTitle: Add Component
+    orderTable: Order Table
+    textField: Text Field
+    divider: Divider
+    timestamp: Order Timestamp
+    orderId: Order ID
+    totalSection: Total Section
+    paymentSection: Payment Section
+    text: Text
+    fontSize: Font Size
+    height: Height
+    alignment: Alignment
+    alignLeft: Left
+    alignCenter: Center
+    alignRight: Right
+    dateFormat: Date Format
+    dateFormatFull: Full (Date & Time)
+    dateFormatDate: Date Only
+    dateFormatTime: Time Only
+    showProductName: Show Product Name
+    showCatalogName: Show Catalog Name
+    orderIdDesc: Display order identifier
+    paymentDesc: Show payment details
 info:
   title: Printer Information
   name: Name

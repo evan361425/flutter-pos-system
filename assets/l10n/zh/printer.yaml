@@ -101,6 +101,35 @@ receipt:
   paid: 付額
   price: 總價
   change: 找錢
+  editor:
+    title: 自訂收據格式
+    reset: 重置
+    resetTitle: 重置為預設？
+    resetContent: 這將恢復預設的收據佈局。所有自訂設定將會遺失。
+  component:
+    addTitle: 新增元件
+    orderTable: 訂單表格
+    textField: 文字欄位
+    divider: 分隔線
+    timestamp: 訂單時間戳記
+    orderId: 訂單編號
+    totalSection: 總計區塊
+    paymentSection: 付款區塊
+    text: 文字
+    fontSize: 字型大小
+    height: 高度
+    alignment: 對齊方式
+    alignLeft: 靠左
+    alignCenter: 置中
+    alignRight: 靠右
+    dateFormat: 日期格式
+    dateFormatFull: 完整（日期與時間）
+    dateFormatDate: 僅日期
+    dateFormatTime: 僅時間
+    showProductName: 顯示產品名稱
+    showCatalogName: 顯示目錄名稱
+    orderIdDesc: 顯示訂單識別碼
+    paymentDesc: 顯示付款詳情
 info:
   title: 出單機資訊
   name: 名稱
