@@ -25,6 +25,7 @@ dependencies:
   firebase_crashlytics: ^4.3.10
   firebase_in_app_messaging: ^0.8.1+10
   firebase_performance: ^0.10.1+10
+  cloud_firestore: ^5.6.1
 
   # services
   sqflite: ^2.4.2  # 25, 02-13
