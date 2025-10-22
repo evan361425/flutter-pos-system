@@ -144,7 +144,17 @@ class StorageSanitizedData {
   }
 }
 
-enum Stores { menu, stock, replenisher, quantities, cashier, orderAttributes, analysis, printers }
+enum Stores {
+  menu,
+  stock,
+  replenisher,
+  quantities,
+  cashier,
+  orderAttributes,
+  analysis,
+  printers,
+  receiptTemplates,
+}
 
 class StorageSanitizedValue {
   late final String id;
@@ -164,11 +174,10 @@ class StorageSanitizedValue {
   }
 }
 
-typedef StorageOpener =
-    Future<Database> Function(
-      String path, {
-      int? version,
-      Future<dynamic> Function(Database, int, int)? onVersionChanged,
-      DatabaseMode? mode,
-      SembastCodec? codec,
-    });
+typedef StorageOpener = Future<Database> Function(
+  String path, {
+  int? version,
+  Future<dynamic> Function(Database, int, int)? onVersionChanged,
+  DatabaseMode? mode,
+  SembastCodec? codec,
+});

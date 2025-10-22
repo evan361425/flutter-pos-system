@@ -5,7 +5,7 @@ import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/receipt_component.dart';
-import 'package:possystem/settings/receipt_setting.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/translator.dart';
 
 class PrinterReceiptView extends StatelessWidget {
@@ -34,8 +34,8 @@ class PrinterReceiptView extends StatelessWidget {
         .toList();
     const text = Color(0xFF424242);
 
-    // Use custom components if provided, otherwise use default settings
-    final components = customComponents ?? ReceiptSetting.instance.value;
+    // Use custom components if provided, otherwise use default from repository
+    final components = customComponents ?? ReceiptTemplates.instance.currentComponents;
 
     final children = components.map((component) {
       return _buildComponent(component, theme, color, text, discounted, attributes);
