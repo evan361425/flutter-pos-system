@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 
 class ElfPage extends StatelessWidget {
@@ -27,6 +29,13 @@ class ElfPage extends StatelessWidget {
           Linkify.fromString(
             S.settingElfContent,
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24.0),
+          ElevatedButton.icon(
+            key: const Key('elf.chat_button'),
+            onPressed: () => context.goNamed(Routes.chat),
+            icon: const Icon(Icons.chat_outlined),
+            label: Text(S.settingElfChatButton),
           ),
           const SizedBox(height: kFABSpacing),
         ]),
