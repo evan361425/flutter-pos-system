@@ -20,6 +20,7 @@ import 'models/repository/cashier.dart';
 import 'models/repository/menu.dart';
 import 'models/repository/order_attributes.dart';
 import 'models/repository/quantities.dart';
+import 'models/repository/receipt_templates.dart';
 import 'models/repository/replenisher.dart';
 import 'models/repository/seller.dart';
 import 'models/repository/stock.dart';
@@ -65,6 +66,7 @@ void main() async {
       await Stock().initialize();
       await Quantities().initialize();
       await OrderAttributes().initialize();
+      await ReceiptTemplates().initialize();
       await Replenisher().initialize();
       await Cashier().reset();
       await Analysis().initialize();
@@ -86,6 +88,7 @@ void main() async {
           ChangeNotifierProvider.value(value: Cashier.instance),
           ChangeNotifierProvider.value(value: Cart.instance),
           ChangeNotifierProvider.value(value: Printers.instance),
+          ChangeNotifierProvider.value(value: ReceiptTemplates.instance),
         ],
         child: const App(),
       ));

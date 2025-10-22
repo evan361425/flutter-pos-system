@@ -50,6 +50,9 @@ import 'package:possystem/ui/printer/printer_modal.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
 import 'package:possystem/ui/printer/printer_settings_modal.dart';
 import 'package:possystem/ui/printer/receipt_editor_page.dart';
+import 'package:possystem/ui/printer/widgets/receipt_template_component_editor_page.dart';
+import 'package:possystem/ui/printer/widgets/receipt_template_modal.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
@@ -515,6 +518,39 @@ class Routes {
             path: 'receipt-editor',
             parentNavigatorKey: rootNavigatorKey,
             builder: (ctx, state) => _l(const ReceiptEditorPage(), state),
+            routes: [
+              GoRoute(
+                name: printerReceiptTemplateCreate,
+                path: 'create',
+                parentNavigatorKey: rootNavigatorKey,
+                pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ReceiptTemplateModal(), state)),
+              ),
+              GoRoute(
+                path: 't/:id',
+                parentNavigatorKey: rootNavigatorKey,
+                redirect: _redirectIfMissed(path: 'receipt-editor', hasItem: (id) => ReceiptTemplates.instance.hasItem(id)),
+                routes: [
+                  GoRoute(
+                    name: printerReceiptTemplateUpdate,
+                    path: 'update',
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (ctx, state) {
+                      final template = ReceiptTemplates.instance.getItem(state.pathParameters['id']!)!;
+                      return MaterialDialogPage(child: _l(ReceiptTemplateModal(template: template), state));
+                    },
+                  ),
+                  GoRoute(
+                    name: printerReceiptTemplateComponentEditor,
+                    path: 'components',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (ctx, state) {
+                      final template = ReceiptTemplates.instance.getItem(state.pathParameters['id']!)!;
+                      return _l(ReceiptTemplateComponentEditorPage(template: template), state);
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
           GoRoute(
             path: 'a/:id',
@@ -714,6 +750,9 @@ class Routes {
   static const printerCreate = 'printer.create';
   static const printerSettings = 'printer.settings';
   static const printerReceiptEditor = 'printer.receiptEditor';
+  static const printerReceiptTemplateCreate = 'printer.receiptTemplate.create';
+  static const printerReceiptTemplateUpdate = 'printer.receiptTemplate.update';
+  static const printerReceiptTemplateComponentEditor = 'printer.receiptTemplate.componentEditor';
   static const printerUpdate = 'printer.update';
 }
 
