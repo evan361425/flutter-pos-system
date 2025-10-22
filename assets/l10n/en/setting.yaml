@@ -23,6 +23,10 @@ elf:
     empty: No messages yet. Start the conversation!
     inputHint: Type a message...
     sendButton: Send
+    addButton: Add attachment
+    addImage: Add Image
+    imageSelected: Image selected
+    removeImage: Remove image
     faq:
       title: Frequently Asked Questions
       question1: How can I request a new feature?

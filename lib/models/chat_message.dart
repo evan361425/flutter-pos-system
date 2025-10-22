@@ -7,6 +7,7 @@ class ChatMessage {
   final String senderEmail;
   final String senderName;
   final String text;
+  final String? imageUrl;
   final DateTime createdAt;
 
   ChatMessage({
@@ -16,6 +17,7 @@ class ChatMessage {
     required this.senderEmail,
     required this.senderName,
     required this.text,
+    this.imageUrl,
     required this.createdAt,
   });
 
@@ -28,6 +30,7 @@ class ChatMessage {
       senderEmail: data['senderEmail'] ?? '',
       senderName: data['senderName'] ?? '',
       text: data['text'] ?? '',
+      imageUrl: data['imageUrl'],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
@@ -39,6 +42,7 @@ class ChatMessage {
       'senderEmail': senderEmail,
       'senderName': senderName,
       'text': text,
+      if (imageUrl != null) 'imageUrl': imageUrl,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }

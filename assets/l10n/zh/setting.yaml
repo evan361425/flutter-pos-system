@@ -17,6 +17,10 @@ elf:
     empty: 尚無訊息。開始對話吧！
     inputHint: 輸入訊息...
     sendButton: 傳送
+    addButton: 加入附件
+    addImage: 加入圖片
+    imageSelected: 已選擇圖片
+    removeImage: 移除圖片
     faq:
       title: 常見問題
       question1: 如何請求新功能？

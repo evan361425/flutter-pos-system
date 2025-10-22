@@ -1,9 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/models/chat_message.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/services/chat_service.dart';
+import 'package:possystem/services/image_dumper.dart';
 import 'package:possystem/translator.dart';
 
 class ChatPage extends StatefulWidget {
@@ -21,6 +25,7 @@ class _ChatPageState extends State<ChatPage> {
   String? _currentRoomId;
   bool _isLoading = true;
   String? _error;
+  XFile? _selectedImage;
 
   @override
   void initState() {
@@ -44,13 +49,17 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _sendMessage() async {
-    if (_messageController.text.trim().isEmpty || _currentRoomId == null) return;
+    if ((_messageController.text.trim().isEmpty && _selectedImage == null) || _currentRoomId == null) return;
 
     final text = _messageController.text.trim();
+    final image = _selectedImage;
     _messageController.clear();
+    setState(() {
+      _selectedImage = null;
+    });
 
     try {
-      await ChatService.instance.sendMessage(_currentRoomId!, text);
+      await ChatService.instance.sendMessage(_currentRoomId!, text, image: image);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -58,6 +67,33 @@ class _ChatPageState extends State<ChatPage> {
         );
       }
     }
+  }
+
+  Future<void> _pickImage() async {
+    final image = await ImageDumper.instance.pick();
+    if (image != null) {
+      setState(() {
+        _selectedImage = image;
+      });
+    }
+  }
+
+  void _showImageActions() {
+    showPositionedMenu<_ImageAction>(
+      context,
+      actions: [
+        MenuAction(
+          key: const Key('chat.add_image'),
+          title: Text(S.settingElfChatAddImage),
+          leading: const Icon(Icons.image_outlined),
+          returnValue: _ImageAction.addImage,
+        ),
+      ],
+    ).then((action) {
+      if (action == _ImageAction.addImage) {
+        _pickImage();
+      }
+    });
   }
 
   @override
@@ -167,30 +203,80 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: TextField(
-              key: const Key('chat.input'),
-              controller: _messageController,
-              decoration: InputDecoration(
-                hintText: S.settingElfChatInputHint,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          if (_selectedImage != null)
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(8),
               ),
-              maxLines: null,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (_) => _sendMessage(),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Image.file(
+                      _selectedImage!.file,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      S.settingElfChatImageSelected,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  IconButton(
+                    key: const Key('chat.remove_image'),
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      setState(() {
+                        _selectedImage = null;
+                      });
+                    },
+                    tooltip: S.settingElfChatRemoveImage,
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            key: const Key('chat.send'),
-            icon: const Icon(Icons.send),
-            onPressed: _sendMessage,
-            tooltip: S.settingElfChatSendButton,
+          Row(
+            children: [
+              IconButton(
+                key: const Key('chat.add'),
+                icon: const Icon(Icons.add),
+                onPressed: _showImageActions,
+                tooltip: S.settingElfChatAddButton,
+              ),
+              Expanded(
+                child: TextField(
+                  key: const Key('chat.input'),
+                  controller: _messageController,
+                  decoration: InputDecoration(
+                    hintText: S.settingElfChatInputHint,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                  maxLines: null,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _sendMessage(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                key: const Key('chat.send'),
+                icon: const Icon(Icons.send),
+                onPressed: _sendMessage,
+                tooltip: S.settingElfChatSendButton,
+              ),
+            ],
           ),
         ],
       ),
@@ -287,12 +373,30 @@ class _MessageBubble extends StatelessWidget {
                   ),
                 ),
               ),
-            Text(
-              message.text,
-              style: TextStyle(
-                color: isMe ? Colors.white : null,
+            if (message.imageUrl != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: message.imageUrl!,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const SizedBox(
+                      height: 200,
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                  ),
+                ),
               ),
-            ),
+            if (message.text.isNotEmpty)
+              Text(
+                message.text,
+                style: TextStyle(
+                  color: isMe ? Colors.white : null,
+                ),
+              ),
             const SizedBox(height: 4),
             Text(
               _formatTime(message.createdAt),
@@ -345,4 +449,8 @@ class _FAQItem extends StatelessWidget {
       ],
     );
   }
+}
+
+enum _ImageAction {
+  addImage,
 }
