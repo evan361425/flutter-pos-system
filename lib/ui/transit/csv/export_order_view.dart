@@ -14,7 +14,7 @@ class ExportOrderHeader extends TransitOrderHeader {
     super.key,
     required super.stateNotifier,
     required super.ranger,
-    super.settings,
+    required super.settings,
     this.exporter = const CSVExporter(),
   });
 
@@ -23,8 +23,9 @@ class ExportOrderHeader extends TransitOrderHeader {
 
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
-    final headers = FormattableOrder.values.map((e) => e.formatHeader()).toList();
-    final data = FormattableOrder.values
+    final selectedColumns = settings!.value.selectedColumns.toList();
+    final headers = selectedColumns.map((e) => e.formatHeader()).toList();
+    final data = selectedColumns
         .map((formatter) => orders.expand((o) {
               return formatter.formatRows(o).map((r) => r.map((v) => v.toString()));
             }))

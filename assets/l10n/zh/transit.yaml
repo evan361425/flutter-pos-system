@@ -47,12 +47,15 @@ order:
       titlePrefix:
       - 'true': 有日期前綴
         'false': 無日期前綴
+      columns: 已選擇 {count} 個欄位
     overwrite:
       label: 是否覆寫表單
       hint: 覆寫表單之後，將會從第一行開始匯出
     titlePrefix:
       label: 加上日期前綴
       hint: 表單名稱前面加上日期前綴，例如：「0101 - 0131 訂單資料」
+    columns:
+      label: 匯出欄位
     recommendCombination: 不覆寫而改用附加的時候，建議表單名稱「不要」加上日期前綴
   meta:
     range: "{range} 的訂單"

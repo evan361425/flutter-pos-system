@@ -176,7 +176,7 @@ class _TransitStationState extends State<TransitStation> {
       TransitMethod.googleSheet => gs.ExportOrderHeader(
           stateNotifier: stateNotifier, exporter: _googleSheetExporter, ranger: ranger, settings: _settings),
       TransitMethod.excel => excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger, settings: _settings),
-      TransitMethod.csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
+      TransitMethod.csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger, settings: _settings),
       TransitMethod.plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
     };
   }

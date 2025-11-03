@@ -244,6 +244,7 @@ abstract class TransitOrderHeader extends StatelessWidget {
           return MetaBlock.withString(context, [
             S.transitOrderSettingMetaOverwrite(p.isOverwrite.toString()),
             S.transitOrderSettingMetaTitlePrefix(p.withPrefix.toString()),
+            S.transitOrderSettingMetaColumns(p.selectedColumns.length.toString()),
           ])!;
         },
       );
@@ -304,15 +305,29 @@ class TransitOrderSettings {
   /// Whether the form name is prefixed with the date, default is true
   final bool withPrefix;
 
+  /// Which columns to include in export, default is all columns
+  final Set<FormattableOrder> selectedColumns;
+
   const TransitOrderSettings({
     this.isOverwrite = true,
     this.withPrefix = true,
+    this.selectedColumns = const {
+      FormattableOrder.basic,
+      FormattableOrder.attr,
+      FormattableOrder.product,
+      FormattableOrder.ingredient,
+    },
   });
 
   factory TransitOrderSettings.fromCache() {
+    final selectedIds = Cache.instance.get<List<dynamic>>('$_cacheMetaKey.selectedColumns')?.cast<int>() ??
+        [0, 1, 2, 3]; // default to all columns
+    final selectedColumns = selectedIds.map((id) => FormattableOrder.values[id]).toSet();
+
     return TransitOrderSettings(
       isOverwrite: Cache.instance.get<bool>('$_cacheMetaKey.isOverwrite') ?? true,
       withPrefix: Cache.instance.get<bool>('$_cacheMetaKey.withPrefix') ?? true,
+      selectedColumns: selectedColumns,
     );
   }
 
@@ -320,13 +335,14 @@ class TransitOrderSettings {
     final prefix = withPrefix ? '${range.formatCompact(S.localeName)} ' : '';
 
     return {
-      for (final e in FormattableOrder.values) e: '$prefix${e.l10nName}',
+      for (final e in selectedColumns) e: '$prefix${e.l10nName}',
     };
   }
 
   Future<void> cache() async {
     await Cache.instance.set<bool>('$_cacheMetaKey.isOverwrite', isOverwrite);
     await Cache.instance.set<bool>('$_cacheMetaKey.withPrefix', withPrefix);
+    await Cache.instance.set<List<int>>('$_cacheMetaKey.selectedColumns', selectedColumns.map((e) => e.index).toList());
   }
 }
 
@@ -486,6 +502,8 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
 
   late bool withPrefix;
 
+  late Set<FormattableOrder> selectedColumns;
+
   @override
   String get title => S.transitOrderSettingTitle;
 
@@ -527,6 +545,31 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
             ),
           ),
         ),
+      const Divider(),
+      p(
+        Text(
+          S.transitOrderSettingColumnsLabel,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+      for (final column in FormattableOrder.values)
+        CheckboxListTile(
+          key: Key('transit.order.column.${column.name}'),
+          value: selectedColumns.contains(column),
+          title: Text(column.l10nName),
+          onChanged: (value) {
+            setState(() {
+              if (value == true) {
+                selectedColumns.add(column);
+              } else {
+                // Don't allow deselecting all columns
+                if (selectedColumns.length > 1) {
+                  selectedColumns.remove(column);
+                }
+              }
+            });
+          },
+        ),
     ];
   }
 
@@ -535,6 +578,7 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
     final properties = TransitOrderSettings(
       isOverwrite: isOverwrite,
       withPrefix: withPrefix,
+      selectedColumns: selectedColumns,
     );
     await properties.cache();
 
@@ -548,5 +592,6 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
     super.initState();
     isOverwrite = widget.properties.isOverwrite;
     withPrefix = widget.properties.withPrefix;
+    selectedColumns = Set.from(widget.properties.selectedColumns);
   }
 }

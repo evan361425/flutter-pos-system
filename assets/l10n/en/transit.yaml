@@ -49,12 +49,17 @@ order:
       - 'true': Has date prefix
         'false': No date prefix
       - value:
+      columns:
+      - '{count} columns selected'
+      - count:
     overwrite:
       label: Overwrite Sheet
       hint: Overwriting the sheet will start exporting from the first row.
     titlePrefix:
       label: Add Date Prefix
       hint: Add a date prefix to the sheet name, for example, "0101 - 0131 Order Data".
+    columns:
+      label: Export Columns
     recommendCombination: When not overwriting and using append instead, it's recommended not to add a date prefix to the form name.
   meta:
     range:
