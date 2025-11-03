@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
@@ -128,6 +129,62 @@ void main() {
       expect(settings.value.isOverwrite, isFalse);
       verify(cache.set('exporter_order_meta.isOverwrite', false)).called(1);
       verify(cache.set('exporter_order_meta.withPrefix', false)).called(1);
+      verify(cache.set('exporter_order_meta.selectedColumns', [0, 1, 2, 3])).called(1);
+    });
+
+    testWidgets('edit column selection', (tester) async {
+      cache.reset();
+      when(cache.get(any)).thenReturn(null);
+      when(cache.set(any, any)).thenAnswer((_) async => true);
+      OrderSetter.setMetrics([], countingAll: true);
+      OrderSetter.setOrders([]);
+
+      final ranger = ValueNotifier(DateTimeRange(
+        start: DateTime(2023, DateTime.june, 10),
+        end: DateTime(2023, DateTime.june, 11),
+      ));
+      final settings = ValueNotifier(const TransitOrderSettings());
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Column(children: [
+            _TestOrderHeader(
+              stateNotifier: TransitStateNotifier(),
+              ranger: ranger,
+              settings: settings,
+            ),
+          ]),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      // Open settings dialog
+      await tester.tap(find.byIcon(Icons.settings_sharp));
+      await tester.pumpAndSettle();
+
+      // Verify all columns are initially selected
+      expect(find.byKey(const Key('transit.order.column.basic')), findsOneWidget);
+      expect(find.byKey(const Key('transit.order.column.attr')), findsOneWidget);
+      expect(find.byKey(const Key('transit.order.column.product')), findsOneWidget);
+      expect(find.byKey(const Key('transit.order.column.ingredient')), findsOneWidget);
+
+      // Deselect 'attr' column
+      await tester.tap(find.byKey(const Key('transit.order.column.attr')));
+      await tester.pumpAndSettle();
+
+      // Deselect 'ingredient' column
+      await tester.tap(find.byKey(const Key('transit.order.column.ingredient')));
+      await tester.pumpAndSettle();
+
+      // Save settings
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
+      // Verify only basic and product columns are selected
+      expect(settings.value.selectedColumns.length, equals(2));
+      expect(settings.value.selectedColumns.contains(FormattableOrder.basic), isTrue);
+      expect(settings.value.selectedColumns.contains(FormattableOrder.product), isTrue);
+      verify(cache.set('exporter_order_meta.selectedColumns', [0, 2])).called(1);
     });
 
     setUpAll(() {
