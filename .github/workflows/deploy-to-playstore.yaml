@@ -1,5 +1,6 @@
 name: Deploy to Play Store
 
+# Any changes here should be mirrored to deploy-to-appstore.yaml
 on:
   workflow_dispatch:
     # Enable manual run
@@ -142,6 +143,8 @@ jobs:
       # Get flutter dependencies.
       - name: Build dependencies
         env:
+          # private package:
+          # - flutter-pos-packages
           GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
         run: |
           flutter clean

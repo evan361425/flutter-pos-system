@@ -1,8 +1,8 @@
 name: Deploy to App Store
 
+# Copied from deploy-to-playstore.yaml
 on:
   workflow_dispatch:
-    # Enable manual run
     inputs:
       lane:
         description: "Fastlane lane to use (internal, beta, promote_to_production)"
@@ -22,10 +22,6 @@ on:
       - Add Artifacts for Release Candidate
     types: [completed]
   release:
-    # The prereleased type will not trigger for pre-releases published from
-    # draft releases, but the published type will trigger. If you want a
-    # workflow to run when stable and pre-releases publish, subscribe to
-    # published instead of released and prereleased.
     types: [published]
 
 jobs:
@@ -181,6 +177,7 @@ jobs:
           IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           IOS_PROVISION_PROFILE: ${{ secrets.IOS_PROVISION_PROFILE }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        working-directory: ios
 
       # Create ExportOptions.plist
       - name: Create ExportOptions.plist

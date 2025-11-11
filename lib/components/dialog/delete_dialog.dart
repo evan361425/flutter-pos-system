@@ -12,17 +12,17 @@ class DeleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: Text(S.dialogDeletionTitle),
       content: SingleChildScrollView(
         child: Text(content, textAlign: TextAlign.start),
       ),
       actions: <Widget>[
         PopButton(title: local.cancelButtonLabel),
-        TextButton(
+        FilledButton(
           key: const Key('delete_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
-          style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+          style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
           child: Text(local.deleteButtonTooltip),
         ),
       ],
@@ -59,7 +59,7 @@ class DeleteDialog extends StatelessWidget {
       return startDelete();
     }
 
-    final isConfirmed = await showAdaptiveDialog<bool>(
+    final isConfirmed = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) => DeleteDialog(content: content),

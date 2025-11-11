@@ -39,7 +39,7 @@ platform :ios do
     # Upload to TestFlight for internal testing
     upload_to_testflight(
       skip_waiting_for_build_processing: true,
-      ipa: "../build/ios/ipa/*.ipa",
+      ipa: "../../build/ios/ipa/*.ipa",
       api_key_path: "fastlane-api-key.json",
     )
   end
@@ -52,7 +52,7 @@ platform :ios do
     # Upload to TestFlight for external testing
     upload_to_testflight(
       skip_waiting_for_build_processing: false,
-      ipa: "../build/ios/ipa/*.ipa",
+      ipa: "../../build/ios/ipa/*.ipa",
       api_key_path: "fastlane-api-key.json",
     )
   end
