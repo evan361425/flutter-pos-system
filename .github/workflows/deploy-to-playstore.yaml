@@ -42,7 +42,7 @@ jobs:
       ref: ${{ github.event.inputs.ref || steps.tag.outputs.result }}
       lane: ${{ steps.lane.outputs.result }}
       dev_build_number: ${{ steps.dev_build_number.outputs.result }}
-      flavor: ${{ steps.flavor.outputs.value }}
+      flavor: ${{ steps.flavor.outputs.result }}
       build_code: ${{ steps.build_code.outputs.value }}
     steps:
       - name: Get latest tag
@@ -88,11 +88,13 @@ jobs:
 
       - name: Extract Flavor
         id: flavor
-        uses: haya14busa/action-cond@v1
+        uses: actions/github-script@v8
+        env:
+          LANE: ${{ steps.lane.outputs.result }}
         with:
-          cond: ${{ steps.lane.outputs.result == 'internal' }}
-          if_true: dev
-          if_false: prod
+          result-encoding: string
+          script: |
+            return process.env.LANE === 'internal' ? 'dev' : 'prod';
 
       - name: Checkout code
         uses: actions/checkout@v6
