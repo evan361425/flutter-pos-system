@@ -19,7 +19,7 @@ jobs:
       build_code: ${{ steps.pubspec_version.outputs.code }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
 
       - name: Extract pubspec version and code
@@ -31,12 +31,14 @@ jobs:
 
       - name: Get tag that trigger this workflow
         id: tag
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
         with:
           result-encoding: string
           script: |
             return context.eventName === 'workflow_dispatch'
-              ? '${{ github.event.inputs.tag }}'
+              ? process.env.INPUT_TAG
               : context.payload.ref.replace(/\/?refs\/tags\//, '');
 
       - name: Check version
@@ -80,7 +82,7 @@ jobs:
       - check-version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: "master"
 

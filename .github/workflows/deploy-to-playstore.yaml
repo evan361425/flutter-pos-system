@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Get latest tag
         id: tag
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           result-encoding: string
           script: |
@@ -71,15 +71,18 @@ jobs:
 
       - name: Extract lane
         id: lane
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
+        env:
+          INPUT_LANE: ${{ github.event.inputs.lane }}
+          TAG_NAME: ${{ steps.tag.outputs.result }}
         with:
           result-encoding: string
           script: |
             return context.eventName === 'workflow_dispatch'
-              ? '${{ github.event.inputs.lane }}'
+              ? process.env.INPUT_LANE
               : context.eventName === 'release'
                 ? 'promote_to_production'
-                : '${{ steps.tag.outputs.result }}'.includes('-rc')
+                : process.env.TAG_NAME.includes('-rc')
                   ? 'internal'
                   : 'beta';
 
@@ -92,7 +95,7 @@ jobs:
           if_false: prod
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: "refs/tags/${{ steps.tag.outputs.result }}"
 
@@ -104,14 +107,17 @@ jobs:
 
       - name: Extract build number
         id: dev_build_number
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
+        env:
+          BUILD_CODE: ${{ steps.build_code.outputs.value }}
+          TAG_NAME: ${{ steps.tag.outputs.result }}
         with:
           result-encoding: string
           script: |
-            const ref = '${{ steps.tag.outputs.result }}';
+            const ref = process.env.TAG_NAME;
             return ref.includes('-rc')
               ? ref.substr(ref.indexOf('-rc') + 3)
-              : ''.concat(${{ steps.build_code.outputs.value }} % 100);
+              : ''.concat(process.env.BUILD_CODE % 100);
 
   fastlane-deploy:
     runs-on: ubuntu-latest
@@ -125,7 +131,7 @@ jobs:
           channel: "stable"
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ needs.var.outputs.ref }}
 
@@ -150,7 +156,7 @@ jobs:
           flutter pub get
 
       # Setup Java environment in order to build the Android app.
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: "zulu"
           java-version: "17"
