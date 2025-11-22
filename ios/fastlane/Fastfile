@@ -31,23 +31,43 @@ platform :ios do
     sh "flutter build ios --no-codesign --dart-define=appFlavor=prod --dart-define=logLevel=info"
   end
 
-  desc "Submit to TestFlight"
-  lane :beta do
-    # Build the app
-    sh "flutter build ios --dart-define=appFlavor=prod --dart-define=logLevel=info"
+  desc "Submit a new Internal Build to TestFlight (internal testing)"
+  lane :internal do
+    # Build the app for development
+    sh "flutter build ipa --export-options-plist=ExportOptions.plist --dart-define=appFlavor=dev --dart-define=logLevel=info"
     
-    # Code signing and upload would go here when certificates are available
-    # build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    # upload_to_testflight
+    # Upload to TestFlight for internal testing
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      ipa: "../../build/ios/ipa/*.ipa",
+      api_key_path: "fastlane-api-key.json",
+    )
   end
 
-  desc "Submit to App Store"
-  lane :release do
-    # Build the app
-    sh "flutter build ios --dart-define=appFlavor=prod --dart-define=logLevel=info"
+  desc "Submit a new Beta Build to TestFlight (external testing)"
+  lane :beta do
+    # Build the app for production
+    sh "flutter build ipa --export-options-plist=ExportOptions.plist --dart-define=appFlavor=prod --dart-define=logLevel=info"
     
-    # Code signing and upload would go here when certificates are available
-    # build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    # upload_to_app_store
+    # Upload to TestFlight for external testing
+    upload_to_testflight(
+      skip_waiting_for_build_processing: false,
+      ipa: "../../build/ios/ipa/*.ipa",
+      api_key_path: "fastlane-api-key.json",
+    )
+  end
+
+  desc "Promote beta to production (App Store)"
+  lane :promote_to_production do
+    # Deliver the latest build to App Store
+    deliver(
+      skip_metadata: false,
+      skip_screenshots: false,
+      skip_binary_upload: true,
+      submit_for_review: false,
+      automatic_release: false,
+      api_key_path: "fastlane-api-key.json",
+      build_number: ENV['VERSION_CODE'],
+    )
   end
 end

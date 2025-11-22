@@ -17,7 +17,7 @@ class ConfirmDialog extends StatelessWidget {
     String? content,
     Widget? body,
   }) async {
-    final result = await showAdaptiveDialog<bool?>(
+    final result = await showDialog<bool?>(
       context: context,
       barrierDismissible: true,
       builder: (_) => ConfirmDialog(
@@ -32,7 +32,7 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
-    return AlertDialog.adaptive(
+    return AlertDialog(
       title: Text(title),
       content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[
@@ -40,7 +40,7 @@ class ConfirmDialog extends StatelessWidget {
           key: const Key('confirm_dialog.cancel'),
           title: local.cancelButtonLabel,
         ),
-        TextButton(
+        FilledButton(
           key: const Key('confirm_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(local.okButtonLabel),

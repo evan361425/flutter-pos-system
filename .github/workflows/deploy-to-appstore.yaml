@@ -1,9 +1,8 @@
-name: Deploy to Play Store
+name: Deploy to App Store
 
-# Any changes here should be mirrored to deploy-to-appstore.yaml
+# Copied from deploy-to-playstore.yaml
 on:
   workflow_dispatch:
-    # Enable manual run
     inputs:
       lane:
         description: "Fastlane lane to use (internal, beta, promote_to_production)"
@@ -23,10 +22,6 @@ on:
       - Add Artifacts for Release Candidate
     types: [completed]
   release:
-    # The prereleased type will not trigger for pre-releases published from
-    # draft releases, but the published type will trigger. If you want a
-    # workflow to run when stable and pre-releases publish, subscribe to
-    # published instead of released and prereleased.
     types: [published]
 
 jobs:
@@ -48,7 +43,7 @@ jobs:
     steps:
       - name: Get latest tag
         id: tag
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |
@@ -72,18 +67,15 @@ jobs:
 
       - name: Extract lane
         id: lane
-        uses: actions/github-script@v8
-        env:
-          INPUT_LANE: ${{ github.event.inputs.lane }}
-          TAG_NAME: ${{ steps.tag.outputs.result }}
+        uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |
             return context.eventName === 'workflow_dispatch'
-              ? process.env.INPUT_LANE
+              ? '${{ github.event.inputs.lane }}'
               : context.eventName === 'release'
                 ? 'promote_to_production'
-                : process.env.TAG_NAME.includes('-rc')
+                : '${{ steps.tag.outputs.result }}'.includes('-rc')
                   ? 'internal'
                   : 'beta';
 
@@ -96,7 +88,7 @@ jobs:
           if_false: prod
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: "refs/tags/${{ steps.tag.outputs.result }}"
 
@@ -108,20 +100,17 @@ jobs:
 
       - name: Extract build number
         id: dev_build_number
-        uses: actions/github-script@v8
-        env:
-          BUILD_CODE: ${{ steps.build_code.outputs.value }}
-          TAG_NAME: ${{ steps.tag.outputs.result }}
+        uses: actions/github-script@v7
         with:
           result-encoding: string
           script: |
-            const ref = process.env.TAG_NAME;
+            const ref = '${{ steps.tag.outputs.result }}';
             return ref.includes('-rc')
               ? ref.substr(ref.indexOf('-rc') + 3)
-              : ''.concat(process.env.BUILD_CODE % 100);
+              : ''.concat(${{ steps.build_code.outputs.value }} % 100);
 
   fastlane-deploy:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: var
     steps:
       - name: Set up Flutter
@@ -132,7 +121,7 @@ jobs:
           channel: "stable"
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: ${{ needs.var.outputs.ref }}
 
@@ -140,17 +129,16 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.7"
+          ruby-version: "3.2"
           bundler-cache: true
-          working-directory: android
+          working-directory: ios
+
       - run: bundle exec fastlane --version
-        working-directory: android
+        working-directory: ios
 
       # Get flutter dependencies.
       - name: Build dependencies
         env:
-          # private package:
-          # - flutter-pos-packages
           GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
         run: |
           flutter clean
@@ -158,32 +146,61 @@ jobs:
           git config --global credential.helper store
           flutter pub get
 
-      # Setup Java environment in order to build the Android app.
-      - uses: actions/setup-java@v5
-        with:
-          distribution: "zulu"
-          java-version: "17"
-
-      - name: Configure Google Services
-        run: echo "$GOOGLE_SERVICES_JSON" > google-services.json
+      # Configure App Store Connect API Key
+      - name: Configure App Store Connect API Key
+        run: echo "$APP_STORE_CONNECT_API_KEY" > fastlane-api-key.json
         env:
-          GOOGLE_SERVICES_JSON: |
-            ${{ needs.var.outputs.lane == 'internal' && secrets.GOOGLE_SERVICES_JSON_DEV || secrets.GOOGLE_SERVICES_JSON }}
-        working-directory: android/app
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+        working-directory: ios/fastlane
 
-      - name: Configure Keystore
+      # Configure certificates and provisioning profiles
+      - name: Configure code signing
         run: |
-          echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
-          echo "storeFile=upload-keystore.jks" >> key.properties
-          echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
-          echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
-          echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
+          # Import certificates
+          echo "$IOS_CERTIFICATE_P12" | base64 --decode > certificate.p12
+          
+          # Create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          
+          # Import certificate to keychain
+          security import certificate.p12 -k build.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          
+          # Install provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_PROVISION_PROFILE" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
         env:
-          PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
-          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
-          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
-          KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
-        working-directory: android
+          IOS_CERTIFICATE_P12: ${{ secrets.IOS_CERTIFICATE_P12 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISION_PROFILE: ${{ secrets.IOS_PROVISION_PROFILE }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        working-directory: ios
+
+      # Create ExportOptions.plist
+      - name: Create ExportOptions.plist
+        run: |
+          cat > ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>$TEAM_ID</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
+        env:
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+        working-directory: ios
 
       # Build and deploy with Fastlane (by default, to internal track) 🚀.
       # Naturally, promote_to_production only deploys.
@@ -191,8 +208,9 @@ jobs:
         run: |
           bundle exec fastlane ${{ needs.var.outputs.lane }}
         env:
-          SUPPLY_UPLOAD_MAX_RETRIES: 5
-          PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
           BUILD_NUMBER: ${{ needs.var.outputs.dev_build_number }}
           VERSION_CODE: ${{ needs.var.outputs.build_code }}
-        working-directory: android
+        working-directory: ios
