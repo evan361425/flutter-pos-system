@@ -110,6 +110,54 @@ receipt:
   paid: Paid
   price: Price
   change: Change
+  editor:
+    title: Customize Receipt
+    empty: No receipt templates yet
+    createFirst: Create First Template
+  template:
+    title:
+      create: Create Receipt Template
+      update: Edit Receipt Template
+    name:
+      label: Template Name
+      errorRepeat: Template name already exists
+    toDefault:
+      label: Enable This Template
+      helper: Only one template can be enabled at a time
+      confirmChangeTitle: Change Default Template?
+      confirmChangeContent: This will disable the current default template "{name}". Continue?
+    editComponents: Edit Components
+  component:
+    count:
+    - =1: '{count} component'
+      other: '{count} components'
+    - count: {type: int, mode: plural, format: compactLong}
+    addTitle: Add Component
+    orderTable: Order Table
+    textField: Text Field
+    divider: Divider
+    timestamp: Order Timestamp
+    orderId: Order ID
+    totalSection: Total Section
+    paymentSection: Payment Section
+    text: Text
+    fontSize: Font Size
+    height: Height
+    alignment: Alignment
+    alignLeft: Left
+    alignCenter: Center
+    alignRight: Right
+    dateFormat: Date Format
+    dateFormatFull: Full (Date & Time)
+    dateFormatDate: Date Only
+    dateFormatTime: Time Only
+    showProductName: Show Product Name
+    showCatalogName: Show Catalog Name
+    orderIdDesc: Display order identifier
+    paymentDesc: Show payment details
+  editorReset: Reset
+  editorResetTitle: Reset to Default?
+  editorResetContent: This will restore the default component layout. All customizations will be lost.
 info:
   title: Printer Information
   name: Name

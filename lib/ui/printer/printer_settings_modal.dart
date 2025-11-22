@@ -4,6 +4,7 @@ import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 
@@ -28,6 +29,15 @@ class _PrinterSettingsModalState extends State<PrinterSettingsModal> with ItemMo
         subtitle: Text(S.printerSettingsPaddingHelper),
         value: density == PrinterDensity.tight,
         onChanged: (value) => setState(() => density = value ? PrinterDensity.tight : PrinterDensity.normal),
+      ),
+      const SizedBox(height: kInternalSpacing),
+      ListTile(
+        leading: const Icon(Icons.receipt_long),
+        title: Text(S.printerReceiptEditorTitle),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          context.pushNamed(Routes.printerReceiptEditor);
+        },
       ),
       const SizedBox(height: kInternalLargeSpacing),
       Center(child: HintText(S.printerSettingsMore)),
