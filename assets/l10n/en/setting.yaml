@@ -16,6 +16,25 @@ elf:
     Feel like something's missing here?
     Feel free to [give suggestions](https://forms.gle/s8V5SXuqhA1u3zmt7).
     You can also check out [upcoming features](https://github.com/evan361425/flutter-pos-system/milestones).
+  chat:
+    button: Chat with Developer
+    title: Chat
+    signInRequired: Please sign in to start chatting
+    empty: No messages yet. Start the conversation!
+    inputHint: Type a message...
+    sendButton: Send
+    addButton: Add attachment
+    addImage: Add Image
+    imageSelected: Image selected
+    removeImage: Remove image
+    faq:
+      title: Frequently Asked Questions
+      question1: How can I request a new feature?
+      answer1: You can describe your feature request in detail through this chat, or submit it via our Google Forms link.
+      question2: How long does it take to get a response?
+      answer2: We typically respond within 1-2 business days. For urgent issues, please include "URGENT" in your message.
+      question3: Can I share screenshots or files?
+      answer3: Currently, text messages are supported. For files or screenshots, please use the Google Forms or GitHub issues.
 feature:
   title: Other Settings
   description: Appearance, Language, Tips

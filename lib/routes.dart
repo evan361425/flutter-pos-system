@@ -25,6 +25,7 @@ import 'package:possystem/ui/analysis/widgets/history_order_modal.dart';
 import 'package:possystem/ui/cashier/cashier_view.dart';
 import 'package:possystem/ui/cashier/changer_modal.dart';
 import 'package:possystem/ui/cashier/surplus_page.dart';
+import 'package:possystem/ui/home/chat_page.dart';
 import 'package:possystem/ui/home/elf_page.dart';
 import 'package:possystem/ui/home/home_page.dart';
 import 'package:possystem/ui/home/mobile_more_view.dart';
@@ -593,6 +594,14 @@ class Routes {
         path: '${(inShell ? '_/' : '')}elf',
         parentNavigatorKey: inShell ? null : rootNavigatorKey,
         builder: (ctx, state) => _w(_l(const ElfPage(), state), S.settingElfTitle),
+        routes: [
+          GoRoute(
+            name: chat,
+            path: 'chat',
+            parentNavigatorKey: rootNavigatorKey,
+            builder: (ctx, state) => _w(_l(const ChatPage(), state), S.settingElfChatTitle),
+          ),
+        ],
       );
   static GoRoute _settingsRoute({required bool inShell}) => GoRoute(
         name: settings,
@@ -700,6 +709,7 @@ class Routes {
   static const transit = 'transit';
   static const transitStation = 'transit.station';
   static const elf = 'elf';
+  static const chat = 'chat';
   static const imageGallery = 'imageGallery';
   static const settings = 'settings';
   static const settingsFeature = 'settings.feature';
