@@ -24,20 +24,18 @@ class _PrinterSettingsModalState extends State<PrinterSettingsModal> with ItemMo
   @override
   List<Widget> buildFormFields() {
     return [
+      ListTile(
+        leading: const Icon(Icons.receipt_long),
+        title: Text(S.printerReceiptEditorTitle),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.pushNamed(Routes.printerReceiptEditor),
+      ),
+      const SizedBox(height: kInternalSpacing),
       SwitchListTile(
         title: Text(S.printerSettingsPaddingLabel),
         subtitle: Text(S.printerSettingsPaddingHelper),
         value: density == PrinterDensity.tight,
         onChanged: (value) => setState(() => density = value ? PrinterDensity.tight : PrinterDensity.normal),
-      ),
-      const SizedBox(height: kInternalSpacing),
-      ListTile(
-        leading: const Icon(Icons.receipt_long),
-        title: Text(S.printerReceiptEditorTitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          context.pushNamed(Routes.printerReceiptEditor);
-        },
       ),
       const SizedBox(height: kInternalLargeSpacing),
       Center(child: HintText(S.printerSettingsMore)),

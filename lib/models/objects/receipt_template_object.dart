@@ -1,17 +1,15 @@
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/receipt_component.dart';
-import 'package:possystem/models/repository/receipt_templates.dart';
+import 'package:possystem/models/repository/receipt_template.dart';
 
 class ReceiptTemplateObject extends ModelObject<ReceiptTemplate> {
   final String? id;
   final String? name;
-  final bool? isDefault;
   final List<ReceiptComponent>? components;
 
   ReceiptTemplateObject({
     this.id,
     this.name,
-    this.isDefault,
     this.components,
   });
 
@@ -19,7 +17,6 @@ class ReceiptTemplateObject extends ModelObject<ReceiptTemplate> {
   Map<String, Object> toMap() {
     return {
       'name': name!,
-      'isDefault': isDefault!,
       'components': components!.map((c) => c.toJson()).toList(),
     };
   }
@@ -32,10 +29,6 @@ class ReceiptTemplateObject extends ModelObject<ReceiptTemplate> {
     if (name != null && name != model.name) {
       model.name = name!;
       result['$prefix.name'] = name!;
-    }
-    if (isDefault != null && isDefault != model.isDefault) {
-      model.isDefault = isDefault!;
-      result['$prefix.isDefault'] = isDefault!;
     }
     if (components != null) {
       model.components = components!;
@@ -50,7 +43,6 @@ class ReceiptTemplateObject extends ModelObject<ReceiptTemplate> {
     return ReceiptTemplateObject(
       id: data['id'] as String,
       name: data['name'] as String,
-      isDefault: data['isDefault'] as bool,
       components: componentsList?.map((e) => ReceiptComponent.fromJson(e as Map<String, Object?>)).toList(),
     );
   }

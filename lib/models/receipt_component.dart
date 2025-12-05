@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 
 /// Base class for all receipt components
 abstract class ReceiptComponent {
-  final String id;
   final ReceiptComponentType type;
 
   ReceiptComponent({
-    required this.id,
     required this.type,
   });
 
@@ -15,7 +13,8 @@ abstract class ReceiptComponent {
 
   /// Create from JSON
   factory ReceiptComponent.fromJson(Map<String, Object?> json) {
-    final type = ReceiptComponentType.values[json['type'] as int];
+    final type =
+        ReceiptComponentType.values.elementAtOrNull(json['type'] as int? ?? 0) ?? ReceiptComponentType.orderTable;
     switch (type) {
       case ReceiptComponentType.orderTable:
         return OrderTableComponent.fromJson(json);
@@ -57,7 +56,6 @@ class OrderTableComponent extends ReceiptComponent {
   final bool showTotal;
 
   OrderTableComponent({
-    required super.id,
     this.showProductName = true,
     this.showCatalogName = false,
     this.showCount = true,
@@ -67,7 +65,6 @@ class OrderTableComponent extends ReceiptComponent {
 
   factory OrderTableComponent.fromJson(Map<String, Object?> json) {
     return OrderTableComponent(
-      id: json['id'] as String,
       showProductName: json['showProductName'] as bool? ?? true,
       showCatalogName: json['showCatalogName'] as bool? ?? false,
       showCount: json['showCount'] as bool? ?? true,
@@ -79,7 +76,6 @@ class OrderTableComponent extends ReceiptComponent {
   @override
   Map<String, Object?> toJson() {
     return {
-      'id': id,
       'type': type.index,
       'showProductName': showProductName,
       'showCatalogName': showCatalogName,
@@ -98,7 +94,6 @@ class OrderTableComponent extends ReceiptComponent {
     bool? showTotal,
   }) {
     return OrderTableComponent(
-      id: id,
       showProductName: showProductName ?? this.showProductName,
       showCatalogName: showCatalogName ?? this.showCatalogName,
       showCount: showCount ?? this.showCount,
@@ -112,31 +107,36 @@ class OrderTableComponent extends ReceiptComponent {
 class TextFieldComponent extends ReceiptComponent {
   final String text;
   final double fontSize;
+  final double height;
+  final Color color;
   final TextAlign textAlign;
 
   TextFieldComponent({
-    required super.id,
     required this.text,
     this.fontSize = 14.0,
+    this.height = 1.0,
+    this.color = Colors.black,
     this.textAlign = TextAlign.left,
   }) : super(type: ReceiptComponentType.textField);
 
   factory TextFieldComponent.fromJson(Map<String, Object?> json) {
     return TextFieldComponent(
-      id: json['id'] as String,
       text: json['text'] as String? ?? '',
       fontSize: json['fontSize'] as double? ?? 14.0,
-      textAlign: TextAlign.values[json['textAlign'] as int? ?? 0],
+      height: json['height'] as double? ?? 1.0,
+      color: Color(json['color'] as int? ?? Colors.black.toARGB32()),
+      textAlign: TextAlign.values.elementAtOrNull(json['textAlign'] as int? ?? 0) ?? TextAlign.left,
     );
   }
 
   @override
   Map<String, Object?> toJson() {
     return {
-      'id': id,
       'type': type.index,
       'text': text,
       'fontSize': fontSize,
+      'height': height,
+      'color': color.toARGB32(),
       'textAlign': textAlign.index,
     };
   }
@@ -145,12 +145,15 @@ class TextFieldComponent extends ReceiptComponent {
   TextFieldComponent copyWith({
     String? text,
     double? fontSize,
+    double? height,
+    Color? color,
     TextAlign? textAlign,
   }) {
     return TextFieldComponent(
-      id: id,
       text: text ?? this.text,
       fontSize: fontSize ?? this.fontSize,
+      height: height ?? this.height,
+      color: color ?? this.color,
       textAlign: textAlign ?? this.textAlign,
     );
   }
@@ -161,13 +164,11 @@ class DividerComponent extends ReceiptComponent {
   final double height;
 
   DividerComponent({
-    required super.id,
     this.height = 4.0,
   }) : super(type: ReceiptComponentType.divider);
 
   factory DividerComponent.fromJson(Map<String, Object?> json) {
     return DividerComponent(
-      id: json['id'] as String,
       height: json['height'] as double? ?? 4.0,
     );
   }
@@ -175,7 +176,6 @@ class DividerComponent extends ReceiptComponent {
   @override
   Map<String, Object?> toJson() {
     return {
-      'id': id,
       'type': type.index,
       'height': height,
     };
@@ -186,7 +186,6 @@ class DividerComponent extends ReceiptComponent {
     double? height,
   }) {
     return DividerComponent(
-      id: id,
       height: height ?? this.height,
     );
   }
@@ -197,13 +196,11 @@ class OrderTimestampComponent extends ReceiptComponent {
   final String dateFormat;
 
   OrderTimestampComponent({
-    required super.id,
     this.dateFormat = 'yMMMd Hms',
   }) : super(type: ReceiptComponentType.orderTimestamp);
 
   factory OrderTimestampComponent.fromJson(Map<String, Object?> json) {
     return OrderTimestampComponent(
-      id: json['id'] as String,
       dateFormat: json['dateFormat'] as String? ?? 'yMMMd Hms',
     );
   }
@@ -211,7 +208,6 @@ class OrderTimestampComponent extends ReceiptComponent {
   @override
   Map<String, Object?> toJson() {
     return {
-      'id': id,
       'type': type.index,
       'dateFormat': dateFormat,
     };
@@ -222,7 +218,6 @@ class OrderTimestampComponent extends ReceiptComponent {
     String? dateFormat,
   }) {
     return OrderTimestampComponent(
-      id: id,
       dateFormat: dateFormat ?? this.dateFormat,
     );
   }
@@ -233,13 +228,11 @@ class OrderIdComponent extends ReceiptComponent {
   final double fontSize;
 
   OrderIdComponent({
-    required super.id,
     this.fontSize = 14.0,
   }) : super(type: ReceiptComponentType.orderId);
 
   factory OrderIdComponent.fromJson(Map<String, Object?> json) {
     return OrderIdComponent(
-      id: json['id'] as String,
       fontSize: json['fontSize'] as double? ?? 14.0,
     );
   }
@@ -247,7 +240,6 @@ class OrderIdComponent extends ReceiptComponent {
   @override
   Map<String, Object?> toJson() {
     return {
-      'id': id,
       'type': type.index,
       'fontSize': fontSize,
     };
@@ -258,7 +250,6 @@ class OrderIdComponent extends ReceiptComponent {
     double? fontSize,
   }) {
     return OrderIdComponent(
-      id: id,
       fontSize: fontSize ?? this.fontSize,
     );
   }
@@ -270,14 +261,12 @@ class TotalSectionComponent extends ReceiptComponent {
   final bool showAddOns;
 
   TotalSectionComponent({
-    required super.id,
     this.showDiscounts = true,
     this.showAddOns = true,
   }) : super(type: ReceiptComponentType.totalSection);
 
   factory TotalSectionComponent.fromJson(Map<String, Object?> json) {
     return TotalSectionComponent(
-      id: json['id'] as String,
       showDiscounts: json['showDiscounts'] as bool? ?? true,
       showAddOns: json['showAddOns'] as bool? ?? true,
     );
@@ -286,7 +275,6 @@ class TotalSectionComponent extends ReceiptComponent {
   @override
   Map<String, Object?> toJson() {
     return {
-      'id': id,
       'type': type.index,
       'showDiscounts': showDiscounts,
       'showAddOns': showAddOns,
@@ -299,7 +287,6 @@ class TotalSectionComponent extends ReceiptComponent {
     bool? showAddOns,
   }) {
     return TotalSectionComponent(
-      id: id,
       showDiscounts: showDiscounts ?? this.showDiscounts,
       showAddOns: showAddOns ?? this.showAddOns,
     );
@@ -308,28 +295,21 @@ class TotalSectionComponent extends ReceiptComponent {
 
 /// Payment section showing paid, price, and change
 class PaymentSectionComponent extends ReceiptComponent {
-  PaymentSectionComponent({
-    required super.id,
-  }) : super(type: ReceiptComponentType.paymentSection);
+  PaymentSectionComponent() : super(type: ReceiptComponentType.paymentSection);
 
   factory PaymentSectionComponent.fromJson(Map<String, Object?> json) {
-    return PaymentSectionComponent(
-      id: json['id'] as String,
-    );
+    return PaymentSectionComponent();
   }
 
   @override
   Map<String, Object?> toJson() {
     return {
-      'id': id,
       'type': type.index,
     };
   }
 
   @override
   PaymentSectionComponent copyWith() {
-    return PaymentSectionComponent(
-      id: id,
-    );
+    return PaymentSectionComponent();
   }
 }
