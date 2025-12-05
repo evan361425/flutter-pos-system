@@ -60,7 +60,7 @@
     "description": "Keep the screen on during ordering, even when idle"
   },
   "settingOrderAwakeningDescription": "If disabled, the screen will turn off based on system settings during ordering.",
-  "settingReportTitle": "Collect Error Messages and Events",
+  "settingReportTitle": "Collect Errors and Events",
   "settingReportDescription": "Send error messages when the app encounters issues, helping the app improve",
   "stockTab": "Inventory",
   "stockUpdatedAt": "Last Purchased: {updatedAt}",
@@ -282,6 +282,49 @@
   "printerReceiptPaid": "Paid",
   "printerReceiptPrice": "Price",
   "printerReceiptChange": "Change",
+  "printerReceiptEditorTitle": "Customize Receipt",
+  "printerReceiptEditorContent": "Modify the receipt format by adding, removing, or rearranging components.",
+  "printerReceiptTemplateTitleCreate": "Create New",
+  "printerReceiptTemplateTitleUpdate": "Update Template",
+  "printerReceiptTemplateMetaComponentsCount": "{count, plural, =1{{count} component} other{{count} components}}",
+  "@printerReceiptTemplateMetaComponentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compactLong"
+      }
+    }
+  },
+  "printerReceiptTemplateNameLabel": "Template Name",
+  "printerReceiptTemplateNameErrorRepeat": "Template name already exists",
+  "printerReceiptTemplateToDefaultLabel": "Enable This Template",
+  "printerReceiptTemplateToDefaultHelper": "Only one template can be enabled at a time",
+  "printerReceiptTemplateToDefaultConfirmChangeTitle": "Change Default Template?",
+  "printerReceiptTemplateToDefaultConfirmChangeContent": "This will disable the current default template \"{name}\". Continue?",
+  "printerReceiptComponentTitleAdd": "Add Component",
+  "printerReceiptComponentTitleEdit": "Edit Component",
+  "printerReceiptComponentOrderTable": "Order Table",
+  "printerReceiptComponentTextField": "Text Field",
+  "printerReceiptComponentDivider": "Divider",
+  "printerReceiptComponentTimestamp": "Order Timestamp",
+  "printerReceiptComponentOrderId": "Order ID",
+  "printerReceiptComponentTotalSection": "Total Section",
+  "printerReceiptComponentPaymentSection": "Payment Section",
+  "printerReceiptComponentText": "Text",
+  "printerReceiptComponentFontSize": "Font Size",
+  "printerReceiptComponentHeight": "Height",
+  "printerReceiptComponentAlignment": "Alignment",
+  "printerReceiptComponentAlignLeft": "Left",
+  "printerReceiptComponentAlignCenter": "Center",
+  "printerReceiptComponentAlignRight": "Right",
+  "printerReceiptComponentDateFormat": "Date Format",
+  "printerReceiptComponentDateFormatFull": "Full (Date & Time)",
+  "printerReceiptComponentDateFormatDate": "Date Only",
+  "printerReceiptComponentDateFormatTime": "Time Only",
+  "printerReceiptComponentShowProductName": "Show Product Name",
+  "printerReceiptComponentShowCatalogName": "Show Catalog Name",
+  "printerReceiptComponentOrderIdDesc": "Display order identifier",
+  "printerReceiptComponentPaymentDesc": "Show payment details",
   "printerInfoTitle": "Printer Information",
   "printerInfoName": "Name",
   "printerInfoAddress": "Location",
@@ -949,7 +992,7 @@
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
   },
-  "dialogDeletionContent": "Are you sure you want to delete \"{name}\"?\n\n{more}This action cannot be undone!\n",
+  "dialogDeletionContent": "Are you sure you want to delete \"{name}\"?\n\n{more}This action cannot be undone!",
   "@dialogDeletionContent": {
     "description": "Content displayed on the DeleteDialog.",
     "placeholders": {
@@ -1160,7 +1203,7 @@
     }
   },
   "orderAttributeOptionNameLabel": "Option Name",
-  "orderAttributeOptionNameHelper": "For 'age', possible options are:\n- ⇣ 20\n- 20 ⇢ 30",
+  "orderAttributeOptionNameHelper": "For 'age', possible options are:\n- ⇣ 20\n- 20 - 30",
   "orderAttributeOptionNameErrorRepeat": "Name already exists",
   "orderAttributeOptionModeTitle": "Option Mode",
   "orderAttributeOptionModeHelper": "{name, select, statOnly{No need to set \"Discount\" or \"Price Change\" because this setting is \"Normal\"} changePrice{Selecting this option during ordering will apply this price change} changeDiscount{Selecting this option during ordering will apply this discount} other{UNKNOWN}}",

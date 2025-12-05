@@ -103,27 +103,24 @@ receipt:
   change: 找錢
   editor:
     title: 自訂收據格式
-    empty: 尚無收據範本
-    createFirst: 建立第一個範本
+    content: 透過新增、移除或重新排列元件來修改收據格式。
   template:
     title:
       create: 建立收據範本
       update: 編輯收據範本
+    meta:
+      componentsCount:
+      - '{count} 個元件'
+      - count: {type: int, mode: plural, format: compactLong}
     name:
       label: 範本名稱
       errorRepeat: 範本名稱已存在
-    toDefault:
-      label: 啟用此範本
-      helper: 一次只能啟用一個範本
-      confirmChangeTitle: 變更預設範本？
-      confirmChangeContent: 這將停用目前的預設範本「{name}」。繼續？
-    editComponents: 編輯元件
+    default:
+      name: 預設範本
   component:
-    count:
-    - =1: '{count} 個元件'
-      other: '{count} 個元件'
-    - count: {type: int, mode: plural, format: compactLong}
-    addTitle: 新增元件
+    title:
+      add: 新增元件
+      edit: 編輯元件
     orderTable: 訂單表格
     textField: 文字欄位
     divider: 分隔線
@@ -146,9 +143,6 @@ receipt:
     showCatalogName: 顯示目錄名稱
     orderIdDesc: 顯示訂單識別碼
     paymentDesc: 顯示付款詳情
-  editorReset: 重置
-  editorResetTitle: 重置為預設？
-  editorResetContent: 這將恢復預設的元件佈局。所有自訂設定將會遺失。
 info:
   title: 出單機資訊
   name: 名稱

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/receipt_template_object.dart';
 import 'package:possystem/models/receipt_component.dart';
@@ -5,7 +6,6 @@ import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/services/storage.dart';
 
 class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<ReceiptTemplateObject> {
-  bool isDefault;
   List<ReceiptComponent> components;
 
   @override
@@ -21,19 +21,17 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
     super.id,
     super.status = ModelStatus.normal,
     super.name = 'receipt template',
-    this.isDefault = false,
     List<ReceiptComponent>? components,
-  }) : components = components ?? _getDefaultComponents();
+  }) : components = components ?? const [];
 
   factory ReceiptTemplate.fromObject(ReceiptTemplateObject object) => ReceiptTemplate(
         id: object.id,
         name: object.name!,
-        isDefault: object.isDefault!,
         components: object.components,
       );
 
   /// Get default receipt components matching the current hardcoded layout
-  static List<ReceiptComponent> _getDefaultComponents() {
+  static List<ReceiptComponent> getDefaultComponents() {
     return [
       TextFieldComponent(
         id: 'title',
@@ -70,7 +68,6 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
     return ReceiptTemplateObject(
       id: id,
       name: name,
-      isDefault: isDefault,
       components: components,
     );
   }

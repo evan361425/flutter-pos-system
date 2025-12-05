@@ -40,7 +40,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   List<Printer> get itemList => items.sorted((a, b) => a.compareTo(b));
 
   @override
-  RepositoryStorageType get repoType => RepositoryStorageType.repoProperties;
+  RepositoryStorageType get repoType => RepositoryStorageType.repoModel;
 
   bool get hasConnected => items.any((e) => e.connected);
 
@@ -66,7 +66,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     await super.initialize(record: 'printer');
 
     final data = await Storage.instance.get(storageStore, 'setting');
-    density = PrinterDensity.values[data['density'] as int? ?? 0];
+    density = PrinterDensity.values.elementAtOrNull(data['density'] as int? ?? 0) ?? PrinterDensity.normal;
 
     // storage must make sure parent is initialized, so we need to
     // set printer to `{}`, otherwise we will failed to add printer
@@ -82,7 +82,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   }
 
   Future<void> saveProperties() async {
-    Log.ger('update_printers', {'type': storageStore.name, 'density': density.index});
+    Log.ger('update_repo', {'type': storageStore.name, 'density': density.index});
 
     await Storage.instance.set(storageStore, {
       'setting': {
