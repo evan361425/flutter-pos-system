@@ -147,8 +147,7 @@ class PrinterReceiptView extends StatelessWidget {
         children: [
           TableRow(
             children: [
-              if (config.showProductName || config.showCatalogName)
-                TableCell(child: Text(S.printerReceiptColumnName)),
+              if (config.showProductName || config.showCatalogName) TableCell(child: Text(S.printerReceiptColumnName)),
               if (config.showCount) TableCell(child: Text(S.printerReceiptColumnCount, textAlign: TextAlign.end)),
               if (config.showPrice) TableCell(child: Text(S.printerReceiptColumnPrice, textAlign: TextAlign.end)),
               if (config.showTotal) TableCell(child: Text(S.printerReceiptColumnTotal, textAlign: TextAlign.end)),

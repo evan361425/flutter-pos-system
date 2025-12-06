@@ -155,7 +155,7 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   @override
   String get prefix => 'printer.$id';
 
-  bool get connected => p.connected;
+  bool get connected => kDebugMode && id == 'demo' ? true : p.connected;
 
   Printer({
     super.id,
