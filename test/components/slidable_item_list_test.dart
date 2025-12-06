@@ -36,32 +36,32 @@ void main() {
 
     testWidgets('should handle actions', (tester) async {
       int tappedAction = 0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SlidableItemList<String, int>(
-              delegate: SlidableItemDelegate(
-                items: const ['1'],
-                deleteValue: 0,
-                tileBuilder: (item, int index, actorBuilder) {
-                  return Builder(
-                    builder: (context) {
-                      return ListTile(title: Text(item), onTap: actorBuilder(context));
-                    },
-                  );
-                },
-                handleDelete: (_) async {},
-                actionBuilder: (item) => [
-                  const MenuAction<int>(title: Text('Hi'), leading: Icon(Icons.ac_unit), returnValue: 1),
-                ],
-                handleAction: (item, action) {
-                  tappedAction = action;
-                },
-              ),
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SlidableItemList<String, int>(
+            delegate: SlidableItemDelegate(
+              items: const ['1'],
+              deleteValue: 0,
+              tileBuilder: (item, int index, actorBuilder) {
+                return Builder(builder: (context) {
+                  return ListTile(title: Text(item), onTap: actorBuilder(context));
+                });
+              },
+              handleDelete: (_) async {},
+              actionBuilder: (item) => [
+                const MenuAction<int>(
+                  title: Text('Hi'),
+                  leading: Icon(Icons.ac_unit),
+                  returnValue: 1,
+                ),
+              ],
+              handleAction: (item, action) async {
+                tappedAction = action;
+              },
             ),
           ),
         ),
-      );
+      ));
 
       await tester.tap(find.text('1'));
       await tester.pumpAndSettle();

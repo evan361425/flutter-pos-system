@@ -33,29 +33,26 @@ class PrinterPage extends StatelessWidget {
     return SafeArea(
       child: SlidableItemList(
         hintText: '', // disabling hint text, no need to show count
-        leading: ButtonGroup(
-          spacerAt: 2,
-          buttons: [
-            RouteIconButton(
-              key: const Key('printer.create'),
-              route: Routes.printerCreate,
-              icon: const Icon(KIcons.add),
-              label: S.printerTitleCreate,
-            ),
-            IconButton(
-              key: const Key('printer.supported_list'),
-              onPressed: _showSupportedPrinters(context),
-              icon: const Icon(Icons.info_outline),
-              tooltip: S.printerSupportedTitle,
-            ),
-            RouteIconButton(
-              key: const Key('printer.settings'),
-              route: Routes.printerSettings,
-              icon: const Icon(Icons.settings),
-              label: S.printerTitleSettings,
-            ),
-          ],
-        ),
+        leading: ButtonGroup(spacerAt: 2, buttons: [
+          RouteIconButton(
+            key: const Key('printer.create'),
+            route: Routes.printerCreate,
+            icon: const Icon(KIcons.add),
+            label: S.printerTitleCreate,
+          ),
+          IconButton(
+            key: const Key('printer.supported_list'),
+            onPressed: _showSupportedPrinters(context),
+            icon: const Icon(Icons.info_outline),
+            tooltip: S.printerTitleSupported,
+          ),
+          RouteIconButton(
+            key: const Key('printer.settings'),
+            route: Routes.printerSettings,
+            icon: const Icon(Icons.settings),
+            label: S.printerTitleSettings,
+          ),
+        ]),
         delegate: SlidableItemDelegate(
           disableSlide: true,
           items: Printers.instance.itemList,
@@ -96,14 +93,17 @@ class _EmptyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final buttons = Row(
-      mainAxisAlignment: .center,
-      children: [
-        FilledButton(onPressed: () => context.pushNamed(Routes.printerCreate), child: Text(S.printerTitleCreate)),
-        const SizedBox(width: kInternalSpacing),
-        OutlinedButton(onPressed: _showSupportedPrinters(context), child: Text(S.printerSupportedTitle)),
-      ],
-    );
+    final buttons = Row(mainAxisAlignment: .center, children: [
+      FilledButton(
+        onPressed: () => context.pushNamed(Routes.printerCreate),
+        child: Text(S.printerTitleCreate),
+      ),
+      const SizedBox(width: kInternalSpacing),
+      OutlinedButton(
+        onPressed: _showSupportedPrinters(context),
+        child: Text(S.printerTitleSupported),
+      ),
+    ]);
 
     return Stack(
       children: [
@@ -233,21 +233,19 @@ class _Wave2 extends CustomClipper<Path> {
 
 VoidCallback _showSupportedPrinters(BuildContext context) {
   return () => showDialog(
-    context: context,
-    builder: (context) => ResponsiveDialog(
-      title: Text(S.printerSupportedTitle),
-      content: Column(
-        children: [
+        context: context,
+        builder: (context) => ResponsiveDialog(
+          title: Text(S.printerTitleSupported),
+          content: Column(children: [
           for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter58, PrinterProvider.yokoscan58])
-            ListTile(
-              key: Key('printer.supported.${printer.name}'),
-              title: Text(S.printerSupportedName(printer.name)),
-              subtitle: MetaBlock.withString(context, printer.markers),
-              trailing: const Icon(Icons.open_in_new),
-              onTap: printer.launchUrl,
-            ),
-        ],
-      ),
-    ),
-  );
+              ListTile(
+                key: Key('printer.supported.${printer.name}'),
+                title: Text(S.printerSupportedName(printer.name)),
+                subtitle: MetaBlock.withString(context, printer.markers),
+                trailing: const Icon(Icons.open_in_new),
+                onTap: printer.launchUrl,
+              ),
+          ]),
+        ),
+      );
 }

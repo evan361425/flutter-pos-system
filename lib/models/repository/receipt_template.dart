@@ -17,6 +17,9 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
   @override
   String get prefix => 'template.$id';
 
+  bool get isSelected => ReceiptTemplates.instance.selected.id == id;
+  bool get isDefault => id == 'default';
+
   ReceiptTemplate({
     super.id,
     super.status = ModelStatus.normal,
@@ -41,13 +44,13 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
       TextFieldComponent(text: '{createdAt}', textAlign: TextAlign.center),
       OrderTableComponent(
         showProductName: true,
-        showCount: true,
-        showPrice: true,
-        showTotal: true,
+        showQuantity: true,
+        showSinglePrice: true,
+        showTotalPrice: true,
       ),
       DiscountTableComponent(
         showProductName: true,
-        showOriginalPrice: true,
+        showOriginPrice: true,
       ),
       AttributeTableComponent(
         showOptionName: true,
@@ -68,5 +71,13 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
       name: name,
       components: components,
     );
+  }
+
+  @override
+  Future<void> update(ReceiptTemplateObject object, {String event = 'update'}) async {
+    // although default template is not editable in UI, but prevent updating by routing
+    if (!isDefault) {
+      await super.update(object, event: event);
+    }
   }
 }

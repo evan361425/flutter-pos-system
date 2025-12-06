@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:possystem/models/objects/receipt_template_object.dart';
 import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_template.dart';
-import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/widgets/receipt_component_editor_dialog.dart';
 
 class ReceiptTemplateComponentEditorPage extends StatefulWidget {
   final ReceiptTemplate template;
+  final ReceiptComponent component;
 
   const ReceiptTemplateComponentEditorPage({
     super.key,
     required this.template,
+    required this.component,
   });
 
   @override
