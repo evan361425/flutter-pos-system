@@ -34,32 +34,30 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
   static List<ReceiptComponent> getDefaultComponents() {
     return [
       TextFieldComponent(
-        id: 'title',
-        text: 'Receipt',
-        fontSize: 24.0,
+        text: '{title}',
+        fontSize: 28.0,
         textAlign: TextAlign.center,
       ),
-      OrderTimestampComponent(
-        id: 'timestamp',
-        dateFormat: 'yMMMd Hms',
-      ),
-      DividerComponent(id: 'divider1', height: 4.0),
+      TextFieldComponent(text: '{createdAt}', textAlign: TextAlign.center),
       OrderTableComponent(
-        id: 'order_table',
         showProductName: true,
-        showCatalogName: false,
         showCount: true,
         showPrice: true,
         showTotal: true,
       ),
-      DividerComponent(id: 'divider2', height: 4.0),
-      TotalSectionComponent(
-        id: 'total_section',
-        showDiscounts: true,
-        showAddOns: true,
+      DiscountTableComponent(
+        showProductName: true,
+        showOriginalPrice: true,
       ),
-      DividerComponent(id: 'divider3', height: 4.0),
-      PaymentSectionComponent(id: 'payment_section'),
+      AttributeTableComponent(
+        showOptionName: true,
+        showAdjustment: true,
+      ),
+      PriceTableComponent(
+        showPaid: true,
+        showPrice: true,
+        showChange: true,
+      )
     ];
   }
 

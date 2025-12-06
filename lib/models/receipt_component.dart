@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/objects/order_object.dart';
 
 /// Base class for all receipt components
 abstract class ReceiptComponent {
@@ -18,58 +21,55 @@ abstract class ReceiptComponent {
     switch (type) {
       case ReceiptComponentType.orderTable:
         return OrderTableComponent.fromJson(json);
+      case ReceiptComponentType.attributeTable:
+        return AttributeTableComponent.fromJson(json);
+      case ReceiptComponentType.discountTable:
+        return DiscountTableComponent.fromJson(json);
+      case ReceiptComponentType.priceTable:
+        return PriceTableComponent.fromJson(json);
       case ReceiptComponentType.textField:
         return TextFieldComponent.fromJson(json);
+      case ReceiptComponentType.image:
+        return ImageComponent.fromJson(json);
       case ReceiptComponentType.divider:
         return DividerComponent.fromJson(json);
-      case ReceiptComponentType.orderTimestamp:
-        return OrderTimestampComponent.fromJson(json);
-      case ReceiptComponentType.orderId:
-        return OrderIdComponent.fromJson(json);
-      case ReceiptComponentType.totalSection:
-        return TotalSectionComponent.fromJson(json);
-      case ReceiptComponentType.paymentSection:
-        return PaymentSectionComponent.fromJson(json);
     }
   }
-
-  /// Create a copy with updated properties
-  ReceiptComponent copyWith();
 }
 
 enum ReceiptComponentType {
   orderTable,
+  discountTable,
+  attributeTable,
+  priceTable,
   textField,
+  image,
   divider,
-  orderTimestamp,
-  orderId,
-  totalSection,
-  paymentSection,
 }
 
 /// Order table component with customizable columns
 class OrderTableComponent extends ReceiptComponent {
-  final bool showProductName;
-  final bool showCatalogName;
-  final bool showCount;
-  final bool showPrice;
-  final bool showTotal;
+  bool showProductName;
+  bool showCatalogName;
+  bool showCount;
+  bool showPrice;
+  bool showTotal;
 
   OrderTableComponent({
-    this.showProductName = true,
+    this.showProductName = false,
     this.showCatalogName = false,
-    this.showCount = true,
-    this.showPrice = true,
-    this.showTotal = true,
+    this.showCount = false,
+    this.showPrice = false,
+    this.showTotal = false,
   }) : super(type: ReceiptComponentType.orderTable);
 
   factory OrderTableComponent.fromJson(Map<String, Object?> json) {
     return OrderTableComponent(
-      showProductName: json['showProductName'] as bool? ?? true,
+      showProductName: json['showProductName'] as bool? ?? false,
       showCatalogName: json['showCatalogName'] as bool? ?? false,
-      showCount: json['showCount'] as bool? ?? true,
-      showPrice: json['showPrice'] as bool? ?? true,
-      showTotal: json['showTotal'] as bool? ?? true,
+      showCount: json['showCount'] as bool? ?? false,
+      showPrice: json['showPrice'] as bool? ?? false,
+      showTotal: json['showTotal'] as bool? ?? false,
     );
   }
 
@@ -84,39 +84,149 @@ class OrderTableComponent extends ReceiptComponent {
       'showTotal': showTotal,
     };
   }
+}
+
+class DiscountTableComponent extends ReceiptComponent {
+  bool showProductName;
+  bool showCatalogName;
+  bool showCount;
+  bool showTotalPrice;
+  bool showSinglePrice;
+  bool showOriginalPrice;
+
+  DiscountTableComponent({
+    this.showProductName = false,
+    this.showCatalogName = false,
+    this.showCount = false,
+    this.showTotalPrice = false,
+    this.showSinglePrice = false,
+    this.showOriginalPrice = false,
+  }) : super(type: ReceiptComponentType.discountTable);
+
+  factory DiscountTableComponent.fromJson(Map<String, Object?> json) {
+    return DiscountTableComponent(
+      showProductName: json['showProductName'] as bool? ?? false,
+      showCatalogName: json['showCatalogName'] as bool? ?? false,
+      showCount: json['showCount'] as bool? ?? false,
+      showTotalPrice: json['showTotalPrice'] as bool? ?? false,
+      showSinglePrice: json['showSinglePrice'] as bool? ?? false,
+      showOriginalPrice: json['showOriginalPrice'] as bool? ?? false,
+    );
+  }
 
   @override
-  OrderTableComponent copyWith({
-    bool? showProductName,
-    bool? showCatalogName,
-    bool? showCount,
-    bool? showPrice,
-    bool? showTotal,
-  }) {
-    return OrderTableComponent(
-      showProductName: showProductName ?? this.showProductName,
-      showCatalogName: showCatalogName ?? this.showCatalogName,
-      showCount: showCount ?? this.showCount,
-      showPrice: showPrice ?? this.showPrice,
-      showTotal: showTotal ?? this.showTotal,
-    );
+  Map<String, Object?> toJson() {
+    return {
+      'type': type.index,
+      'showProductName': showProductName,
+      'showCatalogName': showCatalogName,
+      'showCount': showCount,
+      'showTotalPrice': showTotalPrice,
+      'showSinglePrice': showSinglePrice,
+      'showOriginalPrice': showOriginalPrice,
+    };
   }
 }
 
-/// Custom text field component
+class AttributeTableComponent extends ReceiptComponent {
+  bool showName;
+  bool showOptionName;
+  bool showAdjustment;
+
+  AttributeTableComponent({
+    this.showName = false,
+    this.showOptionName = false,
+    this.showAdjustment = false,
+  }) : super(type: ReceiptComponentType.attributeTable);
+
+  factory AttributeTableComponent.fromJson(Map<String, Object?> json) {
+    return AttributeTableComponent(
+      showName: json['showName'] as bool? ?? false,
+      showOptionName: json['showOptionName'] as bool? ?? false,
+      showAdjustment: json['showAdjustment'] as bool? ?? false,
+    );
+  }
+
+  @override
+  Map<String, Object?> toJson() {
+    return {
+      'type': type.index,
+      'showName': showName,
+      'showOptionName': showOptionName,
+      'showAdjustment': showAdjustment,
+    };
+  }
+}
+
+class PriceTableComponent extends ReceiptComponent {
+  bool showPaid;
+  bool showPrice;
+  bool showChange;
+  bool showProductCount;
+  bool showProductPrice;
+
+  PriceTableComponent({
+    this.showPaid = false,
+    this.showPrice = false,
+    this.showChange = false,
+    this.showProductCount = false,
+    this.showProductPrice = false,
+  }) : super(type: ReceiptComponentType.priceTable);
+
+  factory PriceTableComponent.fromJson(Map<String, Object?> json) {
+    return PriceTableComponent(
+      showPaid: json['showPaid'] as bool? ?? false,
+      showPrice: json['showPrice'] as bool? ?? false,
+      showChange: json['showChange'] as bool? ?? false,
+      showProductCount: json['showProductCount'] as bool? ?? false,
+      showProductPrice: json['showProductPrice'] as bool? ?? false,
+    );
+  }
+
+  @override
+  Map<String, Object?> toJson() {
+    return {
+      'type': type.index,
+      'showPaid': showPaid,
+      'showPrice': showPrice,
+      'showChange': showChange,
+      'showProductCount': showProductCount,
+      'showProductPrice': showProductPrice,
+    };
+  }
+}
+
 class TextFieldComponent extends ReceiptComponent {
-  final String text;
-  final double fontSize;
-  final double height;
-  final Color color;
-  final TextAlign textAlign;
+  String text;
+  double fontSize;
+  double height;
+  Color color;
+  TextAlign textAlign;
+  EdgeInsets padding;
+
+  static DateFormat? _defaultDateTimeFormatter;
+  static String _formatWithDateTime(String text, String key, DateTime dt) {
+    final regex = RegExp('\\{$text(:[^}]*)?\\}');
+    final matches = regex.allMatches(text);
+    final matchMap = {for (final match in matches) match.group(0)!: match.group(1)};
+
+    for (final entry in matchMap.entries) {
+      final formatter = entry.value == null
+          ? (_defaultDateTimeFormatter ??= DateFormat.yMMMd().addPattern(' ').add_Hms())
+          : DateFormat(entry.value!.substring(1));
+      text = text.replaceAll(entry.key, formatter.format(dt));
+    }
+
+    return text;
+  }
 
   TextFieldComponent({
     required this.text,
     this.fontSize = 14.0,
     this.height = 1.0,
-    this.color = Colors.black,
-    this.textAlign = TextAlign.left,
+    this.color = const Color(0xFF424242),
+    this.textAlign = TextAlign.center,
+    this.padding = const EdgeInsets.all(0),
   }) : super(type: ReceiptComponentType.textField);
 
   factory TextFieldComponent.fromJson(Map<String, Object?> json) {
@@ -125,8 +235,41 @@ class TextFieldComponent extends ReceiptComponent {
       fontSize: json['fontSize'] as double? ?? 14.0,
       height: json['height'] as double? ?? 1.0,
       color: Color(json['color'] as int? ?? Colors.black.toARGB32()),
-      textAlign: TextAlign.values.elementAtOrNull(json['textAlign'] as int? ?? 0) ?? TextAlign.left,
+      textAlign: TextAlign.values.elementAtOrNull(json['textAlign'] as int? ?? 0) ?? TextAlign.center,
+      padding: EdgeInsets.fromLTRB(
+        (json['paddingLeft'] as double?) ?? 0,
+        (json['paddingTop'] as double?) ?? 0,
+        (json['paddingRight'] as double?) ?? 0,
+        (json['paddingBottom'] as double?) ?? 0,
+      ),
     );
+  }
+
+  String formatText({
+    String? title,
+    DateTime? now,
+    OrderObject? order,
+  }) {
+    String formatted = text;
+    if (title != null) {
+      formatted = formatted.replaceAll('{title}', title);
+    }
+    if (now != null) {
+      formatted = _formatWithDateTime(formatted, 'now', now);
+    }
+    if (order != null) {
+      formatted = formatted
+          .replaceAll('{seq}', '${order.periodSeq}')
+          .replaceAll('{productCount}', '${order.productsCount}')
+          .replaceAll('{paid}', order.paid.toCurrency())
+          .replaceAll('{price}', order.price.toCurrency())
+          .replaceAll('{cost}', order.cost.toCurrency())
+          .replaceAll('{revenue}', order.profit.toCurrency())
+          .replaceAll('{productPrice}', order.productsPrice.toCurrency())
+          .replaceAll('{attributePrice}', order.attributesPrice.toCurrency());
+      formatted = _formatWithDateTime(formatted, 'createdAt', order.createdAt);
+    }
+    return formatted;
   }
 
   @override
@@ -138,30 +281,16 @@ class TextFieldComponent extends ReceiptComponent {
       'height': height,
       'color': color.toARGB32(),
       'textAlign': textAlign.index,
+      'paddingLeft': padding.left,
+      'paddingTop': padding.top,
+      'paddingRight': padding.right,
+      'paddingBottom': padding.bottom,
     };
-  }
-
-  @override
-  TextFieldComponent copyWith({
-    String? text,
-    double? fontSize,
-    double? height,
-    Color? color,
-    TextAlign? textAlign,
-  }) {
-    return TextFieldComponent(
-      text: text ?? this.text,
-      fontSize: fontSize ?? this.fontSize,
-      height: height ?? this.height,
-      color: color ?? this.color,
-      textAlign: textAlign ?? this.textAlign,
-    );
   }
 }
 
-/// Divider component
 class DividerComponent extends ReceiptComponent {
-  final double height;
+  double height;
 
   DividerComponent({
     this.height = 4.0,
@@ -180,28 +309,24 @@ class DividerComponent extends ReceiptComponent {
       'height': height,
     };
   }
-
-  @override
-  DividerComponent copyWith({
-    double? height,
-  }) {
-    return DividerComponent(
-      height: height ?? this.height,
-    );
-  }
 }
 
-/// Order timestamp component with customizable format
-class OrderTimestampComponent extends ReceiptComponent {
-  final String dateFormat;
+class ImageComponent extends ReceiptComponent {
+  String imagePath;
+  double width;
+  double height;
 
-  OrderTimestampComponent({
-    this.dateFormat = 'yMMMd Hms',
-  }) : super(type: ReceiptComponentType.orderTimestamp);
+  ImageComponent({
+    required this.imagePath,
+    this.width = 100.0,
+    this.height = 100.0,
+  }) : super(type: ReceiptComponentType.image);
 
-  factory OrderTimestampComponent.fromJson(Map<String, Object?> json) {
-    return OrderTimestampComponent(
-      dateFormat: json['dateFormat'] as String? ?? 'yMMMd Hms',
+  factory ImageComponent.fromJson(Map<String, Object?> json) {
+    return ImageComponent(
+      imagePath: json['imagePath'] as String? ?? '',
+      width: json['width'] as double? ?? 100.0,
+      height: json['height'] as double? ?? 100.0,
     );
   }
 
@@ -209,107 +334,9 @@ class OrderTimestampComponent extends ReceiptComponent {
   Map<String, Object?> toJson() {
     return {
       'type': type.index,
-      'dateFormat': dateFormat,
+      'imagePath': imagePath,
+      'width': width,
+      'height': height,
     };
-  }
-
-  @override
-  OrderTimestampComponent copyWith({
-    String? dateFormat,
-  }) {
-    return OrderTimestampComponent(
-      dateFormat: dateFormat ?? this.dateFormat,
-    );
-  }
-}
-
-/// Order ID component
-class OrderIdComponent extends ReceiptComponent {
-  final double fontSize;
-
-  OrderIdComponent({
-    this.fontSize = 14.0,
-  }) : super(type: ReceiptComponentType.orderId);
-
-  factory OrderIdComponent.fromJson(Map<String, Object?> json) {
-    return OrderIdComponent(
-      fontSize: json['fontSize'] as double? ?? 14.0,
-    );
-  }
-
-  @override
-  Map<String, Object?> toJson() {
-    return {
-      'type': type.index,
-      'fontSize': fontSize,
-    };
-  }
-
-  @override
-  OrderIdComponent copyWith({
-    double? fontSize,
-  }) {
-    return OrderIdComponent(
-      fontSize: fontSize ?? this.fontSize,
-    );
-  }
-}
-
-/// Total section showing discounts and add-ons
-class TotalSectionComponent extends ReceiptComponent {
-  final bool showDiscounts;
-  final bool showAddOns;
-
-  TotalSectionComponent({
-    this.showDiscounts = true,
-    this.showAddOns = true,
-  }) : super(type: ReceiptComponentType.totalSection);
-
-  factory TotalSectionComponent.fromJson(Map<String, Object?> json) {
-    return TotalSectionComponent(
-      showDiscounts: json['showDiscounts'] as bool? ?? true,
-      showAddOns: json['showAddOns'] as bool? ?? true,
-    );
-  }
-
-  @override
-  Map<String, Object?> toJson() {
-    return {
-      'type': type.index,
-      'showDiscounts': showDiscounts,
-      'showAddOns': showAddOns,
-    };
-  }
-
-  @override
-  TotalSectionComponent copyWith({
-    bool? showDiscounts,
-    bool? showAddOns,
-  }) {
-    return TotalSectionComponent(
-      showDiscounts: showDiscounts ?? this.showDiscounts,
-      showAddOns: showAddOns ?? this.showAddOns,
-    );
-  }
-}
-
-/// Payment section showing paid, price, and change
-class PaymentSectionComponent extends ReceiptComponent {
-  PaymentSectionComponent() : super(type: ReceiptComponentType.paymentSection);
-
-  factory PaymentSectionComponent.fromJson(Map<String, Object?> json) {
-    return PaymentSectionComponent();
-  }
-
-  @override
-  Map<String, Object?> toJson() {
-    return {
-      'type': type.index,
-    };
-  }
-
-  @override
-  PaymentSectionComponent copyWith() {
-    return PaymentSectionComponent();
   }
 }
