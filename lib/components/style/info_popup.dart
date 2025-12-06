@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class InfoPopup extends StatelessWidget {
   final String message;
+  final EdgeInsetsGeometry margin;
 
   const InfoPopup(
     this.message, {
     super.key,
+    this.margin = const EdgeInsets.symmetric(horizontal: 16.0),
   });
 
   @override
@@ -14,7 +16,7 @@ class InfoPopup extends StatelessWidget {
       message: message,
       triggerMode: TooltipTriggerMode.tap,
       showDuration: const Duration(seconds: 30),
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      margin: margin,
       child: const Icon(Icons.help_outline_outlined),
     );
   }

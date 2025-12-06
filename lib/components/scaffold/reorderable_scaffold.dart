@@ -4,10 +4,9 @@ import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
-import 'package:possystem/models/model.dart';
 import 'package:possystem/translator.dart';
 
-class ReorderableScaffold<T extends ModelOrderable> extends StatefulWidget {
+class ReorderableScaffold<T> extends StatelessWidget {
   final String title;
 
   final List<T> items;
@@ -22,10 +21,45 @@ class ReorderableScaffold<T extends ModelOrderable> extends StatefulWidget {
   });
 
   @override
-  State<ReorderableScaffold<T>> createState() => _ReorderableScaffoldState<T>();
+  Widget build(BuildContext context) {
+    return ResponsiveDialog(
+      title: Text(title),
+      scrollable: false,
+      action: TextButton(
+        key: const Key('reorder.save'),
+        onPressed: () async {
+          await handleSubmit(items);
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+      ),
+      content: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        const SizedBox(height: kTopSpacing),
+        Center(child: HintText(S.totalCount(items.length))),
+        const SizedBox(height: kInternalSpacing),
+        Expanded(child: MyReorderableList(items: items)),
+      ]),
+    );
+  }
 }
 
-class _ReorderableScaffoldState<T extends ModelOrderable> extends State<ReorderableScaffold<T>> {
+class MyReorderableList<T> extends StatefulWidget {
+  final List<T> items;
+  final Widget Function(BuildContext context, T item, Widget toggler)? itemBuilder;
+
+  const MyReorderableList({
+    super.key,
+    required this.items,
+    this.itemBuilder,
+  });
+
+  @override
+  State<MyReorderableList<T>> createState() => _MyReorderableListState<T>();
+}
+
+class _MyReorderableListState<T> extends State<MyReorderableList<T>> {
   @override
   Widget build(BuildContext context) {
     Widget child = ReorderableList(
@@ -35,6 +69,10 @@ class _ReorderableScaffoldState<T extends ModelOrderable> extends State<Reordera
       onReorderEnd: (int index) => HapticFeedback.lightImpact(),
       itemBuilder: (BuildContext context, int index) {
         final item = widget.items[index];
+        final toggler = ReorderableDragStartListener(
+          index: index,
+          child: const Icon(Icons.reorder_outlined),
+        );
 
         // delayed drag let it able to scroll
         return ReorderableDelayedDragStartListener(
@@ -44,13 +82,12 @@ class _ReorderableScaffoldState<T extends ModelOrderable> extends State<Reordera
             padding: const EdgeInsets.symmetric(vertical: 1.0),
             child: Material(
               elevation: 1.0,
-              child: ListTile(
-                title: Text(item.name),
-                trailing: ReorderableDragStartListener(
-                  index: index,
-                  child: const Icon(Icons.reorder_outlined),
-                ),
-              ),
+              child: widget.itemBuilder != null
+                  ? widget.itemBuilder!(context, item, toggler)
+                  : ListTile(
+                      title: Text((item as dynamic).name),
+                      trailing: toggler,
+                    ),
             ),
           ),
         );
@@ -63,33 +100,7 @@ class _ReorderableScaffoldState<T extends ModelOrderable> extends State<Reordera
         child: child,
       );
     }
-    return ResponsiveDialog(
-      title: Text(widget.title),
-      scrollable: false,
-      action: TextButton(
-        key: const Key('reorder.save'),
-        onPressed: () async {
-          await widget.handleSubmit(widget.items);
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        },
-        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-      ),
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: kTopSpacing, bottom: kInternalSpacing),
-              child: HintText(S.totalCount(widget.items.length)),
-            ),
-          ),
-          Expanded(child: child),
-        ],
-      ),
-    );
+    return child;
   }
 
   bool _handleReorder(int oldIndex, int newIndex) {

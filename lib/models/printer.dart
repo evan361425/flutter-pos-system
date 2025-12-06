@@ -81,16 +81,9 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     }
   }
 
-  Future<void> saveProperties() async {
-    Log.ger('update_repo', {'type': storageStore.name, 'density': density.index});
-
-    await Storage.instance.set(storageStore, {
-      'setting': {
-        'density': density.index,
-      },
-    });
-
-    notifyListeners();
+  Future<void> changeDensity(PrinterDensity newDensity) {
+    density = newDensity;
+    return _saveProperties();
   }
 
   /// Generate receipt in pixel format.
@@ -131,6 +124,18 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     if (errors.isNotEmpty) {
       showSnackbarWhenFutureError(Future.error(errors.join('\n')), 'printer_draw', key: App.scaffoldMessengerKey);
     }
+  }
+
+  Future<void> _saveProperties() async {
+    Log.ger('update_repo', {'type': storageStore.name, 'density': density.index});
+
+    await Storage.instance.set(storageStore, {
+      'setting': {
+        'density': density.index,
+      },
+    });
+
+    notifyListeners();
   }
 }
 

@@ -7,6 +7,7 @@ headerInfo:
 _title:
   $prefix: title
   create: Add Printer
+  supported: Supported List
   update: Edit Printer
   settings: Format Settings
 btn:
@@ -88,10 +89,14 @@ meta:
   helper: Enable Bluetooth and keep the printer nearby
 settings:
   title: Printer Format Settings
+  _title:
+    $prefix: title
+    template:
+      create: Create Template
+      update: Update Template
   padding:
     label: Narrow Spacing
     helper: Reduces paper between receipts; need caution when tearing
-  more: More Settings Coming Soon!
 receipt:
   title: Receipt
   column:
@@ -110,13 +115,7 @@ receipt:
   paid: Paid
   price: Price
   change: Change
-  editor:
-    title: Customize Receipt
-    content: Modify the receipt format by adding, removing, or rearranging components.
   template:
-    title:
-      create: Create New
-      update: Update Template
     meta:
       componentsCount:
       - =1: '{count} component'
@@ -125,39 +124,38 @@ receipt:
     name:
       label: Template Name
       errorRepeat: Template name already exists
-    toDefault:
+    select:
       label: Enable This Template
-      helper: Only one template can be enabled at a time
-      confirmChange:
-        title: Change Default Template?
-        content:
-        - This will disable the current default template "{name}". Continue?
+    default:
+      name: Default Template
+      readonlyWarning: Default template cannot be edited or deleted
   component:
     title:
       add: Add Component
-      edit: Edit Component
-    orderTable: Order Table
-    textField: Text Field
-    divider: Divider
-    timestamp: Order Timestamp
-    orderId: Order ID
-    totalSection: Total Section
-    paymentSection: Payment Section
-    text: Text
-    fontSize: Font Size
-    height: Height
-    alignment: Alignment
-    alignLeft: Left
-    alignCenter: Center
-    alignRight: Right
-    dateFormat: Date Format
-    dateFormatFull: Full (Date & Time)
-    dateFormatDate: Date Only
-    dateFormatTime: Time Only
-    showProductName: Show Product Name
-    showCatalogName: Show Catalog Name
-    orderIdDesc: Display order identifier
-    paymentDesc: Show payment details
+    type:
+    - orderTable: Order Table
+      discountTable: Discount Products Table
+      attributeTable: Adds-on Table
+      priceTable: Price Table
+      textField: Text Field
+      image: Image
+      divider: Divider
+    label:
+      productName: Product Name
+      catalogName: Catalog Name
+      quantity: Quantity
+      singlePrice: Unit Price
+      totalPrice: Total Price
+      originPrice: Origin Price
+      attribute:
+        name: Type
+        option: Option
+        adjustment: Adjustment
+      paid: Paid
+      change: Change
+      price: Price
+      productsQuantity: Products Quantity
+      productsPrice: Products Price
 info:
   title: Printer Information
   name: Name
@@ -165,7 +163,6 @@ info:
   signal: Signal
   status: Status
 supported:
-  title: Supported Printers
   name:
   - xPrinter58: XPrinter
     catPrinter: Portable Mini Printer

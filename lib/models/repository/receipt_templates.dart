@@ -52,7 +52,12 @@ class ReceiptTemplates extends ChangeNotifier with Repository<ReceiptTemplate>, 
     );
   }
 
-  Future<void> saveProperties() async {
+  Future<void> changeSelected(String id) async {
+    selectedId = id;
+    await _saveProperties();
+  }
+
+  Future<void> _saveProperties() async {
     Log.ger('update_repo', {'type': storageStore.name});
 
     await Storage.instance.set(storageStore, {

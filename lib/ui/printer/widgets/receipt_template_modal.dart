@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/dialog/confirm_dialog.dart';
+import 'package:possystem/components/dialog/responsive_dialog.dart';
+import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
+import 'package:possystem/components/scaffold/reorderable_scaffold.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/receipt_template_object.dart';
+import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_template.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/routes.dart';
@@ -25,17 +29,53 @@ class ReceiptTemplateModal extends StatefulWidget {
 
 class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemModal<ReceiptTemplateModal> {
   late TextEditingController _nameController;
+  late List<ReceiptComponent> _components;
+  late ValueNotifier<int> _componentsCount;
   late FocusNode _nameFocusNode;
-  late bool isDefault;
 
   @override
-  String get title => widget.isNew ? S.printerReceiptTemplateTitleCreate : S.printerReceiptTemplateTitleUpdate;
+  String get title => widget.isNew ? S.printerSettingsTitleTemplateCreate : S.printerSettingsTitleTemplateUpdate;
+
+  @override
+  Widget build(BuildContext context) {
+    return ResponsiveDialog(
+      title: Text(title),
+      scrollable: false,
+      action: TextButton(
+        key: const Key('modal.save'),
+        onPressed: () => handleSubmit(),
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+      ),
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      content: Form(
+        key: formKey,
+        child: Column(children: [
+          ...buildFormFields(),
+          const SizedBox(height: kInternalSpacing),
+          ValueListenableBuilder<int>(
+            valueListenable: _componentsCount,
+            builder: (context, value, child) {
+              return MyReorderableList(items: _components, itemBuilder: buildComponentTile);
+            },
+          ),
+          const SizedBox(height: kInternalSpacing),
+          ElevatedButton.icon(
+            key: const Key('receipt_tpl.add_component'),
+            onPressed: onAddComponent,
+            icon: const Icon(Icons.add),
+            label: Text(S.printerReceiptComponentTitleAdd),
+          ),
+          const SizedBox(height: kDialogBottomSpacing),
+        ]),
+      ),
+    );
+  }
 
   @override
   List<Widget> buildFormFields() {
     return [
       TextFormField(
-        key: const Key('receipt_template.name'),
+        key: const Key('receipt_tpl.name'),
         controller: _nameController,
         textInputAction: TextInputAction.done,
         textCapitalization: TextCapitalization.words,
@@ -58,37 +98,29 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
         ),
         onFieldSubmitted: handleFieldSubmit,
       ),
-      CheckboxListTile(
-        key: const Key('receipt_template.isDefault'),
-        controlAffinity: ListTileControlAffinity.leading,
-        value: isDefault,
-        selected: isDefault,
-        onChanged: _toggledDefault,
-        title: Text(S.printerReceiptTemplateToDefaultLabel),
-        subtitle: Text(S.printerReceiptTemplateToDefaultHelper),
-      ),
-      if (!widget.isNew)
-        ListTile(
-          leading: const Icon(Icons.edit),
-          title: Text(S.printerReceiptTemplateEditComponents),
-          subtitle: Text(S.printerReceiptComponentCount(widget.template!.components.length)),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {
-            context.pushNamed(
-              Routes.printerReceiptTemplateComponentEditor,
-              pathParameters: {'id': widget.template!.id},
-            );
-          },
-        ),
     ];
+  }
+
+  Widget buildComponentTile(BuildContext context, ReceiptComponent item, Widget toggler) {
+    return ListTile(
+      title: Text(S.printerReceiptComponentType(item.type.name)),
+      subtitle: item.buildDescription(context),
+      leading: item.icon,
+      onTap: () => context.pushNamed(
+        Routes.printerSettingsTemplateComponentEditor,
+        pathParameters: {'id': widget.template!.id},
+        extra: item,
+      ),
+      trailing: toggler,
+    );
   }
 
   @override
   void initState() {
     _nameController = TextEditingController(text: widget.template?.name);
     _nameFocusNode = FocusNode();
-
-    isDefault = widget.template?.isDefault ?? false;
+    _components = widget.template?.components.toList() ?? [];
+    _componentsCount = ValueNotifier<int>(_components.length);
 
     super.initState();
   }
@@ -100,24 +132,34 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
     super.dispose();
   }
 
+  void onAddComponent() async {
+    final result = await showPositionedMenu<ReceiptComponentType>(context, actions: [
+      for (final type in ReceiptComponentType.values)
+        MenuAction(
+          title: Text(S.printerReceiptComponentType(type.name)),
+          leading: ReceiptComponent.fromJson({'type': type.index}).icon,
+          returnValue: type,
+        ),
+    ]);
+    if (result != null) {
+      setState(() {
+        _components.add(ReceiptComponent.fromJson({'type': result.index}));
+        _componentsCount.value = _components.length;
+      });
+    }
+  }
+
   @override
   Future<void> updateItem() async {
     final object = ReceiptTemplateObject(
       name: _nameController.text,
-      isDefault: isDefault,
-      components: widget.template?.components,
+      components: _components,
     );
-
-    // if turn to default or add default
-    if (isDefault && widget.template?.isDefault != true) {
-      await ReceiptTemplates.instance.clearDefault();
-    }
 
     if (widget.isNew) {
       await ReceiptTemplates.instance.addItem(ReceiptTemplate(
         name: object.name!,
-        isDefault: isDefault,
-        components: ReceiptTemplate._getDefaultComponents(),
+        components: object.components,
       ));
     } else {
       await widget.template!.update(object);
@@ -125,24 +167,6 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
 
     if (mounted && context.canPop()) {
       context.pop();
-    }
-  }
-
-  void _toggledDefault(bool? value) async {
-    final defaultTemplate = ReceiptTemplates.instance.defaultTemplate;
-    // warn if default template is going to be changed
-    if (value == true && defaultTemplate != null && defaultTemplate.id != widget.template?.id) {
-      final confirmed = await ConfirmDialog.show(
-        context,
-        title: S.printerReceiptTemplateToDefaultConfirmChangeTitle,
-        content: S.printerReceiptTemplateToDefaultConfirmChangeContent(defaultTemplate.name),
-      );
-
-      if (confirmed) {
-        setState(() => isDefault = value!);
-      }
-    } else {
-      setState(() => isDefault = value!);
     }
   }
 }

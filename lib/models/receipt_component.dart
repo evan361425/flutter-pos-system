@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/translator.dart';
 
 /// Base class for all receipt components
 abstract class ReceiptComponent {
   final ReceiptComponentType type;
+  final Icon icon;
 
   ReceiptComponent({
     required this.type,
+    required this.icon,
   });
 
   /// Convert to JSON for storage
   Map<String, Object?> toJson();
 
+  Widget buildDescription(BuildContext context);
+
   /// Create from JSON
   factory ReceiptComponent.fromJson(Map<String, Object?> json) {
-    final type =
-        ReceiptComponentType.values.elementAtOrNull(json['type'] as int? ?? 0) ?? ReceiptComponentType.orderTable;
+    final typeIdx = json['type'] as int? ?? 0;
+    final type = ReceiptComponentType.values.elementAtOrNull(typeIdx) ?? ReceiptComponentType.orderTable;
     switch (type) {
       case ReceiptComponentType.orderTable:
         return OrderTableComponent.fromJson(json);
@@ -51,27 +57,40 @@ enum ReceiptComponentType {
 class OrderTableComponent extends ReceiptComponent {
   bool showProductName;
   bool showCatalogName;
-  bool showCount;
-  bool showPrice;
-  bool showTotal;
+  bool showQuantity;
+  bool showSinglePrice;
+  bool showTotalPrice;
 
   OrderTableComponent({
-    this.showProductName = false,
+    this.showProductName = true,
     this.showCatalogName = false,
-    this.showCount = false,
-    this.showPrice = false,
-    this.showTotal = false,
-  }) : super(type: ReceiptComponentType.orderTable);
+    this.showQuantity = true,
+    this.showSinglePrice = true,
+    this.showTotalPrice = true,
+  }) : super(type: ReceiptComponentType.orderTable, icon: const Icon(Icons.receipt_long_outlined));
 
   factory OrderTableComponent.fromJson(Map<String, Object?> json) {
     return OrderTableComponent(
-      showProductName: json['showProductName'] as bool? ?? false,
+      showProductName: json['showProductName'] as bool? ?? true,
       showCatalogName: json['showCatalogName'] as bool? ?? false,
-      showCount: json['showCount'] as bool? ?? false,
-      showPrice: json['showPrice'] as bool? ?? false,
-      showTotal: json['showTotal'] as bool? ?? false,
+      showQuantity: json['showQuantity'] as bool? ?? true,
+      showSinglePrice: json['showSinglePrice'] as bool? ?? true,
+      showTotalPrice: json['showTotalPrice'] as bool? ?? true,
     );
   }
+
+  @override
+  Widget buildDescription(BuildContext context) => MetaBlock.withString(
+      context,
+      [
+        if (showProductName) S.printerReceiptComponentLabelProductName,
+        if (showCatalogName) S.printerReceiptComponentLabelCatalogName,
+        if (showQuantity) S.printerReceiptComponentLabelQuantity,
+        if (showSinglePrice) S.printerReceiptComponentLabelSinglePrice,
+        if (showTotalPrice) S.printerReceiptComponentLabelTotalPrice,
+      ],
+      maxLines: 1,
+      emptyText: '')!;
 
   @override
   Map<String, Object?> toJson() {
@@ -79,9 +98,9 @@ class OrderTableComponent extends ReceiptComponent {
       'type': type.index,
       'showProductName': showProductName,
       'showCatalogName': showCatalogName,
-      'showCount': showCount,
-      'showPrice': showPrice,
-      'showTotal': showTotal,
+      'showQuantity': showQuantity,
+      'showSinglePrice': showSinglePrice,
+      'showTotalPrice': showTotalPrice,
     };
   }
 }
@@ -89,30 +108,44 @@ class OrderTableComponent extends ReceiptComponent {
 class DiscountTableComponent extends ReceiptComponent {
   bool showProductName;
   bool showCatalogName;
-  bool showCount;
+  bool showQuantity;
   bool showTotalPrice;
   bool showSinglePrice;
-  bool showOriginalPrice;
+  bool showOriginPrice;
 
   DiscountTableComponent({
-    this.showProductName = false,
+    this.showProductName = true,
     this.showCatalogName = false,
-    this.showCount = false,
+    this.showQuantity = false,
     this.showTotalPrice = false,
     this.showSinglePrice = false,
-    this.showOriginalPrice = false,
-  }) : super(type: ReceiptComponentType.discountTable);
+    this.showOriginPrice = true,
+  }) : super(type: ReceiptComponentType.discountTable, icon: const Icon(Icons.discount_outlined));
 
   factory DiscountTableComponent.fromJson(Map<String, Object?> json) {
     return DiscountTableComponent(
-      showProductName: json['showProductName'] as bool? ?? false,
+      showProductName: json['showProductName'] as bool? ?? true,
       showCatalogName: json['showCatalogName'] as bool? ?? false,
-      showCount: json['showCount'] as bool? ?? false,
+      showQuantity: json['showQuantity'] as bool? ?? false,
       showTotalPrice: json['showTotalPrice'] as bool? ?? false,
       showSinglePrice: json['showSinglePrice'] as bool? ?? false,
-      showOriginalPrice: json['showOriginalPrice'] as bool? ?? false,
+      showOriginPrice: json['showOriginPrice'] as bool? ?? true,
     );
   }
+
+  @override
+  Widget buildDescription(BuildContext context) => MetaBlock.withString(
+      context,
+      [
+        if (showProductName) S.printerReceiptComponentLabelProductName,
+        if (showCatalogName) S.printerReceiptComponentLabelCatalogName,
+        if (showQuantity) S.printerReceiptComponentLabelQuantity,
+        if (showSinglePrice) S.printerReceiptComponentLabelSinglePrice,
+        if (showTotalPrice) S.printerReceiptComponentLabelTotalPrice,
+        if (showOriginPrice) S.printerReceiptComponentLabelOriginPrice,
+      ],
+      maxLines: 1,
+      emptyText: '')!;
 
   @override
   Map<String, Object?> toJson() {
@@ -120,10 +153,10 @@ class DiscountTableComponent extends ReceiptComponent {
       'type': type.index,
       'showProductName': showProductName,
       'showCatalogName': showCatalogName,
-      'showCount': showCount,
+      'showQuantity': showQuantity,
       'showTotalPrice': showTotalPrice,
       'showSinglePrice': showSinglePrice,
-      'showOriginalPrice': showOriginalPrice,
+      'showOriginPrice': showOriginPrice,
     };
   }
 }
@@ -135,17 +168,28 @@ class AttributeTableComponent extends ReceiptComponent {
 
   AttributeTableComponent({
     this.showName = false,
-    this.showOptionName = false,
-    this.showAdjustment = false,
-  }) : super(type: ReceiptComponentType.attributeTable);
+    this.showOptionName = true,
+    this.showAdjustment = true,
+  }) : super(type: ReceiptComponentType.attributeTable, icon: const Icon(Icons.attribution_outlined));
 
   factory AttributeTableComponent.fromJson(Map<String, Object?> json) {
     return AttributeTableComponent(
       showName: json['showName'] as bool? ?? false,
-      showOptionName: json['showOptionName'] as bool? ?? false,
-      showAdjustment: json['showAdjustment'] as bool? ?? false,
+      showOptionName: json['showOptionName'] as bool? ?? true,
+      showAdjustment: json['showAdjustment'] as bool? ?? true,
     );
   }
+
+  @override
+  Widget buildDescription(BuildContext context) => MetaBlock.withString(
+      context,
+      [
+        if (showName) S.printerReceiptComponentLabelAttributeName,
+        if (showOptionName) S.printerReceiptComponentLabelAttributeOption,
+        if (showAdjustment) S.printerReceiptComponentLabelAttributeAdjustment,
+      ],
+      maxLines: 1,
+      emptyText: '')!;
 
   @override
   Map<String, Object?> toJson() {
@@ -162,26 +206,39 @@ class PriceTableComponent extends ReceiptComponent {
   bool showPaid;
   bool showPrice;
   bool showChange;
-  bool showProductCount;
-  bool showProductPrice;
+  bool showProductsQuantity;
+  bool showProductsPrice;
 
   PriceTableComponent({
-    this.showPaid = false,
-    this.showPrice = false,
-    this.showChange = false,
-    this.showProductCount = false,
-    this.showProductPrice = false,
-  }) : super(type: ReceiptComponentType.priceTable);
+    this.showPaid = true,
+    this.showPrice = true,
+    this.showChange = true,
+    this.showProductsQuantity = false,
+    this.showProductsPrice = false,
+  }) : super(type: ReceiptComponentType.priceTable, icon: const Icon(Icons.price_change_outlined));
 
   factory PriceTableComponent.fromJson(Map<String, Object?> json) {
     return PriceTableComponent(
-      showPaid: json['showPaid'] as bool? ?? false,
-      showPrice: json['showPrice'] as bool? ?? false,
-      showChange: json['showChange'] as bool? ?? false,
-      showProductCount: json['showProductCount'] as bool? ?? false,
-      showProductPrice: json['showProductPrice'] as bool? ?? false,
+      showPaid: json['showPaid'] as bool? ?? true,
+      showPrice: json['showPrice'] as bool? ?? true,
+      showChange: json['showChange'] as bool? ?? true,
+      showProductsQuantity: json['showProductsQuantity'] as bool? ?? false,
+      showProductsPrice: json['showProductsPrice'] as bool? ?? false,
     );
   }
+
+  @override
+  Widget buildDescription(BuildContext context) => MetaBlock.withString(
+      context,
+      [
+        if (showPaid) S.printerReceiptComponentLabelPaid,
+        if (showPrice) S.printerReceiptComponentLabelPrice,
+        if (showChange) S.printerReceiptComponentLabelChange,
+        if (showProductsQuantity) S.printerReceiptComponentLabelProductsQuantity,
+        if (showProductsPrice) S.printerReceiptComponentLabelProductsPrice,
+      ],
+      maxLines: 1,
+      emptyText: '')!;
 
   @override
   Map<String, Object?> toJson() {
@@ -190,8 +247,8 @@ class PriceTableComponent extends ReceiptComponent {
       'showPaid': showPaid,
       'showPrice': showPrice,
       'showChange': showChange,
-      'showProductCount': showProductCount,
-      'showProductPrice': showProductPrice,
+      'showProductsQuantity': showProductsQuantity,
+      'showProductsPrice': showProductsPrice,
     };
   }
 }
@@ -227,7 +284,7 @@ class TextFieldComponent extends ReceiptComponent {
     this.color = const Color(0xFF424242),
     this.textAlign = TextAlign.center,
     this.padding = const EdgeInsets.all(0),
-  }) : super(type: ReceiptComponentType.textField);
+  }) : super(type: ReceiptComponentType.textField, icon: const Icon(Icons.text_fields));
 
   factory TextFieldComponent.fromJson(Map<String, Object?> json) {
     return TextFieldComponent(
@@ -244,6 +301,9 @@ class TextFieldComponent extends ReceiptComponent {
       ),
     );
   }
+
+  @override
+  Widget buildDescription(BuildContext context) => Text(text, overflow: TextOverflow.ellipsis, maxLines: 1);
 
   String formatText({
     String? title,
@@ -294,13 +354,16 @@ class DividerComponent extends ReceiptComponent {
 
   DividerComponent({
     this.height = 4.0,
-  }) : super(type: ReceiptComponentType.divider);
+  }) : super(type: ReceiptComponentType.divider, icon: const Icon(Icons.horizontal_rule));
 
   factory DividerComponent.fromJson(Map<String, Object?> json) {
     return DividerComponent(
       height: json['height'] as double? ?? 4.0,
     );
   }
+
+  @override
+  Widget buildDescription(BuildContext context) => Text('Height: $height'); // TODO: i18n
 
   @override
   Map<String, Object?> toJson() {
@@ -320,7 +383,7 @@ class ImageComponent extends ReceiptComponent {
     required this.imagePath,
     this.width = 100.0,
     this.height = 100.0,
-  }) : super(type: ReceiptComponentType.image);
+  }) : super(type: ReceiptComponentType.image, icon: const Icon(Icons.image));
 
   factory ImageComponent.fromJson(Map<String, Object?> json) {
     return ImageComponent(
@@ -329,6 +392,9 @@ class ImageComponent extends ReceiptComponent {
       height: json['height'] as double? ?? 100.0,
     );
   }
+
+  @override
+  Widget buildDescription(BuildContext context) => Text(imagePath); // TODO: using image preview
 
   @override
   Map<String, Object?> toJson() {

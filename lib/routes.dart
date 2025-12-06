@@ -10,9 +10,11 @@ import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/cache.dart';
@@ -49,10 +51,8 @@ import 'package:possystem/ui/order_attr/widgets/order_attribute_reorder.dart';
 import 'package:possystem/ui/printer/printer_modal.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
 import 'package:possystem/ui/printer/printer_settings_modal.dart';
-import 'package:possystem/ui/printer/receipt_editor_page.dart';
 import 'package:possystem/ui/printer/widgets/receipt_template_component_editor_page.dart';
 import 'package:possystem/ui/printer/widgets/receipt_template_modal.dart';
-import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
@@ -511,16 +511,10 @@ class Routes {
             name: printerSettings,
             path: 'settings',
             parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsModal(), state)),
-          ),
-          GoRoute(
-            name: printerReceiptEditor,
-            path: 'receipt-editor',
-            parentNavigatorKey: rootNavigatorKey,
-            builder: (ctx, state) => _l(const ReceiptEditorPage(), state),
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsPage(), state)),
             routes: [
               GoRoute(
-                name: printerReceiptTemplateCreate,
+                name: printerSettingsTemplateCreate,
                 path: 'create',
                 parentNavigatorKey: rootNavigatorKey,
                 pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ReceiptTemplateModal(), state)),
@@ -528,10 +522,10 @@ class Routes {
               GoRoute(
                 path: 't/:id',
                 parentNavigatorKey: rootNavigatorKey,
-                redirect: _redirectIfMissed(path: 'receipt-editor', hasItem: (id) => ReceiptTemplates.instance.hasItem(id)),
+                redirect: _redirectIfMissed(path: 'settings', hasItem: (id) => ReceiptTemplates.instance.hasItem(id)),
                 routes: [
                   GoRoute(
-                    name: printerReceiptTemplateUpdate,
+                    name: printerSettingsTemplateUpdate,
                     path: 'update',
                     parentNavigatorKey: rootNavigatorKey,
                     pageBuilder: (ctx, state) {
@@ -540,12 +534,14 @@ class Routes {
                     },
                   ),
                   GoRoute(
-                    name: printerReceiptTemplateComponentEditor,
-                    path: 'components',
+                    name: printerSettingsTemplateComponentEditor,
+                    path: 'componentEditor',
                     parentNavigatorKey: rootNavigatorKey,
                     builder: (ctx, state) {
                       final template = ReceiptTemplates.instance.getItem(state.pathParameters['id']!)!;
-                      return _l(ReceiptTemplateComponentEditorPage(template: template), state);
+                      final component =
+                          state.extra is ReceiptComponent ? state.extra as ReceiptComponent : OrderTableComponent();
+                      return _l(ReceiptTemplateComponentEditorPage(template: template, component: component), state);
                     },
                   ),
                 ],
@@ -749,10 +745,9 @@ class Routes {
   static const printer = 'printer';
   static const printerCreate = 'printer.create';
   static const printerSettings = 'printer.settings';
-  static const printerReceiptEditor = 'printer.receiptEditor';
-  static const printerReceiptTemplateCreate = 'printer.receiptTemplate.create';
-  static const printerReceiptTemplateUpdate = 'printer.receiptTemplate.update';
-  static const printerReceiptTemplateComponentEditor = 'printer.receiptTemplate.componentEditor';
+  static const printerSettingsTemplateCreate = 'printer.settings.template.create';
+  static const printerSettingsTemplateUpdate = 'printer.settings.template.update';
+  static const printerSettingsTemplateComponentEditor = 'printer.settings.template.componentEditor';
   static const printerUpdate = 'printer.update';
 }
 
