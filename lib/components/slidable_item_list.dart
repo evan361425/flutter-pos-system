@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
+import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/translator.dart';
 
@@ -68,7 +69,7 @@ class SlidableItemDelegate<T, U> {
   final Iterable<MenuAction<U>> Function(T item)? actionBuilder;
 
   /// You should ignore deletion which will be handled.
-  final void Function(T item, U action)? handleAction;
+  final Future<void> Function(T item, U action)? handleAction;
 
   /// Required when using [showActions].
   final U? deleteValue;
@@ -117,7 +118,7 @@ class SlidableItemDelegate<T, U> {
     );
 
     if (result != null && handleAction != null) {
-      handleAction!(item, result);
+      showSnackbarWhenFutureError(handleAction!(item, result), 'handle_action_${T.runtimeType}');
     }
   }
 }

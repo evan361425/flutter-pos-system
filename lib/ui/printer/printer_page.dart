@@ -44,7 +44,7 @@ class PrinterPage extends StatelessWidget {
             key: const Key('printer.supported_list'),
             onPressed: _showSupportedPrinters(context),
             icon: const Icon(Icons.info_outline),
-            tooltip: S.printerSupportedTitle,
+            tooltip: S.printerTitleSupported,
           ),
           RouteIconButton(
             key: const Key('printer.settings'),
@@ -101,7 +101,7 @@ class _EmptyBody extends StatelessWidget {
       const SizedBox(width: kInternalSpacing),
       OutlinedButton(
         onPressed: _showSupportedPrinters(context),
-        child: Text(S.printerSupportedTitle),
+        child: Text(S.printerTitleSupported),
       ),
     ]);
 
@@ -237,7 +237,7 @@ VoidCallback _showSupportedPrinters(BuildContext context) {
   return () => showDialog(
         context: context,
         builder: (context) => ResponsiveDialog(
-          title: Text(S.printerSupportedTitle),
+          title: Text(S.printerTitleSupported),
           content: Column(children: [
             for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter58])
               ListTile(

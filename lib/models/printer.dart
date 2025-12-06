@@ -40,7 +40,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   List<Printer> get itemList => items.sorted((a, b) => a.compareTo(b));
 
   @override
-  RepositoryStorageType get repoType => RepositoryStorageType.repoProperties;
+  RepositoryStorageType get repoType => RepositoryStorageType.repoModel;
 
   bool get hasConnected => items.any((e) => e.connected);
 
@@ -66,7 +66,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     await super.initialize(record: 'printer');
 
     final data = await Storage.instance.get(storageStore, 'setting');
-    density = PrinterDensity.values[data['density'] as int? ?? 0];
+    density = PrinterDensity.values.elementAtOrNull(data['density'] as int? ?? 0) ?? PrinterDensity.normal;
 
     // storage must make sure parent is initialized, so we need to
     // set printer to `{}`, otherwise we will failed to add printer
@@ -81,16 +81,9 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     }
   }
 
-  Future<void> saveProperties() async {
-    Log.ger('update_printers', {'type': storageStore.name, 'density': density.index});
-
-    await Storage.instance.set(storageStore, {
-      'setting': {
-        'density': density.index,
-      },
-    });
-
-    notifyListeners();
+  Future<void> changeDensity(PrinterDensity newDensity) {
+    density = newDensity;
+    return _saveProperties();
   }
 
   /// Generate receipt in pixel format.
@@ -132,6 +125,18 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
       showSnackbarWhenFutureError(Future.error(errors.join('\n')), 'printer_draw', key: App.scaffoldMessengerKey);
     }
   }
+
+  Future<void> _saveProperties() async {
+    Log.ger('update_repo', {'type': storageStore.name, 'density': density.index});
+
+    await Storage.instance.set(storageStore, {
+      'setting': {
+        'density': density.index,
+      },
+    });
+
+    notifyListeners();
+  }
 }
 
 class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> implements Comparable<Printer> {
@@ -155,7 +160,7 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   @override
   String get prefix => 'printer.$id';
 
-  bool get connected => p.connected;
+  bool get connected => kDebugMode && id == 'demo' ? true : p.connected;
 
   Printer({
     super.id,

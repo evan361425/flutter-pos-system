@@ -7,6 +7,7 @@ headerInfo:
 _title:
   $prefix: title
   create: Add Printer
+  supported: Supported List
   update: Edit Printer
   settings: Format Settings
 btn:
@@ -88,10 +89,14 @@ meta:
   helper: Enable Bluetooth and keep the printer nearby
 settings:
   title: Printer Format Settings
+  _title:
+    $prefix: title
+    template:
+      create: Create Template
+      update: Update Template
   padding:
     label: Narrow Spacing
     helper: Reduces paper between receipts; need caution when tearing
-  more: More Settings Coming Soon!
 receipt:
   title: Receipt
   column:
@@ -110,6 +115,47 @@ receipt:
   paid: Paid
   price: Price
   change: Change
+  template:
+    meta:
+      componentsCount:
+      - =1: '{count} component'
+        other: '{count} components'
+      - count: {type: int, mode: plural, format: compactLong}
+    name:
+      label: Template Name
+      errorRepeat: Template name already exists
+    select:
+      label: Enable This Template
+    default:
+      name: Default Template
+      readonlyWarning: Default template cannot be edited or deleted
+  component:
+    title:
+      add: Add Component
+    type:
+    - orderTable: Order Table
+      discountTable: Discount Products Table
+      attributeTable: Adds-on Table
+      priceTable: Price Table
+      textField: Text Field
+      image: Image
+      divider: Divider
+    label:
+      productName: Product Name
+      catalogName: Catalog Name
+      quantity: Quantity
+      singlePrice: Unit Price
+      totalPrice: Total Price
+      originPrice: Origin Price
+      attribute:
+        name: Type
+        option: Option
+        adjustment: Adjustment
+      paid: Paid
+      change: Change
+      price: Price
+      productsQuantity: Products Quantity
+      productsPrice: Products Price
 info:
   title: Printer Information
   name: Name
@@ -117,7 +163,6 @@ info:
   signal: Signal
   status: Status
 supported:
-  title: Supported Printers
   name:
   - xPrinter58: XPrinter
     catPrinter: Portable Mini Printer

@@ -53,7 +53,7 @@ void main() {
                   returnValue: 1,
                 ),
               ],
-              handleAction: (item, action) {
+              handleAction: (item, action) async {
                 tappedAction = action;
               },
             ),

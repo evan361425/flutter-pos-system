@@ -10,9 +10,11 @@ import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/services/cache.dart';
@@ -49,6 +51,8 @@ import 'package:possystem/ui/order_attr/widgets/order_attribute_reorder.dart';
 import 'package:possystem/ui/printer/printer_modal.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
 import 'package:possystem/ui/printer/printer_settings_modal.dart';
+import 'package:possystem/ui/printer/widgets/receipt_template_component_editor_page.dart';
+import 'package:possystem/ui/printer/widgets/receipt_template_modal.dart';
 import 'package:possystem/ui/stock/quantities_page.dart';
 import 'package:possystem/ui/stock/replenishment_page.dart';
 import 'package:possystem/ui/stock/stock_view.dart';
@@ -507,7 +511,42 @@ class Routes {
             name: printerSettings,
             path: 'settings',
             parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsModal(), state)),
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsPage(), state)),
+            routes: [
+              GoRoute(
+                name: printerSettingsTemplateCreate,
+                path: 'create',
+                parentNavigatorKey: rootNavigatorKey,
+                pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ReceiptTemplateModal(), state)),
+              ),
+              GoRoute(
+                path: 't/:id',
+                parentNavigatorKey: rootNavigatorKey,
+                redirect: _redirectIfMissed(path: 'settings', hasItem: (id) => ReceiptTemplates.instance.hasItem(id)),
+                routes: [
+                  GoRoute(
+                    name: printerSettingsTemplateUpdate,
+                    path: 'update',
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (ctx, state) {
+                      final template = ReceiptTemplates.instance.getItem(state.pathParameters['id']!)!;
+                      return MaterialDialogPage(child: _l(ReceiptTemplateModal(template: template), state));
+                    },
+                  ),
+                  GoRoute(
+                    name: printerSettingsTemplateComponentEditor,
+                    path: 'componentEditor',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (ctx, state) {
+                      final template = ReceiptTemplates.instance.getItem(state.pathParameters['id']!)!;
+                      final component =
+                          state.extra is ReceiptComponent ? state.extra as ReceiptComponent : OrderTableComponent();
+                      return _l(ReceiptTemplateComponentEditorPage(template: template, component: component), state);
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
           GoRoute(
             path: 'a/:id',
@@ -706,6 +745,9 @@ class Routes {
   static const printer = 'printer';
   static const printerCreate = 'printer.create';
   static const printerSettings = 'printer.settings';
+  static const printerSettingsTemplateCreate = 'printer.settings.template.create';
+  static const printerSettingsTemplateUpdate = 'printer.settings.template.update';
+  static const printerSettingsTemplateComponentEditor = 'printer.settings.template.componentEditor';
   static const printerUpdate = 'printer.update';
 }
 

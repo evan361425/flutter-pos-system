@@ -60,7 +60,7 @@
     "description": "Keep the screen on during ordering, even when idle"
   },
   "settingOrderAwakeningDescription": "If disabled, the screen will turn off based on system settings during ordering.",
-  "settingReportTitle": "Collect Error Messages and Events",
+  "settingReportTitle": "Collect Errors and Events",
   "settingReportDescription": "Send error messages when the app encounters issues, helping the app improve",
   "stockTab": "Inventory",
   "stockUpdatedAt": "Last Purchased: {updatedAt}",
@@ -211,6 +211,7 @@
     "description": "Displayed on the upper in mobile view"
   },
   "printerTitleCreate": "Add Printer",
+  "printerTitleSupported": "Supported List",
   "printerTitleUpdate": "Edit Printer",
   "printerTitleSettings": "Format Settings",
   "printerBtnConnect": "Connect",
@@ -265,9 +266,10 @@
   "printerMetaExist": "Existing, cannot add",
   "printerMetaHelper": "Enable Bluetooth and keep the printer nearby",
   "printerSettingsTitle": "Printer Format Settings",
+  "printerSettingsTitleTemplateCreate": "Create Template",
+  "printerSettingsTitleTemplateUpdate": "Update Template",
   "printerSettingsPaddingLabel": "Narrow Spacing",
   "printerSettingsPaddingHelper": "Reduces paper between receipts; need caution when tearing",
-  "printerSettingsMore": "More Settings Coming Soon!",
   "printerReceiptTitle": "Receipt",
   "printerReceiptColumnName": "Item",
   "printerReceiptColumnPrice": "U/P",
@@ -282,12 +284,41 @@
   "printerReceiptPaid": "Paid",
   "printerReceiptPrice": "Price",
   "printerReceiptChange": "Change",
+  "printerReceiptTemplateMetaComponentsCount": "{count, plural, =1{{count} component} other{{count} components}}",
+  "@printerReceiptTemplateMetaComponentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compactLong"
+      }
+    }
+  },
+  "printerReceiptTemplateNameLabel": "Template Name",
+  "printerReceiptTemplateNameErrorRepeat": "Template name already exists",
+  "printerReceiptTemplateSelectLabel": "Enable This Template",
+  "printerReceiptTemplateDefaultName": "Default Template",
+  "printerReceiptTemplateDefaultReadonlyWarning": "Default template cannot be edited or deleted",
+  "printerReceiptComponentTitleAdd": "Add Component",
+  "printerReceiptComponentType": "{name, select, orderTable{Order Table} discountTable{Discount Products Table} attributeTable{Adds-on Table} priceTable{Price Table} textField{Text Field} image{Image} divider{Divider} other{UNKNOWN}}",
+  "printerReceiptComponentLabelProductName": "Product Name",
+  "printerReceiptComponentLabelCatalogName": "Catalog Name",
+  "printerReceiptComponentLabelQuantity": "Quantity",
+  "printerReceiptComponentLabelSinglePrice": "Unit Price",
+  "printerReceiptComponentLabelTotalPrice": "Total Price",
+  "printerReceiptComponentLabelOriginPrice": "Origin Price",
+  "printerReceiptComponentLabelAttributeName": "Type",
+  "printerReceiptComponentLabelAttributeOption": "Option",
+  "printerReceiptComponentLabelAttributeAdjustment": "Adjustment",
+  "printerReceiptComponentLabelPaid": "Paid",
+  "printerReceiptComponentLabelChange": "Change",
+  "printerReceiptComponentLabelPrice": "Price",
+  "printerReceiptComponentLabelProductsQuantity": "Products Quantity",
+  "printerReceiptComponentLabelProductsPrice": "Products Price",
   "printerInfoTitle": "Printer Information",
   "printerInfoName": "Name",
   "printerInfoAddress": "Location",
   "printerInfoSignal": "Signal",
   "printerInfoStatus": "Status",
-  "printerSupportedTitle": "Supported Printers",
   "printerSupportedName": "{name, select, xPrinter58{XPrinter} catPrinter{Portable Mini Printer} other{UNKNOWN}}",
   "transitTitle": "Data Transfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
@@ -949,7 +980,7 @@
   "@dialogDeletionTitle": {
     "description": "Title displayed on the DeleteDialog."
   },
-  "dialogDeletionContent": "Are you sure you want to delete \"{name}\"?\n\n{more}This action cannot be undone!\n",
+  "dialogDeletionContent": "Are you sure you want to delete \"{name}\"?\n\n{more}This action cannot be undone!",
   "@dialogDeletionContent": {
     "description": "Content displayed on the DeleteDialog.",
     "placeholders": {
@@ -1160,7 +1191,7 @@
     }
   },
   "orderAttributeOptionNameLabel": "Option Name",
-  "orderAttributeOptionNameHelper": "For 'age', possible options are:\n- ⇣ 20\n- 20 ⇢ 30",
+  "orderAttributeOptionNameHelper": "For 'age', possible options are:\n- ⇣ 20\n- 20 - 30",
   "orderAttributeOptionNameErrorRepeat": "Name already exists",
   "orderAttributeOptionModeTitle": "Option Mode",
   "orderAttributeOptionModeHelper": "{name, select, statOnly{No need to set \"Discount\" or \"Price Change\" because this setting is \"Normal\"} changePrice{Selecting this option during ordering will apply this price change} changeDiscount{Selecting this option during ordering will apply this discount} other{UNKNOWN}}",

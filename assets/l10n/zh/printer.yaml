@@ -5,6 +5,7 @@ headerInfo: 出單機
 _title:
   $prefix: title
   create: 新增出單機
+  supported: 支援清單
   update: 編輯出單機
   settings: 設定格式
 btn:
@@ -79,10 +80,14 @@ meta:
   helper: 打開藍牙並確保出單機就在你旁邊
 settings:
   title: 設定出單機格式
+  _title:
+    $prefix: title
+    template:
+      create: 建立範本
+      update: 編輯範本
   padding:
     label: 窄間距
     helper: 單子跟單子之間的空白會變少，較省紙張，但是撕紙時要小心
-  more: 其他更多設定，敬請期待！
 receipt:
   title: 交易明細
   column:
@@ -101,6 +106,47 @@ receipt:
   paid: 付額
   price: 總價
   change: 找錢
+  template:
+    meta:
+      componentsCount:
+      - '{count} 個元件'
+      - count: {type: int, mode: plural, format: compactLong}
+    name:
+      label: 範本名稱
+      errorRepeat: 範本名稱已存在
+    select:
+      label: 啟用此範本
+    default:
+      name: 預設範本
+      readonlyWarning: 預設範本無法編輯或刪除
+  component:
+    title:
+      add: 新增元件
+      edit: 編輯元件
+    type:
+    - orderTable: 訂單表格
+      discountTable: 折扣商品表格
+      attributeTable: 附加資訊表格
+      priceTable: 價格表格
+      textField: 文字欄位
+      image: 圖片
+      divider: 分隔線
+    label:
+      productName: 產品名稱
+      catalogName: 種類名稱
+      quantity: 數量
+      singlePrice: 單價
+      totalPrice: 總價
+      originPrice: 原價
+      attribute:
+        name: 類別
+        option: 選項
+        adjustment: 調整金額
+      paid: 付額
+      change: 找錢
+      price: 總價
+      productsQuantity: 產品總數
+      productsPrice: 產品總價
 info:
   title: 出單機資訊
   name: 名稱
@@ -108,7 +154,6 @@ info:
   signal: 訊號強度
   status: 狀態
 supported:
-  title: 支援的出單機
   name:
   - xPrinter58: 芯燁 XPrinter
     catPrinter: 迷你口袋打印機
