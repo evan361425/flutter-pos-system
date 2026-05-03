@@ -73,6 +73,8 @@ typeSelect:
     xPrinter58: 芯燁 58 系列
     xPrinter76: 芯燁 76 系列
     xPrinter80: 芯燁 80 系列
+    yokoscan58: 優庫 58 系列
+    yokoscan80: 優庫 80 系列
 meta:
   connected: 已連線
   exist: 已建立，無法新增
@@ -112,3 +114,4 @@ supported:
   name:
   - xPrinter58: 芯燁 XPrinter
     catPrinter: 迷你口袋打印機
+    yokoscan58: 優庫 printer

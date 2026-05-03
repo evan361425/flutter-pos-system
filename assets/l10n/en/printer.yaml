@@ -82,6 +82,8 @@ typeSelect:
     xPrinter58: XPrinter 58 Series
     xPrinter76: XPrinter 76 Series
     xPrinter80: XPrinter 80 Series
+    yokoscan58: Yokoscan 58 Series
+    yokoscan80: Yokoscan 80 Series
 meta:
   connected: Connected
   exist: Existing, cannot add
@@ -121,3 +123,4 @@ supported:
   name:
   - xPrinter58: XPrinter
     catPrinter: Portable Mini Printer
+    yokoscan58: Yokoscan printer

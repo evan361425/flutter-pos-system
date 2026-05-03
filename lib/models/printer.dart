@@ -308,7 +308,10 @@ enum PrinterProvider {
     markers: ['XP-58', 'XP-76', 'XP-80'],
   ),
   xPrinter76(bt.XPrinter(widthMM: 76, widthBits: 528)),
-  xPrinter80(bt.XPrinter(widthMM: 80, widthBits: 560));
+  xPrinter80(bt.XPrinter(widthMM: 80, widthBits: 560)),
+  yokoscan58(bt.YokoscanPrinter(widthMM: 58, widthBits: 384),
+      link: 'https://yokoscan.net/product/product.php?class2=184'),
+  yokoscan80(bt.YokoscanPrinter(widthMM: 80, widthBits: 560));
 
   final PrinterManufactory manufactory;
   final String? link;
