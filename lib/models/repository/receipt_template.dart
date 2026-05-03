@@ -37,30 +37,18 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
   static List<ReceiptComponent> getDefaultComponents() {
     return [
       TextFieldComponent(
-        text: '{title}',
-        fontSize: 28.0,
+        texts: [
+          StyledPlaceholderObject.fromType(TextFieldPlaceholderType.title, fontSize: 28),
+          StyledTextObject.fromText('\n'),
+          StyledPlaceholderObject.fromType(TextFieldPlaceholderType.orderedAt, meta: ''),
+        ],
         textAlign: TextAlign.center,
+        padding: const EdgeInsets.only(bottom: 4),
       ),
-      TextFieldComponent(text: '{createdAt}', textAlign: TextAlign.center),
-      OrderTableComponent(
-        showProductName: true,
-        showQuantity: true,
-        showSinglePrice: true,
-        showTotalPrice: true,
-      ),
-      DiscountTableComponent(
-        showProductName: true,
-        showOriginPrice: true,
-      ),
-      AttributeTableComponent(
-        showOptionName: true,
-        showAdjustment: true,
-      ),
-      PriceTableComponent(
-        showPaid: true,
-        showPrice: true,
-        showChange: true,
-      )
+      OrderTableComponent(padding: const EdgeInsets.only(bottom: 4)),
+      DiscountTableComponent(padding: const EdgeInsets.only(bottom: 4)),
+      AttributeTableComponent(padding: const EdgeInsets.only(bottom: 4)),
+      PriceTableComponent(padding: const EdgeInsets.only(bottom: 4))
     ];
   }
 

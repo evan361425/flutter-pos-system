@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:possystem/components/dialog/responsive_dialog.dart';
 import 'package:possystem/components/menu_actions.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/scaffold/reorderable_scaffold.dart';
-import 'package:possystem/constants/constant.dart';
+import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/helpers/validator.dart';
 import 'package:possystem/models/objects/receipt_template_object.dart';
 import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_template.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
-import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/printer/widgets/receipt_component_modal.dart';
 
 class ReceiptTemplateModal extends StatefulWidget {
   final ReceiptTemplate? template;
@@ -30,46 +29,14 @@ class ReceiptTemplateModal extends StatefulWidget {
 class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemModal<ReceiptTemplateModal> {
   late TextEditingController _nameController;
   late List<ReceiptComponent> _components;
-  late ValueNotifier<int> _componentsCount;
+  late ValueNotifier<bool> _rebuildComponents;
   late FocusNode _nameFocusNode;
 
   @override
   String get title => widget.isNew ? S.printerSettingsTitleTemplateCreate : S.printerSettingsTitleTemplateUpdate;
 
   @override
-  Widget build(BuildContext context) {
-    return ResponsiveDialog(
-      title: Text(title),
-      scrollable: false,
-      action: TextButton(
-        key: const Key('modal.save'),
-        onPressed: () => handleSubmit(),
-        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-      ),
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      content: Form(
-        key: formKey,
-        child: Column(children: [
-          ...buildFormFields(),
-          const SizedBox(height: kInternalSpacing),
-          ValueListenableBuilder<int>(
-            valueListenable: _componentsCount,
-            builder: (context, value, child) {
-              return MyReorderableList(items: _components, itemBuilder: buildComponentTile);
-            },
-          ),
-          const SizedBox(height: kInternalSpacing),
-          ElevatedButton.icon(
-            key: const Key('receipt_tpl.add_component'),
-            onPressed: onAddComponent,
-            icon: const Icon(Icons.add),
-            label: Text(S.printerReceiptComponentTitleAdd),
-          ),
-          const SizedBox(height: kDialogBottomSpacing),
-        ]),
-      ),
-    );
-  }
+  bool get scrollable => false;
 
   @override
   List<Widget> buildFormFields() {
@@ -98,20 +65,22 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
         ),
         onFieldSubmitted: handleFieldSubmit,
       ),
+      ValueListenableBuilder<bool>(
+        valueListenable: _rebuildComponents,
+        builder: (context, value, child) {
+          return MyReorderableList(items: _components, itemBuilder: _buildComponentTile);
+        },
+      ),
     ];
   }
 
-  Widget buildComponentTile(BuildContext context, ReceiptComponent item, Widget toggler) {
-    return ListTile(
-      title: Text(S.printerReceiptComponentType(item.type.name)),
-      subtitle: item.buildDescription(context),
-      leading: item.icon,
-      onTap: () => context.pushNamed(
-        Routes.printerSettingsTemplateComponentEditor,
-        pathParameters: {'id': widget.template!.id},
-        extra: item,
-      ),
-      trailing: toggler,
+  @override
+  Widget? buildFloatingActionButton() {
+    return FloatingActionButton.extended(
+      key: const Key('receipt_tpl.add_component'),
+      icon: const Icon(Icons.add),
+      label: Text(S.printerReceiptComponentTitleAdd),
+      onPressed: _onAddComponent,
     );
   }
 
@@ -120,7 +89,7 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
     _nameController = TextEditingController(text: widget.template?.name);
     _nameFocusNode = FocusNode();
     _components = widget.template?.components.toList() ?? [];
-    _componentsCount = ValueNotifier<int>(_components.length);
+    _rebuildComponents = ValueNotifier<bool>(true);
 
     super.initState();
   }
@@ -132,21 +101,58 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
     super.dispose();
   }
 
-  void onAddComponent() async {
-    final result = await showPositionedMenu<ReceiptComponentType>(context, actions: [
+  Widget _buildComponentTile(BuildContext context, ReceiptComponent item, Widget toggler) {
+    return SlideToDelete(
+      item: item,
+      deleteCallback: () async => setState(() {
+        _components.remove(item);
+        _rebuildComponents.value = !_rebuildComponents.value;
+      }),
+      child: ListTile(
+        title: Text(S.printerReceiptComponentType(item.type.name)),
+        subtitle: item.buildDescription(context),
+        leading: item.buildLeading(context),
+        onTap: () async {
+          final saved = await _routeToComponentEditor(item);
+          if (saved != null && mounted) {
+            setState(() {
+              _components[_components.indexOf(item)] = saved;
+              _rebuildComponents.value = !_rebuildComponents.value;
+            });
+          }
+        },
+        trailing: toggler,
+      ),
+    );
+  }
+
+  void _onAddComponent() async {
+    final wanted = await showPositionedMenu<ReceiptComponentType>(context, actions: [
       for (final type in ReceiptComponentType.values)
         MenuAction(
           title: Text(S.printerReceiptComponentType(type.name)),
-          leading: ReceiptComponent.fromJson({'type': type.index}).icon,
+          leading: ReceiptComponent.fromType(type).leading,
           returnValue: type,
         ),
     ]);
-    if (result != null) {
-      setState(() {
-        _components.add(ReceiptComponent.fromJson({'type': result.index}));
-        _componentsCount.value = _components.length;
-      });
+
+    if (wanted != null && mounted) {
+      final saved = await _routeToComponentEditor(ReceiptComponent.fromType(wanted));
+      if (saved != null && mounted) {
+        setState(() {
+          _components.add(saved);
+          _rebuildComponents.value = !_rebuildComponents.value;
+        });
+      }
     }
+  }
+
+  Future<ReceiptComponent?> _routeToComponentEditor(ReceiptComponent component) {
+    return Navigator.of(context).push<ReceiptComponent>(
+      MaterialPageRoute<ReceiptComponent>(
+        builder: (BuildContext context) => ReceiptComponentModal(component: component),
+      ),
+    );
   }
 
   @override

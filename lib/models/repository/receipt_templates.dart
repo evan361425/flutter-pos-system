@@ -5,13 +5,16 @@ import 'package:possystem/models/repository.dart';
 import 'package:possystem/models/repository/receipt_template.dart';
 import 'package:possystem/services/storage.dart';
 
-const _defaultId = 'default';
+const _defaultId = '__default';
 
 class ReceiptTemplates extends ChangeNotifier with Repository<ReceiptTemplate>, RepositoryStorage<ReceiptTemplate> {
   static late ReceiptTemplates instance;
 
   @override
   final Stores storageStore = Stores.receiptTemplates;
+
+  @override
+  RepositoryStorageType get repoType => RepositoryStorageType.repoModel;
 
   String? selectedId;
 
@@ -35,9 +38,6 @@ class ReceiptTemplates extends ChangeNotifier with Repository<ReceiptTemplate>, 
       save: false,
     );
   }
-
-  @override
-  RepositoryStorageType get repoType => RepositoryStorageType.repoModel;
 
   /// Get the current enabled template
   ReceiptTemplate get selected => getItem(selectedId ?? _defaultId)!;

@@ -8,6 +8,8 @@ import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/translator.dart';
 
+const _defaultTextColor = Color(0xFF424242);
+
 class PrinterReceiptView extends StatelessWidget {
   final OrderObject order;
   final ImageableController controller;
@@ -22,24 +24,10 @@ class PrinterReceiptView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
-    final color = Theme.of(context).colorScheme;
-    final discounted = order.products.where((e) => e.isDiscount);
-    final attributes = order.attributes
-        .where((e) => e.modeValue != null)
-        .map((e) => [
-              e.optionName,
-              OrderAttributeValueWidget.string(e.mode, e.modeValue!),
-            ])
-        .toList();
-    const text = Color(0xFF424242);
-
     // Use custom components if provided, otherwise use default from repository
-    final components = customComponents ?? ReceiptTemplates.instance.currentComponents;
+    final components = customComponents ?? ReceiptTemplates.instance.selected.components;
 
-    final children = components.map((component) {
-      return _buildComponent(component, theme, color, text, discounted, attributes);
-    }).toList();
+    final children = components.map((component) => _buildComponent(component, context)).toList();
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
@@ -53,89 +41,76 @@ class PrinterReceiptView extends StatelessWidget {
     );
   }
 
-  Widget _buildComponent(
-    ReceiptComponent component,
-    TextTheme theme,
-    ColorScheme color,
-    Color text,
-    Iterable<dynamic> discounted,
-    List<List<String>> attributes,
-  ) {
+  Widget _buildComponent(ReceiptComponent component, BuildContext context) {
+    final theme = Theme.of(context);
+    final discounted = order.products.where((e) => e.isDiscount).toList();
+    final attributes = order.attributes
+        .where((e) => e.modeValue != null)
+        .map((e) => [
+              e.optionName,
+              OrderAttributeValueWidget.string(e.mode, e.modeValue!),
+            ])
+        .toList();
+
     switch (component.type) {
       case ReceiptComponentType.textField:
         final c = component as TextFieldComponent;
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Text(
-            c.text,
-            style: theme.bodyMedium?.copyWith(fontSize: c.fontSize, color: text),
-            textAlign: c.textAlign,
-          ),
-        );
-      case ReceiptComponentType.orderTimestamp:
-        final c = component as OrderTimestampComponent;
-        DateFormat format;
-        try {
-          // Parse custom format
-          final parts = c.dateFormat.split(' ');
-          format = DateFormat.yMMMd();
-          for (final part in parts) {
-            if (part == 'Hms') {
-              format.addPattern(' ').add_Hms();
-            }
-          }
-        } catch (e) {
-          format = DateFormat.yMMMd().addPattern(' ').add_Hms();
-        }
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Text(
-            format.format(order.createdAt),
-            textAlign: TextAlign.center,
-            style: theme.bodyMedium?.copyWith(color: text),
-          ),
-        );
-      case ReceiptComponentType.orderId:
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Text(
-            'Order ID: ${order.id ?? order.createdAt.millisecondsSinceEpoch}',
-            style: theme.bodyMedium?.copyWith(color: text),
-          ),
+        return RichText(
+          text: TextSpan(children: c.texts.map((e) => e.buildSpan(order: order)).toList()),
+          textAlign: c.textAlign,
         );
       case ReceiptComponentType.divider:
         final c = component as DividerComponent;
         return SizedBox(height: c.height);
       case ReceiptComponentType.orderTable:
         final c = component as OrderTableComponent;
+        return _buildOrderTable(c, theme.textTheme, theme.colorScheme);
+      case ReceiptComponentType.discountTable:
+        if (discounted.isNotEmpty) {
+          final c = component as DiscountTableComponent;
+          return _buildDiscountTable(c, theme, color, text);
+        }
+        return null;
+      case ReceiptComponentType.attributeTable:
+        final c = component as AttributeTableComponent;
         return _buildOrderTable(c, theme, color, text);
-      case ReceiptComponentType.totalSection:
-        final c = component as TotalSectionComponent;
-        return _buildTotalSection(c, theme, text, discounted, attributes);
-      case ReceiptComponentType.paymentSection:
-        return _buildPaymentSection(theme, text);
+      case ReceiptComponentType.priceTable:
+        final c = component as PriceTableComponent;
+        return _buildOrderTable(c, theme, color, text);
     }
   }
 
-  Widget _buildOrderTable(OrderTableComponent config, TextTheme theme, ColorScheme color, Color text) {
+  String _getProductName(OrderProductObject product, {bool showProductName = false, bool showCatalogName = false}) {
+    if (!showProductName) {
+      return product.catalogName;
+    }
+
+    if (!showCatalogName) {
+      return product.productName;
+    }
+
+    return '${product.productName}(${product.catalogName})';
+  }
+
+  Widget _buildOrderTable(OrderTableComponent config, TextTheme theme, ColorScheme color) {
     final columns = <int, TableColumnWidth>{};
     int colIndex = 0;
 
     if (config.showProductName || config.showCatalogName) {
       columns[colIndex++] = const FlexColumnWidth();
     }
-    if (config.showCount) {
+    if (config.showQuantity) {
       columns[colIndex++] = const MaxColumnWidth(FractionColumnWidth(0.1), IntrinsicColumnWidth());
     }
-    if (config.showPrice) {
+    if (config.showSinglePrice) {
       columns[colIndex++] = const MaxColumnWidth(FractionColumnWidth(0.1), IntrinsicColumnWidth());
     }
-    if (config.showTotal) {
+    if (config.showTotalPrice) {
       columns[colIndex++] = const MaxColumnWidth(FractionColumnWidth(0.2), IntrinsicColumnWidth());
     }
 
     return DefaultTextStyle(
-      style: theme.bodyMedium!.copyWith(height: 1.8, overflow: TextOverflow.clip, color: text),
+      style: theme.bodyMedium!.copyWith(height: 1.8, overflow: TextOverflow.clip, color: _defaultTextColor),
       child: Table(
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         columnWidths: columns,
@@ -148,9 +123,9 @@ class PrinterReceiptView extends StatelessWidget {
           TableRow(
             children: [
               if (config.showProductName || config.showCatalogName) TableCell(child: Text(S.printerReceiptColumnName)),
-              if (config.showCount) TableCell(child: Text(S.printerReceiptColumnCount, textAlign: TextAlign.end)),
-              if (config.showPrice) TableCell(child: Text(S.printerReceiptColumnPrice, textAlign: TextAlign.end)),
-              if (config.showTotal) TableCell(child: Text(S.printerReceiptColumnTotal, textAlign: TextAlign.end)),
+              if (config.showQuantity) TableCell(child: Text(S.printerReceiptColumnCount, textAlign: TextAlign.end)),
+              if (config.showSinglePrice) TableCell(child: Text(S.printerReceiptColumnPrice, textAlign: TextAlign.end)),
+              if (config.showTotalPrice) TableCell(child: Text(S.printerReceiptColumnTotal, textAlign: TextAlign.end)),
             ],
           ),
           for (final product in order.products)
@@ -158,12 +133,13 @@ class PrinterReceiptView extends StatelessWidget {
               children: [
                 if (config.showProductName || config.showCatalogName)
                   TableCell(
-                    child: Text(config.showCatalogName ? product.catalogName : product.productName),
+                    child: Text(_getProductName(product,
+                        showProductName: config.showProductName, showCatalogName: config.showCatalogName)),
                   ),
-                if (config.showCount) TableCell(child: Text(product.count.toString(), textAlign: TextAlign.end)),
-                if (config.showPrice)
+                if (config.showQuantity) TableCell(child: Text(product.count.toString(), textAlign: TextAlign.end)),
+                if (config.showSinglePrice)
                   TableCell(child: Text('\$${product.singlePrice.toCurrency()}', textAlign: TextAlign.end)),
-                if (config.showTotal)
+                if (config.showTotalPrice)
                   TableCell(child: Text('\$${product.totalPrice.toCurrency()}', textAlign: TextAlign.end)),
               ],
             ),
@@ -172,8 +148,8 @@ class PrinterReceiptView extends StatelessWidget {
     );
   }
 
-  Widget _buildTotalSection(
-    TotalSectionComponent config,
+  Widget _buildDiscountTable(
+    DiscountTableComponent config,
     TextTheme theme,
     Color text,
     Iterable<dynamic> discounted,
@@ -181,40 +157,47 @@ class PrinterReceiptView extends StatelessWidget {
   ) {
     final children = <TableRow>[];
 
-    if (config.showDiscounts && discounted.isNotEmpty) {
+    children.add(
+      TableRow(children: [
+        if (config.showCatalogName || config.showProductName) TableCell(child: Text(S.printerReceiptDiscountLabel)),
+        if (config.showQuantity) TableCell(child: Text(S.printerReceiptComponentLabelQuantity)),
+        if (config.showSinglePrice) TableCell(child: Text(S.printerReceiptComponentLabelSinglePrice)),
+        if (config.showOriginPrice) TableCell(child: Text(S.printerReceiptDiscountOrigin)),
+        if (config.showTotalPrice) TableCell(child: Text(S.printerReceiptComponentLabelTotalPrice)),
+      ]),
+    );
+    for (final product in discounted) {
       children.add(
         TableRow(children: [
-          TableCell(child: Text(S.printerReceiptDiscountLabel)),
-          TableCell(child: Text(S.printerReceiptDiscountOrigin)),
+          TableCell(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                _getProductName(
+                  product,
+                  showProductName: config.showProductName,
+                  showCatalogName: config.showCatalogName,
+                ),
+              ),
+            ),
+          ),
+          TableCell(
+            child: Text(
+              '\$${product.originalPrice.toCurrency()}',
+              style: theme.labelMedium?.copyWith(color: text),
+              textAlign: TextAlign.end,
+            ),
+          ),
         ]),
       );
-      for (final product in discounted) {
-        children.add(
-          TableRow(children: [
-            TableCell(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Text(product.productName),
-              ),
-            ),
-            TableCell(
-              child: Text(
-                '\$${product.originalPrice.toCurrency()}',
-                style: theme.labelMedium?.copyWith(color: text),
-                textAlign: TextAlign.end,
-              ),
-            ),
-          ]),
-        );
-      }
-      if (config.showAddOns && attributes.isNotEmpty) {
-        children.add(
-          const TableRow(children: [
-            TableCell(child: SizedBox(height: 4.0)),
-            TableCell(child: SizedBox(height: 4.0)),
-          ]),
-        );
-      }
+    }
+    if (config.showAddOns && attributes.isNotEmpty) {
+      children.add(
+        const TableRow(children: [
+          TableCell(child: SizedBox(height: 4.0)),
+          TableCell(child: SizedBox(height: 4.0)),
+        ]),
+      );
     }
 
     if (config.showAddOns && attributes.isNotEmpty) {
@@ -323,7 +306,7 @@ class _OldPrinterReceiptView extends StatelessWidget {
     final children = [
       Text(
         S.printerReceiptTitle,
-        style: theme.headlineMedium?.copyWith(height: 1, color: text),
+        style: theme.headlineMedium?.copyWith(height: 1, color: text), // 28
         textAlign: .center,
       ),
       const SizedBox(height: 4),
@@ -384,12 +367,12 @@ class _OldPrinterReceiptView extends StatelessWidget {
                   TableCell(
                     child: Padding(padding: const .only(left: 8), child: Text(product.productName)),
                   ),
-                  TableCell(
-                    child: Text(
-                      '\$${product.originalPrice.toCurrency()}',
-                      style: theme.labelMedium?.copyWith(color: text),
-                      textAlign: .end,
-                    ),
+                ),
+                TableCell(
+                  child: Text(
+                    '\$${product.originalPrice.toCurrency()}',
+                    style: theme.labelMedium?.copyWith(color: text), // 12
+                    textAlign: .end,
                   ),
                 ],
               ),
@@ -403,11 +386,34 @@ class _OldPrinterReceiptView extends StatelessWidget {
               ),
           ],
           if (attributes.isNotEmpty) ...[
-            TableRow(
-              children: [
-                TableCell(child: Text(S.printerReceiptAddOnsLabel)),
-                TableCell(child: Text(S.printerReceiptAddOnsAdjustment)),
-              ],
+            TableRow(children: [
+              TableCell(child: Text(S.printerReceiptAddOnsLabel)),
+              TableCell(child: Text(S.printerReceiptAddOnsAdjustment)),
+            ]),
+            for (final attr in attributes)
+              TableRow(children: [
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(attr[0]),
+                  ),
+                ),
+                TableCell(
+                  child: Text(
+                    attr[1],
+                    style: theme.labelMedium?.copyWith(color: text), // 12
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              ]),
+          ],
+          TableRow(children: [
+            TableCell(child: Text(S.printerReceiptTotal)),
+            TableCell(
+              child: Text(
+                '\$${order.price.toCurrency()}',
+                style: theme.titleLarge?.copyWith(color: text), // 22
+              ),
             ),
             for (final attr in attributes)
               TableRow(
@@ -440,7 +446,7 @@ class _OldPrinterReceiptView extends StatelessWidget {
         mainAxisAlignment: .spaceBetween,
         children: [
           DefaultTextStyle(
-            style: theme.bodyMedium!.copyWith(fontSize: theme.labelMedium!.fontSize, color: text),
+            style: theme.bodyMedium!.copyWith(fontSize: theme.labelMedium!.fontSize, color: text), // 14
             child: Column(
               mainAxisSize: .min,
               crossAxisAlignment: .start,
@@ -457,7 +463,7 @@ class _OldPrinterReceiptView extends StatelessWidget {
             ),
           ),
           DefaultTextStyle(
-            style: theme.labelMedium!.copyWith(color: text),
+            style: theme.labelMedium!.copyWith(color: text), // 12
             child: Column(
               mainAxisSize: .min,
               crossAxisAlignment: .end,

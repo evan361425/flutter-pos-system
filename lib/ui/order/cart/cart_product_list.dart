@@ -85,7 +85,7 @@ class _CartProductListState extends State<CartProductList> {
 
     if (isAdded && mounted && lastLength != 0 || length != 1) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (scrollController.hasClients) {
+        if (scrollController.hasClients && scrollController.position.hasContentDimensions) {
           scrollController.animateTo(
             scrollController.position.maxScrollExtent - 30, // +80?
             duration: const Duration(milliseconds: 300),

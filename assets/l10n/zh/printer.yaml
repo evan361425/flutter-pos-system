@@ -149,6 +149,50 @@ receipt:
       price: 總價
       productsQuantity: 產品總數
       productsPrice: 產品總價
+      text:
+        value: 編輯文字
+        color: 顏色
+        align: 對齊方式
+        alignLeft: 靠左
+        alignCenter: 置中
+        alignRight: 靠右
+        alignJustify: 兩端對齊
+        bold: 粗體
+        italic: 斜體
+        strikeThrough: 刪除線
+        underline: 底線
+        placeholder: 插入動態資訊
+        placeholders:
+        - now: 現在時間
+          seq: 訂單編號
+          productCount: 產品數量
+          paid: 付款金額
+          change: 找零金額
+          price: 訂單價格
+          cost: 訂單成本
+          revenue: 收入
+          productPrice: 產品價格
+          attributePrice: 附加價格
+          createdAt: 創建時間
+      padding:
+        label: 內距
+        helper: 文字四周的內距，單位為像素
+        all: 聯動所有方向
+        split: 獨立設置方向
+        top: 上方
+        bottom: 下方
+        left: 左方
+        right: 右方
+      image: 圖片
+      _image:
+        $prefix: image
+        widthRatio: 寬度比例
+        widthRatioHelper: 寬度比例相對於單據寬度，例如 0.5 = 50%
+      divider: 分隔線
+      _divider:
+        $prefix: divider
+        meta:
+        - 高度：{height}
 info:
   title: 出單機資訊
   name: 名稱

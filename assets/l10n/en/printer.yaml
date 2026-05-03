@@ -158,6 +158,52 @@ receipt:
       price: Price
       productsQuantity: Products Quantity
       productsPrice: Products Price
+      text:
+        value: Start typing...
+        color: Color
+        align: Alignment
+        alignLeft: Left
+        alignCenter: Center
+        alignRight: Right
+        alignJustify: Justify
+        bold: Bold
+        italic: Italic
+        strikeThrough: Strike Through
+        underline: Underline
+        placeholder: Insert Placeholder
+        placeholders:
+        - now: now
+          seq: order sequence
+          productCount: product count
+          paid: paid amount
+          change: change amount
+          price: order price
+          cost: order cost
+          revenue: revenue
+          productPrice: product price
+          attributePrice: attribute price
+          createdAt: created time
+      padding:
+        label: Padding
+        helper: 'Padding around text in pixels'
+        all: Link All Directions
+        split: Set Directions Separately
+        top: Top
+        bottom: Bottom
+        left: Left
+        right: Right
+      image: Image
+      _image:
+        $prefix: image
+        widthRatio: Width Ratio
+        widthRatioHelper: 'Width ratio compared to receipt width, e.g., 0.5 = 50%'
+      divider: Divider
+      _divider:
+        $prefix: divider
+        meta:
+        - 'Height: {height}'
+        - height: {type: double, format: 'compact'}
+
 info:
   title: Printer Information
   name: Name
