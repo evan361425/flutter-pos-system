@@ -17,6 +17,7 @@ import 'package:possystem/ui/order/cart/cart_metadata_view.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
 import 'package:possystem/ui/order/cart/cart_product_selector.dart';
 import 'package:possystem/ui/order/widgets/printer_button_view.dart';
+import 'package:possystem/ui/order/widgets/device_button_view.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'cart/cart_product_state_selector.dart';
@@ -100,6 +101,7 @@ class _OrderPageState extends State<OrderPage> {
           actions: [
             MoreButton(key: const Key('order.more'), onPressed: _showActions),
             const PrinterButtonView(),
+            const DeviceButtonView(),
             TextButton(
               key: const Key('order.checkout'),
               onPressed: () => _handleCheckout(),

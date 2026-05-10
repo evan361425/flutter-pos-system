@@ -1,0 +1,90 @@
+title: "Device Connections"
+titleCreate: "Add Device"
+titleUpdate: "Edit Device"
+
+statusConnected: "Connected"
+statusDisconnected: "Disconnected"
+statusConnecting: "Connecting..."
+statusPaired: "Paired"
+statusNotPaired: "Not paired"
+
+typeLabel: "Device Type"
+typeCashier: "Cashier"
+typeKitchen: "Kitchen Display"
+typeDisplay: "Display"
+typeUnknown: "Unknown"
+
+fieldName: "Device Name"
+fieldNameHint: "Kitchen Display"
+fieldAddress: "IP Address"
+fieldAddressHint: "192.168.1.100"
+fieldPort: "Port"
+fieldPortHint: "8765"
+fieldAutoConnect: "Auto Connect"
+fieldAutoConnectSubtitle: "Automatically connect when ordering starts"
+
+actionConnect: "Connect"
+actionDisconnect: "Disconnect"
+actionPair: "Pair"
+actionEdit: "Edit"
+actionDelete: "Delete"
+actionAddManually: "Add Manually"
+
+discoveryTitle: "Searching for devices..."
+discoverySubtitle: "Select a device to connect to:"
+discoveryNoDevices: "No devices found"
+
+pairingTitle: "Pair Device"
+pairingMessage: "Enter the 4-digit PIN shown on the other device:"
+pairingPinLabel: "PIN"
+pairingPinHint: "1234"
+pairingActionCancel: "Cancel"
+pairingActionPair: "Pair"
+
+emptyStateTitle: "No Devices Added"
+emptyStateMessage: "Add devices to share order data\nbetween cashier and kitchen"
+emptyStateAction: "Add Device"
+
+buttonStatus:
+  connected: "{count} device(s) connected"
+  connecting: "Connecting to {count} device(s)..."
+  none: "No devices available"
+
+helpTitle: "Device Connections"
+helpContent: |
+  Connect Multiple Devices
+  
+  Connect two or more devices to share order information. One device can take orders while another displays them.
+  
+  Device Types:
+  • Cashier: Takes and processes orders
+  • Kitchen Display: Shows orders to prepare
+  • Display: Shows order status to customers
+  
+  Pairing:
+  For security, devices must be paired with a PIN code before sharing order data.
+  
+  Auto Connect:
+  Enable auto connect to automatically connect to devices when starting to take orders.
+
+messages:
+  connected: "Connected to {name}"
+  disconnected: "Device disconnected: {name}"
+  connectionFailed: "Failed to connect to {name}"
+  pairingRequested: "Pairing request sent"
+  pairingFailed: "Pairing failed"
+  orderDataSent: "Order data sent to connected devices"
+  orderDataFailed: "Failed to send order data to some devices"
+
+errors:
+  invalidAddress: "Invalid IP address format"
+  invalidPort: "Port must be between 1 and 65535"
+  deviceNotConnected: "Device must be connected before pairing"
+  noDeviceType: "Please select a device type"
+  nameRequired: "Please enter a device name"
+  addressRequired: "Please enter an IP address"
+  portRequired: "Please enter a port number"
+
+tutorial:
+  title: "Device Connection"
+  message: "Connect to other devices to share order data between cashier and kitchen."
