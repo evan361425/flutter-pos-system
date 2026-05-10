@@ -65,7 +65,6 @@ bump: ## Bump beta version
 	if [[ $$confirm != "y" ]]; then exit 1; fi; \
 	code=$$(grep '^version:' pubspec.yaml | head -n1 | cut -d' ' -f2 | cut -d'+' -f2); \
 	code=$$(($$code + 1)); \
-	bash scripts/bump-after.sh v$$version $$code; \
 	read -p "Are you satisfied with the changes? (y/N): " confirm; \
 	if [[ $$confirm != "y" ]]; then exit 1; fi; \
 	sed -i.bk '5s/version: .*/version: '$$version+$$code'/' pubspec.yaml; \

@@ -1,0 +1,9 @@
+🚀 Features
+
+- Show supported printers list #223 : Copilot
+- Add manual printer type selection for unknown Bluetooth devices and type change functionality #224 : Copilot
+- Add search highlighting for menu objects with ingredient and quantity matches #228 : Copilot
+
+ 📦 Others
+
+- Add comprehensive iOS support with platform configuration, permissions, and deployment infrastructure #225 : Copilot
