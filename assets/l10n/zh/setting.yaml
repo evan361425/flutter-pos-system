@@ -10,6 +10,25 @@ elf:
     覺得這裡還少了什麼嗎？
     歡迎[提供建議](https://forms.gle/R1vZDk9ztQLScUdb9)。
     也可以來看看[排程中的功能](https://github.com/evan361425/flutter-pos-system/milestones)。
+  chat:
+    button: 與開發者聊天
+    title: 聊天
+    signInRequired: 請登入以開始聊天
+    empty: 尚無訊息。開始對話吧！
+    inputHint: 輸入訊息...
+    sendButton: 傳送
+    addButton: 加入附件
+    addImage: 加入圖片
+    imageSelected: 已選擇圖片
+    removeImage: 移除圖片
+    faq:
+      title: 常見問題
+      question1: 如何請求新功能？
+      answer1: 您可以透過此聊天詳細描述您的功能請求，或透過我們的 Google 表單連結提交。
+      question2: 需要多久才能收到回覆？
+      answer2: 我們通常在 1-2 個工作日內回覆。如有緊急問題，請在訊息中加入「緊急」。
+      question3: 可以分享螢幕截圖或檔案嗎？
+      answer3: 目前僅支援文字訊息。如需檔案或螢幕截圖，請使用 Google 表單或 GitHub issues。
 feature:
   title: 其他設定
   description: 外觀、語言、提示
