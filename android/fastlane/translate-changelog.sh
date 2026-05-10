@@ -57,7 +57,7 @@ zh-TW Traditional Chinese
           {parts: [{text: $prompt}]}
         ]}')"
 
-    resp="$(curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=$googleApiKey" \
+    resp="$(curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=$googleApiKey" \
       -H 'Content-Type: application/json' \
       -X POST \
       -s \
