@@ -16,11 +16,7 @@ class ChartCardView extends StatelessWidget {
 
   final ValueNotifier<DateTimeRange> range;
 
-  const ChartCardView({
-    super.key,
-    required this.chart,
-    required this.range,
-  });
+  const ChartCardView({super.key, required this.chart, required this.range});
 
   @override
   Widget build(BuildContext context) {
@@ -29,23 +25,27 @@ class ChartCardView extends StatelessWidget {
       wrappedByCard: false,
       notifiers: [range, chart, Seller.instance],
       builder: (context, metric) {
-        return Column(children: [
-          Row(children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  chart.name,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
+        return Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const .symmetric(horizontal: 8.0),
+                    child: Text(
+                      chart.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      overflow: .ellipsis,
+                      textAlign: .center,
+                    ),
+                  ),
                 ),
-              ),
+                _MoreButton(chart),
+              ],
             ),
-            _MoreButton(chart),
-          ]),
-          buildChart(context, metric),
-        ]);
+            buildChart(context, metric),
+          ],
+        );
       },
       loader: () => chart.load(range.value),
     );
@@ -53,23 +53,16 @@ class ChartCardView extends StatelessWidget {
 
   Widget buildChart(BuildContext context, List metrics) {
     if (metrics.isEmpty) {
-      return SizedBox(
-        width: 128,
-        height: 128,
-        child: Center(child: Text(S.analysisChartCardEmptyData)),
-      );
+      return SizedBox(width: 128, height: 128, child: Center(child: Text(S.analysisChartCardEmptyData)));
     }
 
     return switch (chart.type) {
-      AnalysisChartType.cartesian => _CartesianChart(
-          chart: chart,
-          metrics: metrics as List<OrderSummary>,
-          interval: MetricsIntervalType.fromDays(range.value.duration.inDays),
-        ),
-      AnalysisChartType.circular => _CircularChart(
-          chart: chart,
-          metrics: metrics as List<OrderMetricPerItem>,
-        ),
+      .cartesian => _CartesianChart(
+        chart: chart,
+        metrics: metrics as List<OrderSummary>,
+        interval: MetricsIntervalType.fromDays(range.value.duration.inDays),
+      ),
+      .circular => _CircularChart(chart: chart, metrics: metrics as List<OrderMetricPerItem>),
     };
   }
 }
@@ -81,11 +74,7 @@ class _CartesianChart extends StatelessWidget {
 
   final MetricsIntervalType interval;
 
-  const _CartesianChart({
-    required this.chart,
-    required this.metrics,
-    required this.interval,
-  });
+  const _CartesianChart({required this.chart, required this.metrics, required this.interval});
 
   @override
   Widget build(BuildContext context) {
@@ -94,16 +83,12 @@ class _CartesianChart extends StatelessWidget {
       onHorizontalDragStart: (details) {},
       child: SfCartesianChart(
         plotAreaBorderWidth: 0.7,
-        selectionType: SelectionType.point,
-        selectionGesture: ActivationMode.singleTap,
+        selectionType: .point,
+        selectionGesture: .singleTap,
         // get the different unit axis
         axes: chart.units
             .take(2)
-            .mapIndexed((i, e) => NumericAxis(
-                  opposedPosition: i == 1,
-                  name: e.name,
-                  labelFormat: e.labelFormat,
-                ))
+            .mapIndexed((i, e) => NumericAxis(opposedPosition: i == 1, name: e.name, labelFormat: e.labelFormat))
             .toList(),
         primaryXAxis: DateTimeAxis(
           enableAutoIntervalOnZooming: false,
@@ -113,28 +98,22 @@ class _CartesianChart extends StatelessWidget {
         primaryYAxis: const NumericAxis(isVisible: false),
         trackballBehavior: TrackballBehavior(
           enable: true,
-          activationMode: ActivationMode.singleTap,
-          tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
-          tooltipSettings: const InteractiveTooltip(
-            format: 'series.name : point.y',
-          ),
+          activationMode: .singleTap,
+          tooltipDisplayMode: .groupAllPoints,
+          tooltipSettings: const InteractiveTooltip(format: 'series.name : point.y'),
         ),
-        legend: const Legend(
-          isVisible: true,
-        ),
-        series: chart.keyUnits().map(
-          (keyUnit) {
-            return LineSeries(
-              animationDuration: 0,
-              markerSettings: const MarkerSettings(isVisible: true),
-              name: chart.target == OrderMetricTarget.order ? S.analysisChartMetricName(keyUnit.key) : keyUnit.key,
-              yAxisName: keyUnit.value.name,
-              xValueMapper: (v, i) => v.at,
-              yValueMapper: (v, i) => v.value(keyUnit.key),
-              dataSource: metrics,
-            );
-          },
-        ).toList(),
+        legend: const Legend(isVisible: true),
+        series: chart.keyUnits().map((keyUnit) {
+          return LineSeries(
+            animationDuration: 0,
+            markerSettings: const MarkerSettings(isVisible: true),
+            name: chart.target == .order ? S.analysisChartMetricName(keyUnit.key) : keyUnit.key,
+            yAxisName: keyUnit.value.name,
+            xValueMapper: (v, i) => v.at,
+            yValueMapper: (v, i) => v.value(keyUnit.key),
+            dataSource: metrics,
+          );
+        }).toList(),
       ),
     );
   }
@@ -145,10 +124,7 @@ class _CircularChart extends StatelessWidget {
 
   final List<OrderMetricPerItem> metrics;
 
-  const _CircularChart({
-    required this.chart,
-    required this.metrics,
-  });
+  const _CircularChart({required this.chart, required this.metrics});
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +132,7 @@ class _CircularChart extends StatelessWidget {
       return SfCircularChart(
         tooltipBehavior: TooltipBehavior(
           enable: true,
-          activationMode: ActivationMode.singleTap,
+          activationMode: .singleTap,
           animationDuration: 150,
           format: 'point.x : 0',
         ),
@@ -172,9 +148,9 @@ class _CircularChart extends StatelessWidget {
             dataLabelMapper: (v, i) => '0%',
             dataLabelSettings: const DataLabelSettings(
               isVisible: true,
-              labelPosition: ChartDataLabelPosition.inside,
-              overflowMode: OverflowMode.shift,
-              labelIntersectAction: LabelIntersectAction.none,
+              labelPosition: .inside,
+              overflowMode: .shift,
+              labelIntersectAction: .none,
             ),
           ),
         ],
@@ -185,13 +161,11 @@ class _CircularChart extends StatelessWidget {
     return SfCircularChart(
       tooltipBehavior: TooltipBehavior(
         enable: true,
-        activationMode: ActivationMode.singleTap,
+        activationMode: .singleTap,
         animationDuration: 150,
         format: 'point.x : ${chart.units.first.tooltipFormat}',
       ),
-      legend: const Legend(
-        isVisible: true,
-      ),
+      legend: const Legend(isVisible: true),
       series: [
         PieSeries<OrderMetricPerItem, String>(
           animationDuration: 0,
@@ -203,9 +177,9 @@ class _CircularChart extends StatelessWidget {
           dataLabelMapper: (v, i) => percentFormat.format(v.percent),
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,
-            labelPosition: ChartDataLabelPosition.inside,
-            overflowMode: OverflowMode.shift,
-            labelIntersectAction: LabelIntersectAction.none,
+            labelPosition: .inside,
+            overflowMode: .shift,
+            labelIntersectAction: .none,
           ),
         ),
       ],
@@ -221,10 +195,7 @@ class _MoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MoreButton(
-      key: Key('chart.${chart.id}.more'),
-      onPressed: _showActions,
-    );
+    return MoreButton(key: Key('chart.${chart.id}.more'), onPressed: _showActions);
   }
 
   void _showActions(BuildContext context) async {

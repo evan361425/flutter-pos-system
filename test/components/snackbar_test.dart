@@ -10,21 +10,22 @@ import '../test_helpers/translator.dart';
 void main() {
   group('Widget Snackbar', () {
     testWidgets('should show info after pressing button', (tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: Builder(builder: (context) {
-            return TextButton(
-                onPressed: () {
-                  showMoreInfoSnackBar(
-                    'message',
-                    const Text('info'),
-                    context: context,
-                  );
-                },
-                child: const Text('btn'));
-          }),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) {
+                return TextButton(
+                  onPressed: () {
+                    showMoreInfoSnackBar('message', const Text('info'), context: context);
+                  },
+                  child: const Text('btn'),
+                );
+              },
+            ),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('btn'));
@@ -44,19 +45,24 @@ void main() {
       }
 
       await showSnackbarWhenFutureError(
-          Future.error(PlatformException(code: 'test', message: 'com.google.android.gms.common.api.ApiException: 7: ')),
-          'test');
+        Future.error(PlatformException(code: 'test', message: 'com.google.android.gms.common.api.ApiException: 7: ')),
+        'test',
+      );
       await showSnackbarWhenFutureError(Future.error(BluetoothOffException()), 'test');
       await showSnackbarWhenFutureError(
-          Future.error(PlatformException(code: 'connect', message: 'bluetooth must turning on')), 'test');
+        Future.error(PlatformException(code: 'connect', message: 'bluetooth must turning on')),
+        'test',
+      );
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.timeout.index), 'test');
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.deviceIsDisconnected.index), 'test');
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.serviceNotFound.index), 'test');
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.adapterIsOff.index), 'test');
       await showSnackbarWhenFutureError(buildError(BluetoothExceptionCode.androidOnly.index), 'test');
-      await showSnackbarWhenStreamError(Stream.fromFuture(buildError(BluetoothExceptionCode.androidOnly.index)), 'test',
-              callback: () {})
-          .drain();
+      await showSnackbarWhenStreamError(
+        Stream.fromFuture(buildError(BluetoothExceptionCode.androidOnly.index)),
+        'test',
+        callback: () {},
+      ).drain();
     });
   });
 

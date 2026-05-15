@@ -13,18 +13,20 @@ class CartMetadataView extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = context.watch<Cart>();
 
-    return Row(children: <Widget>[
-      const SizedBox(width: 16.0),
-      const CartActions(),
-      const SizedBox(width: 16.0),
-      Expanded(
-        key: const Key('cart.metadata'),
-        child: MetaBlock.withString(context, <String>[
-          S.orderCartMetaTotalCount(cart.productCount),
-          S.orderCartMetaTotalPrice(cart.productsPrice.toCurrency()),
-        ])!,
-      ),
-      const SizedBox(width: 16.0),
-    ]);
+    return Row(
+      children: <Widget>[
+        const SizedBox(width: 16.0),
+        const CartActions(),
+        const SizedBox(width: 16.0),
+        Expanded(
+          key: const Key('cart.metadata'),
+          child: MetaBlock.withString(context, <String>[
+            S.orderCartMetaTotalCount(cart.productCount),
+            S.orderCartMetaTotalPrice(cart.productsPrice.toCurrency()),
+          ])!,
+        ),
+        const SizedBox(width: 16.0),
+      ],
+    );
   }
 }

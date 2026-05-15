@@ -27,71 +27,74 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
       listenable: localeNotifier,
       builder: (context, child) {
         return Scaffold(
-          body: ListView(padding: const EdgeInsets.only(bottom: 76), children: [
-            const _HeaderInfoList(),
-            if (!isProd)
+          body: ListView(
+            padding: const .only(bottom: 76),
+            children: [
+              const _HeaderInfoList(),
+              if (!isProd)
+                _buildRouteTile(
+                  id: 'debug',
+                  icon: Icons.bug_report_outlined,
+                  route: 'debug',
+                  title: 'Debug',
+                  subtitle: 'For developer only',
+                ),
+              OrderAttrTutorial(
+                child: _buildRouteTile(
+                  id: 'orderAttributes',
+                  icon: Icons.assignment_ind_outlined,
+                  route: Routes.orderAttr,
+                  title: S.orderAttributeTitle,
+                  subtitle: S.orderAttributeDescription,
+                ),
+              ),
+              MenuTutorial(
+                child: _buildRouteTile(
+                  id: 'menu',
+                  icon: Icons.collections_outlined,
+                  route: Routes.menu,
+                  title: S.menuTitle,
+                  subtitle: S.menuSubtitle,
+                ),
+              ),
               _buildRouteTile(
-                id: 'debug',
-                icon: Icons.bug_report_outlined,
-                route: 'debug',
-                title: 'Debug',
-                subtitle: 'For developer only',
+                id: 'printers',
+                icon: Icons.print_outlined,
+                route: Routes.printer,
+                title: S.printerTitle,
+                subtitle: S.printerDescription,
               ),
-            OrderAttrTutorial(
-              child: _buildRouteTile(
-                id: 'orderAttributes',
-                icon: Icons.assignment_ind_outlined,
-                route: Routes.orderAttr,
-                title: S.orderAttributeTitle,
-                subtitle: S.orderAttributeDescription,
+              _buildRouteTile(
+                id: 'transit',
+                icon: Icons.upload_file_outlined,
+                route: Routes.transit,
+                title: S.transitTitle,
+                subtitle: S.transitDescription,
               ),
-            ),
-            MenuTutorial(
-              child: _buildRouteTile(
-                id: 'menu',
-                icon: Icons.collections_outlined,
-                route: Routes.menu,
-                title: S.menuTitle,
-                subtitle: S.menuSubtitle,
+              _buildRouteTile(
+                id: 'stockQuantities',
+                icon: Icons.exposure_outlined,
+                route: Routes.quantities,
+                title: S.stockQuantityTitle,
+                subtitle: S.stockQuantityDescription,
               ),
-            ),
-            _buildRouteTile(
-              id: 'printers',
-              icon: Icons.print_outlined,
-              route: Routes.printer,
-              title: S.printerTitle,
-              subtitle: S.printerDescription,
-            ),
-            _buildRouteTile(
-              id: 'transit',
-              icon: Icons.upload_file_outlined,
-              route: Routes.transit,
-              title: S.transitTitle,
-              subtitle: S.transitDescription,
-            ),
-            _buildRouteTile(
-              id: 'stockQuantities',
-              icon: Icons.exposure_outlined,
-              route: Routes.quantities,
-              title: S.stockQuantityTitle,
-              subtitle: S.stockQuantityDescription,
-            ),
-            _buildRouteTile(
-              id: 'elf',
-              icon: Icons.lightbulb_outlined,
-              route: Routes.elf,
-              title: S.settingElfTitle,
-              subtitle: S.settingElfDescription,
-            ),
-            _buildRouteTile(
-              id: 'settings',
-              icon: Icons.settings_outlined,
-              route: Routes.settings,
-              title: S.settingFeatureTitle,
-              subtitle: S.settingFeatureDescription,
-            ),
-            const Footer(),
-          ]),
+              _buildRouteTile(
+                id: 'elf',
+                icon: Icons.lightbulb_outlined,
+                route: Routes.elf,
+                title: S.settingElfTitle,
+                subtitle: S.settingElfDescription,
+              ),
+              _buildRouteTile(
+                id: 'settings',
+                icon: Icons.settings_outlined,
+                route: Routes.settings,
+                title: S.settingFeatureTitle,
+                subtitle: S.settingFeatureDescription,
+              ),
+              const Footer(),
+            ],
+          ),
         );
       },
     );
@@ -138,8 +141,8 @@ class _HeaderInfoList extends StatelessWidget {
     return SizedBox(
       height: 152,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-        scrollDirection: Axis.horizontal,
+        padding: const .fromLTRB(16.0, 16.0, 16.0, 8.0),
+        scrollDirection: .horizontal,
         shrinkWrap: true,
         children: [
           _buildItem(
@@ -179,19 +182,21 @@ class _HeaderInfoList extends StatelessWidget {
     required String route,
     Map<String, String> query = const <String, String>{},
   }) {
-    const borderRadius = BorderRadius.all(Radius.circular(20));
+    const BorderRadius borderRadius = .all(.circular(20));
     final theme = Theme.of(context);
 
     return ElevatedButton(
       key: Key('more_header.$id'),
       style: const ButtonStyle(
         fixedSize: WidgetStatePropertyAll(Size.square(128)),
-        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+        padding: WidgetStatePropertyAll(.zero),
         // shadowColor: WidgetStatePropertyAll(Colors.transparent),
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-          borderRadius: borderRadius,
-          side: BorderSide(color: Colors.transparent),
-        )),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: borderRadius,
+            side: BorderSide(color: Colors.transparent),
+          ),
+        ),
       ),
       onPressed: () => context.goNamed(route, queryParameters: query),
       child: Ink(
@@ -203,13 +208,16 @@ class _HeaderInfoList extends StatelessWidget {
             begin: Alignment.bottomRight,
             end: Alignment.topLeft,
             colors: theme.gradientColors,
-            tileMode: TileMode.clamp,
+            tileMode: .clamp,
           ),
         ),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(title.toString(), style: theme.textTheme.headlineMedium),
-          Flexible(child: Text(subtitle, textAlign: TextAlign.center)),
-        ]),
+        child: Column(
+          mainAxisAlignment: .center,
+          children: [
+            Text(title.toString(), style: theme.textTheme.headlineMedium),
+            Flexible(child: Text(subtitle, textAlign: .center)),
+          ],
+        ),
       ),
     );
   }

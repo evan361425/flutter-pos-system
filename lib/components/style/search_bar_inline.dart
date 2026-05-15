@@ -11,14 +11,8 @@ class SearchBarInline extends StatelessWidget {
   /// using controller for dynamically change the initialValue
   final TextEditingController textController;
 
-  SearchBarInline({
-    super.key,
-    this.text,
-    this.validator,
-    this.labelText,
-    this.hintText,
-    required this.onTap,
-  }) : textController = TextEditingController(text: text);
+  SearchBarInline({super.key, this.text, this.validator, this.labelText, this.hintText, required this.onTap})
+    : textController = TextEditingController(text: text);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +24,7 @@ class SearchBarInline extends StatelessWidget {
         onTap: onTap,
         validator: validator,
         decoration: InputDecoration(
-          floatingLabelBehavior: FloatingLabelBehavior.always,
+          floatingLabelBehavior: .always,
           border: const OutlineInputBorder(borderSide: BorderSide()),
           isDense: true,
           labelText: labelText,

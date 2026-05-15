@@ -30,50 +30,54 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
   @override
   List<Widget> buildFormFields() {
     return [
-      p(TextFormField(
-        key: const Key('quantity.name'),
-        controller: _nameController,
-        textCapitalization: TextCapitalization.words,
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          labelText: S.stockQuantityNameLabel,
-          hintText: widget.quantity?.name ?? S.stockQuantityNameHint,
-          filled: false,
-        ),
-        maxLength: 30,
-        focusNode: _nameFocusNode,
-        validator: Validator.textLimit(
-          S.stockQuantityNameLabel,
-          30,
+      p(
+        TextFormField(
+          key: const Key('quantity.name'),
+          controller: _nameController,
+          textCapitalization: .words,
+          textInputAction: .next,
+          decoration: InputDecoration(
+            labelText: S.stockQuantityNameLabel,
+            hintText: widget.quantity?.name ?? S.stockQuantityNameHint,
+            filled: false,
+          ),
+          maxLength: 30,
           focusNode: _nameFocusNode,
-          validator: (name) {
-            return widget.quantity?.name != name && Quantities.instance.hasName(name)
-                ? S.stockQuantityNameErrorRepeat
-                : null;
-          },
+          validator: Validator.textLimit(
+            S.stockQuantityNameLabel,
+            30,
+            focusNode: _nameFocusNode,
+            validator: (name) {
+              return widget.quantity?.name != name && Quantities.instance.hasName(name)
+                  ? S.stockQuantityNameErrorRepeat
+                  : null;
+            },
+          ),
         ),
-      )),
-      p(TextFormField(
-        key: const Key('quantity.proportion'),
-        controller: _proportionController,
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        focusNode: _proportionFocusNode,
-        onFieldSubmitted: handleFieldSubmit,
-        decoration: InputDecoration(
-          labelText: S.stockQuantityProportionLabel,
-          helperText: S.stockQuantityProportionHelper,
-          helperMaxLines: 100,
-          filled: false,
-        ),
-        // NOTE: do we need maximum?
-        validator: Validator.positiveNumber(
-          S.stockQuantityProportionLabel,
-          maximum: 100,
-          allowNull: true,
+      ),
+      p(
+        TextFormField(
+          key: const Key('quantity.proportion'),
+          controller: _proportionController,
+          keyboardType: .number,
+          textInputAction: .done,
           focusNode: _proportionFocusNode,
+          onFieldSubmitted: handleFieldSubmit,
+          decoration: InputDecoration(
+            labelText: S.stockQuantityProportionLabel,
+            helperText: S.stockQuantityProportionHelper,
+            helperMaxLines: 100,
+            filled: false,
+          ),
+          // NOTE: do we need maximum?
+          validator: Validator.positiveNumber(
+            S.stockQuantityProportionLabel,
+            maximum: 100,
+            allowNull: true,
+            focusNode: _proportionFocusNode,
+          ),
         ),
-      )),
+      ),
     ];
   }
 
@@ -103,10 +107,7 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
     final object = _parseObject();
 
     if (widget.isNew) {
-      await Quantities.instance.addItem(Quantity(
-        name: object.name!,
-        defaultProportion: object.defaultProportion!,
-      ));
+      await Quantities.instance.addItem(Quantity(name: object.name!, defaultProportion: object.defaultProportion!));
     } else {
       await widget.quantity!.update(object);
     }
@@ -117,9 +118,6 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
   }
 
   QuantityObject _parseObject() {
-    return QuantityObject(
-      name: _nameController.text,
-      defaultProportion: num.tryParse(_proportionController.text) ?? 1,
-    );
+    return QuantityObject(name: _nameController.text, defaultProportion: num.tryParse(_proportionController.text) ?? 1);
   }
 }

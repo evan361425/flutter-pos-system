@@ -15,12 +15,7 @@ class MenuCatalogList extends StatelessWidget {
   final Widget leading;
   final void Function(Catalog) onSelected;
 
-  const MenuCatalogList(
-    this.catalogs, {
-    super.key,
-    required this.onSelected,
-    required this.leading,
-  });
+  const MenuCatalogList(this.catalogs, {super.key, required this.onSelected, required this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +84,4 @@ class _Tile extends StatelessWidget {
   }
 }
 
-enum _Action {
-  delete,
-}
+enum _Action { delete }

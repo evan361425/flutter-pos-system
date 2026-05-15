@@ -12,16 +12,13 @@ class Stock extends ChangeNotifier
   static late Stock instance;
 
   @override
-  final Stores storageStore = Stores.stock;
+  final Stores storageStore = .stock;
 
   Stock() {
     instance = this;
   }
 
-  Future<void> applyAmounts(
-    Map<String, num> amounts, {
-    onlyAmount = false,
-  }) async {
+  Future<void> applyAmounts(Map<String, num> amounts, {onlyAmount = false}) async {
     final updateData = <String, Object?>{};
 
     amounts.forEach((id, amount) {
@@ -35,19 +32,14 @@ class Stock extends ChangeNotifier
     if (updateData.isEmpty) return Future.value();
 
     // should use [saveBatch] instead
-    await Storage.instance.set(Stores.stock, updateData);
+    await Storage.instance.set(.stock, updateData);
 
     notifyListeners();
   }
 
   @override
   Ingredient buildItem(String id, Map<String, Object?> value) {
-    return Ingredient.fromObject(
-      IngredientObject.build({
-        'id': id,
-        ...value,
-      }),
-    );
+    return Ingredient.fromObject(IngredientObject.build({'id': id, ...value}));
   }
 
   /// Update amounts by order.

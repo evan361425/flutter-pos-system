@@ -17,15 +17,10 @@ class MetaBlock {
     TextStyle? textStyle,
     String? emptyText,
     int? maxLines,
-    TextOverflow textOverflow = TextOverflow.ellipsis,
+    TextOverflow textOverflow = .ellipsis,
   }) {
     if (data.isNotEmpty) {
-      final children = data
-          .expand((value) => [
-                TextSpan(text: value),
-                MetaBlock.span(),
-              ])
-          .toList();
+      final children = data.expand((value) => [TextSpan(text: value), MetaBlock.span()]).toList();
       // remove last block
       children.removeLast();
 

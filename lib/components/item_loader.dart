@@ -68,10 +68,7 @@ class ItemLoaderState<T, U> extends State<ItemLoader<T, U>> {
         }
 
         if (index == 0) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: widget.metricsBuilder(metrics as U),
-          );
+          return Padding(padding: const .symmetric(vertical: 4), child: widget.metricsBuilder(metrics as U));
         }
 
         index--;

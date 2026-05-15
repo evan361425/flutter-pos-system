@@ -35,3 +35,9 @@ linter:
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+# Should be removed after https://github.com/dart-lang/sdk/issues/61957 fixed
+plugins:
+  prefer_shorthands: ^0.4.7
+prefer_shorthands:
+  convert_implicit_declaration: true

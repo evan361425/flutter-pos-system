@@ -41,7 +41,7 @@ class App extends StatelessWidget {
       // onException: (context, state, route) => context.go('/pos'),
       debugLogDiagnostics: kDebugMode,
       observers: [
-        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+        FirebaseAnalyticsObserver(analytics: .instance),
         routeObserver,
       ],
     );

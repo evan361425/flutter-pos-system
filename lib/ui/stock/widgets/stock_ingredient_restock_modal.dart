@@ -28,43 +28,39 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
 
   @override
   List<Widget> buildFormFields() => <Widget>[
-        p(CardInfoText(child: Text(S.stockIngredientRestockTitle))),
-        p(TextFormField(
-          key: const Key('stock.ing_restock.price'),
-          controller: priceController,
+    p(CardInfoText(child: Text(S.stockIngredientRestockTitle))),
+    p(
+      TextFormField(
+        key: const Key('stock.ing_restock.price'),
+        controller: priceController,
+        focusNode: priceFocusNode,
+        textInputAction: .next,
+        keyboardType: .number,
+        decoration: InputDecoration(labelText: S.stockIngredientRestockPriceLabel, helperMaxLines: 3, filled: false),
+        validator: Validator.positiveNumber(
+          S.stockIngredientRestockPriceLabel,
+          allowNull: true,
           focusNode: priceFocusNode,
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: S.stockIngredientRestockPriceLabel,
-            helperMaxLines: 3,
-            filled: false,
-          ),
-          validator: Validator.positiveNumber(
-            S.stockIngredientRestockPriceLabel,
-            allowNull: true,
-            focusNode: priceFocusNode,
-          ),
-        )),
-        p(TextFormField(
-          key: const Key('stock.ing_restock.quantity'),
-          controller: quantityController,
+        ),
+      ),
+    ),
+    p(
+      TextFormField(
+        key: const Key('stock.ing_restock.quantity'),
+        controller: quantityController,
+        focusNode: quantityFocusNode,
+        textInputAction: .done,
+        keyboardType: .number,
+        onFieldSubmitted: handleFieldSubmit,
+        decoration: InputDecoration(labelText: S.stockIngredientRestockQuantityLabel, helperMaxLines: 5, filled: false),
+        validator: Validator.positiveNumber(
+          S.stockIngredientRestockQuantityLabel,
+          allowNull: true,
           focusNode: quantityFocusNode,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.number,
-          onFieldSubmitted: handleFieldSubmit,
-          decoration: InputDecoration(
-            labelText: S.stockIngredientRestockQuantityLabel,
-            helperMaxLines: 5,
-            filled: false,
-          ),
-          validator: Validator.positiveNumber(
-            S.stockIngredientRestockQuantityLabel,
-            allowNull: true,
-            focusNode: quantityFocusNode,
-          ),
-        )),
-      ];
+        ),
+      ),
+    ),
+  ];
 
   @override
   void initState() {

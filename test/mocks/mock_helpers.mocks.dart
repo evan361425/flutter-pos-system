@@ -42,28 +42,21 @@ class MockImageCropper extends _i1.Mock implements _i2.ImageCropper {
     List<_i4.PlatformUiSettings>? uiSettings,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #cropImage,
-          [],
-          {
-            #sourcePath: sourcePath,
-            #maxWidth: maxWidth,
-            #maxHeight: maxHeight,
-            #aspectRatio: aspectRatio,
-            #compressFormat: compressFormat,
-            #compressQuality: compressQuality,
-            #uiSettings: uiSettings,
-          },
-        ),
-        returnValue: _i3.Future<_i4.CroppedFile?>.value(),
-      ) as _i3.Future<_i4.CroppedFile?>);
+            Invocation.method(#cropImage, [], {
+              #sourcePath: sourcePath,
+              #maxWidth: maxWidth,
+              #maxHeight: maxHeight,
+              #aspectRatio: aspectRatio,
+              #compressFormat: compressFormat,
+              #compressQuality: compressQuality,
+              #uiSettings: uiSettings,
+            }),
+            returnValue: _i3.Future<_i4.CroppedFile?>.value(),
+          )
+          as _i3.Future<_i4.CroppedFile?>);
 
   @override
-  _i3.Future<_i4.CroppedFile?> recoverImage() => (super.noSuchMethod(
-        Invocation.method(
-          #recoverImage,
-          [],
-        ),
-        returnValue: _i3.Future<_i4.CroppedFile?>.value(),
-      ) as _i3.Future<_i4.CroppedFile?>);
+  _i3.Future<_i4.CroppedFile?> recoverImage() =>
+      (super.noSuchMethod(Invocation.method(#recoverImage, []), returnValue: _i3.Future<_i4.CroppedFile?>.value())
+          as _i3.Future<_i4.CroppedFile?>);
 }

@@ -23,10 +23,7 @@ import 'widgets/product_ingredient_view.dart';
 class ProductPage extends StatefulWidget {
   final Product product;
 
-  const ProductPage({
-    super.key,
-    required this.product,
-  });
+  const ProductPage({super.key, required this.product});
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -47,78 +44,78 @@ class _ProductPageState extends State<ProductPage> {
     return Dialog.fullscreen(
       child: Scaffold(
         primary: false,
-        body: CustomScrollView(slivers: [
-          SliverImageAppBar(
-            model: widget.product,
-            actions: [_buildActionButton()],
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
-              child: _buildMetadata(),
+        body: CustomScrollView(
+          slivers: [
+            SliverImageAppBar(model: widget.product, actions: [_buildActionButton()]),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const .fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
+                child: _buildMetadata(),
+              ),
             ),
-          ),
-          SliverToBoxAdapter(child: _buildIngredientTitle()),
-          if (items.isNotEmpty)
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: kFABSpacing),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (_, int index) {
+            SliverToBoxAdapter(child: _buildIngredientTitle()),
+            if (items.isNotEmpty)
+              SliverPadding(
+                padding: const .only(bottom: kFABSpacing),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((_, int index) {
                     if (index == 0) {
                       return _buildAddButton();
                     }
                     return ProductIngredientView(items[index - 1]);
-                  },
-                  childCount: items.length + 1,
+                  }, childCount: items.length + 1),
                 ),
               ),
-            ),
-        ]),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildDialog() {
-    final metadataTile = Row(children: [
-      ImageHolder(
-        size: 140,
-        image: widget.product.image,
-        onImageError: () => widget.product.saveImage(null),
-      ),
-      const SizedBox(width: kInternalLargeSpacing),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: kInternalSpacing, children: [
-          Text(widget.product.name, style: Theme.of(context).textTheme.titleMedium),
-          _buildMetadata(),
-        ]),
-      ),
-      _buildActionButton(),
-    ]);
+    final metadataTile = Row(
+      children: [
+        ImageHolder(size: 140, image: widget.product.image, onImageError: () => widget.product.saveImage(null)),
+        const SizedBox(width: kInternalLargeSpacing),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            spacing: kInternalSpacing,
+            children: [
+              Text(widget.product.name, style: Theme.of(context).textTheme.titleMedium),
+              _buildMetadata(),
+            ],
+          ),
+        ),
+        _buildActionButton(),
+      ],
+    );
 
     final dialog = AlertDialog(
-      contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
+      contentPadding: const .fromLTRB(24, 32, 24, 0),
       scrollable: true,
       content: ConstrainedBox(
         constraints: BoxConstraints(minWidth: Breakpoint.compact.max),
-        child: Column(children: [
-          metadataTile,
-          _buildIngredientTitle(),
-          if (widget.product.isNotEmpty) _buildAddButton(),
-          if (widget.product.isNotEmpty)
-            for (final item in widget.product.itemList) ProductIngredientView(item),
-          const SizedBox(height: kFABSpacing),
-        ]),
+        child: Column(
+          children: [
+            metadataTile,
+            _buildIngredientTitle(),
+            if (widget.product.isNotEmpty) _buildAddButton(),
+            if (widget.product.isNotEmpty)
+              for (final item in widget.product.itemList) ProductIngredientView(item),
+            const SizedBox(height: kFABSpacing),
+          ],
+        ),
       ),
     );
 
     return ScaffoldMessenger(
-      child: Stack(children: [
-        dialog,
-        const IgnorePointer(
-          child: Scaffold(primary: false, backgroundColor: Colors.transparent),
-        ),
-      ]),
+      child: Stack(
+        children: [
+          dialog,
+          const IgnorePointer(child: Scaffold(primary: false, backgroundColor: Colors.transparent)),
+        ],
+      ),
     );
   }
 
@@ -132,46 +129,41 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildIngredientTitle() {
     if (widget.product.isEmpty) {
-      return EmptyBody(
-        content: S.menuIngredientEmptyBody,
-        onPressed: _handleCreateIng,
-      );
+      return EmptyBody(content: S.menuIngredientEmptyBody, onPressed: _handleCreateIng);
     }
 
-    return Row(children: [
-      Expanded(
-        child: Center(child: HintText(S.totalCount(widget.product.length))),
-      ),
-      RouteIconButton(
-        key: const Key('product.reorder'),
-        label: S.menuIngredientTitleReorder,
-        icon: const Icon(KIcons.reorder),
-        route: Routes.menuProductReorderIngredient,
-        pathParameters: {'id': widget.product.id},
-        hideLabel: true,
-      ),
-    ]);
+    return Row(
+      children: [
+        Expanded(child: Center(child: HintText(S.totalCount(widget.product.length)))),
+        RouteIconButton(
+          key: const Key('product.reorder'),
+          label: S.menuIngredientTitleReorder,
+          icon: const Icon(KIcons.reorder),
+          route: Routes.menuProductReorderIngredient,
+          pathParameters: {'id': widget.product.id},
+          hideLabel: true,
+        ),
+      ],
+    );
   }
 
   Widget _buildAddButton() {
-    return Row(children: [
-      Expanded(
-        child: ElevatedButton.icon(
-          key: const Key('product.add'),
-          icon: const Icon(KIcons.add),
-          label: Text(S.menuIngredientTitleCreate),
-          onPressed: _handleCreateIng,
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            key: const Key('product.add'),
+            icon: const Icon(KIcons.add),
+            label: Text(S.menuIngredientTitleCreate),
+            onPressed: _handleCreateIng,
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget _buildActionButton() {
-    return MoreButton(
-      key: const Key('product.more'),
-      onPressed: _showActions,
-      backgroundIsImage: true,
-    );
+    return MoreButton(key: const Key('product.more'), onPressed: _showActions, backgroundIsImage: true);
   }
 
   @override
@@ -223,7 +215,7 @@ class _ProductPageState extends State<ProductPage> {
       ],
     );
 
-    if (result == _Action.changeImage && context.mounted) {
+    if (result == .changeImage && context.mounted) {
       await widget.product.pickImage(context);
     }
   }
@@ -235,14 +227,8 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _handleCreateIng() {
-    context.pushNamed(
-      Routes.menuProductUpdateIngredient,
-      pathParameters: {'id': widget.product.id},
-    );
+    context.pushNamed(Routes.menuProductUpdateIngredient, pathParameters: {'id': widget.product.id});
   }
 }
 
-enum _Action {
-  delete,
-  changeImage,
-}
+enum _Action { delete, changeImage }

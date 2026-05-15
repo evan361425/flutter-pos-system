@@ -8,7 +8,7 @@ import 'package:possystem/settings/setting.dart';
 class LanguageSetting extends Setting<Language?> {
   Language? _systemLanguage;
 
-  static final instance = LanguageSetting._();
+  static final LanguageSetting instance = ._();
 
   LanguageSetting._() {
     value = null;
@@ -27,7 +27,7 @@ class LanguageSetting extends Setting<Language?> {
     _systemLanguage ??= parseLanguage(locale)!;
   }
 
-  Language get language => value ?? _systemLanguage ?? Language.en;
+  Language get language => value ?? _systemLanguage ?? .en;
 
   @override
   void initialize() {

@@ -33,11 +33,7 @@ class RouteElevatedIconButton extends StatelessWidget {
       icon: icon,
       label: Text(label),
       style: style,
-      onPressed: () => context.pushNamed(
-        route!,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-      ),
+      onPressed: () => context.pushNamed(route!, pathParameters: pathParameters, queryParameters: queryParameters),
     );
   }
 }
@@ -66,7 +62,8 @@ class RouteIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       tooltip: hideLabel ? label : null,
-      onPressed: onPressed ??
+      onPressed:
+          onPressed ??
           () async {
             final result = await context.pushNamed(route!, pathParameters: pathParameters);
             if (result == true && popTrueShowSuccess) {
@@ -84,15 +81,9 @@ class RouteIconButton extends StatelessWidget {
       return icon;
     }
 
-    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
-    return bp <= Breakpoint.medium
-        ? Column(spacing: 4, children: [
-            icon,
-            Text(label),
-          ])
-        : Row(spacing: 4, children: [
-            icon,
-            Text(label),
-          ]);
+    final Breakpoint bp = .find(width: MediaQuery.sizeOf(context).width);
+    return bp <= .medium
+        ? Column(spacing: 4, children: [icon, Text(label)])
+        : Row(spacing: 4, children: [icon, Text(label)]);
   }
 }

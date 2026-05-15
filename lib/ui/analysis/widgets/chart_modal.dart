@@ -23,7 +23,7 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
   final _nameController = TextEditingController();
   final _nameFocusNode = FocusNode();
 
-  AnalysisChartType type = AnalysisChartType.cartesian;
+  AnalysisChartType type = .cartesian;
   bool ignoreEmpty = false;
   late OrderMetricTarget target;
   final metrics = <OrderMetricType>[];
@@ -35,27 +35,25 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
   @override
   List<Widget> buildFormFields() {
     return [
-      p(TextFormField(
-        key: const Key('chart.title'),
-        controller: _nameController,
-        focusNode: _nameFocusNode,
-        textInputAction: TextInputAction.next,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          labelText: S.analysisChartModalNameLabel,
-          hintText: widget.chart?.name,
-          filled: false,
-        ),
-        maxLength: 50,
-        validator: Validator.textLimit(
-          S.analysisChartModalNameLabel,
-          50,
+      p(
+        TextFormField(
+          key: const Key('chart.title'),
+          controller: _nameController,
           focusNode: _nameFocusNode,
+          textInputAction: .next,
+          textCapitalization: .words,
+          decoration: InputDecoration(
+            labelText: S.analysisChartModalNameLabel,
+            hintText: widget.chart?.name,
+            filled: false,
+          ),
+          maxLength: 50,
+          validator: Validator.textLimit(S.analysisChartModalNameLabel, 50, focusNode: _nameFocusNode),
         ),
-      )),
+      ),
       CheckboxListTile(
         key: const Key('chart.ignoreEmpty'),
-        controlAffinity: ListTileControlAffinity.leading,
+        controlAffinity: .leading,
         value: ignoreEmpty,
         selected: ignoreEmpty,
         onChanged: (bool? value) {
@@ -67,26 +65,28 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
         subtitle: Text(S.analysisChartModalIgnoreEmptyHelper),
       ),
       TextDivider(label: S.analysisChartModalTypeLabel),
-      p(SizedBox(
-        width: double.infinity,
-        child: Wrap(
-          spacing: 4.0,
-          children: AnalysisChartType.values.map((e) {
-            return ChoiceChip(
-              key: Key('chart.type.${e.name}'),
-              selected: type == e,
-              label: Text(S.analysisChartModalTypeName(e.name)),
-              onSelected: (bool value) {
-                type = e;
-                _updateTarget(_allowedTargets.first);
-                setState(() {
-                  _updateTargetItem(_allowedTargets.first);
-                });
-              },
-            );
-          }).toList(),
+      p(
+        SizedBox(
+          width: .infinity,
+          child: Wrap(
+            spacing: 4.0,
+            children: AnalysisChartType.values.map((e) {
+              return ChoiceChip(
+                key: Key('chart.type.${e.name}'),
+                selected: type == e,
+                label: Text(S.analysisChartModalTypeName(e.name)),
+                onSelected: (bool value) {
+                  type = e;
+                  _updateTarget(_allowedTargets.first);
+                  setState(() {
+                    _updateTargetItem(_allowedTargets.first);
+                  });
+                },
+              );
+            }).toList(),
+          ),
         ),
-      )),
+      ),
       _buildExampleChart(),
       TextDivider(label: S.analysisChartModalDivider),
       _buildWrappedChoices(
@@ -141,25 +141,26 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
     ];
   }
 
-  Widget _buildWrappedChoices(
-    String label,
-    String description,
-    Iterable<Widget> chips,
-  ) {
+  Widget _buildWrappedChoices(String label, String description, Iterable<Widget> chips) {
     final textTheme = Theme.of(context).textTheme;
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SizedBox(height: 12.0),
-      p(Text(label, style: textTheme.titleMedium)),
-      p(Text(description, style: textTheme.labelMedium)),
-      p(SizedBox(
-        width: double.infinity,
-        child: Wrap(
-          spacing: 4.0,
-          // runSpacing: 4.0,
-          children: chips.toList(),
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        const SizedBox(height: 12.0),
+        p(Text(label, style: textTheme.titleMedium)),
+        p(Text(description, style: textTheme.labelMedium)),
+        p(
+          SizedBox(
+            width: .infinity,
+            child: Wrap(
+              spacing: 4.0,
+              // runSpacing: 4.0,
+              children: chips.toList(),
+            ),
+          ),
         ),
-      )),
-    ]);
+      ],
+    );
   }
 
   Iterable<Widget> _buildTargetItems() sync* {
@@ -180,62 +181,56 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
 
     yield const SizedBox(
       height: 44,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        child: VerticalDivider(),
-      ),
+      child: Padding(padding: .symmetric(vertical: 8.0), child: VerticalDivider()),
     );
 
-    yield* target.getItems().map((e) => ChoiceChip(
-          key: Key('chart.item.${e.id}'),
-          selected: targetItems.contains(e.name),
-          label: Text(e.name),
-          onSelected: (bool value) {
-            setState(() {
-              if (value) {
-                if (_singleTargetItem) targetItems.clear();
+    yield* target.getItems().map(
+      (e) => ChoiceChip(
+        key: Key('chart.item.${e.id}'),
+        selected: targetItems.contains(e.name),
+        label: Text(e.name),
+        onSelected: (bool value) {
+          setState(() {
+            if (value) {
+              if (_singleTargetItem) targetItems.clear();
 
-                targetItems.add(e.name);
-              } else if (!_singleTargetItem) {
-                targetItems.remove(e.name);
-              }
-            });
-          },
-        ));
+              targetItems.add(e.name);
+            } else if (!_singleTargetItem) {
+              targetItems.remove(e.name);
+            }
+          });
+        },
+      ),
+    );
   }
 
   Widget _buildExampleChart() {
     return switch (type) {
-      AnalysisChartType.cartesian => SfCartesianChart(
-          plotAreaBorderWidth: 0.7,
-          enableAxisAnimation: false,
-          selectionGesture: ActivationMode.none,
-          primaryXAxis: const NumericAxis(labelFormat: ' '),
-          primaryYAxis: const NumericAxis(
-            minimum: 0,
-            maximum: 7,
-            interval: 1,
-            labelFormat: ' ',
+      .cartesian => SfCartesianChart(
+        plotAreaBorderWidth: 0.7,
+        enableAxisAnimation: false,
+        selectionGesture: .none,
+        primaryXAxis: const NumericAxis(labelFormat: ' '),
+        primaryYAxis: const NumericAxis(minimum: 0, maximum: 7, interval: 1, labelFormat: ' '),
+        series: [
+          LineSeries<int, int>(
+            xValueMapper: (_, i) => i,
+            yValueMapper: (int data, _) => data,
+            dataSource: const [3, 1, 4, 6, 5, 2, 5],
           ),
-          series: [
-            LineSeries<int, int>(
-              xValueMapper: (_, i) => i,
-              yValueMapper: (int data, _) => data,
-              dataSource: const [3, 1, 4, 6, 5, 2, 5],
-            ),
-          ],
-        ),
-      AnalysisChartType.circular => SfCircularChart(
-          title: const ChartTitle(),
-          selectionGesture: ActivationMode.none,
-          series: <CircularSeries>[
-            PieSeries<int, int>(
-              dataSource: const [12, 34, 54],
-              xValueMapper: (_, i) => i,
-              yValueMapper: (int data, _) => data,
-            ),
-          ],
-        ),
+        ],
+      ),
+      .circular => SfCircularChart(
+        title: const ChartTitle(),
+        selectionGesture: .none,
+        series: <CircularSeries>[
+          PieSeries<int, int>(
+            dataSource: const [12, 34, 54],
+            xValueMapper: (_, i) => i,
+            yValueMapper: (int data, _) => data,
+          ),
+        ],
+      ),
     };
   }
 
@@ -266,14 +261,16 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
 
   @override
   Future<void> updateItem() async {
-    final model = Chart.fromObject(ChartObject(
-      name: _nameController.text,
-      type: type,
-      ignoreEmpty: ignoreEmpty,
-      target: target,
-      metrics: metrics,
-      targetItems: targetItems.toSet().toList(),
-    ));
+    final model = Chart.fromObject(
+      ChartObject(
+        name: _nameController.text,
+        type: type,
+        ignoreEmpty: ignoreEmpty,
+        target: target,
+        metrics: metrics,
+        targetItems: targetItems.toSet().toList(),
+      ),
+    );
 
     if (widget.chart == null) {
       await Analysis.instance.addItem(model);
@@ -288,28 +285,28 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
 
   Iterable<OrderMetricTarget> get _allowedTargets {
     return switch (type) {
-      AnalysisChartType.circular => [
-          OrderMetricTarget.catalog,
-          OrderMetricTarget.product,
-          OrderMetricTarget.ingredient,
-          OrderMetricTarget.attribute,
-        ],
-      AnalysisChartType.cartesian => OrderMetricTarget.values,
+      .circular => [
+        OrderMetricTarget.catalog,
+        OrderMetricTarget.product,
+        OrderMetricTarget.ingredient,
+        OrderMetricTarget.attribute,
+      ],
+      .cartesian => OrderMetricTarget.values,
     };
   }
 
   Iterable<OrderMetricType> get _allowedMetrics {
     return switch (target) {
-      OrderMetricTarget.order || OrderMetricTarget.catalog || OrderMetricTarget.product => OrderMetricType.values,
+      OrderMetricTarget.order || OrderMetricTarget.catalog || .product => OrderMetricType.values,
       _ => [OrderMetricType.count],
     };
   }
 
-  bool get _singleMetric => target != OrderMetricTarget.order;
+  bool get _singleMetric => target != .order;
 
-  bool get _singleTargetItem => type == AnalysisChartType.circular && target == OrderMetricTarget.attribute;
+  bool get _singleTargetItem => type == .circular && target == .attribute;
 
-  bool get _hasTargetItems => target != OrderMetricTarget.order;
+  bool get _hasTargetItems => target != .order;
 
   void _updateTarget(OrderMetricTarget e) {
     target = e;

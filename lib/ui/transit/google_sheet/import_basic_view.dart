@@ -126,16 +126,13 @@ class _ImportBasicHeader extends ImportBasicBaseHeader {
     List<GoogleSheetProperties> sheets,
   ) async {
     final futures = sheets
-        .mapIndexed((i, sheet) => exporter.getSheetData(
-              ss,
-              sheet.title,
-              neededColumns: findFieldFormatter(ables[i]).getHeader().length,
-            ))
+        .mapIndexed(
+          (i, sheet) =>
+              exporter.getSheetData(ss, sheet.title, neededColumns: findFieldFormatter(ables[i]).getHeader().length),
+        )
         .toList();
 
     final data = await Future.wait(futures);
-    return {
-      for (final (i, rows) in data.indexed) ables[i]: rows?.sublist(1),
-    };
+    return {for (final (i, rows) in data.indexed) ables[i]: rows?.sublist(1)};
   }
 }

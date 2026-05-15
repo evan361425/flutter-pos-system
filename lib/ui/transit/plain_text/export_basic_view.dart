@@ -32,11 +32,7 @@ class ExportBasicHeader extends BasicModelPicker {
 }
 
 class ExportBasicView extends ExportView {
-  const ExportBasicView({
-    super.key,
-    required super.selected,
-    required super.stateNotifier,
-  });
+  const ExportBasicView({super.key, required super.selected, required super.stateNotifier});
 
   @override
   Widget buildModel(BuildContext context, FormattableModel able) {
@@ -50,28 +46,24 @@ class ExportBasicView extends ExportView {
         if (index == 0) {
           // Title
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final item in rows[0]) Center(child: Text(item)),
-            ],
+            crossAxisAlignment: .start,
+            children: [for (final item in rows[0]) Center(child: Text(item))],
           );
         }
 
         return Card(
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Theme.of(context).colorScheme.outline),
-            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            borderRadius: const .all(.circular(12)),
           ),
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 100),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const .all(8.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final item in rows[index]) Text(item),
-                ],
+                mainAxisAlignment: .center,
+                crossAxisAlignment: .start,
+                children: [for (final item in rows[index]) Text(item)],
               ),
             ),
           ),

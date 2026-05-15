@@ -15,21 +15,12 @@ class ExportBasicHeader extends StatelessWidget {
   final ValueNotifier<FormattableModel?> selected;
   final TransitStateNotifier stateNotifier;
 
-  const ExportBasicHeader({
-    super.key,
-    required this.exporter,
-    required this.selected,
-    required this.stateNotifier,
-  });
+  const ExportBasicHeader({super.key, required this.exporter, required this.selected, required this.stateNotifier});
 
   @override
   Widget build(BuildContext context) {
     return SignInButton(
-      signedInWidget: _ExportBasicHeader(
-        exporter: exporter,
-        stateNotifier: stateNotifier,
-        selected: selected,
-      ),
+      signedInWidget: _ExportBasicHeader(exporter: exporter, stateNotifier: stateNotifier, selected: selected),
     );
   }
 }
@@ -115,11 +106,7 @@ class _ExportBasicHeader extends BasicModelPicker {
 }
 
 class ExportBasicView extends ExportView {
-  const ExportBasicView({
-    super.key,
-    required super.selected,
-    required super.stateNotifier,
-  });
+  const ExportBasicView({super.key, required super.selected, required super.stateNotifier});
 
   @override
   ModelData getSourceAndHeaders(FormattableModel able) {

@@ -120,10 +120,7 @@ class Cart extends ChangeNotifier {
   /// - [paid] is the money that customer paid. If it is less than the price,
   ///  will return [CheckoutStatus.paidNotEnough].
   /// - [context] is the context to show the receipt dialog.
-  Future<CheckoutStatus> checkout({
-    required num paid,
-    required BuildContext context,
-  }) async {
+  Future<CheckoutStatus> checkout({required num paid, required BuildContext context}) async {
     if (isEmpty) return CheckoutStatus.nothingHappened;
 
     if (paid < price) return CheckoutStatus.paidNotEnough;
@@ -296,10 +293,7 @@ class Cart extends ChangeNotifier {
   }
 
   @visibleForTesting
-  void replaceAll({
-    List<CartProduct>? products,
-    Map<String, String>? attributes,
-  }) {
+  void replaceAll({List<CartProduct>? products, Map<String, String>? attributes}) {
     if (products != null) {
       this.products
         ..clear()
@@ -358,9 +352,9 @@ enum CheckoutStatus {
 
   factory CheckoutStatus.fromCashier(CashierUpdateStatus status) {
     return switch (status) {
-      CashierUpdateStatus.notEnough => CheckoutStatus.cashierNotEnough,
-      CashierUpdateStatus.usingSmall => CheckoutStatus.cashierUsingSmall,
-      CashierUpdateStatus.ok => CheckoutStatus.ok,
+      .notEnough => CheckoutStatus.cashierNotEnough,
+      .usingSmall => CheckoutStatus.cashierUsingSmall,
+      .ok => CheckoutStatus.ok,
     };
   }
 }

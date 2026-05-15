@@ -46,11 +46,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
         ),
       if (connecting.isNotEmpty) Center(child: HintText(S.orderPrinterDividerConnecting)),
       for (final printer in connecting)
-        MenuItemButton(
-          leadingIcon: const Icon(Icons.refresh),
-          onPressed: null,
-          child: Text(printer.name),
-        ),
+        MenuItemButton(leadingIcon: const Icon(Icons.refresh), onPressed: null, child: Text(printer.name)),
       if (unused.isNotEmpty) Center(child: HintText(S.orderPrinterDividerUnused)),
       for (final printer in unused)
         MenuItemButton(
@@ -69,26 +65,20 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
           icon = s.priority < 1
               ? const Icon(Icons.print_outlined)
               : s == PrinterStatus.printing
-                  ? statusIcons[s]!
-                  : Tutorial(
-                      id: 'order.printer_status',
-                      title: S.orderTutorialPrinterBtnTitle,
-                      message: S.orderTutorialPrinterBtnContent,
-                      child: statusIcons[s]!,
-                    );
+              ? statusIcons[s]!
+              : Tutorial(
+                  id: 'order.printer_status',
+                  title: S.orderTutorialPrinterBtnTitle,
+                  message: S.orderTutorialPrinterBtnContent,
+                  child: statusIcons[s]!,
+                );
         } else if (connecting.isEmpty) {
           icon = const Icon(Icons.print_disabled_outlined);
         } else {
-          icon = const SizedBox.square(
-            dimension: 16,
-            child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-          );
+          icon = const SizedBox.square(dimension: 16, child: CircularProgressIndicator.adaptive(strokeWidth: 2));
         }
 
-        return IconButton(
-          icon: icon,
-          onPressed: controller.toggle,
-        );
+        return IconButton(icon: icon, onPressed: controller.toggle);
       },
     );
   }
@@ -130,11 +120,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
       await Future.wait([
         // [toList] create new list which avoid concurrent modification of the original list
         for (final printer in connecting.toList())
-          showSnackbarWhenFutureError(
-            printer.connect(),
-            'order_printer_connect',
-            context: context,
-          ),
+          showSnackbarWhenFutureError(printer.connect(), 'order_printer_connect', context: context),
       ]);
 
       // if failed, remove all connecting printers
@@ -205,11 +191,9 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
   }
 
   StreamSubscription<PrinterStatus> _listenStatus(Printer printer) {
-    return showSnackbarWhenStreamError(
-      printer.p.statusStream,
-      'order_printer_status',
-      context: context,
-    ).listen((value) {
+    return showSnackbarWhenStreamError(printer.p.statusStream, 'order_printer_status', context: context).listen((
+      value,
+    ) {
       final record = statusRecords[printer.id];
       if (mounted && record != null && record.value != value) {
         setState(() {

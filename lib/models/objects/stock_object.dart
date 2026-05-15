@@ -80,7 +80,7 @@ class IngredientObject extends ModelObject<Ingredient> {
     if (result.isNotEmpty) {
       // should not only change currentAmount
       if (!(result.length == 1 && result.containsKey('$prefix.currentAmount'))) {
-        model.updatedAt = DateTime.now();
+        model.updatedAt = .now();
         result['$prefix.updatedAt'] = model.updatedAt.toString();
       }
     }
@@ -104,11 +104,7 @@ class IngredientObject extends ModelObject<Ingredient> {
 }
 
 class QuantityObject extends ModelObject<Quantity> {
-  QuantityObject({
-    this.id,
-    this.name,
-    this.defaultProportion,
-  });
+  QuantityObject({this.id, this.name, this.defaultProportion});
 
   final String? id;
   final String? name;
@@ -116,10 +112,7 @@ class QuantityObject extends ModelObject<Quantity> {
 
   @override
   Map<String, Object> toMap() {
-    return {
-      'name': name!,
-      'defaultProportion': defaultProportion!,
-    };
+    return {'name': name!, 'defaultProportion': defaultProportion!};
   }
 
   @override
@@ -149,11 +142,7 @@ class QuantityObject extends ModelObject<Quantity> {
 }
 
 class ReplenishmentObject extends ModelObject<Replenishment> {
-  ReplenishmentObject({
-    this.id,
-    required this.name,
-    required this.data,
-  });
+  ReplenishmentObject({this.id, required this.name, required this.data});
 
   String name;
   Map<String, num> data;
@@ -161,10 +150,7 @@ class ReplenishmentObject extends ModelObject<Replenishment> {
 
   @override
   Map<String, Object> toMap() {
-    return {
-      'name': name,
-      'data': data,
-    };
+    return {'name': name, 'data': data};
   }
 
   @override
@@ -198,10 +184,6 @@ class ReplenishmentObject extends ModelObject<Replenishment> {
       });
     }
 
-    return ReplenishmentObject(
-      id: data['id'] as String,
-      name: data['name'] as String,
-      data: replenishmentData,
-    );
+    return ReplenishmentObject(id: data['id'] as String, name: data['name'] as String, data: replenishmentData);
   }
 }

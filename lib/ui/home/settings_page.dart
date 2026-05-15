@@ -19,14 +19,11 @@ import 'package:possystem/translator.dart';
 class SettingsPage extends StatelessWidget {
   final String? focus;
 
-  const SettingsPage({
-    super.key,
-    this.focus,
-  });
+  const SettingsPage({super.key, this.focus});
 
   @override
   Widget build(BuildContext context) {
-    const flavor = String.fromEnvironment('appFlavor');
+    const String flavor = .fromEnvironment('appFlavor');
 
     void navigateTo(Feature feature) {
       context.pushNamed(Routes.settingsFeature, pathParameters: {'feature': feature.name});
@@ -34,7 +31,7 @@ class SettingsPage extends StatelessWidget {
 
     return SafeArea(
       child: ListView(
-        padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing),
+        padding: const .only(bottom: kFABSpacing, top: kTopSpacing),
         children: <Widget>[
           const SizedBox(height: 8.0),
           FutureBuilder<PackageInfo>(
@@ -42,7 +39,7 @@ class SettingsPage extends StatelessWidget {
             builder: (context, snapshot) {
               final info = snapshot.data;
               return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: .center,
                 children: [
                   if (info != null) Text(S.settingVersion(info.version)),
                   const SizedBox(width: 8.0),
@@ -53,10 +50,10 @@ class SettingsPage extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const .symmetric(horizontal: 8.0),
             child: SignInButton(
               signedInWidgetBuilder: (user) => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: .spaceBetween,
                 children: [
                   Text(S.settingWelcome(user?.displayName ?? '')),
                   OutlinedButton(
@@ -79,7 +76,7 @@ class SettingsPage extends StatelessWidget {
                 title: Text(S.settingThemeTitle),
                 subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
                 trailing: const Icon(Icons.navigate_next_outlined),
-                onTap: () => navigateTo(Feature.theme),
+                onTap: () => navigateTo(.theme),
               );
             },
           ),
@@ -92,7 +89,7 @@ class SettingsPage extends StatelessWidget {
                 title: Text(S.settingLanguageTitle),
                 subtitle: Text(LanguageSetting.instance.language.title),
                 trailing: const Icon(Icons.navigate_next_outlined),
-                onTap: () => navigateTo(Feature.language),
+                onTap: () => navigateTo(.language),
               );
             },
           ),
@@ -106,7 +103,7 @@ class SettingsPage extends StatelessWidget {
                 title: Text(S.settingCheckoutWarningTitle),
                 subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
                 trailing: const Icon(Icons.navigate_next_outlined),
-                onTap: () => navigateTo(Feature.checkoutWarning),
+                onTap: () => navigateTo(.checkoutWarning),
               );
             },
           ),
@@ -149,10 +146,7 @@ class SettingsPage extends StatelessWidget {
 class ItemListScaffold extends StatelessWidget {
   final Feature feature;
 
-  const ItemListScaffold({
-    super.key,
-    required this.feature,
-  });
+  const ItemListScaffold({super.key, required this.feature});
 
   @override
   Widget build(BuildContext context) {
@@ -160,25 +154,24 @@ class ItemListScaffold extends StatelessWidget {
 
     final selected = ValueNotifier<int>(feature.selected);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(feature.title),
-        leading: const PopButton(),
-      ),
+      appBar: AppBar(title: Text(feature.title), leading: const PopButton()),
       body: ValueListenableBuilder(
         valueListenable: selected,
         builder: (context, value, child) => ListView(
           children: IterableZip([feature.itemTitles, feature.itemSubtitles])
-              .mapIndexed((index, pair) => ListTile(
-                    title: Text(pair[0]),
-                    trailing: value == index ? const Icon(Icons.check_outlined) : null,
-                    subtitle: Text(pair[1], style: hintStyle),
-                    onTap: () async {
-                      if (value != index) {
-                        selected.value = index;
-                        await feature.update(index);
-                      }
-                    },
-                  ))
+              .mapIndexed(
+                (index, pair) => ListTile(
+                  title: Text(pair[0]),
+                  trailing: value == index ? const Icon(Icons.check_outlined) : null,
+                  subtitle: Text(pair[1], style: hintStyle),
+                  onTap: () async {
+                    if (value != index) {
+                      selected.value = index;
+                      await feature.update(index);
+                    }
+                  },
+                ),
+              )
               .toList(),
         ),
       ),
@@ -195,41 +188,41 @@ enum Feature {
 
   Iterable<String> get itemTitles {
     return switch (this) {
-      Feature.theme => ThemeMode.values.map((e) => S.settingThemeName(e.name)),
-      Feature.language => Language.values.map((e) => e.title),
-      Feature.checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name)),
+      .theme => ThemeMode.values.map((e) => S.settingThemeName(e.name)),
+      .language => Language.values.map((e) => e.title),
+      .checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name)),
     };
   }
 
   Iterable<String> get itemSubtitles {
     return switch (this) {
-      Feature.theme => ThemeMode.values.map((e) => ''),
-      Feature.language => Language.values.map((e) => ''),
-      Feature.checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name)),
+      .theme => ThemeMode.values.map((e) => ''),
+      .language => Language.values.map((e) => ''),
+      .checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name)),
     };
   }
 
   String get title {
     return switch (this) {
-      Feature.theme => S.settingThemeTitle,
-      Feature.language => S.settingLanguageTitle,
-      Feature.checkoutWarning => S.settingCheckoutWarningTitle,
+      .theme => S.settingThemeTitle,
+      .language => S.settingLanguageTitle,
+      .checkoutWarning => S.settingCheckoutWarningTitle,
     };
   }
 
   int get selected {
     return switch (this) {
-      Feature.theme => ThemeSetting.instance.value.index,
-      Feature.language => LanguageSetting.instance.language.index,
-      Feature.checkoutWarning => CheckoutWarningSetting.instance.value.index,
+      .theme => ThemeSetting.instance.value.index,
+      .language => LanguageSetting.instance.language.index,
+      .checkoutWarning => CheckoutWarningSetting.instance.value.index,
     };
   }
 
   Future<void> update(int index) {
     return switch (this) {
-      Feature.theme => ThemeSetting.instance.update(ThemeMode.values[index]),
-      Feature.language => LanguageSetting.instance.update(Language.values[index]),
-      Feature.checkoutWarning => CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]),
+      .theme => ThemeSetting.instance.update(ThemeMode.values[index]),
+      .language => LanguageSetting.instance.update(Language.values[index]),
+      .checkoutWarning => CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]),
     };
   }
 }

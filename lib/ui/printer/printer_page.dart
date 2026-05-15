@@ -33,26 +33,29 @@ class PrinterPage extends StatelessWidget {
     return SafeArea(
       child: SlidableItemList(
         hintText: '', // disabling hint text, no need to show count
-        leading: ButtonGroup(spacerAt: 2, buttons: [
-          RouteIconButton(
-            key: const Key('printer.create'),
-            route: Routes.printerCreate,
-            icon: const Icon(KIcons.add),
-            label: S.printerTitleCreate,
-          ),
-          IconButton(
-            key: const Key('printer.supported_list'),
-            onPressed: _showSupportedPrinters(context),
-            icon: const Icon(Icons.info_outline),
-            tooltip: S.printerSupportedTitle,
-          ),
-          RouteIconButton(
-            key: const Key('printer.settings'),
-            route: Routes.printerSettings,
-            icon: const Icon(Icons.settings),
-            label: S.printerTitleSettings,
-          ),
-        ]),
+        leading: ButtonGroup(
+          spacerAt: 2,
+          buttons: [
+            RouteIconButton(
+              key: const Key('printer.create'),
+              route: Routes.printerCreate,
+              icon: const Icon(KIcons.add),
+              label: S.printerTitleCreate,
+            ),
+            IconButton(
+              key: const Key('printer.supported_list'),
+              onPressed: _showSupportedPrinters(context),
+              icon: const Icon(Icons.info_outline),
+              tooltip: S.printerSupportedTitle,
+            ),
+            RouteIconButton(
+              key: const Key('printer.settings'),
+              route: Routes.printerSettings,
+              icon: const Icon(Icons.settings),
+              label: S.printerTitleSettings,
+            ),
+          ],
+        ),
         delegate: SlidableItemDelegate(
           disableSlide: true,
           items: Printers.instance.itemList,
@@ -76,7 +79,7 @@ class _Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     final actor = actorBuilder(context);
     return Padding(
-      padding: const EdgeInsets.only(top: kInternalSpacing),
+      padding: const .only(top: kInternalSpacing),
       child: PrinterView(
         printer: item,
         trailing: EntryMoreButton(onPressed: actor),
@@ -93,103 +96,98 @@ class _EmptyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final buttons = Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      FilledButton(
-        onPressed: () => context.pushNamed(Routes.printerCreate),
-        child: Text(S.printerTitleCreate),
-      ),
-      const SizedBox(width: kInternalSpacing),
-      OutlinedButton(
-        onPressed: _showSupportedPrinters(context),
-        child: Text(S.printerSupportedTitle),
-      ),
-    ]);
+    final buttons = Row(
+      mainAxisAlignment: .center,
+      children: [
+        FilledButton(onPressed: () => context.pushNamed(Routes.printerCreate), child: Text(S.printerTitleCreate)),
+        const SizedBox(width: kInternalSpacing),
+        OutlinedButton(onPressed: _showSupportedPrinters(context), child: Text(S.printerSupportedTitle)),
+      ],
+    );
 
-    return Stack(children: [
-      Positioned.fill(
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomRight,
-              colors: [
-                Color.fromRGBO(25, 118, 210, 1), // blue.shade700
-                Color.fromRGBO(21, 101, 192, 1), // blue.shade800
-                Color.fromRGBO(13, 71, 161, 1), // blue.shade900
-                // only half screen will be shown, so below color is used but not shown
-                Color.fromRGBO(13, 71, 161, 1),
-                Color.fromRGBO(13, 71, 161, 1),
-                Color.fromRGBO(13, 71, 161, 1),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: DecoratedBox(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.fromRGBO(25, 118, 210, 1), // blue.shade700
+                  Color.fromRGBO(21, 101, 192, 1), // blue.shade800
+                  Color.fromRGBO(13, 71, 161, 1), // blue.shade900
+                  // only half screen will be shown, so below color is used but not shown
+                  Color.fromRGBO(13, 71, 161, 1),
+                  Color.fromRGBO(13, 71, 161, 1),
+                  Color.fromRGBO(13, 71, 161, 1),
+                ],
+              ),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(borderRadius: .circular(100), color: Colors.white),
+                      child: const Padding(
+                        padding: .all(14.0),
+                        child: Icon(
+                          Icons.bluetooth,
+                          color: .fromRGBO(13, 71, 161, 1), // blue.shade900
+                          size: 56,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
               ],
             ),
           ),
-          child: Column(children: [
-            Expanded(
-              child: Center(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    color: Colors.white,
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(14.0),
-                    child: Icon(
-                      Icons.bluetooth,
-                      color: Color.fromRGBO(13, 71, 161, 1), // blue.shade900
-                      size: 56,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const Spacer(),
-          ]),
         ),
-      ),
-      Positioned.fill(
-        child: ClipPath(
-          clipper: _Wave1(),
-          child: ColoredBox(color: theme.scaffoldBackgroundColor.withAlpha(102), child: const SizedBox.expand()),
-        ),
-      ),
-      Positioned.fill(
-        child: ClipPath(
-          clipper: _Wave2(),
-          child: ColoredBox(color: theme.scaffoldBackgroundColor, child: const SizedBox.expand()),
-        ),
-      ),
-      Positioned.fill(
-        child: Column(children: [
-          const Spacer(),
-          Expanded(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 340),
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(children: [
-                    Text(
-                      S.printerMetaHelper,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: kInternalSpacing),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: buttons,
-                    ),
-                    if (kDebugMode)
-                      OutlinedButton(
-                        onPressed: () => Printers.instance.addItem(Printer(id: 'demo', name: 'Demo Printer')),
-                        child: const Text('Add demo'),
-                      ),
-                  ]),
-                ),
-              ),
-            ),
+        Positioned.fill(
+          child: ClipPath(
+            clipper: _Wave1(),
+            child: ColoredBox(color: theme.scaffoldBackgroundColor.withAlpha(102), child: const SizedBox.expand()),
           ),
-        ]),
-      ),
-    ]);
+        ),
+        Positioned.fill(
+          child: ClipPath(
+            clipper: _Wave2(),
+            child: ColoredBox(color: theme.scaffoldBackgroundColor, child: const SizedBox.expand()),
+          ),
+        ),
+        Positioned.fill(
+          child: Column(
+            children: [
+              const Spacer(),
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 340),
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text(S.printerMetaHelper, textAlign: .center, style: theme.textTheme.titleMedium),
+                          const SizedBox(height: kInternalSpacing),
+                          SingleChildScrollView(scrollDirection: .horizontal, child: buttons),
+                          if (kDebugMode)
+                            OutlinedButton(
+                              onPressed: () => Printers.instance.addItem(Printer(id: 'demo', name: 'Demo Printer')),
+                              child: const Text('Add demo'),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -235,19 +233,21 @@ class _Wave2 extends CustomClipper<Path> {
 
 VoidCallback _showSupportedPrinters(BuildContext context) {
   return () => showDialog(
-        context: context,
-        builder: (context) => ResponsiveDialog(
-          title: Text(S.printerSupportedTitle),
-          content: Column(children: [
-            for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter58, PrinterProvider.yokoscan58])
-              ListTile(
-                key: Key('printer.supported.${printer.name}'),
-                title: Text(S.printerSupportedName(printer.name)),
-                subtitle: MetaBlock.withString(context, printer.markers),
-                trailing: const Icon(Icons.open_in_new),
-                onTap: printer.launchUrl,
-              ),
-          ]),
-        ),
-      );
+    context: context,
+    builder: (context) => ResponsiveDialog(
+      title: Text(S.printerSupportedTitle),
+      content: Column(
+        children: [
+          for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter58, PrinterProvider.yokoscan58])
+            ListTile(
+              key: Key('printer.supported.${printer.name}'),
+              title: Text(S.printerSupportedName(printer.name)),
+              subtitle: MetaBlock.withString(context, printer.markers),
+              trailing: const Icon(Icons.open_in_new),
+              onTap: printer.launchUrl,
+            ),
+        ],
+      ),
+    ),
+  );
 }

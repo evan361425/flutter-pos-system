@@ -28,8 +28,9 @@ MockImageableController prepareImageable([Future<List<ConvertibleImage>?>? resul
   final controller = MockImageableController();
   when(manger.create()).thenReturn(controller);
   when(controller.key).thenReturn(GlobalKey());
-  when(controller.toImage(widths: anyNamed('widths')))
-      .thenAnswer((_) => result ?? Future.value([ConvertibleImage(Uint8List(4), width: 1)]));
+  when(
+    controller.toImage(widths: anyNamed('widths')),
+  ).thenAnswer((_) => result ?? Future.value([ConvertibleImage(Uint8List(4), width: 1)]));
 
   return controller;
 }

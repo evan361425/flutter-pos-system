@@ -94,10 +94,7 @@ class _TransitStationState extends State<TransitStation> {
                     floating: true,
                     snap: true,
                     forceElevated: innerBoxIsScrolled,
-                    bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(56.0),
-                      child: _buildHeader(),
-                    ),
+                    bottom: PreferredSize(preferredSize: const .fromHeight(56.0), child: _buildHeader()),
                   ),
                 ),
               ];
@@ -151,62 +148,72 @@ class _TransitStationState extends State<TransitStation> {
   }
 
   Widget _buildHeader() {
-    if (widget.catalog == TransitCatalog.importModel) {
+    if (widget.catalog == .importModel) {
       return switch (widget.method) {
-        TransitMethod.googleSheet => gs.ImportBasicHeader(
-            selected: model, stateNotifier: stateNotifier, formatter: formatter, exporter: _googleSheetExporter),
-        TransitMethod.excel =>
-          excel.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
-        TransitMethod.csv => csv.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
-        TransitMethod.plainText => pt.ImportBasicHeader(selected: model, formatter: formatter),
+        .googleSheet => gs.ImportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+          formatter: formatter,
+          exporter: _googleSheetExporter,
+        ),
+        .excel => excel.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
+        .csv => csv.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
+        .plainText => pt.ImportBasicHeader(selected: model, formatter: formatter),
       };
     }
 
-    if (widget.catalog == TransitCatalog.exportModel) {
+    if (widget.catalog == .exportModel) {
       return switch (widget.method) {
-        TransitMethod.googleSheet =>
-          gs.ExportBasicHeader(selected: model, stateNotifier: stateNotifier, exporter: _googleSheetExporter),
-        TransitMethod.excel => excel.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
-        TransitMethod.csv => csv.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
-        TransitMethod.plainText => pt.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
+        .googleSheet => gs.ExportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+          exporter: _googleSheetExporter,
+        ),
+        .excel => excel.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
+        .csv => csv.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
+        .plainText => pt.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
       };
     }
 
     return switch (widget.method) {
-      TransitMethod.googleSheet => gs.ExportOrderHeader(
-          stateNotifier: stateNotifier, exporter: _googleSheetExporter, ranger: ranger, settings: _settings),
-      TransitMethod.excel => excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger, settings: _settings),
-      TransitMethod.csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
-      TransitMethod.plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
+      .googleSheet => gs.ExportOrderHeader(
+        stateNotifier: stateNotifier,
+        exporter: _googleSheetExporter,
+        ranger: ranger,
+        settings: _settings,
+      ),
+      .excel => excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger, settings: _settings),
+      .csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
+      .plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
     };
   }
 
   Widget _buildBody() {
-    if (widget.catalog == TransitCatalog.importModel) {
+    if (widget.catalog == .importModel) {
       return ImportView(
         stateNotifier: stateNotifier,
         selected: model,
         formatter: formatter,
-        hint: widget.method == TransitMethod.plainText
+        hint: widget.method == .plainText
             ? S.transitImportModelSelectionPlainTextHint
             : S.transitImportModelSelectionHint,
       );
     }
 
-    if (widget.catalog == TransitCatalog.exportModel) {
+    if (widget.catalog == .exportModel) {
       return switch (widget.method) {
-        TransitMethod.googleSheet => gs.ExportBasicView(selected: model, stateNotifier: stateNotifier),
-        TransitMethod.excel => excel.ExportBasicView(selected: model, stateNotifier: stateNotifier),
-        TransitMethod.csv => csv.ExportBasicView(selected: model, stateNotifier: stateNotifier),
-        TransitMethod.plainText => pt.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        .googleSheet => gs.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        .excel => excel.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        .csv => csv.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        .plainText => pt.ExportBasicView(selected: model, stateNotifier: stateNotifier),
       };
     }
 
     return switch (widget.method) {
-      TransitMethod.googleSheet => gs.ExportOrderView(ranger: ranger),
-      TransitMethod.excel => excel.ExportOrderView(ranger: ranger),
-      TransitMethod.csv => csv.ExportOrderView(ranger: ranger),
-      TransitMethod.plainText => pt.ExportOrderView(ranger: ranger),
+      .googleSheet => gs.ExportOrderView(ranger: ranger),
+      .excel => excel.ExportOrderView(ranger: ranger),
+      .csv => csv.ExportOrderView(ranger: ranger),
+      .plainText => pt.ExportOrderView(ranger: ranger),
     };
   }
 }

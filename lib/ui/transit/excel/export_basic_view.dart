@@ -40,11 +40,7 @@ class ExportBasicHeader extends BasicModelPicker {
 }
 
 class ExportBasicView extends ExportView {
-  const ExportBasicView({
-    super.key,
-    required super.selected,
-    required super.stateNotifier,
-  });
+  const ExportBasicView({super.key, required super.selected, required super.stateNotifier});
 
   @override
   ModelData getSourceAndHeaders(FormattableModel able) {

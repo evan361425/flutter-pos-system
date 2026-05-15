@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as l;
-import 'package:url_launcher/url_launcher_string.dart';
 
 class Launcher {
   @visibleForTesting
@@ -11,6 +10,6 @@ class Launcher {
       lastUrl = url;
       return true;
     }());
-    return l.launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    return l.launchUrl(.parse(url), mode: .externalApplication);
   }
 }

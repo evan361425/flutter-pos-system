@@ -28,7 +28,7 @@ class Ingredient extends Model<IngredientObject>
   DateTime? updatedAt;
 
   @override
-  final Stores storageStore = Stores.stock;
+  final Stores storageStore = .stock;
 
   Ingredient({
     super.id,
@@ -43,15 +43,15 @@ class Ingredient extends Model<IngredientObject>
   });
 
   factory Ingredient.fromObject(IngredientObject object) => Ingredient(
-        id: object.id,
-        name: object.name ?? '',
-        currentAmount: object.currentAmount ?? 0,
-        restockPrice: object.restockPrice,
-        restockQuantity: object.restockQuantity ?? 1,
-        lastAmount: object.lastAmount,
-        totalAmount: object.totalAmount,
-        updatedAt: object.updatedAt,
-      );
+    id: object.id,
+    name: object.name ?? '',
+    currentAmount: object.currentAmount ?? 0,
+    restockPrice: object.restockPrice,
+    restockQuantity: object.restockQuantity ?? 1,
+    lastAmount: object.lastAmount,
+    totalAmount: object.totalAmount,
+    updatedAt: object.updatedAt,
+  );
 
   factory Ingredient.fromRow(Ingredient? ori, List<String> row) {
     final amount = (row.length > 1 ? double.tryParse(row[1]) : null) ?? 0;
@@ -76,7 +76,7 @@ class Ingredient extends Model<IngredientObject>
   double get maxAmount => (totalAmount ?? lastAmount ?? currentAmount).toDouble();
 
   @override
-  Stock get repository => Stock.instance;
+  Stock get repository => .instance;
 
   Future<void> setAmount(num amount) =>
       // only allow difference
@@ -88,10 +88,7 @@ class Ingredient extends Model<IngredientObject>
   Map<String, Object?> getUpdateData(num amount, {onlyAmount = false}) {
     final newAmount = currentAmount + amount;
     final object = amount > 0 && !onlyAmount
-        ? IngredientObject(
-            currentAmount: newAmount,
-            lastAmount: newAmount,
-          )
+        ? IngredientObject(currentAmount: newAmount, lastAmount: newAmount)
         : IngredientObject(currentAmount: max(newAmount, 0));
 
     return object.diff(this);
@@ -99,13 +96,13 @@ class Ingredient extends Model<IngredientObject>
 
   @override
   IngredientObject toObject() => IngredientObject(
-        id: id,
-        name: name,
-        currentAmount: currentAmount,
-        restockPrice: restockPrice,
-        restockQuantity: restockQuantity,
-        totalAmount: totalAmount,
-        lastAmount: lastAmount,
-        updatedAt: updatedAt,
-      );
+    id: id,
+    name: name,
+    currentAmount: currentAmount,
+    restockPrice: restockPrice,
+    restockQuantity: restockQuantity,
+    totalAmount: totalAmount,
+    lastAmount: lastAmount,
+    updatedAt: updatedAt,
+  );
 }

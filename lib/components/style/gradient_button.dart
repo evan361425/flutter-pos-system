@@ -7,25 +7,20 @@ class GradientButton extends StatelessWidget {
 
   final Widget child;
 
-  const GradientButton({
-    super.key,
-    required this.onPressed,
-    required this.colors,
-    required this.child,
-  });
+  const GradientButton({super.key, required this.onPressed, required this.colors, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(0.0)),
+      style: ElevatedButton.styleFrom(padding: const .all(0.0)),
       child: Ink(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: colors,
-            tileMode: TileMode.clamp,
+            tileMode: .clamp,
           ),
         ),
         child: Container(

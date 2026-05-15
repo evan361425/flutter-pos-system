@@ -31,50 +31,50 @@ import 'settings/settings_provider.dart';
 
 void main() async {
   // Not all errors are caught by Flutter. Sometimes, errors are instead caught by Zones.
-  await runZonedGuarded<Future<void>>(
-    () async {
-      // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
-      final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await runZonedGuarded<Future<void>>(() async {
+    // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
+    final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-      Log.out('start with firebase: ${DefaultFirebaseOptions.currentPlatform.appId}', 'init');
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    Log.out('start with firebase: ${DefaultFirebaseOptions.currentPlatform.appId}', 'init');
 
-      // https://firebase.google.com/docs/crashlytics/get-started?platform=flutter&authuser=0&hl=zh-tw#configure-crash-handlers
-      // Pass all uncaught errors from the framework to Crashlytics.
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-      // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
+    // https://firebase.google.com/docs/crashlytics/get-started?platform=flutter&authuser=0&hl=zh-tw#configure-crash-handlers
+    // Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
 
-      if (kDebugMode) {
-        await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
-        await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-        await FirebaseInAppMessaging.instance.setMessagesSuppressed(true);
-      }
+    if (kDebugMode) {
+      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+      await FirebaseInAppMessaging.instance.setMessagesSuppressed(true);
+    }
 
-      await Database.instance.initialize(logWhenQuery: isLocalTest);
-      await Storage.instance.initialize();
-      await Cache.instance.initialize();
+    await Database.instance.initialize(logWhenQuery: isLocalTest);
+    await Storage.instance.initialize();
+    await Cache.instance.initialize();
 
-      SettingsProvider.instance.initialize();
-      Log.allowSendEvents = CollectEventsSetting.instance.value;
+    SettingsProvider.instance.initialize();
+    Log.allowSendEvents = CollectEventsSetting.instance.value;
 
-      await Stock().initialize();
-      await Quantities().initialize();
-      await OrderAttributes().initialize();
-      await Replenisher().initialize();
-      await Cashier().reset();
-      await Analysis().initialize();
-      await Printers().initialize();
-      // Last for setup ingredient and quantity
-      await Menu().initialize();
+    await Stock().initialize();
+    await Quantities().initialize();
+    await OrderAttributes().initialize();
+    await Replenisher().initialize();
+    await Cashier().reset();
+    await Analysis().initialize();
+    await Printers().initialize();
+    // Last for setup ingredient and quantity
+    await Menu().initialize();
 
-      /// Why use provider?
-      /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
-      runApp(MultiProvider(
+    /// Why use provider?
+    /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
+    runApp(
+      MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: SettingsProvider.instance),
           ChangeNotifierProvider.value(value: Menu.instance),
@@ -88,8 +88,7 @@ void main() async {
           ChangeNotifierProvider.value(value: Printers.instance),
         ],
         child: const App(),
-      ));
-    },
-    (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
-  );
+      ),
+    );
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
 }

@@ -4,7 +4,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CollectEventsSetting extends Setting<bool> {
-  static final instance = CollectEventsSetting._();
+  static final CollectEventsSetting instance = ._();
 
   static const defaultValue = true;
 

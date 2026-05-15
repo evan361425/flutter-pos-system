@@ -28,20 +28,20 @@ void main() {
   group('Chart Card View', () {
     Widget buildApp<T>(Chart chart, {ValueNotifier<DateTimeRange>? range}) {
       Analysis().replaceItems({chart.id: chart});
-      final view = ChartCardView(
-        chart: chart,
-        range: range ?? ValueNotifier(Util.getDateRange()),
-      );
+      final view = ChartCardView(chart: chart, range: range ?? ValueNotifier(Util.getDateRange()));
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (ctx, state) {
-              return Scaffold(body: view);
-            },
-          ),
-          ...Routes.getDesiredRoute(0).routes,
-        ]),
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (ctx, state) {
+                return Scaffold(body: view);
+              },
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ],
+        ),
       );
     }
 
@@ -51,30 +51,27 @@ void main() {
       OrderMetricTarget? target,
       List<Map<String, Object?>> rows = const [],
     }) {
-      when(database.query(
-        argThat(table ?? anything),
-        columns: argThat(columns ?? anything, named: 'columns'),
-        groupBy: argThat(
-          target == null ? anything : equals("day, ${target.groupColumn}"),
-          named: 'groupBy',
+      when(
+        database.query(
+          argThat(table ?? anything),
+          columns: argThat(columns ?? anything, named: 'columns'),
+          groupBy: argThat(target == null ? anything : equals("day, ${target.groupColumn}"), named: 'groupBy'),
+          orderBy: anyNamed('orderBy'),
+          escapeTable: anyNamed('escapeTable'),
         ),
-        orderBy: anyNamed('orderBy'),
-        escapeTable: anyNamed('escapeTable'),
-      )).thenAnswer((_) async => rows);
+      ).thenAnswer((_) async => rows);
     }
 
-    void mockGetMetricsInPeriod({
-      Matcher? table,
-      Matcher? columns,
-      List<Map<String, Object?>> rows = const [],
-    }) {
-      when(database.query(
-        argThat(table ?? anything),
-        columns: argThat(columns ?? anything, named: 'columns'),
-        groupBy: argThat(equals("day"), named: 'groupBy'),
-        orderBy: anyNamed('orderBy'),
-        escapeTable: anyNamed('escapeTable'),
-      )).thenAnswer((_) async => rows);
+    void mockGetMetricsInPeriod({Matcher? table, Matcher? columns, List<Map<String, Object?>> rows = const []}) {
+      when(
+        database.query(
+          argThat(table ?? anything),
+          columns: argThat(columns ?? anything, named: 'columns'),
+          groupBy: argThat(equals("day"), named: 'groupBy'),
+          orderBy: anyNamed('orderBy'),
+          escapeTable: anyNamed('escapeTable'),
+        ),
+      ).thenAnswer((_) async => rows);
     }
 
     group('Cartesian Chart', () {
@@ -83,23 +80,20 @@ void main() {
         final tomorrow = today + 86400;
         Menu().replaceItems({
           'c1': Catalog(id: 'c1', name: 'c1')
-            ..replaceItems({
-              'p1': Product(id: 'p1', name: 'p1'),
-              'p2': Product(id: 'p2', name: 'p2'),
-            }),
+            ..replaceItems({'p1': Product(id: 'p1', name: 'p1'), 'p2': Product(id: 'p2', name: 'p2')}),
         });
         mockGetMetricsInPeriod(
-            table: equals('(SELECT CAST((createdAt - $today) / 3600 AS INT) day, '
-                '* FROM order_records WHERE createdAt BETWEEN $today AND $tomorrow) t'),
-            rows: [
-              {'day': 1, 'revenue': 1.1, 'profit': 2.2},
-              {'day': 3, 'revenue': 1.2, 'profit': 2.3},
-            ]);
+          table: equals(
+            '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, '
+            '* FROM order_records WHERE createdAt BETWEEN $today AND $tomorrow) t',
+          ),
+          rows: [
+            {'day': 1, 'revenue': 1.1, 'profit': 2.2},
+            {'day': 3, 'revenue': 1.2, 'profit': 2.3},
+          ],
+        );
 
-        await tester.pumpWidget(buildApp(Chart(
-          type: AnalysisChartType.cartesian,
-          id: 'test',
-        )));
+        await tester.pumpWidget(buildApp(Chart(type: .cartesian, id: 'test')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
@@ -156,10 +150,12 @@ void main() {
         expect(items.join(','), equals('p2'));
 
         mockGetItemMetricsInPeriod(
-          table: equals('(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
-              'FROM order_products WHERE createdAt BETWEEN $today AND $tomorrow  '
-              'AND productName IN ("p2") ) t'),
-          target: OrderMetricTarget.product,
+          table: equals(
+            '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
+            'FROM order_products WHERE createdAt BETWEEN $today AND $tomorrow  '
+            'AND productName IN ("p2") ) t',
+          ),
+          target: .product,
           columns: contains('SUM(singleCost * count) value'),
           rows: [
             {'day': 1, 'name': 'p2', 'value': 1},
@@ -175,16 +171,20 @@ void main() {
         // `p1` should not exist only if selection not contains it.
         expect(find.text('p1', findRichText: true), findsNothing);
 
-        verify(storage.set(
-          any,
-          argThat(equals(<String, Object?>{
-            'test.name': 'title2',
-            'test.ignoreEmpty': true,
-            'test.target': OrderMetricTarget.product.index,
-            'test.metrics': [OrderMetricType.cost.index],
-            'test.targetItems': ['p2'],
-          })),
-        ));
+        verify(
+          storage.set(
+            any,
+            argThat(
+              equals(<String, Object?>{
+                'test.name': 'title2',
+                'test.ignoreEmpty': true,
+                'test.target': OrderMetricTarget.product.index,
+                'test.metrics': [OrderMetricType.cost.index],
+                'test.targetItems': ['p2'],
+              }),
+            ),
+          ),
+        );
       });
 
       testWidgets('edit to attributes without selection', (tester) async {
@@ -206,10 +206,7 @@ void main() {
         });
         mockGetMetricsInPeriod();
 
-        await tester.pumpWidget(buildApp(Chart(
-          type: AnalysisChartType.cartesian,
-          id: 'test',
-        )));
+        await tester.pumpWidget(buildApp(Chart(type: .cartesian, id: 'test')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
@@ -221,9 +218,11 @@ void main() {
         await tester.pumpAndSettle();
 
         mockGetItemMetricsInPeriod(
-          table: equals('(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
-              'FROM order_attributes WHERE createdAt BETWEEN $today AND $tomorrow  ) t'),
-          target: OrderMetricTarget.attribute,
+          table: equals(
+            '(SELECT CAST((createdAt - $today) / 3600 AS INT) day, * '
+            'FROM order_attributes WHERE createdAt BETWEEN $today AND $tomorrow  ) t',
+          ),
+          target: .attribute,
         );
 
         await tester.tap(find.byKey(const Key('modal.save')));
@@ -235,13 +234,17 @@ void main() {
         expect(find.text('o1(a2)', findRichText: true), findsOneWidget);
         expect(find.text('o2(a2)', findRichText: true), findsOneWidget);
 
-        verify(storage.set(
-          any,
-          argThat(equals(<String, Object?>{
-            'test.metrics': [OrderMetricType.count.index],
-            'test.target': OrderMetricTarget.attribute.index,
-          })),
-        ));
+        verify(
+          storage.set(
+            any,
+            argThat(
+              equals(<String, Object?>{
+                'test.metrics': [OrderMetricType.count.index],
+                'test.target': OrderMetricTarget.attribute.index,
+              }),
+            ),
+          ),
+        );
       });
 
       testWidgets('different date interval', (tester) async {
@@ -249,84 +252,73 @@ void main() {
         final sevenDaysAgo = today - 86400 * 7;
         final fourteenDaysAgo = today - 86400 * 14;
         final nineteenDaysAgo = today - 86400 * 90;
-        final range = ValueNotifier(
-          Util.getDateRange(
-            now: DateTime.now().subtract(const Duration(days: 7)),
-            days: 7,
+        final range = ValueNotifier(Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 7)), days: 7));
+        mockGetMetricsInPeriod(
+          rows: [
+            {'day': 1, 'revenue': 1.1, 'count': 2},
+            {'day': 2, 'revenue': 2.2, 'count': 3},
+          ],
+        );
+
+        await tester.pumpWidget(
+          buildApp(
+            Chart(type: .cartesian, id: 'test', metrics: [OrderMetricType.revenue, OrderMetricType.count]),
+            range: range,
           ),
         );
-        mockGetMetricsInPeriod(rows: [
-          {'day': 1, 'revenue': 1.1, 'count': 2},
-          {'day': 2, 'revenue': 2.2, 'count': 3},
-        ]);
-
-        await tester.pumpWidget(buildApp(
-          Chart(
-            type: AnalysisChartType.cartesian,
-            id: 'test',
-            metrics: [OrderMetricType.revenue, OrderMetricType.count],
-          ),
-          range: range,
-        ));
         await tester.pumpAndSettle();
 
         void verifyContains(String value) {
-          verify(database.query(
-            argThat(contains(value)),
-            columns: anyNamed('columns'),
-            groupBy: anyNamed('groupBy'),
-            orderBy: anyNamed('orderBy'),
-            escapeTable: anyNamed('escapeTable'),
-          )).called(1);
+          verify(
+            database.query(
+              argThat(contains(value)),
+              columns: anyNamed('columns'),
+              groupBy: anyNamed('groupBy'),
+              orderBy: anyNamed('orderBy'),
+              escapeTable: anyNamed('escapeTable'),
+            ),
+          ).called(1);
         }
 
         verifyContains('$sevenDaysAgo) / 86400');
 
-        range.value = Util.getDateRange(
-          now: DateTime.now().subtract(const Duration(days: 14)),
-          days: 14,
-        );
+        range.value = Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 14)), days: 14);
         await tester.pumpAndSettle();
         verifyContains('$fourteenDaysAgo) / 86400');
 
-        range.value = Util.getDateRange(
-          now: DateTime.now().subtract(const Duration(days: 90)),
-          days: 90,
-        );
+        range.value = Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 90)), days: 90);
         await tester.pumpAndSettle();
         verifyContains('$nineteenDaysAgo) / 2592000');
       });
 
       testWidgets('all types and ignore drag', (tester) async {
-        mockGetMetricsInPeriod(rows: [
-          {'day': 1, 'revenue': 1.1, 'profit': 1.1, 'cost': 1.1, 'count': 2},
-          {'day': 2, 'revenue': 2.2, 'profit': 2.2, 'cost': 2.2, 'count': 3},
-        ]);
-
-        final chart = Chart(
-          id: 'test',
-          type: AnalysisChartType.cartesian,
-          metrics: OrderMetricType.values,
-          ignoreEmpty: true,
+        mockGetMetricsInPeriod(
+          rows: [
+            {'day': 1, 'revenue': 1.1, 'profit': 1.1, 'cost': 1.1, 'count': 2},
+            {'day': 2, 'revenue': 2.2, 'profit': 2.2, 'cost': 2.2, 'count': 3},
+          ],
         );
+
+        final chart = Chart(id: 'test', type: .cartesian, metrics: OrderMetricType.values, ignoreEmpty: true);
         Analysis().replaceItems({chart.id: chart});
-        await tester.pumpWidget(MaterialApp(
-          home: Scaffold(
-            body: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                SizedBox(
-                  width: 300,
-                  child: ChartCardView(
-                    chart: chart,
-                    range: ValueNotifier(Util.getDateRange()),
-                  ),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(
+                scrollDirection: .horizontal,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: ChartCardView(chart: chart, range: ValueNotifier(Util.getDateRange())),
+                    ),
+                    const SizedBox(width: 2000, height: 200),
+                  ],
                 ),
-                const SizedBox(width: 2000, height: 200),
-              ]),
+              ),
             ),
           ),
-        ));
+        );
         await tester.pumpAndSettle();
 
         final charts = find.byType(SfCartesianChart).evaluate();
@@ -348,22 +340,21 @@ void main() {
       Matcher? groupBy,
       List<Map<String, Object?>> rows = const [],
     }) {
-      when(database.query(
-        argThat(table ?? anything),
-        columns: anyNamed('columns'),
-        where: argThat(where ?? anything, named: 'where'),
-        whereArgs: argThat(whereArgs ?? anything, named: 'whereArgs'),
-        groupBy: argThat(groupBy ?? anything, named: 'groupBy'),
-        orderBy: anyNamed('orderBy'),
-      )).thenAnswer((_) async => rows);
+      when(
+        database.query(
+          argThat(table ?? anything),
+          columns: anyNamed('columns'),
+          where: argThat(where ?? anything, named: 'where'),
+          whereArgs: argThat(whereArgs ?? anything, named: 'whereArgs'),
+          groupBy: argThat(groupBy ?? anything, named: 'groupBy'),
+          orderBy: anyNamed('orderBy'),
+        ),
+      ).thenAnswer((_) async => rows);
     }
 
     group('Circular Chart', () {
       testWidgets('edit to attribute with selection', (tester) async {
-        Stock().replaceItems({
-          'i1': Ingredient(id: 'i1', name: 'i1'),
-          'i2': Ingredient(id: 'i2', name: 'i2'),
-        });
+        Stock().replaceItems({'i1': Ingredient(id: 'i1', name: 'i1'), 'i2': Ingredient(id: 'i2', name: 'i2')});
         OrderAttributes().replaceItems({
           'a1': OrderAttribute(id: 'a1', name: 'a1-name')
             ..replaceItems({
@@ -387,12 +378,7 @@ void main() {
           ],
         );
 
-        await tester.pumpWidget(buildApp(Chart(
-          type: AnalysisChartType.circular,
-          id: 'test',
-          target: OrderMetricTarget.ingredient,
-          ignoreEmpty: true,
-        )));
+        await tester.pumpWidget(buildApp(Chart(type: .circular, id: 'test', target: .ingredient, ignoreEmpty: true)));
         await tester.pumpAndSettle();
 
         expect(find.text('i1', findRichText: true), findsOneWidget);
@@ -435,23 +421,24 @@ void main() {
         expect(find.text('a2o2', findRichText: true), findsOneWidget);
         expect(find.text('a2o3', findRichText: true), findsOneWidget);
 
-        verify(storage.set(
-          any,
-          argThat(equals(<String, Object?>{
-            'test.name': 'title2',
-            'test.target': OrderMetricTarget.attribute.index,
-            'test.metrics': [OrderMetricType.count.index],
-            'test.targetItems': ['a2-name'],
-            'test.ignoreEmpty': false,
-          })),
-        ));
+        verify(
+          storage.set(
+            any,
+            argThat(
+              equals(<String, Object?>{
+                'test.name': 'title2',
+                'test.target': OrderMetricTarget.attribute.index,
+                'test.metrics': [OrderMetricType.count.index],
+                'test.targetItems': ['a2-name'],
+                'test.ignoreEmpty': false,
+              }),
+            ),
+          ),
+        );
       });
 
       testWidgets('all metrics are zero', (tester) async {
-        Menu().replaceItems({
-          'c1': Catalog(id: 'c1', name: 'c1'),
-          'c2': Catalog(id: 'c2', name: 'c2'),
-        });
+        Menu().replaceItems({'c1': Catalog(id: 'c1', name: 'c1'), 'c2': Catalog(id: 'c2', name: 'c2')});
         mockGetMetricsByItems(
           table: equals(OrderMetricTarget.catalog.table),
           rows: [
@@ -460,10 +447,7 @@ void main() {
           ],
         );
 
-        await tester.pumpWidget(buildApp(Chart(
-          type: AnalysisChartType.circular,
-          target: OrderMetricTarget.catalog,
-        )));
+        await tester.pumpWidget(buildApp(Chart(type: .circular, target: .catalog)));
         await tester.pumpAndSettle();
 
         expect(find.text('c1', findRichText: true), findsOneWidget);
@@ -488,13 +472,17 @@ void main() {
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
 
-      verify(storage.set(
-        any,
-        argThat(equals(<String, Object?>{
-          'test.type': AnalysisChartType.circular.index,
-          'test.target': OrderMetricTarget.catalog.index,
-        })),
-      ));
+      verify(
+        storage.set(
+          any,
+          argThat(
+            equals(<String, Object?>{
+              'test.type': AnalysisChartType.circular.index,
+              'test.target': OrderMetricTarget.catalog.index,
+            }),
+          ),
+        ),
+      );
     });
   });
 
@@ -502,7 +490,7 @@ void main() {
     initializeDatabase();
     initializeStorage();
     initializeTranslator();
-    VisibilityDetectorController.instance.updateInterval = Duration.zero;
+    VisibilityDetectorController.instance.updateInterval = .zero;
   });
 
   tearDown(() {

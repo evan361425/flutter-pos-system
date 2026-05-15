@@ -7,21 +7,18 @@ import '../test_helpers/breakpoint_mocker.dart';
 void main() {
   group('Imageable Container', () {
     testWidgets('should render correctly', (tester) async {
-      deviceAs(Device.mobile, tester);
+      deviceAs(.mobile, tester);
 
       final controller = ImageableManger.instance.create();
 
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData.light(),
-        home: Scaffold(
-          body: ImageableContainer(
-            controller: controller,
-            children: const [
-              Text('Hello World'),
-            ],
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(),
+          home: Scaffold(
+            body: ImageableContainer(controller: controller, children: const [Text('Hello World')]),
           ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       final image = await tester.runAsync(() => controller.toImage(widths: [128]));

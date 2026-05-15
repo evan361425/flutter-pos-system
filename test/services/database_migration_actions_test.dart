@@ -58,10 +58,7 @@ void main() {
 
       // ===== prepare rows =====
       // wrong data should able to catch and go on.
-      await db.insert('order', {
-        'createdAt': 1000,
-        'encodedProducts': '[{"cost":""}]',
-      });
+      await db.insert('order', {'createdAt': 1000, 'encodedProducts': '[{"cost":""}]'});
       await db.insert('order', {'createdAt': 1001, 'encodedProducts': '{[]}'});
       // version 1 format
       await db.insert('order', {
@@ -81,11 +78,22 @@ void main() {
         }]''',
       });
       // version 4 format, add column `customerSettingCombinationId` and `productsPrice`
-      await db.insert(
-          'order', {'createdAt': 2000, "paid": 666, "totalPrice": 666, "productsPrice": 555, "totalCount": 666});
+      await db.insert('order', {
+        'createdAt': 2000,
+        "paid": 666,
+        "totalPrice": 666,
+        "productsPrice": 555,
+        "totalCount": 666,
+      });
       // version 5 format, add column `cost`
-      await db.insert('order',
-          {'createdAt': 3000, "paid": 666, "cost": 111, "totalPrice": 666, "productsPrice": 555, "totalCount": 666});
+      await db.insert('order', {
+        'createdAt': 3000,
+        "paid": 666,
+        "cost": 111,
+        "totalPrice": 666,
+        "productsPrice": 555,
+        "totalCount": 666,
+      });
       // version 6 format, add column `encodedAttributes`
       await db.insert('order', {
         'createdAt': 4000,
@@ -136,8 +144,8 @@ void main() {
 
       // Assertion
       final orders = await Seller.instance.getDetailedOrders(
-        DateTime.fromMillisecondsSinceEpoch(0),
-        DateTime.fromMillisecondsSinceEpoch(5000 * 1000),
+        .fromMillisecondsSinceEpoch(0),
+        .fromMillisecondsSinceEpoch(5000 * 1000),
       );
 
       const expected = [1001, 1002, 2000, 3000, 4000];

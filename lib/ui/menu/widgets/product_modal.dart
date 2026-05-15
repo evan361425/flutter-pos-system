@@ -14,11 +14,7 @@ class ProductModal extends StatefulWidget {
   final Catalog catalog;
   final bool isNew;
 
-  const ProductModal({
-    super.key,
-    this.product,
-    required this.catalog,
-  }) : isNew = product == null;
+  const ProductModal({super.key, this.product, required this.catalog}) : isNew = product == null;
 
   @override
   State<ProductModal> createState() => _ProductModalState();
@@ -40,72 +36,70 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
   @override
   List<Widget> buildFormFields() {
     return [
-      EditImageHolder(
-        path: _image,
-        onSelected: (image) => setState(() => _image = image),
-      ),
-      p(TextFormField(
-        key: const Key('product.name'),
-        controller: _nameController,
-        textInputAction: TextInputAction.next,
-        textCapitalization: TextCapitalization.words,
-        focusNode: _nameFocusNode,
-        decoration: InputDecoration(
-          labelText: S.menuProductNameLabel,
-          hintText: widget.product?.name ?? S.menuProductNameHint,
-          filled: false,
-        ),
-        maxLength: 30,
-        validator: Validator.textLimit(
-          S.menuProductNameLabel,
-          30,
+      EditImageHolder(path: _image, onSelected: (image) => setState(() => _image = image)),
+      p(
+        TextFormField(
+          key: const Key('product.name'),
+          controller: _nameController,
+          textInputAction: .next,
+          textCapitalization: .words,
           focusNode: _nameFocusNode,
-          validator: (name) {
-            return widget.product?.name != name && Menu.instance.hasProductByName(name)
-                ? S.menuProductNameErrorRepeat
-                : null;
-          },
+          decoration: InputDecoration(
+            labelText: S.menuProductNameLabel,
+            hintText: widget.product?.name ?? S.menuProductNameHint,
+            filled: false,
+          ),
+          maxLength: 30,
+          validator: Validator.textLimit(
+            S.menuProductNameLabel,
+            30,
+            focusNode: _nameFocusNode,
+            validator: (name) {
+              return widget.product?.name != name && Menu.instance.hasProductByName(name)
+                  ? S.menuProductNameErrorRepeat
+                  : null;
+            },
+          ),
         ),
-      )),
-      p(TextFormField(
-        key: const Key('product.price'),
-        controller: _priceController,
-        textInputAction: TextInputAction.next,
-        keyboardType: TextInputType.number,
-        focusNode: _priceFocusNode,
-        decoration: InputDecoration(
-          labelText: S.menuProductPriceLabel,
-          helperText: S.menuProductPriceHelper,
-          filled: false,
-        ),
-        validator: Validator.isNumber(
-          S.menuProductPriceLabel,
+      ),
+      p(
+        TextFormField(
+          key: const Key('product.price'),
+          controller: _priceController,
+          textInputAction: .next,
+          keyboardType: .number,
           focusNode: _priceFocusNode,
+          decoration: InputDecoration(
+            labelText: S.menuProductPriceLabel,
+            helperText: S.menuProductPriceHelper,
+            filled: false,
+          ),
+          validator: Validator.isNumber(S.menuProductPriceLabel, focusNode: _priceFocusNode),
         ),
-      )),
-      p(TextFormField(
-        key: const Key('product.cost'),
-        controller: _costController,
-        textInputAction: TextInputAction.done,
-        keyboardType: TextInputType.number,
-        focusNode: _costFocusNode,
-        decoration: InputDecoration(
-          labelText: S.menuProductCostLabel,
-          helperText: S.menuProductCostHelper,
-          filled: false,
-        ),
-        onFieldSubmitted: handleFieldSubmit,
-        validator: Validator.positiveNumber(
-          S.menuProductCostLabel,
+      ),
+      p(
+        TextFormField(
+          key: const Key('product.cost'),
+          controller: _costController,
+          textInputAction: .done,
+          keyboardType: .number,
           focusNode: _costFocusNode,
+          decoration: InputDecoration(
+            labelText: S.menuProductCostLabel,
+            helperText: S.menuProductCostHelper,
+            filled: false,
+          ),
+          onFieldSubmitted: handleFieldSubmit,
+          validator: Validator.positiveNumber(S.menuProductCostLabel, focusNode: _costFocusNode),
         ),
-      )),
+      ),
     ];
   }
 
   Future<Product> getProduct() async {
     final object = _parseObject();
-    final product = widget.product ??
+    final product =
+        widget.product ??
         Product(
           index: widget.catalog.newIndex,
           name: object.name!,

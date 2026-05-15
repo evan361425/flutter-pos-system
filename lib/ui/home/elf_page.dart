@@ -11,25 +11,22 @@ class ElfPage extends StatelessWidget {
     // vertical center
     return Center(
       child: SingleChildScrollView(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(
-            decoration: const BoxDecoration(
-              // moon white
-              color: Color(0xFFF4F6F0),
-              shape: BoxShape.circle,
+        child: Column(
+          mainAxisAlignment: .center,
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                // moon white
+                color: Color(0xFFF4F6F0),
+                shape: .circle,
+              ),
+              child: Image.asset('assets/feature_request_please.gif', key: const Key('elf_page')),
             ),
-            child: Image.asset(
-              'assets/feature_request_please.gif',
-              key: const Key('elf_page'),
-            ),
-          ),
-          const SizedBox(height: 14.0),
-          Linkify.fromString(
-            S.settingElfContent,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: kFABSpacing),
-        ]),
+            const SizedBox(height: 14.0),
+            Linkify.fromString(S.settingElfContent, textAlign: .center),
+            const SizedBox(height: kFABSpacing),
+          ],
+        ),
       ),
     );
   }

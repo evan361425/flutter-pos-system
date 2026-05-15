@@ -33,28 +33,29 @@ void main() {
       ],
       child: MaterialApp.router(
         darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.dark,
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
-            routes: [
-              GoRoute(
-                name: Routes.imageGallery,
-                path: 'image_gallery',
-                builder: (context, __) => TextButton(
-                  onPressed: () => context.pop(popImage),
-                  child: const Text('tap me'),
+        themeMode: .dark,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
+              routes: [
+                GoRoute(
+                  name: Routes.imageGallery,
+                  path: 'image_gallery',
+                  builder: (context, __) =>
+                      TextButton(onPressed: () => context.pop(popImage), child: const Text('tap me')),
                 ),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: baseRoute.path,
-            redirect: baseRoute.redirect,
-            routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
-          ),
-        ]),
+              ],
+            ),
+            GoRoute(
+              path: baseRoute.path,
+              redirect: baseRoute.redirect,
+              routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -66,10 +67,7 @@ void main() {
           deviceAs(device, tester);
           final newImage = await createImage('test-image');
           final product = Product(id: 'p-1', imagePath: 'wrong-path');
-          final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
-            'p-1': product,
-          })
-            ..prepareItem();
+          final catalog = Catalog(id: 'c-1', name: 'c-1', products: {'p-1': product})..prepareItem();
           Menu().replaceItems({'c': catalog});
           Stock();
           Quantities();
@@ -87,14 +85,8 @@ void main() {
           await tester.pump(const Duration(milliseconds: 500));
           final captured = verify(storage.set(any, captureAny)).captured;
           expect(captured.length, equals(2));
-          expect(
-            captured[0],
-            predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == null),
-          );
-          expect(
-            captured[1],
-            predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == newImage),
-          );
+          expect(captured[0], predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == null));
+          expect(captured[1], predicate((data) => data is Map && data['c-1.products.p-1.imagePath'] == newImage));
 
           expect(product.imagePath, equals(newImage));
         });
@@ -109,11 +101,15 @@ void main() {
           Quantities();
           final p1 = ProductIngredient(id: 'p-1', name: 'p-1', index: 1, ingredient: Stock.instance.getItem('p-1'));
           final p2 = ProductIngredient(id: 'p-2', name: 'p-2', index: 2, ingredient: Stock.instance.getItem('p-2'));
-          final p = Product(id: 'p', name: 'p', ingredients: {
-            'p-1': p1,
-            'p-2': p2,
-            'p-3': ProductIngredient(id: 'p-3', name: 'p-3', index: 3, ingredient: Stock.instance.getItem('p-3')),
-          });
+          final p = Product(
+            id: 'p',
+            name: 'p',
+            ingredients: {
+              'p-1': p1,
+              'p-2': p2,
+              'p-3': ProductIngredient(id: 'p-3', name: 'p-3', index: 3, ingredient: Stock.instance.getItem('p-3')),
+            },
+          );
           final catalog = Catalog(id: 'c', products: {'p': p..prepareItem()})..prepareItem();
           Menu().replaceItems({'c': catalog});
 
@@ -138,10 +134,7 @@ void main() {
           expect(itemList[1].id, equals('p-1'));
           expect(itemList[2].id, equals('p-3'));
 
-          verify(storage.set(
-            any,
-            argThat(equals({'${p1.prefix}.index': 2, '${p2.prefix}.index': 1})),
-          ));
+          verify(storage.set(any, argThat(equals({'${p1.prefix}.index': 2, '${p2.prefix}.index': 1}))));
         });
       });
     }
@@ -155,17 +148,18 @@ void main() {
       Stock();
       Quantities();
 
-      await tester.pumpWidget(buildApp(
-        product,
-        home: (context) => Scaffold(
-          body: TextButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => ProductPage(product: product)),
+      await tester.pumpWidget(
+        buildApp(
+          product,
+          home: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () =>
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProductPage(product: product))),
+              child: const Text('go to product'),
             ),
-            child: const Text('go to product'),
           ),
         ),
-      ));
+      );
 
       await tester.tap(find.text('go to product'));
       await tester.pumpAndSettle();
@@ -199,7 +193,7 @@ void main() {
 
         // enter amount
         await tester.enterText(find.byKey(const Key('product_ingredient.amount')), '1');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.testTextInput.receiveAction(.done);
         await tester.pumpAndSettle();
 
         // error message
@@ -225,16 +219,31 @@ void main() {
         expect(find.byKey(Key('product_ingredient.${ingredient.id}')), findsOneWidget);
 
         // add ingredient
-        verify(storage.add(any, argThat(equals(id)), argThat(predicate((data) {
-          return data is Map && data['name'] == 'new-ingredient';
-        }))));
+        verify(
+          storage.add(
+            any,
+            argThat(equals(id)),
+            argThat(
+              predicate((data) {
+                return data is Map && data['name'] == 'new-ingredient';
+              }),
+            ),
+          ),
+        );
         // add product ingredient
-        verify(storage.set(any, argThat(predicate((data) {
-          return data is Map &&
-              data[ingredient.prefix] is Map &&
-              data[ingredient.prefix]['ingredientId'] == id &&
-              data[ingredient.prefix]['amount'] == 1;
-        }))));
+        verify(
+          storage.set(
+            any,
+            argThat(
+              predicate((data) {
+                return data is Map &&
+                    data[ingredient.prefix] is Map &&
+                    data[ingredient.prefix]['ingredientId'] == id &&
+                    data[ingredient.prefix]['amount'] == 1;
+              }),
+            ),
+          ),
+        );
         // product ingredient id is different from ingredient id
         expect(id, isNot(equals(ingredient.id)));
       });
@@ -246,16 +255,16 @@ void main() {
             'i-2': Ingredient(id: 'i-2', name: 'i-2', currentAmount: 1),
             'i-3': Ingredient(id: 'i-3', name: 'prefix-i-3'),
           });
-        final ingredient = ProductIngredient(
-          id: 'pi-1',
-          ingredient: stock.getItem('i-1'),
+        final ingredient = ProductIngredient(id: 'pi-1', ingredient: stock.getItem('i-1'));
+        final product = Product(
+          id: 'p-1',
+          ingredients: {
+            'pi-1': ingredient,
+            'pi-2': ProductIngredient(id: 'pi-2', ingredient: stock.getItem('i-2')),
+          },
         );
-        final product = Product(id: 'p-1', ingredients: {
-          'pi-1': ingredient,
-          'pi-2': ProductIngredient(id: 'pi-2', ingredient: stock.getItem('i-2')),
-        });
         Menu().replaceItems({
-          'c-1': Catalog(id: 'c-1', products: {'p-1': product..prepareItem()})..prepareItem()
+          'c-1': Catalog(id: 'c-1', products: {'p-1': product..prepareItem()})..prepareItem(),
         });
       }
 
@@ -298,7 +307,7 @@ void main() {
 
         // enter amount
         await tester.enterText(find.byKey(const Key('product_ingredient.amount')), '1');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.testTextInput.receiveAction(.done);
         await tester.pumpAndSettle();
 
         // error message
@@ -313,8 +322,10 @@ void main() {
         // prefix-i-3 should be smaller similarity
         await tester.enterText(find.byType(TextField).last, 'i-');
         await tester.pumpAndSettle();
-        expect(tester.getCenter(find.byKey(const Key('product_ingredient.search.i-2'))).dy,
-            lessThan(tester.getCenter(find.byKey(const Key('product_ingredient.search.i-3'))).dy));
+        expect(
+          tester.getCenter(find.byKey(const Key('product_ingredient.search.i-2'))).dy,
+          lessThan(tester.getCenter(find.byKey(const Key('product_ingredient.search.i-3'))).dy),
+        );
 
         await tester.enterText(find.byType(TextField).last, '3');
         await tester.pumpAndSettle();
@@ -333,14 +344,19 @@ void main() {
         // edit ingredient and product ingredient
         final captured = verify(storage.set(any, captureAny)).captured;
         expect(captured.length, equals(2));
-        expect(captured[0],
-            predicate((data) => data is Map && data['i-2.name'] == 'i-2-n' && data['i-2.updatedAt'] != null));
         expect(
-            captured[1],
-            predicate((data) =>
+          captured[0],
+          predicate((data) => data is Map && data['i-2.name'] == 'i-2-n' && data['i-2.updatedAt'] != null),
+        );
+        expect(
+          captured[1],
+          predicate(
+            (data) =>
                 data is Map &&
                 data['${ingredient.prefix}.amount'] == 1 &&
-                data['${ingredient.prefix}.ingredientId'] == 'i-3'));
+                data['${ingredient.prefix}.ingredientId'] == 'i-3',
+          ),
+        );
       });
 
       testWidgets('Delete', (WidgetTester tester) async {
@@ -376,10 +392,14 @@ void main() {
             'q-3': Quantity(id: 'q-3', name: 'q-3'),
           });
         final stock = Stock()..replaceItems({'i-1': Ingredient(id: 'i-1', name: 'i-1')});
-        final ingredient = ProductIngredient(id: 'pi-1', ingredient: stock.getItem('i-1'), quantities: {
-          'pq-1': ProductQuantity(id: 'pq-1', quantity: qs.getItem('q-1')),
-          'pq-2': ProductQuantity(id: 'pq-2', quantity: qs.getItem('q-2')),
-        });
+        final ingredient = ProductIngredient(
+          id: 'pi-1',
+          ingredient: stock.getItem('i-1'),
+          quantities: {
+            'pq-1': ProductQuantity(id: 'pq-1', quantity: qs.getItem('q-1')),
+            'pq-2': ProductQuantity(id: 'pq-2', quantity: qs.getItem('q-2')),
+          },
+        );
         final product = Product(id: 'p-1', ingredients: {'pi-1': ingredient..prepareItem()});
         final catalog = Catalog(id: 'c-1', products: {'p-1': product..prepareItem()});
         Menu().replaceItems({'c-1': catalog..prepareItem()});
@@ -398,7 +418,7 @@ void main() {
 
         await tester.enterText(find.byKey(const Key('product_quantity.price')), '1');
         await tester.enterText(find.byKey(const Key('product_quantity.cost')), '1');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.testTextInput.receiveAction(.done);
         await tester.pumpAndSettle();
 
         // error message
@@ -428,18 +448,33 @@ void main() {
         expect(find.byKey(Key('product_quantity.${quantity.id}')), findsOneWidget);
 
         // add quantity
-        verify(storage.add(any, argThat(equals(id)), argThat(predicate((data) {
-          return data is Map && data['name'] == 'new-quantity';
-        }))));
+        verify(
+          storage.add(
+            any,
+            argThat(equals(id)),
+            argThat(
+              predicate((data) {
+                return data is Map && data['name'] == 'new-quantity';
+              }),
+            ),
+          ),
+        );
         // add product ingredient
-        verify(storage.set(any, argThat(predicate((data) {
-          return data is Map &&
-              data[quantity.prefix] is Map &&
-              data[quantity.prefix]['quantityId'] == id &&
-              data[quantity.prefix]['amount'] == 1 &&
-              data[quantity.prefix]['additionalCost'] == 1 &&
-              data[quantity.prefix]['additionalPrice'] == 1;
-        }))));
+        verify(
+          storage.set(
+            any,
+            argThat(
+              predicate((data) {
+                return data is Map &&
+                    data[quantity.prefix] is Map &&
+                    data[quantity.prefix]['quantityId'] == id &&
+                    data[quantity.prefix]['amount'] == 1 &&
+                    data[quantity.prefix]['additionalCost'] == 1 &&
+                    data[quantity.prefix]['additionalPrice'] == 1;
+              }),
+            ),
+          ),
+        );
         // product ingredient id is different from ingredient id
         expect(id, isNot(equals(quantity.id)));
       });
@@ -479,7 +514,7 @@ void main() {
         // edit properties
         await tester.enterText(find.byKey(const Key('product_quantity.price')), '1');
         await tester.enterText(find.byKey(const Key('product_quantity.cost')), '1');
-        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.testTextInput.receiveAction(.done);
         await tester.pumpAndSettle();
 
         // error message
@@ -516,13 +551,16 @@ void main() {
         expect(captured.length, equals(2));
         expect(captured[0], predicate((data) => data is Map && data['q-2.name'] == 'q-2-n'));
         expect(
-            captured[1],
-            predicate((data) =>
+          captured[1],
+          predicate(
+            (data) =>
                 data is Map &&
                 data['${quantity.prefix}.amount'] == 1 &&
                 data['${quantity.prefix}.additionalCost'] == 1 &&
                 data['${quantity.prefix}.additionalPrice'] == 1 &&
-                data['${quantity.prefix}.quantityId'] == 'q-3'));
+                data['${quantity.prefix}.quantityId'] == 'q-3',
+          ),
+        );
       });
 
       testWidgets('Delete', (WidgetTester tester) async {

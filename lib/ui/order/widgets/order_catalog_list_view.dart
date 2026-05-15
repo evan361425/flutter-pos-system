@@ -34,36 +34,30 @@ class _OrderCatalogListViewState extends State<OrderCatalogListView> {
   @override
   Widget build(BuildContext context) {
     if (widget.catalogs.isEmpty) {
-      return SingleRowWrap(children: [
-        ChoiceChip(
-          selected: false,
-          label: Text(S.orderCatalogListEmpty),
-        ),
-      ]);
+      return SingleRowWrap(children: [ChoiceChip(selected: false, label: Text(S.orderCatalogListEmpty))]);
     }
 
     var index = 0;
     return Material(
       elevation: 1.0,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+        padding: const .fromLTRB(4, 0, 4, 4),
         child: Row(
           children: [
             const SizedBox(width: 4),
             Expanded(
               child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Wrap(spacing: 6, children: [
-                  for (final catalog in widget.catalogs) _buildChoiceChip(catalog, index++),
-                  const SizedBox(),
-                ]),
+                scrollDirection: .horizontal,
+                child: Wrap(
+                  spacing: 6,
+                  children: [
+                    for (final catalog in widget.catalogs) _buildChoiceChip(catalog, index++),
+                    const SizedBox(),
+                  ],
+                ),
               ),
             ),
-            _ProductListView(
-              controller: controller,
-              focusNode: _f,
-              viewNotifier: widget.viewNotifier,
-            ),
+            _ProductListView(controller: controller, focusNode: _f, viewNotifier: widget.viewNotifier),
             const SizedBox(width: 4),
           ],
         ),
@@ -109,11 +103,7 @@ class _OrderCatalogListViewState extends State<OrderCatalogListView> {
 }
 
 class _ProductListView extends StatelessWidget {
-  const _ProductListView({
-    required this.controller,
-    required this.focusNode,
-    required this.viewNotifier,
-  });
+  const _ProductListView({required this.controller, required this.focusNode, required this.viewNotifier});
 
   final MenuController controller;
   final FocusNode focusNode;
@@ -125,7 +115,7 @@ class _ProductListView extends StatelessWidget {
       decoration: const ShapeDecoration(
         shape: RoundedRectangleBorder(
           side: BorderSide(width: 1),
-          borderRadius: BorderRadius.horizontal(right: Radius.circular(8)),
+          borderRadius: BorderRadius.horizontal(right: .circular(8)),
         ),
       ),
       // TODO: use AnimatedIcon, when switching between list and grid
@@ -144,8 +134,8 @@ class _ProductListView extends StatelessWidget {
           builder: (context, child) {
             return IconButton(
               focusNode: focusNode,
-              padding: EdgeInsets.zero,
-              visualDensity: VisualDensity.compact,
+              padding: .zero,
+              visualDensity: .compact,
               onPressed: controller.toggle,
               icon: viewNotifier.value.icon,
             );

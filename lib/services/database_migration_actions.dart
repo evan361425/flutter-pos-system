@@ -4,9 +4,7 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:sqflite/sqflite.dart' show Database;
 
 /// Helper to migrate DB schema from legacy.
-final dbMigrationActions = <int, Future<void> Function(Database)>{
-  8: _makeOrderMoreEasyToAnalysis,
-};
+final dbMigrationActions = <int, Future<void> Function(Database)>{8: _makeOrderMoreEasyToAnalysis};
 
 /// Formatting order structure and make it easy to analysis.
 Future<void> _makeOrderMoreEasyToAnalysis(Database db, {limit = 100}) async {
@@ -80,12 +78,7 @@ Future<void> _makeOrderMoreEasyToAnalysis(Database db, {limit = 100}) async {
   List<Map<String, Object?>> rows;
   int step = 0;
   do {
-    rows = await db.query(
-      'order',
-      orderBy: 'createdAt ASC',
-      limit: limit,
-      offset: limit * step++,
-    );
+    rows = await db.query('order', orderBy: 'createdAt ASC', limit: limit, offset: limit * step++);
     for (final row in rows) {
       await exec(row).catchError((e) {
         Log.err(e, 'db_migration_action_8');

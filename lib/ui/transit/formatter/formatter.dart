@@ -40,21 +40,21 @@ enum FormattableModel {
   /// Parse row (list of string) to specific [Model]
   ModelParser toParser() {
     return switch (this) {
-      FormattableModel.menu => MenuParser(Menu.instance) as ModelParser,
-      FormattableModel.stock => StockParser(Stock.instance),
-      FormattableModel.quantities => QuantitiesParser(Quantities.instance),
-      FormattableModel.replenisher => ReplenisherParser(Replenisher.instance),
-      FormattableModel.orderAttr => OAParser(OrderAttributes.instance),
+      .menu => MenuParser(.instance) as ModelParser,
+      .stock => StockParser(.instance),
+      .quantities => QuantitiesParser(.instance),
+      .replenisher => ReplenisherParser(.instance),
+      .orderAttr => OAParser(.instance),
     };
   }
 
   Repository toRepository() {
     return switch (this) {
-      FormattableModel.menu => Menu.instance as Repository,
-      FormattableModel.stock => Stock.instance,
-      FormattableModel.quantities => Quantities.instance,
-      FormattableModel.replenisher => Replenisher.instance,
-      FormattableModel.orderAttr => OrderAttributes.instance,
+      .menu => Menu.instance as Repository,
+      .stock => Stock.instance,
+      .quantities => Quantities.instance,
+      .replenisher => Replenisher.instance,
+      .orderAttr => OrderAttributes.instance,
     };
   }
 }
@@ -69,18 +69,18 @@ enum FormattableOrder {
 
   List<List<CellData>> formatRows(OrderObject order) {
     return switch (this) {
-      FormattableOrder.attr => OrderFormatter.formatAttr(order),
-      FormattableOrder.product => OrderFormatter.formatProduct(order),
-      FormattableOrder.ingredient => OrderFormatter.formatIngredient(order),
+      .attr => OrderFormatter.formatAttr(order),
+      .product => OrderFormatter.formatProduct(order),
+      .ingredient => OrderFormatter.formatIngredient(order),
       _ => OrderFormatter.formatBasic(order),
     };
   }
 
   List<String> formatHeader() {
     return switch (this) {
-      FormattableOrder.attr => OrderFormatter.attrHeaders,
-      FormattableOrder.product => OrderFormatter.productHeaders,
-      FormattableOrder.ingredient => OrderFormatter.ingredientHeaders,
+      .attr => OrderFormatter.attrHeaders,
+      .product => OrderFormatter.productHeaders,
+      .ingredient => OrderFormatter.ingredientHeaders,
       _ => OrderFormatter.basicHeaders,
     };
   }
@@ -99,13 +99,7 @@ class CellData {
   /// Bold the text
   final bool? isBold;
 
-  CellData({
-    this.string,
-    this.number,
-    this.note,
-    this.options,
-    this.isBold,
-  });
+  CellData({this.string, this.number, this.note, this.options, this.isBold});
 
   @override
   String toString() {

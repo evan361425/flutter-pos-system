@@ -13,23 +13,30 @@ import 'test_helpers/translator.dart';
 void main() {
   Widget createApp(void Function(String?) cb) {
     return MaterialApp.router(
-      routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-        GoRoute(
-          path: '/',
-          builder: (ctx, state) {
-            return Scaffold(body: Builder(builder: (context) {
-              return TextButton(
-                onPressed: () async {
-                  final result = await context.pushNamed(Routes.imageGallery);
-                  cb(result as String?);
-                },
-                child: const Text('go'),
+      routerConfig: GoRouter(
+        navigatorKey: Routes.rootNavigatorKey,
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (ctx, state) {
+              return Scaffold(
+                body: Builder(
+                  builder: (context) {
+                    return TextButton(
+                      onPressed: () async {
+                        final result = await context.pushNamed(Routes.imageGallery);
+                        cb(result as String?);
+                      },
+                      child: const Text('go'),
+                    );
+                  },
+                ),
               );
-            }));
-          },
-        ),
-        ...Routes.getDesiredRoute(0).routes,
-      ]),
+            },
+          ),
+          ...Routes.getDesiredRoute(0).routes,
+        ],
+      ),
     );
   }
 
@@ -93,9 +100,7 @@ void main() {
           expect(find.text(S.imageGallerySelectionTitle), findsNothing);
 
           // leave
-          await (device == Device.mobile
-              ? tester.tap(find.byKey(const Key('image_gallery.close')))
-              : tester.tapAt(Offset.zero));
+          await (device == .mobile ? tester.tap(find.byKey(const Key('image_gallery.close'))) : tester.tapAt(.zero));
           await tester.pumpAndSettle();
           expect(find.text('go'), findsOneWidget);
           expect(result, isNull);
@@ -126,9 +131,11 @@ void main() {
           await createImageAt('g20230102030405222-avator');
           await createImageAt('g20230102030405333');
 
-          await tester.pumpWidget(MaterialApp(
-            home: ScaffoldMessenger(child: ImageGalleryPage(key: gallery)),
-          ));
+          await tester.pumpWidget(
+            MaterialApp(
+              home: ScaffoldMessenger(child: ImageGalleryPage(key: gallery)),
+            ),
+          );
           await tester.pumpAndSettle();
 
           final selected = gallery.currentState!.selectedImages;
@@ -177,10 +184,7 @@ void main() {
 
           expect(
             gallery.currentState!.images,
-            equals([
-              'menu_image/g20230102030405333',
-              'menu_image/g20230102030405111',
-            ]),
+            equals(['menu_image/g20230102030405333', 'menu_image/g20230102030405111']),
           );
 
           // empty avatar is fine
@@ -191,10 +195,7 @@ void main() {
           await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
           await tester.pumpAndSettle();
 
-          expect(
-            gallery.currentState!.images,
-            equals(['menu_image/g20230102030405333']),
-          );
+          expect(gallery.currentState!.images, equals(['menu_image/g20230102030405333']));
         });
       });
     }

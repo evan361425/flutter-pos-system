@@ -4,7 +4,7 @@ import 'package:possystem/settings/language_setting.dart';
 void main() {
   group('Language Setting', () {
     test('Parse language', () {
-      final l = LanguageSetting.instance;
+      final LanguageSetting l = .instance;
       expect(l.parseLanguage(''), isNull);
       expect(l.parseLanguage('something'), equals(null));
       expect(l.parseLanguage('zh'), equals(Language.zhTW));

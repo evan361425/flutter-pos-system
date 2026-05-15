@@ -13,11 +13,7 @@ class CartActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton(
       key: const Key('cart.action'),
-      style: FilledButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
+      style: FilledButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: .circular(8))),
       onPressed: () => showActions(context),
       child: Text(S.orderCartActionBulk),
     );
@@ -26,12 +22,9 @@ class CartActions extends StatelessWidget {
   static void actionHandler(BuildContext context, CartActionTypes type) async {
     _DialogItem item;
     switch (type) {
-      case CartActionTypes.discount:
+      case .discount:
         item = _DialogItem(
-          validator: Validator.positiveInt(
-            S.orderCartActionDiscountLabel,
-            maximum: 1000,
-          ),
+          validator: Validator.positiveInt(S.orderCartActionDiscountLabel, maximum: 1000),
           decoration: InputDecoration(
             hintText: S.orderCartActionDiscountHint,
             helperText: S.orderCartActionDiscountHelper,
@@ -43,7 +36,7 @@ class CartActions extends StatelessWidget {
           },
         );
         break;
-      case CartActionTypes.price:
+      case .price:
         item = _DialogItem(
           validator: Validator.positiveNumber(S.orderCartActionChangePriceLabel),
           decoration: InputDecoration(
@@ -56,13 +49,9 @@ class CartActions extends StatelessWidget {
           },
         );
         break;
-      case CartActionTypes.count:
+      case .count:
         item = _DialogItem(
-          validator: Validator.positiveInt(
-            S.orderCartActionChangeCountLabel,
-            maximum: 10000,
-            minimum: 1,
-          ),
+          validator: Validator.positiveInt(S.orderCartActionChangeCountLabel, maximum: 10000, minimum: 1),
           decoration: InputDecoration(
             hintText: S.orderCartActionChangeCountHint,
             helperMaxLines: 4,
@@ -73,19 +62,16 @@ class CartActions extends StatelessWidget {
           },
         );
         break;
-      case CartActionTypes.delete:
+      case .delete:
         return Cart.instance.selectedRemove();
-      case CartActionTypes.free:
+      case .free:
         return Cart.instance.selectedUpdatePrice(0);
     }
 
     final result = await showDialog<String>(
       context: context,
-      builder: (BuildContext context) => SingleTextDialog(
-        validator: item.validator,
-        decoration: item.decoration,
-        keyboardType: TextInputType.number,
-      ),
+      builder: (BuildContext context) =>
+          SingleTextDialog(validator: item.validator, decoration: item.decoration, keyboardType: .number),
     );
 
     item.action(result ?? '');
@@ -136,22 +122,12 @@ class CartActions extends StatelessWidget {
   }
 }
 
-enum CartActionTypes {
-  discount,
-  price,
-  count,
-  free,
-  delete,
-}
+enum CartActionTypes { discount, price, count, free, delete }
 
 class _DialogItem {
   final String? Function(String?) validator;
   final InputDecoration decoration;
   final void Function(String) action;
 
-  _DialogItem({
-    required this.validator,
-    required this.decoration,
-    required this.action,
-  });
+  _DialogItem({required this.validator, required this.decoration, required this.action});
 }

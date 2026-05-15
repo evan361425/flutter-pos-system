@@ -10,14 +10,7 @@ import '../test_helpers/firebase_mocker.dart';
 import 'auth_test.mocks.dart';
 
 // Custom Mock! avoid clean up after rebuild
-@GenerateMocks([
-  GoogleSignIn,
-  FirebaseAuth,
-  GoogleSignInAccount,
-  GoogleSignInAuthentication,
-  User,
-  UserCredential,
-])
+@GenerateMocks([GoogleSignIn, FirebaseAuth, GoogleSignInAccount, GoogleSignInAuthentication, User, UserCredential])
 void main() {
   group('Auth', () {
     late Auth auth;
@@ -72,10 +65,7 @@ void main() {
       when(googleSignIn.scopes).thenReturn(scopes);
       when(googleSignIn.requestScopes(['b', 'c'])).thenAnswer((_) => Future.value(true));
 
-      final result = await auth.getAuthenticatedClient(
-        scopes: ['a', 'b', 'c'],
-        debugAuthentication: cred,
-      );
+      final result = await auth.getAuthenticatedClient(scopes: ['a', 'b', 'c'], debugAuthentication: cred);
 
       expect(result, isNull);
       expect(scopes, equals(['a', 'b', 'c']));

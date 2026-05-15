@@ -38,20 +38,20 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       notifier = TransitStateNotifier();
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => TransitStation(
-              catalog: TransitCatalog.exportModel,
-              method: TransitMethod.googleSheet,
-              notifier: notifier,
-              exporter: GoogleSheetExporter(
-                sheetsApi: sheetsApi,
-                scopes: gsExporterScopes,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => TransitStation(
+                catalog: .exportModel,
+                method: .googleSheet,
+                notifier: notifier,
+                exporter: GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
@@ -80,10 +80,9 @@ void main() {
 
     testWidgets('prepare spreadsheet failed', (tester) async {
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.create(
-        any,
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+      when(
+        sheetsApi.spreadsheets.create(any, $fields: anyNamed('\$fields')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await start(tester);
@@ -106,30 +105,32 @@ void main() {
       Menu.instance.replaceItems({'c1': c1});
 
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.create(
-        any,
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(
-            gs.Spreadsheet(spreadsheetId: 'id', sheets: [
-              gs.Sheet(properties: gs.SheetProperties(title: FormattableModel.menu.l10nName, sheetId: 1)),
-            ]),
-          ));
-      when(sheetsApi.spreadsheets.batchUpdate(
-        any,
-        any,
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+      when(sheetsApi.spreadsheets.create(any, $fields: anyNamed('\$fields'))).thenAnswer(
+        (_) => Future.value(
+          gs.Spreadsheet(
+            spreadsheetId: 'id',
+            sheets: [gs.Sheet(properties: gs.SheetProperties(title: FormattableModel.menu.l10nName, sheetId: 1))],
+          ),
+        ),
+      );
+      when(
+        sheetsApi.spreadsheets.batchUpdate(any, any, $fields: anyNamed('\$fields')),
+      ).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await start(tester);
 
-      verify(sheetsApi.spreadsheets.batchUpdate(
-        argThat(predicate((e) {
-          return e is gs.BatchUpdateSpreadsheetRequest && e.requests?.length == 1;
-        })),
-        any,
-        $fields: anyNamed('\$fields'),
-      ));
+      verify(
+        sheetsApi.spreadsheets.batchUpdate(
+          argThat(
+            predicate((e) {
+              return e is gs.BatchUpdateSpreadsheetRequest && e.requests?.length == 1;
+            }),
+          ),
+          any,
+          $fields: anyNamed('\$fields'),
+        ),
+      );
 
       expect(find.text(S.transitExportBasicSuccessGoogleSheet), findsOneWidget);
       await tester.pumpAndSettle();

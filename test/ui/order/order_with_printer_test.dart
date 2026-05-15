@@ -20,11 +20,7 @@ import '../../test_helpers/translator.dart';
 void main() {
   group('Order Printer Button', () {
     Widget buildWidget() {
-      return const MaterialApp(
-        home: Scaffold(
-          body: PrinterButtonView(),
-        ),
-      );
+      return const MaterialApp(home: Scaffold(body: PrinterButtonView()));
     }
 
     testWidgets('connecting two printer, success and failed', (WidgetTester tester) async {
@@ -112,20 +108,22 @@ void main() {
       return MaterialApp(
         scaffoldMessengerKey: App.scaffoldMessengerKey,
         home: Scaffold(
-          body: Builder(builder: (context) {
-            return TextButton(
-              onPressed: () async {
-                final receipts = await Printers.instance.generateReceipts(
-                  context: context,
-                  order: OrderObject(createdAt: DateTime.now()),
-                );
-                if (receipts != null) {
-                  Printers.instance.printReceipts(receipts);
-                }
-              },
-              child: const Text('tap me'),
-            );
-          }),
+          body: Builder(
+            builder: (context) {
+              return TextButton(
+                onPressed: () async {
+                  final receipts = await Printers.instance.generateReceipts(
+                    context: context,
+                    order: OrderObject(createdAt: .now()),
+                  );
+                  if (receipts != null) {
+                    Printers.instance.printReceipts(receipts);
+                  }
+                },
+                child: const Text('tap me'),
+              );
+            },
+          ),
         ),
       );
     }
@@ -180,10 +178,12 @@ void main() {
     });
 
     testWidgets('one success, one failed', (tester) async {
-      prepareImageable(Future.value([
-        ConvertibleImage(Uint8List.fromList(List.filled(32, 1)), width: 8),
-        ConvertibleImage(Uint8List(64), width: 16),
-      ]));
+      prepareImageable(
+        Future.value([
+          ConvertibleImage(.fromList(.filled(32, 1)), width: 8),
+          ConvertibleImage(Uint8List(64), width: 16),
+        ]),
+      );
 
       final p1 = MockPrinter();
       final p2 = MockPrinter();
@@ -208,8 +208,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('2: test error'), findsOneWidget);
-      verify(p1.draw(Uint8List.fromList([255]))).called(1);
-      verify(p2.draw(Uint8List.fromList([0, 0]))).called(1);
+      verify(p1.draw(.fromList([255]))).called(1);
+      verify(p2.draw(.fromList([0, 0]))).called(1);
     });
 
     tearDown(resetImageable);

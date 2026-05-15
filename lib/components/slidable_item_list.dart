@@ -12,41 +12,36 @@ class SlidableItemList<T, U> extends StatelessWidget {
   final Widget? leading;
   final Widget? action;
 
-  const SlidableItemList({
-    super.key,
-    required this.delegate,
-    this.hintText,
-    this.leading,
-    this.action,
-  });
+  const SlidableItemList({super.key, required this.delegate, this.hintText, this.leading, this.action});
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
-        child: Column(children: <Widget>[
-          if (leading != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-              child: leading!,
-            ),
-          Row(children: [
-            if (hintText != '')
-              Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
-            if (action != null)
+        padding: const .only(top: kTopSpacing, bottom: kFABSpacing),
+        child: Column(
+          children: <Widget>[
+            if (leading != null)
               Padding(
-                padding: const EdgeInsets.only(right: kHorizontalSpacing),
-                child: action,
+                padding: const .symmetric(horizontal: kHorizontalSpacing),
+                child: leading!,
               ),
-          ]),
-          const SizedBox(height: kInternalSpacing),
-          for (final widget in delegate.items.mapIndexed(
-            (index, item) => delegate.build(item, index),
-          ))
-            widget,
-        ]),
+            Row(
+              children: [
+                if (hintText != '')
+                  Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
+                if (action != null)
+                  Padding(
+                    padding: const .only(right: kHorizontalSpacing),
+                    child: action,
+                  ),
+              ],
+            ),
+            const SizedBox(height: kInternalSpacing),
+            for (final widget in delegate.items.mapIndexed((index, item) => delegate.build(item, index))) widget,
+          ],
+        ),
       ),
     );
   }
@@ -75,21 +70,23 @@ class SlidableItemDelegate<T, U> {
 
   final bool disableSlide;
 
-  const SlidableItemDelegate(
-      {required this.items,
-      required this.tileBuilder,
-      required this.handleDelete,
-      this.deleteValue,
-      this.warningContentBuilder,
-      this.actionBuilder,
-      this.handleAction,
-      this.disableSlide = false});
+  const SlidableItemDelegate({
+    required this.items,
+    required this.tileBuilder,
+    required this.handleDelete,
+    this.deleteValue,
+    this.warningContentBuilder,
+    this.actionBuilder,
+    this.handleAction,
+    this.disableSlide = false,
+  });
 
   Widget build(T item, int index) {
     final child = tileBuilder(
       item,
       index,
-      (BuildContext context) => ([BuildContext? ctx]) => showActions(ctx ?? context, item),
+      (BuildContext context) =>
+          ([BuildContext? ctx]) => showActions(ctx ?? context, item),
     );
     if (disableSlide) {
       return child;

@@ -27,15 +27,14 @@ class CashierView extends StatelessWidget {
             listenable: Cashier.instance,
             builder: (context, _) {
               var i = 0;
-              return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
-                _buildActions(context),
-                const SizedBox(height: kInternalSpacing),
-                for (final item in Cashier.instance.currentUnits)
-                  UnitListTile(
-                    item: item,
-                    index: i++,
-                  ),
-              ]);
+              return ListView(
+                padding: const .only(bottom: kFABSpacing, top: kTopSpacing),
+                children: [
+                  _buildActions(context),
+                  const SizedBox(height: kInternalSpacing),
+                  for (final item in Cashier.instance.currentUnits) UnitListTile(item: item, index: i++),
+                ],
+              );
             },
           ),
         ),
@@ -45,49 +44,53 @@ class CashierView extends StatelessWidget {
 
   Widget _buildActions(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: kHorizontalSpacing),
-      child: Row(children: [
-        Tutorial(
-          id: 'cashier.default',
-          title: S.cashierToDefaultTutorialTitle,
-          message: S.cashierToDefaultTutorialContent,
-          preferVertical: true,
-          child: RouteIconButton(
-            key: const Key('cashier.defaulter'),
-            label: S.cashierToDefaultTitle,
-            icon: Icon(Cashier.instance.defaultNotSet ? Icons.star_border_outlined : Icons.star),
-            onPressed: () => _handleSetDefault(context),
-          ),
-        ),
-        const Spacer(),
-        ButtonGroup(buttons: [
+      padding: const .only(right: kHorizontalSpacing),
+      child: Row(
+        children: [
           Tutorial(
-            id: 'cashier.change',
-            title: S.cashierChangerTutorialTitle,
-            message: S.cashierChangerTutorialContent,
+            id: 'cashier.default',
+            title: S.cashierToDefaultTutorialTitle,
+            message: S.cashierToDefaultTutorialContent,
             preferVertical: true,
             child: RouteIconButton(
-              key: const Key('cashier.changer'),
-              route: Routes.cashierChanger,
-              icon: const Icon(Icons.sync_alt_outlined),
-              label: S.cashierChangerTitle,
-              popTrueShowSuccess: true,
+              key: const Key('cashier.defaulter'),
+              label: S.cashierToDefaultTitle,
+              icon: Icon(Cashier.instance.defaultNotSet ? Icons.star_border_outlined : Icons.star),
+              onPressed: () => _handleSetDefault(context),
             ),
           ),
-          Tutorial(
-            id: 'cashier.surplus',
-            title: S.cashierSurplusTutorialTitle,
-            message: S.cashierSurplusTutorialContent,
-            preferVertical: true,
-            child: RouteIconButton(
-              key: const Key('cashier.surplus'),
-              icon: const Icon(Icons.coffee_outlined),
-              label: S.cashierSurplusTitle,
-              onPressed: () => _handleSurplus(context),
-            ),
+          const Spacer(),
+          ButtonGroup(
+            buttons: [
+              Tutorial(
+                id: 'cashier.change',
+                title: S.cashierChangerTutorialTitle,
+                message: S.cashierChangerTutorialContent,
+                preferVertical: true,
+                child: RouteIconButton(
+                  key: const Key('cashier.changer'),
+                  route: Routes.cashierChanger,
+                  icon: const Icon(Icons.sync_alt_outlined),
+                  label: S.cashierChangerTitle,
+                  popTrueShowSuccess: true,
+                ),
+              ),
+              Tutorial(
+                id: 'cashier.surplus',
+                title: S.cashierSurplusTutorialTitle,
+                message: S.cashierSurplusTutorialContent,
+                preferVertical: true,
+                child: RouteIconButton(
+                  key: const Key('cashier.surplus'),
+                  icon: const Icon(Icons.coffee_outlined),
+                  label: S.cashierSurplusTitle,
+                  onPressed: () => _handleSurplus(context),
+                ),
+              ),
+            ],
           ),
-        ]),
-      ]),
+        ],
+      ),
     );
   }
 

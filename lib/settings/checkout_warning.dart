@@ -2,9 +2,9 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CheckoutWarningSetting extends Setting<CheckoutWarningTypes> {
-  static final instance = CheckoutWarningSetting._();
+  static final CheckoutWarningSetting instance = ._();
 
-  static const defaultValue = CheckoutWarningTypes.showAll;
+  static const CheckoutWarningTypes defaultValue = .showAll;
 
   CheckoutWarningSetting._() {
     value = defaultValue;
@@ -25,11 +25,11 @@ class CheckoutWarningSetting extends Setting<CheckoutWarningTypes> {
   }
 
   CheckoutStatus shouldShow(CheckoutStatus status) {
-    if (status == CheckoutStatus.ok || value == CheckoutWarningTypes.hideAll) {
+    if (status == .ok || value == .hideAll) {
       return CheckoutStatus.ok;
     }
 
-    if (status != CheckoutStatus.cashierNotEnough && value == CheckoutWarningTypes.onlyNotEnough) {
+    if (status != .cashierNotEnough && value == .onlyNotEnough) {
       return CheckoutStatus.ok;
     }
 

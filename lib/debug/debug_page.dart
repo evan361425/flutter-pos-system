@@ -28,7 +28,7 @@ class DebugPage extends StatelessWidget {
             title: Text('Migrate DB Again'),
             trailing: Icon(Icons.refresh_outlined),
             onTap: rerunMigration,
-          )
+          ),
         ],
       ),
     );

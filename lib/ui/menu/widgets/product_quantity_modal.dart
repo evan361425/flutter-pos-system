@@ -19,11 +19,7 @@ class ProductQuantityModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ProductQuantityModal({
-    super.key,
-    this.quantity,
-    required this.ingredient,
-  }) : isNew = quantity == null;
+  const ProductQuantityModal({super.key, this.quantity, required this.ingredient}) : isNew = quantity == null;
 
   @override
   State<ProductQuantityModal> createState() => _ProductQuantityModalState();
@@ -48,70 +44,66 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
     return [
       // avoid search-bar's label overflow
       const SizedBox(height: 12.0),
-      p(SearchBarWrapper(
-        key: const Key('product_quantity.search'),
-        text: quantityName,
-        labelText: S.menuQuantitySearchLabel,
-        hintText: widget.quantity?.name ?? S.menuQuantitySearchHint,
-        validator: Validator.textLimit(S.menuQuantitySearchLabel, 30),
-        formValidator: _validateQuantity,
-        initData: Quantities.instance.itemList,
-        search: (text) async => Quantities.instance.sortBySimilarity(text),
-        itemBuilder: _searchItemBuilder,
-        emptyBuilder: _searchEmptyBuilder,
-      )),
-      p(TextFormField(
-        key: const Key('product_quantity.amount'),
-        controller: _amountController,
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.next,
-        focusNode: _amountFocusNode,
-        decoration: InputDecoration(
-          labelText: S.menuQuantityAmountLabel,
-          filled: false,
+      p(
+        SearchBarWrapper(
+          key: const Key('product_quantity.search'),
+          text: quantityName,
+          labelText: S.menuQuantitySearchLabel,
+          hintText: widget.quantity?.name ?? S.menuQuantitySearchHint,
+          validator: Validator.textLimit(S.menuQuantitySearchLabel, 30),
+          formValidator: _validateQuantity,
+          initData: Quantities.instance.itemList,
+          search: (text) async => Quantities.instance.sortBySimilarity(text),
+          itemBuilder: _searchItemBuilder,
+          emptyBuilder: _searchEmptyBuilder,
         ),
-        validator: Validator.positiveNumber(
-          S.menuQuantityAmountLabel,
+      ),
+      p(
+        TextFormField(
+          key: const Key('product_quantity.amount'),
+          controller: _amountController,
+          keyboardType: .number,
+          textInputAction: .next,
           focusNode: _amountFocusNode,
+          decoration: InputDecoration(labelText: S.menuQuantityAmountLabel, filled: false),
+          validator: Validator.positiveNumber(S.menuQuantityAmountLabel, focusNode: _amountFocusNode),
         ),
-      )),
-      p(TextFormField(
-        key: const Key('product_quantity.price'),
-        controller: _priceController,
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.next,
-        focusNode: _priceFocusNode,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.loyalty_outlined),
-          labelText: S.menuQuantityAdditionalPriceLabel,
-          helperText: S.menuQuantityAdditionalPriceHelper,
-          helperMaxLines: 10,
-          filled: false,
-        ),
-        validator: Validator.isNumber(
-          S.menuQuantityAdditionalPriceLabel,
+      ),
+      p(
+        TextFormField(
+          key: const Key('product_quantity.price'),
+          controller: _priceController,
+          keyboardType: .number,
+          textInputAction: .next,
           focusNode: _priceFocusNode,
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.loyalty_outlined),
+            labelText: S.menuQuantityAdditionalPriceLabel,
+            helperText: S.menuQuantityAdditionalPriceHelper,
+            helperMaxLines: 10,
+            filled: false,
+          ),
+          validator: Validator.isNumber(S.menuQuantityAdditionalPriceLabel, focusNode: _priceFocusNode),
         ),
-      )),
-      p(TextFormField(
-        key: const Key('product_quantity.cost'),
-        controller: _costController,
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        focusNode: _costFocusNode,
-        onFieldSubmitted: handleFieldSubmit,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.attach_money_outlined),
-          labelText: S.menuQuantityAdditionalCostLabel,
-          helperText: S.menuQuantityAdditionalCostHelper,
-          helperMaxLines: 10,
-          filled: false,
-        ),
-        validator: Validator.isNumber(
-          S.menuQuantityAdditionalCostLabel,
+      ),
+      p(
+        TextFormField(
+          key: const Key('product_quantity.cost'),
+          controller: _costController,
+          keyboardType: .number,
+          textInputAction: .done,
           focusNode: _costFocusNode,
+          onFieldSubmitted: handleFieldSubmit,
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.attach_money_outlined),
+            labelText: S.menuQuantityAdditionalCostLabel,
+            helperText: S.menuQuantityAdditionalCostHelper,
+            helperMaxLines: 10,
+            filled: false,
+          ),
+          validator: Validator.isNumber(S.menuQuantityAdditionalCostLabel, focusNode: _costFocusNode),
         ),
-      )),
+      ),
     ];
   }
 
@@ -161,12 +153,14 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
     final object = _parseObject();
 
     if (widget.isNew) {
-      await widget.ingredient.addItem(ProductQuantity(
-        quantity: Quantities.instance.getItem(quantityId),
-        amount: object.amount!,
-        additionalPrice: object.additionalPrice!,
-        additionalCost: object.additionalCost!,
-      ));
+      await widget.ingredient.addItem(
+        ProductQuantity(
+          quantity: Quantities.instance.getItem(quantityId),
+          amount: object.amount!,
+          additionalPrice: object.additionalPrice!,
+          additionalCost: object.additionalCost!,
+        ),
+      );
     } else {
       await widget.quantity!.update(object);
     }
@@ -179,9 +173,9 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
   ProductQuantityObject _parseObject() {
     return ProductQuantityObject(
       quantityId: quantityId,
-      amount: num.parse(_amountController.text),
-      additionalPrice: num.parse(_priceController.text),
-      additionalCost: num.parse(_costController.text),
+      amount: .parse(_amountController.text),
+      additionalPrice: .parse(_priceController.text),
+      additionalCost: .parse(_costController.text),
     );
   }
 
@@ -218,10 +212,7 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
         onPressed: () {
           // pop off search page
           Navigator.of(context).pop();
-          context.pushNamed(
-            Routes.quantityUpdate,
-            pathParameters: {'id': quantity.id},
-          );
+          context.pushNamed(Routes.quantityUpdate, pathParameters: {'id': quantity.id});
         },
       ),
       onTap: () => _updateQuantity(quantity),

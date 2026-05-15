@@ -18,23 +18,24 @@ void main() {
 
       expect(sheetApi, isNotNull);
       verify(auth.getAuthenticatedClient(scopes: [])).called(1);
-      verify(auth.getAuthenticatedClient(scopes: [
-        gs.SheetsApi.driveFileScope,
-        gs.SheetsApi.spreadsheetsScope,
-      ])).called(1);
+      verify(
+        auth.getAuthenticatedClient(scopes: [gs.SheetsApi.driveFileScope, gs.SheetsApi.spreadsheetsScope]),
+      ).called(1);
     });
 
     test('#addSpreadsheet', () async {
       final api = getMockSheetsApi();
-      final exporter = GoogleSheetExporter(
-        sheetsApi: api,
-        scopes: [gs.SheetsApi.driveFileScope],
-      );
-      when(api.spreadsheets.create(
-        argThat(predicate<gs.Spreadsheet>(
-            (e) => e.properties?.title == 'title' && e.sheets?.first.properties?.title == 'sheet1')),
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet(spreadsheetId: 'abc')));
+      final exporter = GoogleSheetExporter(sheetsApi: api, scopes: [gs.SheetsApi.driveFileScope]);
+      when(
+        api.spreadsheets.create(
+          argThat(
+            predicate<gs.Spreadsheet>(
+              (e) => e.properties?.title == 'title' && e.sheets?.first.properties?.title == 'sheet1',
+            ),
+          ),
+          $fields: anyNamed('\$fields'),
+        ),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet(spreadsheetId: 'abc')));
 
       final spreadsheet = await exporter.addSpreadsheet('title', ['sheet1']);
 
@@ -47,10 +48,7 @@ void main() {
 
       final result = data.toGoogleFormat();
 
-      expect(
-        result.dataValidation?.condition?.values?.map((e) => e.userEnteredValue).toList(),
-        equals(['b', 'c']),
-      );
+      expect(result.dataValidation?.condition?.values?.map((e) => e.userEnteredValue).toList(), equals(['b', 'c']));
     });
 
     test('GoogleSpreadsheet #fromString throw error', () {

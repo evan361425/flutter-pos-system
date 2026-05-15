@@ -7,9 +7,7 @@ const dbMigrationUp = <int, List<String>>{
 );
 ''',
   ],
-  6: <String>[
-    'ALTER TABLE `order_stash` ADD COLUMN `encodedAttributes` BLOB DEFAULT "";',
-  ],
+  6: <String>['ALTER TABLE `order_stash` ADD COLUMN `encodedAttributes` BLOB DEFAULT "";'],
   8: <String>[
     '''CREATE TABLE `order_records` (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -40,25 +40,26 @@ void main() {
       Cashier.instance.setCurrent(null);
 
       return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: Cashier.instance),
-        ],
+        providers: [ChangeNotifierProvider.value(value: Cashier.instance)],
         builder: (_, __) => withRoutes
             ? MaterialApp.router(
-                routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-                  GoRoute(
-                    path: '/',
-                    builder: (context, __) {
-                      return Scaffold(
-                        body: TextButton(
-                          onPressed: () => context.pushNamed(Routes.cashierChanger),
-                          child: const Text('go to changer'),
-                        ),
-                      );
-                    },
-                  ),
-                  ...Routes.getDesiredRoute(0).routes,
-                ]),
+                routerConfig: GoRouter(
+                  navigatorKey: Routes.rootNavigatorKey,
+                  routes: [
+                    GoRoute(
+                      path: '/',
+                      builder: (context, __) {
+                        return Scaffold(
+                          body: TextButton(
+                            onPressed: () => context.pushNamed(Routes.cashierChanger),
+                            child: const Text('go to changer'),
+                          ),
+                        );
+                      },
+                    ),
+                    ...Routes.getDesiredRoute(0).routes,
+                  ],
+                ),
               )
             : const MaterialApp(home: ChangerModal()),
       );
@@ -186,10 +187,12 @@ void main() {
           await tester.pumpAndSettle();
 
           expect(
-            find.text('${S.cashierChangerErrorInvalidHead(4, '10')}\n'
-                ' •  ${S.cashierChangerErrorInvalidBody(8, '5')}\n'
-                ' •  ${S.cashierChangerErrorInvalidBody(1, '5')}\n'
-                ' •  ${S.cashierChangerErrorInvalidBody(5, '1')}'),
+            find.text(
+              '${S.cashierChangerErrorInvalidHead(4, '10')}\n'
+              ' •  ${S.cashierChangerErrorInvalidBody(8, '5')}\n'
+              ' •  ${S.cashierChangerErrorInvalidBody(1, '5')}\n'
+              ' •  ${S.cashierChangerErrorInvalidBody(5, '1')}',
+            ),
             findsOneWidget,
           );
 

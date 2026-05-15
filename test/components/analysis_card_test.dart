@@ -6,13 +6,15 @@ import 'package:visibility_detector/visibility_detector.dart';
 void main() {
   group('Component AnalysisCard', () {
     testWidgets('show error', (tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: ReloadableCard(
-          id: 'test',
-          builder: (context, metric) => const SizedBox.shrink(),
-          loader: () => Future.error('test'),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ReloadableCard(
+            id: 'test',
+            builder: (context, metric) => const SizedBox.shrink(),
+            loader: () => Future.error('test'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('test'), findsOneWidget);
@@ -22,29 +24,32 @@ void main() {
       int loadCount = 0;
       final notifier = ValueNotifier('val1');
       // https://pub.dev/packages/visibility_detector#widget-tests
-      VisibilityDetectorController.instance.updateInterval = Duration.zero;
+      VisibilityDetectorController.instance.updateInterval = .zero;
 
-      await tester.pumpWidget(MaterialApp(
-        home: ReloadableCard<String>(
-          id: 'test',
-          notifiers: [notifier],
-          builder: (context, metric) => TextButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('next page'),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ReloadableCard<String>(
+            id: 'test',
+            notifiers: [notifier],
+            builder: (context, metric) => TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('next page'));
+                    },
+                  ),
                 );
-              }));
+              },
+              child: Text(metric),
+            ),
+            loader: () {
+              loadCount++;
+              return Future.value(notifier.value);
             },
-            child: Text(metric),
           ),
-          loader: () {
-            loadCount++;
-            return Future.value(notifier.value);
-          },
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       expect(find.text(notifier.value), findsOneWidget);

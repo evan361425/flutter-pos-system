@@ -11,11 +11,7 @@ class UnitListTile extends StatelessWidget {
   final CashierUnitObject item;
   final int index;
 
-  const UnitListTile({
-    super.key,
-    required this.item,
-    required this.index,
-  });
+  const UnitListTile({super.key, required this.item, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +23,7 @@ class UnitListTile extends StatelessWidget {
     );
   }
 
-  Future<void> _setUnitCount(
-    BuildContext context,
-    num unit,
-    num max,
-    int value,
-  ) async {
+  Future<void> _setUnitCount(BuildContext context, num unit, num max, int value) async {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) => SliderTextDialog(

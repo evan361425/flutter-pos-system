@@ -9,11 +9,7 @@ CustomMockDriveApi getMockDriveApi() {
   return CustomMockDriveApi();
 }
 
-@GenerateMocks([
-  gs.SheetsApi,
-  gs.SpreadsheetsResource,
-  gs.SpreadsheetsValuesResource,
-])
+@GenerateMocks([gs.SheetsApi, gs.SpreadsheetsResource, gs.SpreadsheetsValuesResource])
 CustomMockSheetsApi getMockSheetsApi() {
   return CustomMockSheetsApi();
 }

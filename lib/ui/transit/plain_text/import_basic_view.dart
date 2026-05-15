@@ -11,11 +11,7 @@ class ImportBasicHeader extends StatefulWidget {
   final ValueNotifier<FormattableModel?> selected;
   final ValueNotifier<PreviewFormatter?> formatter;
 
-  const ImportBasicHeader({
-    super.key,
-    required this.selected,
-    required this.formatter,
-  });
+  const ImportBasicHeader({super.key, required this.selected, required this.formatter});
 
   @override
   State<ImportBasicHeader> createState() => _ImportBasicHeaderState();
@@ -27,7 +23,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      margin: const .symmetric(horizontal: 8.0),
       child: ListTile(
         title: Text(S.transitImportBtnPlainTextAction),
         onTap: _showTextField,
@@ -46,13 +42,11 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
           content: TextField(
             key: const Key('transit.pt_text'),
             controller: controller,
-            keyboardType: TextInputType.multiline,
+            keyboardType: .multiline,
             minLines: 3,
             maxLines: 5,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(
-                borderSide: BorderSide(width: 5.0),
-              ),
+              border: const OutlineInputBorder(borderSide: BorderSide(width: 5.0)),
               hintText: S.transitImportBtnPlainTextHint,
               helperMaxLines: 2,
             ),

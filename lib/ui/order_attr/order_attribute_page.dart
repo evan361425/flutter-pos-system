@@ -23,43 +23,45 @@ class OrderAttributePage extends StatelessWidget {
 
   Widget _buildBody() {
     if (OrderAttributes.instance.isEmpty) {
-      return EmptyBody(
-        content: S.orderAttributeEmptyBody,
-        routeName: Routes.orderAttrCreate,
-      );
+      return EmptyBody(content: S.orderAttributeEmptyBody, routeName: Routes.orderAttrCreate);
     }
 
     return SafeArea(
-      child: ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: <Widget>[
-        Row(children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-              child: RouteElevatedIconButton(
-                key: const Key('order_attributes.add'),
-                icon: const Icon(KIcons.add),
-                label: S.orderAttributeTitleCreate,
-                route: Routes.orderAttrCreate,
+      child: ListView(
+        padding: const .only(bottom: kFABSpacing, top: kTopSpacing),
+        children: <Widget>[
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const .symmetric(horizontal: kHorizontalSpacing),
+                  child: RouteElevatedIconButton(
+                    key: const Key('order_attributes.add'),
+                    icon: const Icon(KIcons.add),
+                    label: S.orderAttributeTitleCreate,
+                    route: Routes.orderAttrCreate,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ]),
-        Row(children: [
-          Expanded(
-            child: Center(child: HintText(S.totalCount(OrderAttributes.instance.length))),
+          Row(
+            children: [
+              Expanded(child: Center(child: HintText(S.totalCount(OrderAttributes.instance.length)))),
+              RouteIconButton(
+                key: const Key('order_attributes.reorder'),
+                label: S.orderAttributeTitleReorder,
+                route: Routes.orderAttrReorder,
+                icon: const Icon(KIcons.reorder),
+                hideLabel: true,
+              ),
+              const SizedBox(width: kHorizontalSpacing),
+            ],
           ),
-          RouteIconButton(
-            key: const Key('order_attributes.reorder'),
-            label: S.orderAttributeTitleReorder,
-            route: Routes.orderAttrReorder,
-            icon: const Icon(KIcons.reorder),
-            hideLabel: true,
-          ),
-          const SizedBox(width: kHorizontalSpacing),
-        ]),
-        const SizedBox(height: kInternalSpacing),
-        for (final attribute in OrderAttributes.instance.itemList) OrderAttributeTile(attr: attribute),
-      ]),
+          const SizedBox(height: kInternalSpacing),
+          for (final attribute in OrderAttributes.instance.itemList) OrderAttributeTile(attr: attribute),
+        ],
+      ),
     );
   }
 }

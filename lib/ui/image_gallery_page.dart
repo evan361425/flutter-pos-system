@@ -35,8 +35,8 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final bp = Breakpoint.find(width: width);
-    final fullScreen = bp <= Breakpoint.medium;
+    final Breakpoint bp = .find(width: width);
+    final fullScreen = bp <= .medium;
 
     final PreferredSizeWidget? appBar = selecting
         ? AppBar(
@@ -63,18 +63,18 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
             ],
           )
         : fullScreen
-            ? AppBar(
-                title: Text(S.imageGalleryTitle),
-                primary: false,
-                leading: const MyCloseButton(key: Key('image_gallery.close')),
-              )
-            : null;
+        ? AppBar(
+            title: Text(S.imageGalleryTitle),
+            primary: false,
+            leading: const MyCloseButton(key: Key('image_gallery.close')),
+          )
+        : null;
 
     final body = Scaffold(
       primary: false,
       appBar: appBar,
       body: Padding(
-        padding: fullScreen ? const EdgeInsets.symmetric(horizontal: kHorizontalSpacing) : EdgeInsets.zero,
+        padding: fullScreen ? const .symmetric(horizontal: kHorizontalSpacing) : .zero,
         child: _buildBody(bp, width),
       ),
     );
@@ -85,7 +85,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
       child: fullScreen
           ? Dialog.fullscreen(child: body)
           : AlertDialog(
-              contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+              contentPadding: const .fromLTRB(24, 16, 24, 0),
               scrollable: false,
               title: appBar == null ? Text(S.imageGalleryTitle) : null,
               content: Center(child: SizedBox(width: 800, child: body)),
@@ -95,18 +95,13 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
   Widget _buildBody(Breakpoint bp, double width) {
     if (images == null) {
-      return const SingleChildScrollView(
-        child: Center(child: CircularProgressIndicator.adaptive()),
-      );
+      return const SingleChildScrollView(child: Center(child: CircularProgressIndicator.adaptive()));
     }
 
     if (images!.isEmpty) {
       return SingleChildScrollView(
         child: Center(
-          child: EmptyBody(
-            onPressed: createImage,
-            content: S.imageGalleryEmpty,
-          ),
+          child: EmptyBody(onPressed: createImage, content: S.imageGalleryEmpty),
         ),
       );
     }
@@ -127,18 +122,21 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
         if (!selecting) {
           if (index == 0) {
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const .all(16.0),
               child: ElevatedButton(
                 key: const Key('image_gallery.add'),
                 onPressed: createImage,
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(KIcons.add),
-                  Text(
-                    S.imageGalleryActionCreate,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ]),
+                child: Column(
+                  mainAxisAlignment: .center,
+                  children: [
+                    const Icon(KIcons.add),
+                    Text(
+                      S.imageGalleryActionCreate,
+                      textAlign: .center,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -170,13 +168,13 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
         return Ink.image(
           image: FileImage(image.file),
-          fit: BoxFit.cover,
+          fit: .cover,
           child: Material(
             key: Key('image_gallery.$index'),
-            type: MaterialType.transparency,
+            type: .transparency,
             shape: RoundedRectangleBorder(
               side: BorderSide(color: Colors.grey.shade400),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: .circular(4),
             ),
             child: inkwell,
           ),
@@ -209,12 +207,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   }
 
   void createImage() async {
-    await showSnackbarWhenFutureError<void>(
-      _createImage(),
-      'create_image',
-      context: context,
-      key: messenger,
-    );
+    await showSnackbarWhenFutureError<void>(_createImage(), 'create_image', context: context, key: messenger);
   }
 
   Future<void> _createImage() async {

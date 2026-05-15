@@ -10,7 +10,7 @@ class OrderAttributes extends ChangeNotifier
   static late OrderAttributes instance;
 
   @override
-  final Stores storageStore = Stores.orderAttributes;
+  final Stores storageStore = .orderAttributes;
 
   OrderAttributes() {
     instance = this;
@@ -20,9 +20,6 @@ class OrderAttributes extends ChangeNotifier
 
   @override
   OrderAttribute buildItem(String id, Map<String, Object?> value) {
-    return OrderAttribute.fromObject(OrderAttributeObject.build({
-      'id': id,
-      ...value,
-    }));
+    return OrderAttribute.fromObject(OrderAttributeObject.build({'id': id, ...value}));
   }
 }

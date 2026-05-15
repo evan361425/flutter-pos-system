@@ -7,7 +7,6 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/util.dart';
-import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/translator.dart';
@@ -21,13 +20,7 @@ class PrinterView extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLogPress;
 
-  const PrinterView({
-    super.key,
-    required this.printer,
-    this.trailing,
-    this.onTap,
-    this.onLogPress,
-  });
+  const PrinterView({super.key, required this.printer, this.trailing, this.onTap, this.onLogPress});
 
   @override
   State<PrinterView> createState() => _PrinterViewState();
@@ -38,19 +31,21 @@ class _PrinterViewState extends State<PrinterView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      _buildCard(),
-      ListenableBuilder(
-        listenable: waiting,
-        builder: (context, child) {
-          if (waiting.value) {
-            return const _Backdrop(child: CircularProgressIndicator.adaptive());
-          }
+    return Stack(
+      children: [
+        _buildCard(),
+        ListenableBuilder(
+          listenable: waiting,
+          builder: (context, child) {
+            if (waiting.value) {
+              return const _Backdrop(child: CircularProgressIndicator.adaptive());
+            }
 
-          return const SizedBox.shrink();
-        },
-      ),
-    ]);
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
+    );
   }
 
   Widget _buildCard() {
@@ -66,49 +61,54 @@ class _PrinterViewState extends State<PrinterView> {
     return Card(
       shadowColor: Colors.green,
       elevation: 4,
-      margin: const EdgeInsets.fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
-      child: _wrapWithInkWell(Column(
-        children: [
-          ListTile(
-            title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
-            leading: const Icon(Icons.bluetooth_connected),
-            subtitle: Text(S.printerStatusSuccess),
-            trailing: widget.trailing,
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            OutlinedButton.icon(
-              onPressed: startPrint,
-              label: Text(S.printerBtnTestPrint),
-              icon: const Icon(Icons.print),
+      margin: const .fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
+      child: _wrapWithInkWell(
+        Column(
+          children: [
+            ListTile(
+              title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
+              leading: const Icon(Icons.bluetooth_connected),
+              subtitle: Text(S.printerStatusSuccess),
+              trailing: widget.trailing,
             ),
-            const SizedBox(width: 8.0),
-            MenuAnchor(
-              menuChildren: [
-                MenuItemButton(
-                  onPressed: reconnect,
-                  leadingIcon: const Icon(Icons.refresh),
-                  child: Text(S.printerBtnRetry),
+            Row(
+              mainAxisAlignment: .end,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: startPrint,
+                  label: Text(S.printerBtnTestPrint),
+                  icon: const Icon(Icons.print),
                 ),
-                MenuItemButton(
-                  onPressed: disconnect,
-                  leadingIcon: const Icon(Icons.bluetooth_disabled),
-                  child: Text(S.printerBtnDisconnect),
+                const SizedBox(width: 8.0),
+                MenuAnchor(
+                  menuChildren: [
+                    MenuItemButton(
+                      onPressed: reconnect,
+                      leadingIcon: const Icon(Icons.refresh),
+                      child: Text(S.printerBtnRetry),
+                    ),
+                    MenuItemButton(
+                      onPressed: disconnect,
+                      leadingIcon: const Icon(Icons.bluetooth_disabled),
+                      child: Text(S.printerBtnDisconnect),
+                    ),
+                  ],
+                  builder: (context, controller, _) {
+                    return FilledButton.icon(
+                      onPressed: controller.toggle,
+                      label: Text(S.printerStatusConnecting),
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconAlignment: .end,
+                    );
+                  },
                 ),
+                const SizedBox(width: 8.0),
               ],
-              builder: (context, controller, _) {
-                return FilledButton.icon(
-                  onPressed: controller.toggle,
-                  label: Text(S.printerStatusConnecting),
-                  icon: const Icon(Icons.arrow_drop_down),
-                  iconAlignment: IconAlignment.end,
-                );
-              },
             ),
-            const SizedBox(width: 8.0),
-          ]),
-          const SizedBox(height: 4),
-        ],
-      )),
+            const SizedBox(height: 4),
+          ],
+        ),
+      ),
     );
   }
 
@@ -116,25 +116,27 @@ class _PrinterViewState extends State<PrinterView> {
     return Card(
       shadowColor: Colors.amber,
       elevation: 4,
-      margin: const EdgeInsets.fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
-      child: _wrapWithInkWell(Column(
-        children: [
-          ListTile(
-            title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
-            leading: const Icon(Icons.bluetooth_disabled),
-            subtitle: HintText(S.printerStatusStandby),
-            trailing: widget.trailing,
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            FilledButton(
-              onPressed: connect,
-              child: Text(S.printerBtnConnect),
+      margin: const .fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
+      child: _wrapWithInkWell(
+        Column(
+          children: [
+            ListTile(
+              title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
+              leading: const Icon(Icons.bluetooth_disabled),
+              subtitle: HintText(S.printerStatusStandby),
+              trailing: widget.trailing,
             ),
-            const SizedBox(width: 8.0),
-          ]),
-          const SizedBox(height: 4.0),
-        ],
-      )),
+            Row(
+              mainAxisAlignment: .end,
+              children: [
+                FilledButton(onPressed: connect, child: Text(S.printerBtnConnect)),
+                const SizedBox(width: 8.0),
+              ],
+            ),
+            const SizedBox(height: 4.0),
+          ],
+        ),
+      ),
     );
   }
 
@@ -143,12 +145,7 @@ class _PrinterViewState extends State<PrinterView> {
       return child;
     }
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: widget.onTap,
-      onLongPress: widget.onLogPress,
-      child: child,
-    );
+    return InkWell(borderRadius: .circular(12), onTap: widget.onTap, onLongPress: widget.onLogPress, child: child);
   }
 
   void connect() async {
@@ -170,11 +167,7 @@ class _PrinterViewState extends State<PrinterView> {
     if (!waiting.value) {
       waiting.value = true;
 
-      await showSnackbarWhenFutureError(
-        widget.printer.disconnect(),
-        'printer_view_disconnect',
-        context: context,
-      );
+      await showSnackbarWhenFutureError(widget.printer.disconnect(), 'printer_view_disconnect', context: context);
 
       waiting.value = false;
     }
@@ -184,11 +177,15 @@ class _PrinterViewState extends State<PrinterView> {
     if (!waiting.value) {
       waiting.value = true;
 
-      await showSnackbarWhenFutureError(() async {
-        await widget.printer.disconnect();
-        final success = await widget.printer.connect();
-        onConnected(success);
-      }(), 'printer_view_reconnect', context: context);
+      await showSnackbarWhenFutureError(
+        () async {
+          await widget.printer.disconnect();
+          final success = await widget.printer.connect();
+          onConnected(success);
+        }(),
+        'printer_view_reconnect',
+        context: context,
+      );
 
       waiting.value = false;
     }
@@ -212,63 +209,57 @@ class _PrinterViewState extends State<PrinterView> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(S.printerBtnTestPrint),
-        contentPadding: const EdgeInsets.all(0),
+        contentPadding: const .all(0),
         actions: [
           PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
-          _PrintButton(
-            progress: progress,
-            controller: controller,
-            printer: widget.printer,
-          ),
+          _PrintButton(progress: progress, controller: controller, printer: widget.printer),
         ],
-        content: Stack(alignment: Alignment.center, children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 24.0,
-              top: 16,
-              right: 24.0,
-              bottom: 24.0,
-            ),
-            child: PrinterReceiptView(
-              controller: controller,
-              order: OrderObject(
-                createdAt: DateTime.now(),
-                price: 300,
-                paid: 500,
-                attributes: [
-                  OrderSelectedAttributeObject(
-                    optionName: S.orderAttributeExamplePlaceDineIn,
-                    mode: OrderAttributeMode.changeDiscount,
-                    modeValue: 10,
-                  ),
-                ],
-                products: [
-                  OrderProductObject(
-                    productName: S.menuExampleProductCheeseBurger,
-                    count: 2,
-                    singlePrice: 60,
-                    originalPrice: 120,
-                    isDiscount: true,
-                  ),
-                  OrderProductObject(
-                    productName: S.menuExampleProductHamBurger,
-                    count: 1,
-                    singlePrice: 180,
-                    originalPrice: 180,
-                  ),
-                ],
+        content: Stack(
+          alignment: Alignment.center,
+          children: [
+            Padding(
+              padding: const .only(left: 24.0, top: 16, right: 24.0, bottom: 24.0),
+              child: PrinterReceiptView(
+                controller: controller,
+                order: OrderObject(
+                  createdAt: .now(),
+                  price: 300,
+                  paid: 500,
+                  attributes: [
+                    OrderSelectedAttributeObject(
+                      optionName: S.orderAttributeExamplePlaceDineIn,
+                      mode: .changeDiscount,
+                      modeValue: 10,
+                    ),
+                  ],
+                  products: [
+                    OrderProductObject(
+                      productName: S.menuExampleProductCheeseBurger,
+                      count: 2,
+                      singlePrice: 60,
+                      originalPrice: 120,
+                      isDiscount: true,
+                    ),
+                    OrderProductObject(
+                      productName: S.menuExampleProductHamBurger,
+                      count: 1,
+                      singlePrice: 180,
+                      originalPrice: 180,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          ValueListenableBuilder(
-            valueListenable: progress,
-            builder: (context, value, _) {
-              return value == null
-                  ? const SizedBox.shrink()
-                  : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
-            },
-          ),
-        ]),
+            ValueListenableBuilder(
+              valueListenable: progress,
+              builder: (context, value, _) {
+                return value == null
+                    ? const SizedBox.shrink()
+                    : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
+              },
+            ),
+          ],
+        ),
       ),
     );
 
@@ -301,11 +292,7 @@ class _PrintButton extends StatelessWidget {
   final ImageableController controller;
   final Printer printer;
 
-  const _PrintButton({
-    required this.progress,
-    required this.controller,
-    required this.printer,
-  });
+  const _PrintButton({required this.progress, required this.controller, required this.printer});
 
   @override
   Widget build(BuildContext context) {
@@ -338,10 +325,7 @@ class _PrintButton extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: progress,
       builder: (context, value, _) {
-        return TextButton(
-          onPressed: value == null ? handlePress : null,
-          child: Text(S.printerBtnPrint),
-        );
+        return TextButton(onPressed: value == null ? handlePress : null, child: Text(S.printerBtnPrint));
       },
     );
   }

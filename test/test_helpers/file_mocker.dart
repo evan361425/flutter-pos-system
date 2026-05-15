@@ -23,14 +23,16 @@ MockFilePicker mockFilePicker() {
 
 String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
   reset(picker);
-  when(picker.pickFiles(
-    type: anyNamed('type'),
-    withReadStream: anyNamed('withReadStream'),
-    compressionQuality: anyNamed('compressionQuality'),
-    allowCompression: anyNamed('allowCompression'),
-    allowMultiple: anyNamed('allowMultiple'),
-    withData: anyNamed('withData'),
-  )).thenAnswer((_) async {
+  when(
+    picker.pickFiles(
+      type: anyNamed('type'),
+      withReadStream: anyNamed('withReadStream'),
+      compressionQuality: anyNamed('compressionQuality'),
+      allowCompression: anyNamed('allowCompression'),
+      allowMultiple: anyNamed('allowMultiple'),
+      withData: anyNamed('withData'),
+    ),
+  ).thenAnswer((_) async {
     if (bytes == null) {
       return null;
     }
@@ -41,7 +43,7 @@ String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
         path: '${XFile.fs.systemTempDirectory.path}/picked-file',
         size: 10,
         readStream: Stream.fromIterable([bytes]),
-      )
+      ),
     ]);
   });
 
@@ -50,11 +52,9 @@ String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
 
 String mockFileSave(MockFilePicker picker, {bool canceled = false}) {
   reset(picker);
-  when(picker.saveFile(
-    dialogTitle: anyNamed('dialogTitle'),
-    fileName: anyNamed('fileName'),
-    bytes: anyNamed('bytes'),
-  )).thenAnswer((v) async {
+  when(
+    picker.saveFile(dialogTitle: anyNamed('dialogTitle'), fileName: anyNamed('fileName'), bytes: anyNamed('bytes')),
+  ).thenAnswer((v) async {
     if (canceled) return null;
 
     final path = XFile.fs.systemTempDirectory.path;
@@ -84,13 +84,15 @@ void mockImagePick(WidgetTester tester, {bool canceled = false}) {
 
 void mockImageCropper({bool canceled = false}) {
   initializeImageCropper();
-  when(imageCropper.cropImage(
-    sourcePath: anyNamed('sourcePath'),
-    maxHeight: anyNamed('maxHeight'),
-    maxWidth: anyNamed('maxWidth'),
-    aspectRatio: anyNamed('aspectRatio'),
-    uiSettings: anyNamed('uiSettings'),
-  )).thenAnswer((_) async {
+  when(
+    imageCropper.cropImage(
+      sourcePath: anyNamed('sourcePath'),
+      maxHeight: anyNamed('maxHeight'),
+      maxWidth: anyNamed('maxWidth'),
+      aspectRatio: anyNamed('aspectRatio'),
+      uiSettings: anyNamed('uiSettings'),
+    ),
+  ).thenAnswer((_) async {
     if (canceled) return null;
 
     return CroppedFile(await createImage('cropped-image'));
@@ -208,7 +210,7 @@ const _examplePng = <int>[
   174,
   66,
   96,
-  130
+  130,
 ];
 
 class MyFilePicker extends FilePicker {
@@ -218,7 +220,7 @@ class MyFilePicker extends FilePicker {
   Future<FilePickerResult?> pickFiles({
     String? dialogTitle,
     String? initialDirectory,
-    FileType type = FileType.any,
+    FileType type = .any,
     List<String>? allowedExtensions,
     Function(FilePickerStatus)? onFileLoading,
     bool allowCompression = true,
@@ -228,39 +230,37 @@ class MyFilePicker extends FilePicker {
     bool withReadStream = false,
     bool lockParentWindow = false,
     bool readSequential = false,
-  }) async =>
-      picker.pickFiles(
-        dialogTitle: dialogTitle,
-        initialDirectory: initialDirectory,
-        type: type,
-        allowedExtensions: allowedExtensions,
-        onFileLoading: onFileLoading,
-        allowCompression: allowCompression,
-        compressionQuality: compressionQuality,
-        allowMultiple: allowMultiple,
-        withData: withData,
-        withReadStream: withReadStream,
-        lockParentWindow: lockParentWindow,
-        readSequential: readSequential,
-      );
+  }) async => picker.pickFiles(
+    dialogTitle: dialogTitle,
+    initialDirectory: initialDirectory,
+    type: type,
+    allowedExtensions: allowedExtensions,
+    onFileLoading: onFileLoading,
+    allowCompression: allowCompression,
+    compressionQuality: compressionQuality,
+    allowMultiple: allowMultiple,
+    withData: withData,
+    withReadStream: withReadStream,
+    lockParentWindow: lockParentWindow,
+    readSequential: readSequential,
+  );
 
   @override
   Future<String?> saveFile({
     String? dialogTitle,
     String? fileName,
     String? initialDirectory,
-    FileType type = FileType.any,
+    FileType type = .any,
     List<String>? allowedExtensions,
     Uint8List? bytes,
     bool lockParentWindow = false,
-  }) async =>
-      picker.saveFile(
-        dialogTitle: dialogTitle,
-        fileName: fileName,
-        initialDirectory: initialDirectory,
-        type: type,
-        allowedExtensions: allowedExtensions,
-        bytes: bytes,
-        lockParentWindow: lockParentWindow,
-      );
+  }) async => picker.saveFile(
+    dialogTitle: dialogTitle,
+    fileName: fileName,
+    initialDirectory: initialDirectory,
+    type: type,
+    allowedExtensions: allowedExtensions,
+    bytes: bytes,
+    lockParentWindow: lockParentWindow,
+  );
 }

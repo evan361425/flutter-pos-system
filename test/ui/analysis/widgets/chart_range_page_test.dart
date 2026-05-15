@@ -15,36 +15,36 @@ void main() {
       group(device.name, () {
         testWidgets('renders correctly', (WidgetTester tester) async {
           deviceAs(device, tester);
-          final now = DateTime.now();
+          final DateTime now = .now();
           final today = DateTime(now.year, now.month, now.day);
           final tomorrow = today.add(const Duration(days: 1));
-          final range = DateTimeRange(
-            start: today.subtract(const Duration(days: 7)),
-            end: today,
-          );
+          final range = DateTimeRange(start: today.subtract(const Duration(days: 7)), end: today);
 
           DateTimeRange? selected;
           await tester.pumpWidget(
             MaterialApp.router(
-              routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-                GoRoute(
-                  path: '/',
-                  builder: (context, state) => Scaffold(
-                    body: Builder(builder: (context) {
-                      return TextButton(
-                        child: const Text('go'),
-                        onPressed: () async {
-                          selected = await Navigator.of(context).push<DateTimeRange>(
-                            MaterialPageRoute(
-                              builder: (context) => ChartRangePage(range: range),
-                            ),
+              routerConfig: GoRouter(
+                navigatorKey: Routes.rootNavigatorKey,
+                routes: [
+                  GoRoute(
+                    path: '/',
+                    builder: (context, state) => Scaffold(
+                      body: Builder(
+                        builder: (context) {
+                          return TextButton(
+                            child: const Text('go'),
+                            onPressed: () async {
+                              selected = await Navigator.of(context).push<DateTimeRange>(
+                                MaterialPageRoute(builder: (context) => ChartRangePage(range: range)),
+                              );
+                            },
                           );
                         },
-                      );
-                    }),
+                      ),
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
           );
           await tester.tap(find.text('go'));
@@ -69,24 +69,19 @@ void main() {
           expect(find.text(S.analysisChartRangeThisMonth), findsOneWidget);
           expect(find.text(S.analysisChartRangeLastMonth), findsOneWidget);
 
-          // only test in mobile, because desktop's select range is still unknown
-          if (device == Device.mobile) {
-            await tester.tap(find.text(S.analysisChartRangeTabName('custom')));
-            await tester.pumpAndSettle();
+          await tester.tap(find.text(S.analysisChartRangeTabName('custom')));
+          await tester.pumpAndSettle();
 
-            await tester.tap(
-              find.text(DateTimeRange(start: today, end: tomorrow).format('en')),
-            );
-            // No idea why we have to tap twice. I've tried to pumpAndSettle
-            // several times, but it still doesn't work
-            await tester.pumpAndSettle();
-            await tester.tap(find.text('OK'), warnIfMissed: false);
-            await tester.pumpAndSettle();
-            await tester.tap(find.text('OK'));
-            await tester.pumpAndSettle();
+          await tester.tap(find.text(DateTimeRange(start: today, end: tomorrow).format('en')));
+          await tester.pumpAndSettle();
+          // No idea why we have to tap twice. I've tried to pumpAndSettle
+          // several times, but it still doesn't work
+          await tester.tap(find.text('OK'), warnIfMissed: false);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('OK'));
+          await tester.pumpAndSettle();
 
-            expect(selected, DateTimeRange(start: today, end: tomorrow));
-          }
+          expect(selected, DateTimeRange(start: today, end: tomorrow));
         });
       });
     }

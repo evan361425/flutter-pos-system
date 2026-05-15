@@ -6,7 +6,7 @@ import 'package:possystem/translator.dart';
 
 class OrderAttributeValueWidget {
   static Widget? build(OrderAttributeMode? mode, num? value) {
-    if (value == null || mode == null || mode == OrderAttributeMode.statOnly) {
+    if (value == null || mode == null || mode == .statOnly) {
       return null;
     }
 
@@ -16,7 +16,7 @@ class OrderAttributeValueWidget {
 
   static String string(OrderAttributeMode mode, num value) {
     final modeValue = value;
-    if (mode == OrderAttributeMode.changeDiscount) {
+    if (mode == .changeDiscount) {
       final value = modeValue.toInt();
       return value == 0 ? S.orderAttributeValueFree : 'x $value%';
     } else {
@@ -24,8 +24,8 @@ class OrderAttributeValueWidget {
       return modeValue == 0
           ? ''
           : modeValue > 0
-              ? '+ \$$value'
-              : '- \$$value';
+          ? '+ \$$value'
+          : '- \$$value';
     }
   }
 }

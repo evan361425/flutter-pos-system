@@ -16,17 +16,14 @@ import 'export_basic_test.dart';
 void main() {
   group('Transit - Plain Text - Export Order', () {
     final mockClipboard = MockClipboard();
-    TestWidgetsFlutterBinding.ensureInitialized()
-        .defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, mockClipboard.handleMethodCall);
+    TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      mockClipboard.handleMethodCall,
+    );
 
     Widget buildApp() {
       return const MaterialApp(
-        home: TransitStation(
-          exporter: PlainTextExporter(),
-          catalog: TransitCatalog.exportOrder,
-          method: TransitMethod.plainText,
-        ),
+        home: TransitStation(exporter: PlainTextExporter(), catalog: .exportOrder, method: .plainText),
       );
     }
 
@@ -38,27 +35,31 @@ void main() {
       final message = [
         S.transitFormatTextOrderPrice(1, '40', '20'),
         S.transitFormatTextOrderMoney('0', '30'),
-        S.transitFormatTextOrderOrderAttribute([
-          S.transitFormatTextOrderOrderAttributeItem('oa-1', 'oao-1'),
-          S.transitFormatTextOrderOrderAttributeItem('oa-2', 'oao-2'),
-        ].join('、')),
+        S.transitFormatTextOrderOrderAttribute(
+          [
+            S.transitFormatTextOrderOrderAttributeItem('oa-1', 'oao-1'),
+            S.transitFormatTextOrderOrderAttributeItem('oa-2', 'oao-2'),
+          ].join('、'),
+        ),
         S.transitFormatTextOrderProductCount(
-            10,
-            2,
-            [
-              S.transitFormatTextOrderProduct(
-                  1,
-                  'p-1',
-                  'c-1',
-                  5,
-                  '35',
-                  [
-                    S.transitFormatTextOrderIngredient(3, 'i-1', 'q-1'),
-                    S.transitFormatTextOrderIngredient(0, 'i-2', S.transitFormatTextOrderNoQuantity),
-                    S.transitFormatTextOrderIngredient(-5, 'i-3', S.transitFormatTextOrderNoQuantity),
-                  ].join('、')),
-              S.transitFormatTextOrderProduct(0, 'p-2', 'c-2', 15, '300', ''),
-            ].join('；\n')),
+          10,
+          2,
+          [
+            S.transitFormatTextOrderProduct(
+              1,
+              'p-1',
+              'c-1',
+              5,
+              '35',
+              [
+                S.transitFormatTextOrderIngredient(3, 'i-1', 'q-1'),
+                S.transitFormatTextOrderIngredient(0, 'i-2', S.transitFormatTextOrderNoQuantity),
+                S.transitFormatTextOrderIngredient(-5, 'i-3', S.transitFormatTextOrderNoQuantity),
+              ].join('、'),
+            ),
+            S.transitFormatTextOrderProduct(0, 'p-2', 'c-2', 15, '300', ''),
+          ].join('；\n'),
+        ),
       ].join('\n');
 
       await tester.pumpWidget(buildApp());
@@ -69,7 +70,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(message), findsOneWidget);
 
-      await tester.tapAt(Offset.zero);
+      await tester.tapAt(.zero);
       await tester.pumpAndSettle();
 
       OrderSetter.setDetailedOrders([order]);
@@ -78,10 +79,7 @@ void main() {
 
       final copied = await Clipboard.getData('text/plain');
 
-      expect(
-        copied?.text,
-        equals([order.createDateTimeString, message].join('\n')),
-      );
+      expect(copied?.text, equals([order.createDateTimeString, message].join('\n')));
     });
 
     test('format', () {
@@ -91,7 +89,7 @@ void main() {
         S.transitFormatTextOrderProductCount(0, 0, ''),
       ].join('\n');
 
-      final actual = ExportOrderView.formatOrder(OrderObject(createdAt: DateTime.now()));
+      final actual = ExportOrderView.formatOrder(OrderObject(createdAt: .now()));
 
       expect(actual, equals(expected));
     });

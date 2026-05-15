@@ -26,91 +26,86 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
+    final Breakpoint bp = .find(width: MediaQuery.sizeOf(context).width);
     return ResponsiveDialog(
       scrollable: bp.max > Breakpoint.medium.max,
-      title: Row(children: [
-        Text(S.cashierChangerTitle),
-        bp <= Breakpoint.medium
-            ? const Spacer()
-            : Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-                  child: ListenableBuilder(
-                    listenable: controller,
-                    builder: (context, child) {
-                      return SegmentedButton<int>(
-                        selected: {controller.index},
-                        onSelectionChanged: (value) => controller.index = value.first,
-                        segments: [
-                          ButtonSegment(value: 0, label: Text(S.cashierChangerFavoriteTab)),
-                          ButtonSegment(value: 1, label: Text(S.cashierChangerCustomTab)),
-                        ],
-                      );
-                    },
+      title: Row(
+        children: [
+          Text(S.cashierChangerTitle),
+          bp <= .medium
+              ? const Spacer()
+              : Expanded(
+                  child: Padding(
+                    padding: const .symmetric(horizontal: kHorizontalSpacing),
+                    child: ListenableBuilder(
+                      listenable: controller,
+                      builder: (context, child) {
+                        return SegmentedButton<int>(
+                          selected: {controller.index},
+                          onSelectionChanged: (value) => controller.index = value.first,
+                          segments: [
+                            ButtonSegment(value: 0, label: Text(S.cashierChangerFavoriteTab)),
+                            ButtonSegment(value: 1, label: Text(S.cashierChangerCustomTab)),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-      ]),
-      action: TextButton(
-        key: const Key('changer.apply'),
-        onPressed: handleApply,
-        child: Text(S.cashierChangerButton),
+        ],
       ),
+      action: TextButton(key: const Key('changer.apply'), onPressed: handleApply, child: Text(S.cashierChangerButton)),
       content: _buildContent(bp),
     );
   }
 
   Widget _buildContent(Breakpoint bp) {
-    if (bp <= Breakpoint.medium) {
-      return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        TabBar(
-          controller: controller,
-          tabs: [
-            Tab(key: const Key('changer.favorite'), text: S.cashierChangerFavoriteTab),
-            Tab(key: const Key('changer.custom'), text: S.cashierChangerCustomTab),
-          ],
-        ),
-        Expanded(
-          child: TabBarView(controller: controller, children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: kTopSpacing),
-                child: ChangerFavoriteView(
-                  selectedItem: favoriteSelected,
-                  emptyAction: () => controller.animateTo(1),
+    if (bp <= .medium) {
+      return Column(
+        mainAxisSize: .min,
+        children: <Widget>[
+          TabBar(
+            controller: controller,
+            tabs: [
+              Tab(key: const Key('changer.favorite'), text: S.cashierChangerFavoriteTab),
+              Tab(key: const Key('changer.custom'), text: S.cashierChangerCustomTab),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: controller,
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const .only(top: kTopSpacing),
+                    child: ChangerFavoriteView(
+                      selectedItem: favoriteSelected,
+                      emptyAction: () => controller.animateTo(1),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: kTopSpacing),
-                child: ChangerCustomView(
-                  key: customState,
-                  afterFavoriteAdded: () => controller.animateTo(0),
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const .only(top: kTopSpacing),
+                    child: ChangerCustomView(key: customState, afterFavoriteAdded: () => controller.animateTo(0)),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ]),
-        ),
-      ]);
+          ),
+        ],
+      );
     }
 
     return Padding(
-      padding: const EdgeInsets.only(top: kTopSpacing, bottom: kDialogBottomSpacing),
+      padding: const .only(top: kTopSpacing, bottom: kDialogBottomSpacing),
       child: ListenableBuilder(
         listenable: controller,
         builder: (context, child) {
           if (controller.index == 0) {
-            return ChangerFavoriteView(
-              selectedItem: favoriteSelected,
-              emptyAction: _moveToCustom,
-            );
+            return ChangerFavoriteView(selectedItem: favoriteSelected, emptyAction: _moveToCustom);
           }
-          return ChangerCustomView(
-            key: customState,
-            afterFavoriteAdded: _moveToFavorite,
-          );
+          return ChangerCustomView(key: customState, afterFavoriteAdded: _moveToFavorite);
         },
       ),
     );
@@ -153,8 +148,10 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
     final isValid = await Cashier.instance.applyFavorite(favoriteSelected.value!.item);
 
     if (!isValid && mounted) {
-      showSnackBar(S.cashierChangerErrorNotEnough(favoriteSelected.value!.source.unit?.toCurrency() ?? ''),
-          context: context);
+      showSnackBar(
+        S.cashierChangerErrorNotEnough(favoriteSelected.value!.source.unit?.toCurrency() ?? ''),
+        context: context,
+      );
     }
 
     return isValid;

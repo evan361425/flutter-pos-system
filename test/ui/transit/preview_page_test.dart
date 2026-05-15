@@ -28,11 +28,11 @@ import '../../test_helpers/breakpoint_mocker.dart';
 void main() {
   List<FormattedItem>? proxyFormatter(FormattableModel model) {
     final List<Model> items = switch (model) {
-      FormattableModel.menu => Menu.instance.itemList.map((e) => e.itemList).expand((e) => e).toList() as List<Model>,
-      FormattableModel.stock => Stock.instance.itemList,
-      FormattableModel.quantities => Quantities.instance.itemList,
-      FormattableModel.replenisher => Replenisher.instance.itemList,
-      FormattableModel.orderAttr => OrderAttributes.instance.itemList,
+      .menu => Menu.instance.itemList.map((e) => e.itemList).expand((e) => e).toList() as List<Model>,
+      .stock => Stock.instance.itemList,
+      .quantities => Quantities.instance.itemList,
+      .replenisher => Replenisher.instance.itemList,
+      .orderAttr => OrderAttributes.instance.itemList,
     };
 
     return items.map((e) => FormattedItem(item: e)).toList();
@@ -41,10 +41,7 @@ void main() {
   Widget buildApp(List<FormattableModel> ables, [PreviewFormatter? formatter]) {
     return MaterialApp(
       home: Scaffold(
-        body: PreviewPageWrapper(
-          models: ables,
-          formatter: formatter ?? proxyFormatter,
-        ),
+        body: PreviewPageWrapper(models: ables, formatter: formatter ?? proxyFormatter),
       ),
     );
   }
@@ -53,17 +50,18 @@ void main() {
     for (final device in [Device.desktop, Device.mobile]) {
       group('- ${device.name} -', () {
         testWidgets('empty data', (tester) async {
-          await tester.pumpWidget(buildApp([FormattableModel.stock]));
+          await tester.pumpWidget(buildApp([.stock]));
           await tester.pumpAndSettle();
 
           expect(find.text(S.transitImportErrorPreviewNotFound(FormattableModel.stock.l10nName)), findsOneWidget);
         });
 
         testWidgets('error data', (tester) async {
-          await tester.pumpWidget(buildApp(
-            [FormattableModel.stock],
-            (FormattableModel able) => [FormattedItem(error: FormatterValidateError('TestError', 'RawData'))],
-          ));
+          await tester.pumpWidget(
+            buildApp([
+              .stock,
+            ], (FormattableModel able) => [FormattedItem(error: FormatterValidateError('TestError', 'RawData'))]),
+          );
           await tester.pumpAndSettle();
 
           expect(find.text('RawData'), findsOneWidget);
@@ -74,16 +72,13 @@ void main() {
       testWidgets('commit menu data only', (tester) async {
         final irf = _ImportFromRepo();
 
-        await tester.pumpWidget(buildApp([FormattableModel.menu], irf.formatter));
+        await tester.pumpWidget(buildApp([.menu], irf.formatter));
         await tester.pumpAndSettle();
         await tester.tap(find.byType(ExpansionTile).first);
         await tester.pump();
 
         void checkName(String text, String status) {
-          expect(
-            find.text(text + S.transitImportColumnStatus(status), findRichText: true),
-            findsOneWidget,
-          );
+          expect(find.text(text + S.transitImportColumnStatus(status), findRichText: true), findsOneWidget);
         }
 
         checkName('p1', 'staged');
@@ -96,9 +91,9 @@ void main() {
         await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
         await tester.pumpAndSettle();
 
-        irf.compares(FormattableModel.menu);
-        irf.compares(FormattableModel.stock);
-        irf.compares(FormattableModel.quantities);
+        irf.compares(.menu);
+        irf.compares(.stock);
+        irf.compares(.quantities);
         expect(Replenisher.instance.isEmpty, isTrue);
         expect(OrderAttributes.instance.isEmpty, isTrue);
       });
@@ -116,16 +111,17 @@ void main() {
           },
         );
 
-        await tester.pumpWidget(MaterialApp(
-          home: Scaffold(
-            body: Builder(builder: (context) {
-              return TextButton(
-                onPressed: () => Navigator.of(context).push(route),
-                child: const Text('Go'),
-              );
-            }),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return TextButton(onPressed: () => Navigator.of(context).push(route), child: const Text('Go'));
+                },
+              ),
+            ),
           ),
-        ));
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.text('Go'));
         await tester.pumpAndSettle();
@@ -175,11 +171,11 @@ void main() {
       await tester.tap(find.byKey(const Key('confirm_dialog.confirm')));
       await tester.pumpAndSettle();
 
-      irf.compares(FormattableModel.menu);
-      irf.compares(FormattableModel.stock);
-      irf.compares(FormattableModel.quantities);
-      irf.compares(FormattableModel.replenisher);
-      irf.compares(FormattableModel.orderAttr);
+      irf.compares(.menu);
+      irf.compares(.stock);
+      irf.compares(.quantities);
+      irf.compares(.replenisher);
+      irf.compares(.orderAttr);
     });
   });
 
@@ -232,22 +228,13 @@ class _ImportFromRepo {
 
     final o1 = OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1);
     final o2 = OrderAttributeOption(id: 'o2', name: 'o2', isDefault: true);
-    final cs1 = OrderAttribute(id: 'oa1', name: 'oa1', options: {
-      'o1': o1,
-      'o2': o2,
-    });
+    final cs1 = OrderAttribute(id: 'oa1', name: 'oa1', options: {'o1': o1, 'o2': o2});
     cs1.prepareItem();
     OrderAttributes.instance.replaceItems({'oa1': cs1});
 
     action?.call();
 
-    final repo = _ImportFromRepo._(
-      Menu.instance,
-      Stock.instance,
-      Quantities.instance,
-      Replenisher.instance,
-      OrderAttributes.instance,
-    );
+    final _ImportFromRepo repo = ._(.instance, .instance, .instance, .instance, .instance);
 
     Menu();
     Stock();
@@ -265,19 +252,16 @@ class _ImportFromRepo {
     final expected = findPlainTextFormatter(model).getRows();
     switchBack();
 
-    expect(
-      actual.map((e) => e.join(",")).join("\n"),
-      equals(expected.map((e) => e.join(",")).join("\n")),
-    );
+    expect(actual.map((e) => e.join(",")).join("\n"), equals(expected.map((e) => e.join(",")).join("\n")));
   }
 
   List<FormattedItem>? formatter(FormattableModel model) {
     final items = switch (model) {
-      FormattableModel.menu => menu.itemList.map((e) => e.itemList).expand((e) => e).toList(),
-      FormattableModel.stock => stock.itemList,
-      FormattableModel.quantities => quantities.itemList,
-      FormattableModel.replenisher => replenisher.itemList,
-      FormattableModel.orderAttr => orderAttributes.itemList,
+      .menu => menu.itemList.map((e) => e.itemList).expand((e) => e).toList(),
+      .stock => stock.itemList,
+      .quantities => quantities.itemList,
+      .replenisher => replenisher.itemList,
+      .orderAttr => orderAttributes.itemList,
     };
 
     switchRepo();
@@ -293,11 +277,11 @@ class _ImportFromRepo {
   }
 
   void switchRepo() {
-    menuOri = Menu.instance;
-    stockOri = Stock.instance;
-    quantitiesOri = Quantities.instance;
-    replenisherOri = Replenisher.instance;
-    orderAttributesOri = OrderAttributes.instance;
+    menuOri = .instance;
+    stockOri = .instance;
+    quantitiesOri = .instance;
+    replenisherOri = .instance;
+    orderAttributesOri = .instance;
 
     Menu.instance = menu;
     Stock.instance = stock;

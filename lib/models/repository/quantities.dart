@@ -10,7 +10,7 @@ class Quantities extends ChangeNotifier
   static late Quantities instance;
 
   @override
-  final Stores storageStore = Stores.quantities;
+  final Stores storageStore = .quantities;
 
   Quantities() {
     instance = this;
@@ -18,12 +18,7 @@ class Quantities extends ChangeNotifier
 
   @override
   Quantity buildItem(String id, Map<String, Object?> value) {
-    return Quantity.fromObject(
-      QuantityObject.build({
-        'id': id,
-        ...value,
-      }),
-    );
+    return Quantity.fromObject(QuantityObject.build({'id': id, ...value}));
   }
 
   @override

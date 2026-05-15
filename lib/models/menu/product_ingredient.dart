@@ -26,10 +26,10 @@ class ProductIngredient extends Model<ProductIngredientObject>
   num amount;
 
   @override
-  final RepositoryStorageType repoType = RepositoryStorageType.repoModel;
+  final RepositoryStorageType repoType = .repoModel;
 
   @override
-  final Stores storageStore = Stores.menu;
+  final Stores storageStore = .menu;
 
   ProductIngredient({
     super.id,
@@ -53,14 +53,16 @@ class ProductIngredient extends Model<ProductIngredientObject>
       throw Exception(object.ingredientId);
     }
 
-    final quantities = object.quantities.map<ProductQuantity?>((e) {
-      try {
-        return ProductQuantity.fromObject(e);
-      } catch (e) {
-        // not finding quantity
-        return null;
-      }
-    }).where((e) => e != null);
+    final quantities = object.quantities
+        .map<ProductQuantity?>((e) {
+          try {
+            return ProductQuantity.fromObject(e);
+          } catch (e) {
+            // not finding quantity
+            return null;
+          }
+        })
+        .where((e) => e != null);
 
     if (!object.quantities.every((object) => object.isLatest)) {
       Menu.instance.versionChanged = true;
@@ -75,21 +77,19 @@ class ProductIngredient extends Model<ProductIngredientObject>
     )..prepareItem();
   }
 
-  factory ProductIngredient.fromRow(
-    ProductIngredient? ori,
-    List<String> row,
-  ) {
+  factory ProductIngredient.fromRow(ProductIngredient? ori, List<String> row) {
     var ingredient = ori?.ingredient ?? Stock.instance.getItemByName(row[0]) ?? Stock.instance.getStagedByName(row[0]);
     if (ingredient == null) {
-      ingredient = Ingredient(
-        name: row[0],
-        status: ModelStatus.staged,
-      );
+      ingredient = Ingredient(name: row[0], status: .staged);
       Stock.instance.addStaged(ingredient);
     }
 
     final amount = row.length > 1 ? num.tryParse(row[1]) ?? 0 : 0;
-    final status = ori == null ? ModelStatus.staged : (amount == ori.amount ? ModelStatus.normal : ModelStatus.updated);
+    final status = switch (ori) {
+      null => ModelStatus.staged,
+      _ when ori.amount == amount => ModelStatus.normal,
+      _ => ModelStatus.updated,
+    };
 
     return ProductIngredient(
       id: ori?.id,
@@ -114,8 +114,8 @@ class ProductIngredient extends Model<ProductIngredientObject>
     // When the product is new, it means that the product
     // ingredient must also be new, so only need to output
     // whether it is a "new inventory ingredient"
-    if (product.status == ModelStatus.staged) {
-      return ingredient.status == ModelStatus.staged ? 'stagedIng' : 'normal';
+    if (product.status == .staged) {
+      return ingredient.status == .staged ? 'stagedIng' : 'normal';
     }
 
     return super.statusName;
@@ -141,10 +141,10 @@ class ProductIngredient extends Model<ProductIngredientObject>
 
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
-        id: id,
-        index: index,
-        ingredientId: ingredient.id,
-        amount: amount,
-        quantities: items.map((e) => e.toObject()).toList(),
-      );
+    id: id,
+    index: index,
+    ingredientId: ingredient.id,
+    amount: amount,
+    quantities: items.map((e) => e.toObject()).toList(),
+  );
 }

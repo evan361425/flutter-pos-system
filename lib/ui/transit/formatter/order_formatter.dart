@@ -16,18 +16,14 @@ class OrderFormatter {
         CellData(number: order.profit),
         CellData(number: order.productsCount),
         CellData(number: order.products.length),
-      ]
+      ],
     ];
   }
 
   static List<List<CellData>> formatAttr(OrderObject order) {
     return [
       for (final attr in order.attributes)
-        [
-          CellData(number: order.periodSeq),
-          CellData(string: attr.name),
-          CellData(string: attr.optionName),
-        ],
+        [CellData(number: order.periodSeq), CellData(string: attr.name), CellData(string: attr.optionName)],
     ];
   }
 
@@ -60,16 +56,16 @@ class OrderFormatter {
   }
 
   static List<String> get basicHeaders => [
-        S.transitFormatFieldOrderNo,
-        S.transitFormatFieldOrderTime,
-        S.transitFormatFieldOrderPrice,
-        S.transitFormatFieldOrderProductPrice,
-        S.transitFormatFieldOrderPaid,
-        S.transitFormatFieldOrderCost,
-        S.transitFormatFieldOrderProfit,
-        S.transitFormatFieldOrderItemCount,
-        S.transitFormatFieldOrderTypeCount,
-      ];
+    S.transitFormatFieldOrderNo,
+    S.transitFormatFieldOrderTime,
+    S.transitFormatFieldOrderPrice,
+    S.transitFormatFieldOrderProductPrice,
+    S.transitFormatFieldOrderPaid,
+    S.transitFormatFieldOrderCost,
+    S.transitFormatFieldOrderProfit,
+    S.transitFormatFieldOrderItemCount,
+    S.transitFormatFieldOrderTypeCount,
+  ];
 
   /// Order's attributes at which index, 0-index
   static const attrPosition = 8;
@@ -78,28 +74,28 @@ class OrderFormatter {
   static const productPosition = 9;
 
   static List<String> get attrHeaders => [
-        S.transitFormatFieldOrderAttributeHeaderNo,
-        S.transitFormatFieldOrderAttributeHeaderName,
-        S.transitFormatFieldOrderAttributeHeaderOption,
-      ];
+    S.transitFormatFieldOrderAttributeHeaderNo,
+    S.transitFormatFieldOrderAttributeHeaderName,
+    S.transitFormatFieldOrderAttributeHeaderOption,
+  ];
 
   static List<String> get productHeaders => [
-        S.transitFormatFieldOrderProductHeaderNo,
-        S.transitFormatFieldOrderProductHeaderName,
-        S.transitFormatFieldOrderProductHeaderCatalog,
-        S.transitFormatFieldOrderProductHeaderCount,
-        S.transitFormatFieldOrderProductHeaderPrice,
-        S.transitFormatFieldOrderProductHeaderCost,
-        S.transitFormatFieldOrderProductHeaderOrigin,
-      ];
+    S.transitFormatFieldOrderProductHeaderNo,
+    S.transitFormatFieldOrderProductHeaderName,
+    S.transitFormatFieldOrderProductHeaderCatalog,
+    S.transitFormatFieldOrderProductHeaderCount,
+    S.transitFormatFieldOrderProductHeaderPrice,
+    S.transitFormatFieldOrderProductHeaderCost,
+    S.transitFormatFieldOrderProductHeaderOrigin,
+  ];
 
   /// Order's ingredients detail at which index, 0-index
   static const ingredientPosition = 6;
 
   static List<String> get ingredientHeaders => [
-        S.transitFormatFieldOrderIngredientHeaderNo,
-        S.transitFormatFieldOrderIngredientHeaderName,
-        S.transitFormatFieldOrderIngredientHeaderQuantity,
-        S.transitFormatFieldOrderIngredientHeaderAmount,
-      ];
+    S.transitFormatFieldOrderIngredientHeaderNo,
+    S.transitFormatFieldOrderIngredientHeaderName,
+    S.transitFormatFieldOrderIngredientHeaderQuantity,
+    S.transitFormatFieldOrderIngredientHeaderAmount,
+  ];
 }

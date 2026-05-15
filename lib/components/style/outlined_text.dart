@@ -40,22 +40,16 @@ class OutlinedText extends StatelessWidget {
   /// * `enableFeedback` - true
   /// * `alignment` - Alignment.center
   /// * `splashFactory` - Theme.splashFactory
-  const OutlinedText(
-    this.text, {
-    super.key,
-    this.badge,
-    this.margin,
-  });
+  const OutlinedText(this.text, {super.key, this.badge, this.margin});
 
   @override
-
   /// Mainly copy from [ButtonStyleButton]
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final padding = ButtonStyleButton.scaledPadding(
-      const EdgeInsets.symmetric(horizontal: 16),
-      const EdgeInsets.symmetric(horizontal: 8),
-      const EdgeInsets.symmetric(horizontal: 4),
+      const .symmetric(horizontal: 16),
+      const .symmetric(horizontal: 8),
+      const .symmetric(horizontal: 4),
       MediaQuery.textScalerOf(context).scale(1),
     );
 
@@ -63,29 +57,22 @@ class OutlinedText extends StatelessWidget {
       constraints: const BoxConstraints(minWidth: 64, minHeight: 40),
       child: Material(
         textStyle: theme.textTheme.labelLarge!.copyWith(color: theme.colorScheme.primary),
-        shape: StadiumBorder(
-          side: BorderSide(color: theme.colorScheme.outline),
-        ),
+        shape: StadiumBorder(side: BorderSide(color: theme.colorScheme.outline)),
         color: Colors.transparent,
-        type: MaterialType.button,
+        type: .button,
         child: Padding(
           padding: padding,
-          child: Align(
-            alignment: Alignment.center,
-            widthFactor: 1.0,
-            heightFactor: 1.0,
-            child: Text(text),
-          ),
+          child: Align(alignment: Alignment.center, widthFactor: 1.0, heightFactor: 1.0, child: Text(text)),
         ),
       ),
     );
 
     if (badge == null) {
-      return Padding(padding: margin ?? EdgeInsets.zero, child: base);
+      return Padding(padding: margin ?? .zero, child: base);
     }
 
     return Padding(
-      padding: margin ?? EdgeInsets.zero,
+      padding: margin ?? .zero,
       child: Badge(
         // too high will causing overlapping on top of scrollable view
         alignment: const AlignmentDirectional(1.0, -0.6),

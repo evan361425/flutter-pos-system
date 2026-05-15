@@ -55,23 +55,20 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(children: [
-      if (widget.title != null)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
-          child: buildTitle(),
+    return Column(
+      children: [
+        if (widget.title != null) Padding(padding: const .fromLTRB(16, 8, 0, 4), child: buildTitle()),
+        Stack(
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
+              child: SizedBox(width: .infinity, child: buildWrapper(buildTarget())),
+            ),
+            if (reloadable) buildReloading(),
+          ],
         ),
-      Stack(children: [
-        ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-          child: SizedBox(
-            width: double.infinity,
-            child: buildWrapper(buildTarget()),
-          ),
-        ),
-        if (reloadable) buildReloading(),
-      ]),
-    ]);
+      ],
+    );
   }
 
   @override
@@ -113,32 +110,29 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   Widget buildWrapper(Widget child) {
     if (widget.wrappedByCard) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const .symmetric(horizontal: 12.0),
         child: Card(
-          margin: const EdgeInsets.only(top: 8.0),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: child,
-          ),
+          margin: const .only(top: 8.0),
+          child: Padding(padding: const .all(16.0), child: child),
         ),
       );
     }
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SizedBox(height: 8.0),
-      child,
-    ]);
+    return Column(crossAxisAlignment: .start, children: [const SizedBox(height: 8.0), child]);
   }
 
   Widget buildTitle() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(
-        widget.title!,
-        style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 24),
-        overflow: TextOverflow.ellipsis,
-      ),
-      if (widget.action != null) widget.action!,
-    ]);
+    return Row(
+      mainAxisAlignment: .spaceBetween,
+      children: [
+        Text(
+          widget.title!,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 24),
+          overflow: .ellipsis,
+        ),
+        if (widget.action != null) widget.action!,
+      ],
+    );
   }
 
   Widget buildReloading() {
@@ -154,11 +148,7 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
         child: const ColoredBox(
           color: Colors.black12,
           child: Center(
-            child: SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-            ),
+            child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator.adaptive(strokeWidth: 2)),
           ),
         ),
       ),

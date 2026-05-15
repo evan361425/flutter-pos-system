@@ -13,7 +13,7 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
   num? modeValue;
 
   @override
-  final Stores storageStore = Stores.orderAttributes;
+  final Stores storageStore = .orderAttributes;
 
   OrderAttributeOption({
     super.id,
@@ -36,11 +36,7 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
     );
   }
 
-  factory OrderAttributeOption.fromRow(
-    OrderAttributeOption? ori,
-    List<String> row, {
-    required int index,
-  }) {
+  factory OrderAttributeOption.fromRow(OrderAttributeOption? ori, List<String> row, {required int index}) {
     final isDefault = row.length > 1 ? row[1] == 'true' : false;
     final modeValue = row.length > 2 ? num.tryParse(row[2]) : null;
     final status = ori == null
@@ -73,18 +69,13 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
     if (modeValue == null) return price;
 
     return switch (attribute.mode) {
-      OrderAttributeMode.changeDiscount => price * modeValue! / 100,
-      OrderAttributeMode.changePrice => price + modeValue!,
+      .changeDiscount => price * modeValue! / 100,
+      .changePrice => price + modeValue!,
       _ => price,
     };
   }
 
   @override
-  OrderAttributeOptionObject toObject() => OrderAttributeOptionObject(
-        id: id,
-        name: name,
-        index: index,
-        isDefault: isDefault,
-        modeValue: modeValue,
-      );
+  OrderAttributeOptionObject toObject() =>
+      OrderAttributeOptionObject(id: id, name: name, index: index, isDefault: isDefault, modeValue: modeValue);
 }

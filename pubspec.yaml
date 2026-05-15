@@ -5,8 +5,8 @@ homepage: https://github.com/evan361425/flutter-pos-system
 version: 2.11.3+21103002
 
 environment:
-  flutter: ">=3.35.0 <3.36.0"
-  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.41.0 <3.42.0"
+  sdk: ">=3.11.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -78,6 +78,7 @@ dev_dependencies:
 
   # code style
   flutter_lints: ^5.0.0
+  prefer_shorthands: ^0.4.7
 
   # mock object
   build_runner: ^2.5.4

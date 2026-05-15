@@ -29,20 +29,14 @@ void main() {
       final tomorrow = today + 86400;
       final fortyDaysAgo = today - 86400 * 40;
 
-      when(mockQuery(fortyDaysAgo, tomorrow)).thenAnswer((_) async => [
-            for (var i = 20; i >= 0; i--)
-              {
-                'day': 20 + i,
-                'count': i,
-                'revenue': i * 1.1,
-                'profit': i * 1.2,
-                'cost': i * 1.3,
-              }
-          ]);
+      when(mockQuery(fortyDaysAgo, tomorrow)).thenAnswer(
+        (_) async => [
+          for (var i = 20; i >= 0; i--)
+            {'day': 20 + i, 'count': i, 'revenue': i * 1.1, 'profit': i * 1.2, 'cost': i * 1.3},
+        ],
+      );
 
-      await tester.pumpWidget(const MaterialApp(
-        home: Scaffold(body: GoalsCardView()),
-      ));
+      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: GoalsCardView())));
       await tester.pumpAndSettle();
 
       void findText(String v) {
@@ -61,15 +55,11 @@ void main() {
       verify(mockQuery(fortyDaysAgo, tomorrow));
 
       // notify the seller to update the view
-      when(mockQuery(today, tomorrow)).thenAnswer((_) => Future.value([
-            {
-              'day': 0,
-              'count': 2,
-              'profit': 2.1,
-              'revenue': 2.2,
-              'cost': 2.3,
-            }
-          ]));
+      when(mockQuery(today, tomorrow)).thenAnswer(
+        (_) => Future.value([
+          {'day': 0, 'count': 2, 'profit': 2.1, 'revenue': 2.2, 'cost': 2.3},
+        ]),
+      );
       Seller.instance.notifyListeners();
       await tester.pumpAndSettle();
 
@@ -86,7 +76,7 @@ void main() {
       initializeDatabase();
       initializeCache();
       initializeTranslator();
-      VisibilityDetectorController.instance.updateInterval = Duration.zero;
+      VisibilityDetectorController.instance.updateInterval = .zero;
     });
   });
 }

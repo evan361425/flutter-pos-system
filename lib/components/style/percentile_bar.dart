@@ -7,11 +7,7 @@ class PercentileBar extends StatefulWidget {
 
   final num at;
 
-  const PercentileBar(
-    this.at,
-    this.total, {
-    super.key,
-  });
+  const PercentileBar(this.at, this.total, {super.key});
 
   @override
   State<PercentileBar> createState() => _PercentileBarState();
@@ -27,12 +23,7 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text('${nf.format(widget.at)}／${nf.format(widget.total)}'),
-          ],
-        ),
+        Row(mainAxisAlignment: .end, children: [Text('${nf.format(widget.at)}／${nf.format(widget.total)}')]),
         AnimatedBuilder(
           animation: _curveAnimation,
           builder: (context, child) {
@@ -59,17 +50,11 @@ class _PercentileBarState extends State<PercentileBar> with SingleTickerProvider
 
     final colorTween = TweenSequence([
       TweenSequenceItem(
-        tween: ColorTween(
-          begin: const Color(0xff7fca2b),
-          end: const Color(0xff81c9de),
-        ),
+        tween: ColorTween(begin: const Color(0xff7fca2b), end: const Color(0xff81c9de)),
         weight: 1,
       ),
       TweenSequenceItem(
-        tween: ColorTween(
-          begin: const Color(0xff81c9de),
-          end: const Color(0xff3d88df),
-        ),
+        tween: ColorTween(begin: const Color(0xff81c9de), end: const Color(0xff3d88df)),
         weight: 1,
       ),
     ]);

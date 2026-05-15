@@ -21,13 +21,16 @@ void main() {
   group('Printer Page', () {
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const Scaffold(body: PrinterPage()),
-          ),
-          ...Routes.getDesiredRoute(0).routes,
-        ]),
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const Scaffold(body: PrinterPage()),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ],
+        ),
       );
     }
 
@@ -113,19 +116,25 @@ void main() {
 
       expect(find.byKey(const Key('printer.settings')), findsOneWidget);
       expect(find.text('MX11'), findsOneWidget);
-      verify(storage.set(
-        any,
-        argThat(predicate((v) {
-          if (!(v is Map<String, Object?> && v.keys.length == 1 && v.keys.first.startsWith('printer.'))) return false;
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((v) {
+              if (!(v is Map<String, Object?> && v.keys.length == 1 && v.keys.first.startsWith('printer.'))) {
+                return false;
+              }
 
-          final map = v.values.first as Map<String, Object?>;
-          return map['name'] == 'MX11' &&
-              map['address'] == 'address3' &&
-              map['autoConnect'] == true &&
-              map['provider'] == 2 && // XPrinter 58
-              map.keys.length == 4;
-        })),
-      )).called(1);
+              final map = v.values.first as Map<String, Object?>;
+              return map['name'] == 'MX11' &&
+                  map['address'] == 'address3' &&
+                  map['autoConnect'] == true &&
+                  map['provider'] == 2 && // XPrinter 58
+                  map.keys.length == 4;
+            }),
+          ),
+        ),
+      ).called(1);
     });
 
     testWidgets("Edit printer with connection handling", (tester) async {
@@ -255,9 +264,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('printer.settings')), findsOneWidget);
-      verify(storage.set(any, {
-        'setting': {'density': 1}
-      })).called(1);
+      verify(
+        storage.set(any, {
+          'setting': {'density': 1},
+        }),
+      ).called(1);
       expect(Printers.instance.density, PrinterDensity.tight);
     });
 

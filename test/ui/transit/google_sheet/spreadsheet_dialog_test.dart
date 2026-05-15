@@ -25,50 +25,52 @@ void main() {
     GoogleSpreadsheet? spreadsheet;
 
     Future<GoogleSpreadsheet?> prepare(BuildContext context, GoogleSpreadsheet sheet) => prepareSpreadsheet(
-          context: context,
-          exporter: exporter,
-          stateNotifier: TransitStateNotifier(),
-          defaultName: 'some name',
-          cacheKey: exportCacheKey,
-          sheets: ['sheet1', 'sheet2'],
-          spreadsheet: sheet,
-        );
+      context: context,
+      exporter: exporter,
+      stateNotifier: TransitStateNotifier(),
+      defaultName: 'some name',
+      cacheKey: exportCacheKey,
+      sheets: ['sheet1', 'sheet2'],
+      spreadsheet: sheet,
+    );
 
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => Scaffold(
-              body: Builder(builder: (context) {
-                exporter = GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes);
-                return TextButton(
-                  key: const Key('test_show_dialog'),
-                  onPressed: () async {
-                    final sheet = await SpreadsheetDialog.show(
-                      context,
-                      exporter: GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes),
-                      cacheKey: exportCacheKey,
-                      allowCreateNew: true,
-                      fallbackCacheKey: importCacheKey,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => Scaffold(
+                body: Builder(
+                  builder: (context) {
+                    exporter = GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes);
+                    return TextButton(
+                      key: const Key('test_show_dialog'),
+                      onPressed: () async {
+                        final sheet = await SpreadsheetDialog.show(
+                          context,
+                          exporter: GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes),
+                          cacheKey: exportCacheKey,
+                          allowCreateNew: true,
+                          fallbackCacheKey: importCacheKey,
+                        );
+                        if (shouldPrepare && sheet != null) {
+                          spreadsheet = await prepare(context, sheet);
+                        }
+                      },
+                      child: const Text('show'),
                     );
-                    if (shouldPrepare && sheet != null) {
-                      spreadsheet = await prepare(context, sheet);
-                    }
                   },
-                  child: const Text('show'),
-                );
-              }),
+                ),
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
-    Future<void> action(
-      WidgetTester tester, [
-      IconData icon = Icons.file_open_outlined,
-    ]) async {
+    Future<void> action(WidgetTester tester, [IconData icon = Icons.file_open_outlined]) async {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('test_show_dialog')));
       await tester.pumpAndSettle();
@@ -78,14 +80,20 @@ void main() {
       final sheet1 = gs.SheetProperties(title: sheet, sheetId: 1);
 
       when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      when(sheetsApi.mockSpreadsheets.get(
-        argThat(equals(id)),
-        includeGridData: anyNamed('includeGridData'),
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet(
+      when(
+        sheetsApi.mockSpreadsheets.get(
+          argThat(equals(id)),
+          includeGridData: anyNamed('includeGridData'),
+          $fields: anyNamed('\$fields'),
+        ),
+      ).thenAnswer(
+        (_) => Future.value(
+          gs.Spreadsheet(
             properties: gs.SpreadsheetProperties(title: 'title'),
             sheets: [gs.Sheet(properties: sheet1)],
-          )));
+          ),
+        ),
+      );
     }
 
     testWidgets('invalid id', (tester) async {
@@ -110,11 +118,9 @@ void main() {
     testWidgets('not found', (tester) async {
       when(cache.get(importCacheKey)).thenReturn('old-id:true:old-name');
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.get(
-        any,
-        $fields: anyNamed('\$fields'),
-        includeGridData: anyNamed('includeGridData'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+      when(
+        sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields'), includeGridData: anyNamed('includeGridData')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await action(tester);
@@ -157,12 +163,16 @@ void main() {
       shouldPrepare = true;
 
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.create(
-        argThat(predicate<gs.Spreadsheet>((e) {
-          return e.sheets?.length == 2 && e.properties?.title == 'some name';
-        })),
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+      when(
+        sheetsApi.spreadsheets.create(
+          argThat(
+            predicate<gs.Spreadsheet>((e) {
+              return e.sheets?.length == 2 && e.properties?.title == 'some name';
+            }),
+          ),
+          $fields: anyNamed('\$fields'),
+        ),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await action(tester);
@@ -182,10 +192,9 @@ void main() {
 
       final sheetsApi = getMockSheetsApi();
       when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
-      when(sheetsApi.spreadsheets.create(
-        any,
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet(spreadsheetId: 'abc')));
+      when(
+        sheetsApi.spreadsheets.create(any, $fields: anyNamed('\$fields')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet(spreadsheetId: 'abc')));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await action(tester);
@@ -197,32 +206,29 @@ void main() {
     });
 
     gs.Sheet createSheet(String title, int id) {
-      return gs.Sheet(properties: gs.SheetProperties(title: title, sheetId: id));
+      return gs.Sheet(
+        properties: gs.SheetProperties(title: title, sheetId: id),
+      );
     }
 
     testWidgets('prepare spreadsheet and no missing sheets remotely', (tester) async {
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.get(
-        any,
-        $fields: anyNamed('\$fields'),
-        includeGridData: anyNamed('includeGridData'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
-            createSheet('sheet1', 1),
-            createSheet('sheet2', 2),
-          ])));
+      when(
+        sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields'), includeGridData: anyNamed('includeGridData')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [createSheet('sheet1', 1), createSheet('sheet2', 2)])));
       exporter = GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes);
 
-      await tester.pumpWidget(MaterialApp(
-        home: Builder(
-          builder: (context) => TextButton(
-            onPressed: () async => spreadsheet = await prepare(
-              context,
-              GoogleSpreadsheet(id: 'id', name: 'name', sheets: []),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () async =>
+                  spreadsheet = await prepare(context, GoogleSpreadsheet(id: 'id', name: 'name', sheets: [])),
+              child: const Text('test'),
             ),
-            child: const Text('test'),
           ),
         ),
-      ));
+      );
       await tester.tap(find.text('test'));
       await tester.pumpAndSettle();
 
@@ -232,32 +238,34 @@ void main() {
 
     testWidgets('prepare spreadsheet but add failed', (tester) async {
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.get(
-        any,
-        $fields: anyNamed('\$fields'),
-        includeGridData: anyNamed('includeGridData'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
-      when(sheetsApi.spreadsheets.batchUpdate(
-        argThat(predicate<gs.BatchUpdateSpreadsheetRequest>((e) {
-          return e.requests?.length == 2 && e.requests?.first.addSheet?.properties?.title == 'sheet1';
-        })),
-        'id',
-      )).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
+      when(
+        sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields'), includeGridData: anyNamed('includeGridData')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+      when(
+        sheetsApi.spreadsheets.batchUpdate(
+          argThat(
+            predicate<gs.BatchUpdateSpreadsheetRequest>((e) {
+              return e.requests?.length == 2 && e.requests?.first.addSheet?.properties?.title == 'sheet1';
+            }),
+          ),
+          'id',
+        ),
+      ).thenAnswer((_) => Future.value(gs.BatchUpdateSpreadsheetResponse()));
       exporter = GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes);
 
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: Builder(
-            builder: (context) => TextButton(
-              onPressed: () async => spreadsheet = await prepare(
-                context,
-                GoogleSpreadsheet(id: 'id', name: 'name', sheets: []),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () async =>
+                    spreadsheet = await prepare(context, GoogleSpreadsheet(id: 'id', name: 'name', sheets: [])),
+                child: const Text('test'),
               ),
-              child: const Text('test'),
             ),
           ),
         ),
-      ));
+      );
       await tester.tap(find.text('test'));
       await tester.pumpAndSettle();
 
@@ -267,29 +275,29 @@ void main() {
 
     testWidgets('prepare spreadsheet and add successfully', (tester) async {
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.get(
-        any,
-        $fields: anyNamed('\$fields'),
-        includeGridData: anyNamed('includeGridData'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+      when(
+        sheetsApi.spreadsheets.get(any, $fields: anyNamed('\$fields'), includeGridData: anyNamed('includeGridData')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet()));
       when(sheetsApi.spreadsheets.batchUpdate(any, any)).thenAnswer(
-        (_) => Future.value(gs.BatchUpdateSpreadsheetResponse(
-          replies: [gs.Response(addSheet: gs.AddSheetResponse(properties: createSheet('title', 1).properties))],
-        )),
+        (_) => Future.value(
+          gs.BatchUpdateSpreadsheetResponse(
+            replies: [gs.Response(addSheet: gs.AddSheetResponse(properties: createSheet('title', 1).properties))],
+          ),
+        ),
       );
       exporter = GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes);
 
-      await tester.pumpWidget(MaterialApp(
-        home: Builder(
-          builder: (context) => TextButton(
-            onPressed: () async => spreadsheet = await prepare(
-              context,
-              GoogleSpreadsheet(id: 'id', name: 'name', sheets: []),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () async =>
+                  spreadsheet = await prepare(context, GoogleSpreadsheet(id: 'id', name: 'name', sheets: [])),
+              child: const Text('test'),
             ),
-            child: const Text('test'),
           ),
         ),
-      ));
+      );
       await tester.tap(find.text('test'));
       await tester.pumpAndSettle();
 

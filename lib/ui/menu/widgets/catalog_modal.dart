@@ -31,43 +31,37 @@ class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal
   @override
   List<Widget> buildFormFields() {
     return [
-      EditImageHolder(
-        path: _image,
-        onSelected: (image) => setState(() => _image = image),
-      ),
-      p(TextFormField(
-        key: const Key('catalog.name'),
-        controller: _nameController,
-        focusNode: _nameFocusNode,
-        textInputAction: TextInputAction.send,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          labelText: S.menuCatalogNameLabel,
-          hintText: widget.catalog?.name ?? S.menuCatalogNameHint,
-          filled: false,
-        ),
-        onFieldSubmitted: handleFieldSubmit,
-        maxLength: 30,
-        validator: Validator.textLimit(
-          S.menuCatalogNameLabel,
-          30,
+      EditImageHolder(path: _image, onSelected: (image) => setState(() => _image = image)),
+      p(
+        TextFormField(
+          key: const Key('catalog.name'),
+          controller: _nameController,
           focusNode: _nameFocusNode,
-          validator: (name) {
-            return widget.catalog?.name != name && Menu.instance.hasName(name) ? S.menuCatalogNameErrorRepeat : null;
-          },
+          textInputAction: .send,
+          textCapitalization: .words,
+          decoration: InputDecoration(
+            labelText: S.menuCatalogNameLabel,
+            hintText: widget.catalog?.name ?? S.menuCatalogNameHint,
+            filled: false,
+          ),
+          onFieldSubmitted: handleFieldSubmit,
+          maxLength: 30,
+          validator: Validator.textLimit(
+            S.menuCatalogNameLabel,
+            30,
+            focusNode: _nameFocusNode,
+            validator: (name) {
+              return widget.catalog?.name != name && Menu.instance.hasName(name) ? S.menuCatalogNameErrorRepeat : null;
+            },
+          ),
         ),
-      )),
+      ),
     ];
   }
 
   Future<Catalog> getCatalog() async {
     final object = CatalogObject(name: _nameController.text, imagePath: _image);
-    final catalog = widget.catalog ??
-        Catalog(
-          name: object.name,
-          index: Menu.instance.newIndex,
-          imagePath: _image,
-        );
+    final catalog = widget.catalog ?? Catalog(name: object.name, index: Menu.instance.newIndex, imagePath: _image);
 
     if (widget.isNew) {
       await Menu.instance.addItem(catalog);

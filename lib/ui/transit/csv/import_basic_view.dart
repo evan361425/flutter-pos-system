@@ -46,7 +46,7 @@ class ImportBasicHeader extends ImportBasicBaseHeader {
       final header = rows.first.join(',');
       final idx = headers.indexOf(header);
       if (idx != -1) {
-        parts[FormattableModel.values[idx]] = rows.skip(1).toList();
+        parts[.values[idx]] = rows.skip(1).toList();
       }
     });
 

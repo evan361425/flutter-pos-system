@@ -6,11 +6,7 @@ class GradientScrollHint extends StatelessWidget {
 
   final bool isDialog;
 
-  const GradientScrollHint({
-    super.key,
-    this.direction = Axis.horizontal,
-    this.isDialog = false,
-  });
+  const GradientScrollHint({super.key, this.direction = .horizontal, this.isDialog = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +16,8 @@ class GradientScrollHint extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: direction == Axis.horizontal ? Alignment.centerRight : Alignment.topCenter,
-            end: direction == Axis.horizontal ? Alignment.centerLeft : Alignment.bottomCenter,
+            begin: direction == .horizontal ? Alignment.centerRight : Alignment.topCenter,
+            end: direction == .horizontal ? Alignment.centerLeft : Alignment.bottomCenter,
             colors: [color.withAlpha(0), color],
           ),
         ),

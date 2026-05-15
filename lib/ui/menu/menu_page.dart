@@ -22,11 +22,7 @@ class MenuPage extends StatefulWidget {
 
   final bool productOnly;
 
-  const MenuPage({
-    super.key,
-    this.catalog,
-    this.productOnly = false,
-  });
+  const MenuPage({super.key, this.catalog, this.productOnly = false});
 
   @override
   State<MenuPage> createState() => _MenuPageState();
@@ -42,7 +38,7 @@ class _MenuPageState extends State<MenuPage> {
     context.watch<Menu>();
 
     final width = MediaQuery.sizeOf(context).width;
-    singleView = Breakpoint.find(width: width) <= Breakpoint.medium;
+    singleView = Breakpoint.find(width: width) <= .medium;
     // if we are in two-view mode, we should always show the second view
     if (!singleView) {
       selected ??= Menu.instance.itemList.firstOrNull;
@@ -68,10 +64,7 @@ class _MenuPageState extends State<MenuPage> {
             controller: controller,
             // disable scrolling, only control by program
             physics: const NeverScrollableScrollPhysics(),
-            children: [
-              firstView,
-              secondView,
-            ],
+            children: [firstView, secondView],
           ),
         ),
       );
@@ -79,11 +72,15 @@ class _MenuPageState extends State<MenuPage> {
 
     // no need to use Scaffold here, because this will be wrapped by HomePage
     return SafeArea(
-      child: Row(key: const Key('menu_page'), crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Expanded(child: firstView),
-        const VerticalDivider(),
-        Expanded(child: secondView),
-      ]),
+      child: Row(
+        key: const Key('menu_page'),
+        crossAxisAlignment: .start,
+        children: [
+          Expanded(child: firstView),
+          const VerticalDivider(),
+          Expanded(child: secondView),
+        ],
+      ),
     );
   }
 
@@ -106,10 +103,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget get firstView {
     if (Menu.instance.isEmpty) {
       return Center(
-        child: EmptyBody(
-          content: S.menuCatalogEmptyBody,
-          onPressed: _handleCatalogCreate,
-        ),
+        child: EmptyBody(content: S.menuCatalogEmptyBody, onPressed: _handleCatalogCreate),
       );
     }
 
@@ -117,27 +111,31 @@ class _MenuPageState extends State<MenuPage> {
       return const MenuProductList(catalog: null);
     }
 
-    final addButton = Row(children: [
-      Expanded(
-        child: ElevatedButton.icon(
-          key: const Key('menu.add_catalog'),
-          onPressed: _handleCatalogCreate,
-          label: Text(S.menuCatalogTitleCreate),
-          icon: const Icon(KIcons.add),
+    final addButton = Row(
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            key: const Key('menu.add_catalog'),
+            onPressed: _handleCatalogCreate,
+            label: Text(S.menuCatalogTitleCreate),
+            icon: const Icon(KIcons.add),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
 
     return MenuCatalogList(
       Menu.instance.itemList, // put it here to handle reload
-      leading: Column(children: [
-        if (!singleView)
-          const Padding(
-            padding: EdgeInsets.only(bottom: kInternalSpacing),
-            child: _SearchAction(withTextFiled: true),
-          ),
-        addButton,
-      ]),
+      leading: Column(
+        children: [
+          if (!singleView)
+            const Padding(
+              padding: .only(bottom: kInternalSpacing),
+              child: _SearchAction(withTextFiled: true),
+            ),
+          addButton,
+        ],
+      ),
       onSelected: _handleSelected,
     );
   }
@@ -160,16 +158,18 @@ class _MenuPageState extends State<MenuPage> {
 
     return MenuProductList(
       catalog: selected,
-      leading: Row(children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            key: const Key('menu.add_product'),
-            onPressed: _handleProductCreate,
-            label: Text(S.menuProductTitleCreate),
-            icon: const Icon(KIcons.add),
+      leading: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              key: const Key('menu.add_product'),
+              onPressed: _handleProductCreate,
+              label: Text(S.menuProductTitleCreate),
+              icon: const Icon(KIcons.add),
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
@@ -192,10 +192,7 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _handleProductCreate() async {
-    final id = await context.pushNamed(
-      Routes.menuCatalogCreate,
-      queryParameters: {'id': selected?.id},
-    );
+    final id = await context.pushNamed(Routes.menuCatalogCreate, queryParameters: {'id': selected?.id});
     if (id is String && mounted) {
       context.pushNamed(Routes.menuProduct, pathParameters: {'id': id});
     }
@@ -218,11 +215,7 @@ class _MenuPageState extends State<MenuPage> {
 
   Future<void> _pageSlideTo(int index) async {
     if (singleView) {
-      return controller.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.ease,
-      );
+      return controller.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.ease);
     }
   }
 }
@@ -251,25 +244,16 @@ class _SearchAction extends StatelessWidget {
       key: Key('search.${match.product.id}'),
       title: details == null ? HighlightText(text: match.product.name, pattern: pattern) : Text(match.product.name),
       subtitle: details != null
-          ? HighlightText(
-              text: details,
-              pattern: pattern,
-              prefix: S.menuSearchPrefix(match.detailedType!),
-            )
+          ? HighlightText(text: details, pattern: pattern, prefix: S.menuSearchPrefix(match.detailedType!))
           : null,
       onTap: () {
         match.product.searched();
-        context.pushNamed(Routes.menuProduct, pathParameters: {
-          'id': match.product.id,
-        });
+        context.pushNamed(Routes.menuProduct, pathParameters: {'id': match.product.id});
       },
     );
   }
 
   Widget _searchEmptyBuilder(BuildContext context, String text) {
-    return ListTile(
-      title: Text(S.menuSearchNotFound),
-      leading: const Icon(KIcons.warn),
-    );
+    return ListTile(title: Text(S.menuSearchNotFound), leading: const Icon(KIcons.warn));
   }
 }

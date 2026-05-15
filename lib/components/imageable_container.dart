@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,28 +10,20 @@ class ImageableContainer extends StatelessWidget {
 
   final List<Widget> children;
 
-  const ImageableContainer({
-    super.key,
-    required this.controller,
-    required this.children,
-  });
+  const ImageableContainer({super.key, required this.controller, required this.children});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing, vertical: kTopSpacing),
+        padding: const .symmetric(horizontal: kHorizontalSpacing, vertical: kTopSpacing),
         child: SingleChildScrollView(
           child: DefaultTextStyle(
-            style: const TextStyle(color: Color(0xFF424242), overflow: TextOverflow.clip),
+            style: const TextStyle(color: Color(0xFF424242), overflow: .clip),
             child: RepaintBoundary(
               key: controller.key,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: children,
-              ),
+              child: Column(mainAxisSize: .min, crossAxisAlignment: .stretch, children: children),
             ),
           ),
         ),
@@ -58,9 +49,7 @@ class ImageableController {
   ///
   /// - [asPng] is true, the image will be in PNG format, otherwise, it will be in raw RGBA format
   /// - [widths] tells how many pixels in a row, can provide multiple values to get multiple images
-  Future<List<ConvertibleImage>?> toImage({
-    required List<int> widths,
-  }) async {
+  Future<List<ConvertibleImage>?> toImage({required List<int> widths}) async {
     // Delay is required. See Issue https://github.com/flutter/flutter/issues/22308
     await Future.delayed(const Duration(milliseconds: 20));
 
@@ -72,7 +61,7 @@ class ImageableController {
     final result = <ConvertibleImage>[];
     for (final w in widths) {
       final image = await boundary.toImage(pixelRatio: w / boundary.paintBounds.width);
-      final byteData = await image.toByteData(format: ImageByteFormat.rawRgba);
+      final byteData = await image.toByteData(format: .rawRgba);
       result.add(ConvertibleImage(byteData!.buffer.asUint8List(), width: w));
       Log.out('generate image with width: $w', 'imageable_container');
 
@@ -114,7 +103,8 @@ class ConvertibleImage {
     for (var i = 0; i < bytes.length; i++) {
       // convert to binary image
       final write = invert
-          ? bytes[i] > 0 // black
+          ? bytes[i] >
+                0 // black
           : bytes[i] == 0; // white
       if (write) {
         if (mirrored) {

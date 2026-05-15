@@ -26,377 +26,159 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: subtype_of_sealed_class
 
 class _FakeAboutResource_0 extends _i1.SmartFake implements _i2.AboutResource {
-  _FakeAboutResource_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeAboutResource_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeAccessproposalsResource_1 extends _i1.SmartFake implements _i2.AccessproposalsResource {
-  _FakeAccessproposalsResource_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeAccessproposalsResource_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeAppsResource_2 extends _i1.SmartFake implements _i2.AppsResource {
-  _FakeAppsResource_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeAppsResource_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeChangesResource_3 extends _i1.SmartFake implements _i2.ChangesResource {
-  _FakeChangesResource_3(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeChangesResource_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeChannelsResource_4 extends _i1.SmartFake implements _i2.ChannelsResource {
-  _FakeChannelsResource_4(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeChannelsResource_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeCommentsResource_5 extends _i1.SmartFake implements _i2.CommentsResource {
-  _FakeCommentsResource_5(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeCommentsResource_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeDrivesResource_6 extends _i1.SmartFake implements _i2.DrivesResource {
-  _FakeDrivesResource_6(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeDrivesResource_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeFilesResource_7 extends _i1.SmartFake implements _i2.FilesResource {
-  _FakeFilesResource_7(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeFilesResource_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeOperationsResource_8 extends _i1.SmartFake implements _i2.OperationsResource {
-  _FakeOperationsResource_8(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeOperationsResource_8(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakePermissionsResource_9 extends _i1.SmartFake implements _i2.PermissionsResource {
-  _FakePermissionsResource_9(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePermissionsResource_9(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeRepliesResource_10 extends _i1.SmartFake implements _i2.RepliesResource {
-  _FakeRepliesResource_10(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeRepliesResource_10(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeRevisionsResource_11 extends _i1.SmartFake implements _i2.RevisionsResource {
-  _FakeRevisionsResource_11(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeRevisionsResource_11(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeTeamdrivesResource_12 extends _i1.SmartFake implements _i2.TeamdrivesResource {
-  _FakeTeamdrivesResource_12(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeTeamdrivesResource_12(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeFile_13 extends _i1.SmartFake implements _i2.File {
-  _FakeFile_13(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeFile_13(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeOperation_14 extends _i1.SmartFake implements _i2.Operation {
-  _FakeOperation_14(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeOperation_14(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeGeneratedIds_15 extends _i1.SmartFake implements _i2.GeneratedIds {
-  _FakeGeneratedIds_15(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeGeneratedIds_15(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeObject_16 extends _i1.SmartFake implements Object {
-  _FakeObject_16(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeObject_16(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeFileList_17 extends _i1.SmartFake implements _i2.FileList {
-  _FakeFileList_17(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeFileList_17(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeLabelList_18 extends _i1.SmartFake implements _i2.LabelList {
-  _FakeLabelList_18(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeLabelList_18(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeModifyLabelsResponse_19 extends _i1.SmartFake implements _i2.ModifyLabelsResponse {
-  _FakeModifyLabelsResponse_19(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeModifyLabelsResponse_19(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _Fake$Channel01_20 extends _i1.SmartFake implements _i3.$Channel01 {
-  _Fake$Channel01_20(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _Fake$Channel01_20(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSpreadsheetsResource_21 extends _i1.SmartFake implements _i4.SpreadsheetsResource {
-  _FakeSpreadsheetsResource_21(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeSpreadsheetsResource_21(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSpreadsheetsDeveloperMetadataResource_22 extends _i1.SmartFake
     implements _i4.SpreadsheetsDeveloperMetadataResource {
-  _FakeSpreadsheetsDeveloperMetadataResource_22(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeSpreadsheetsDeveloperMetadataResource_22(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeSpreadsheetsSheetsResource_23 extends _i1.SmartFake implements _i4.SpreadsheetsSheetsResource {
-  _FakeSpreadsheetsSheetsResource_23(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeSpreadsheetsSheetsResource_23(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSpreadsheetsValuesResource_24 extends _i1.SmartFake implements _i4.SpreadsheetsValuesResource {
-  _FakeSpreadsheetsValuesResource_24(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeSpreadsheetsValuesResource_24(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeBatchUpdateSpreadsheetResponse_25 extends _i1.SmartFake implements _i4.BatchUpdateSpreadsheetResponse {
-  _FakeBatchUpdateSpreadsheetResponse_25(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBatchUpdateSpreadsheetResponse_25(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSpreadsheet_26 extends _i1.SmartFake implements _i4.Spreadsheet {
-  _FakeSpreadsheet_26(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeSpreadsheet_26(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeAppendValuesResponse_27 extends _i1.SmartFake implements _i4.AppendValuesResponse {
-  _FakeAppendValuesResponse_27(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeAppendValuesResponse_27(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeBatchClearValuesResponse_28 extends _i1.SmartFake implements _i4.BatchClearValuesResponse {
-  _FakeBatchClearValuesResponse_28(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBatchClearValuesResponse_28(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeBatchClearValuesByDataFilterResponse_29 extends _i1.SmartFake
     implements _i4.BatchClearValuesByDataFilterResponse {
-  _FakeBatchClearValuesByDataFilterResponse_29(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBatchClearValuesByDataFilterResponse_29(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeBatchGetValuesResponse_30 extends _i1.SmartFake implements _i4.BatchGetValuesResponse {
-  _FakeBatchGetValuesResponse_30(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBatchGetValuesResponse_30(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeBatchGetValuesByDataFilterResponse_31 extends _i1.SmartFake
     implements _i4.BatchGetValuesByDataFilterResponse {
-  _FakeBatchGetValuesByDataFilterResponse_31(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBatchGetValuesByDataFilterResponse_31(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeBatchUpdateValuesResponse_32 extends _i1.SmartFake implements _i4.BatchUpdateValuesResponse {
-  _FakeBatchUpdateValuesResponse_32(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBatchUpdateValuesResponse_32(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeBatchUpdateValuesByDataFilterResponse_33 extends _i1.SmartFake
     implements _i4.BatchUpdateValuesByDataFilterResponse {
-  _FakeBatchUpdateValuesByDataFilterResponse_33(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeBatchUpdateValuesByDataFilterResponse_33(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeClearValuesResponse_34 extends _i1.SmartFake implements _i4.ClearValuesResponse {
-  _FakeClearValuesResponse_34(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeClearValuesResponse_34(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeValueRange_35 extends _i1.SmartFake implements _i4.ValueRange {
-  _FakeValueRange_35(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeValueRange_35(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeUpdateValuesResponse_36 extends _i1.SmartFake implements _i4.UpdateValuesResponse {
-  _FakeUpdateValuesResponse_36(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeUpdateValuesResponse_36(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [DriveApi].
@@ -408,121 +190,99 @@ class MockDriveApi extends _i1.Mock implements _i2.DriveApi {
   }
 
   @override
-  _i2.AboutResource get about => (super.noSuchMethod(
-        Invocation.getter(#about),
-        returnValue: _FakeAboutResource_0(
-          this,
-          Invocation.getter(#about),
-        ),
-      ) as _i2.AboutResource);
+  _i2.AboutResource get about =>
+      (super.noSuchMethod(Invocation.getter(#about), returnValue: _FakeAboutResource_0(this, Invocation.getter(#about)))
+          as _i2.AboutResource);
 
   @override
-  _i2.AccessproposalsResource get accessproposals => (super.noSuchMethod(
-        Invocation.getter(#accessproposals),
-        returnValue: _FakeAccessproposalsResource_1(
-          this,
-          Invocation.getter(#accessproposals),
-        ),
-      ) as _i2.AccessproposalsResource);
+  _i2.AccessproposalsResource get accessproposals =>
+      (super.noSuchMethod(
+            Invocation.getter(#accessproposals),
+            returnValue: _FakeAccessproposalsResource_1(this, Invocation.getter(#accessproposals)),
+          )
+          as _i2.AccessproposalsResource);
 
   @override
-  _i2.AppsResource get apps => (super.noSuchMethod(
-        Invocation.getter(#apps),
-        returnValue: _FakeAppsResource_2(
-          this,
-          Invocation.getter(#apps),
-        ),
-      ) as _i2.AppsResource);
+  _i2.AppsResource get apps =>
+      (super.noSuchMethod(Invocation.getter(#apps), returnValue: _FakeAppsResource_2(this, Invocation.getter(#apps)))
+          as _i2.AppsResource);
 
   @override
-  _i2.ChangesResource get changes => (super.noSuchMethod(
-        Invocation.getter(#changes),
-        returnValue: _FakeChangesResource_3(
-          this,
-          Invocation.getter(#changes),
-        ),
-      ) as _i2.ChangesResource);
+  _i2.ChangesResource get changes =>
+      (super.noSuchMethod(
+            Invocation.getter(#changes),
+            returnValue: _FakeChangesResource_3(this, Invocation.getter(#changes)),
+          )
+          as _i2.ChangesResource);
 
   @override
-  _i2.ChannelsResource get channels => (super.noSuchMethod(
-        Invocation.getter(#channels),
-        returnValue: _FakeChannelsResource_4(
-          this,
-          Invocation.getter(#channels),
-        ),
-      ) as _i2.ChannelsResource);
+  _i2.ChannelsResource get channels =>
+      (super.noSuchMethod(
+            Invocation.getter(#channels),
+            returnValue: _FakeChannelsResource_4(this, Invocation.getter(#channels)),
+          )
+          as _i2.ChannelsResource);
 
   @override
-  _i2.CommentsResource get comments => (super.noSuchMethod(
-        Invocation.getter(#comments),
-        returnValue: _FakeCommentsResource_5(
-          this,
-          Invocation.getter(#comments),
-        ),
-      ) as _i2.CommentsResource);
+  _i2.CommentsResource get comments =>
+      (super.noSuchMethod(
+            Invocation.getter(#comments),
+            returnValue: _FakeCommentsResource_5(this, Invocation.getter(#comments)),
+          )
+          as _i2.CommentsResource);
 
   @override
-  _i2.DrivesResource get drives => (super.noSuchMethod(
-        Invocation.getter(#drives),
-        returnValue: _FakeDrivesResource_6(
-          this,
-          Invocation.getter(#drives),
-        ),
-      ) as _i2.DrivesResource);
+  _i2.DrivesResource get drives =>
+      (super.noSuchMethod(
+            Invocation.getter(#drives),
+            returnValue: _FakeDrivesResource_6(this, Invocation.getter(#drives)),
+          )
+          as _i2.DrivesResource);
 
   @override
-  _i2.FilesResource get files => (super.noSuchMethod(
-        Invocation.getter(#files),
-        returnValue: _FakeFilesResource_7(
-          this,
-          Invocation.getter(#files),
-        ),
-      ) as _i2.FilesResource);
+  _i2.FilesResource get files =>
+      (super.noSuchMethod(Invocation.getter(#files), returnValue: _FakeFilesResource_7(this, Invocation.getter(#files)))
+          as _i2.FilesResource);
 
   @override
-  _i2.OperationsResource get operations => (super.noSuchMethod(
-        Invocation.getter(#operations),
-        returnValue: _FakeOperationsResource_8(
-          this,
-          Invocation.getter(#operations),
-        ),
-      ) as _i2.OperationsResource);
+  _i2.OperationsResource get operations =>
+      (super.noSuchMethod(
+            Invocation.getter(#operations),
+            returnValue: _FakeOperationsResource_8(this, Invocation.getter(#operations)),
+          )
+          as _i2.OperationsResource);
 
   @override
-  _i2.PermissionsResource get permissions => (super.noSuchMethod(
-        Invocation.getter(#permissions),
-        returnValue: _FakePermissionsResource_9(
-          this,
-          Invocation.getter(#permissions),
-        ),
-      ) as _i2.PermissionsResource);
+  _i2.PermissionsResource get permissions =>
+      (super.noSuchMethod(
+            Invocation.getter(#permissions),
+            returnValue: _FakePermissionsResource_9(this, Invocation.getter(#permissions)),
+          )
+          as _i2.PermissionsResource);
 
   @override
-  _i2.RepliesResource get replies => (super.noSuchMethod(
-        Invocation.getter(#replies),
-        returnValue: _FakeRepliesResource_10(
-          this,
-          Invocation.getter(#replies),
-        ),
-      ) as _i2.RepliesResource);
+  _i2.RepliesResource get replies =>
+      (super.noSuchMethod(
+            Invocation.getter(#replies),
+            returnValue: _FakeRepliesResource_10(this, Invocation.getter(#replies)),
+          )
+          as _i2.RepliesResource);
 
   @override
-  _i2.RevisionsResource get revisions => (super.noSuchMethod(
-        Invocation.getter(#revisions),
-        returnValue: _FakeRevisionsResource_11(
-          this,
-          Invocation.getter(#revisions),
-        ),
-      ) as _i2.RevisionsResource);
+  _i2.RevisionsResource get revisions =>
+      (super.noSuchMethod(
+            Invocation.getter(#revisions),
+            returnValue: _FakeRevisionsResource_11(this, Invocation.getter(#revisions)),
+          )
+          as _i2.RevisionsResource);
 
   @override
-  _i2.TeamdrivesResource get teamdrives => (super.noSuchMethod(
-        Invocation.getter(#teamdrives),
-        returnValue: _FakeTeamdrivesResource_12(
-          this,
-          Invocation.getter(#teamdrives),
-        ),
-      ) as _i2.TeamdrivesResource);
+  _i2.TeamdrivesResource get teamdrives =>
+      (super.noSuchMethod(
+            Invocation.getter(#teamdrives),
+            returnValue: _FakeTeamdrivesResource_12(this, Invocation.getter(#teamdrives)),
+          )
+          as _i2.TeamdrivesResource);
 }
 
 /// A class which mocks [FilesResource].
@@ -548,46 +308,43 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #copy,
-          [
-            request,
-            fileId,
-          ],
-          {
-            #enforceSingleParent: enforceSingleParent,
-            #ignoreDefaultVisibility: ignoreDefaultVisibility,
-            #includeLabels: includeLabels,
-            #includePermissionsForView: includePermissionsForView,
-            #keepRevisionForever: keepRevisionForever,
-            #ocrLanguage: ocrLanguage,
-            #supportsAllDrives: supportsAllDrives,
-            #supportsTeamDrives: supportsTeamDrives,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i2.File>.value(_FakeFile_13(
-          this,
-          Invocation.method(
-            #copy,
-            [
-              request,
-              fileId,
-            ],
-            {
-              #enforceSingleParent: enforceSingleParent,
-              #ignoreDefaultVisibility: ignoreDefaultVisibility,
-              #includeLabels: includeLabels,
-              #includePermissionsForView: includePermissionsForView,
-              #keepRevisionForever: keepRevisionForever,
-              #ocrLanguage: ocrLanguage,
-              #supportsAllDrives: supportsAllDrives,
-              #supportsTeamDrives: supportsTeamDrives,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.File>);
+            Invocation.method(
+              #copy,
+              [request, fileId],
+              {
+                #enforceSingleParent: enforceSingleParent,
+                #ignoreDefaultVisibility: ignoreDefaultVisibility,
+                #includeLabels: includeLabels,
+                #includePermissionsForView: includePermissionsForView,
+                #keepRevisionForever: keepRevisionForever,
+                #ocrLanguage: ocrLanguage,
+                #supportsAllDrives: supportsAllDrives,
+                #supportsTeamDrives: supportsTeamDrives,
+                #$fields: $fields,
+              },
+            ),
+            returnValue: _i5.Future<_i2.File>.value(
+              _FakeFile_13(
+                this,
+                Invocation.method(
+                  #copy,
+                  [request, fileId],
+                  {
+                    #enforceSingleParent: enforceSingleParent,
+                    #ignoreDefaultVisibility: ignoreDefaultVisibility,
+                    #includeLabels: includeLabels,
+                    #includePermissionsForView: includePermissionsForView,
+                    #keepRevisionForever: keepRevisionForever,
+                    #ocrLanguage: ocrLanguage,
+                    #supportsAllDrives: supportsAllDrives,
+                    #supportsTeamDrives: supportsTeamDrives,
+                    #$fields: $fields,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.File>);
 
   @override
   _i5.Future<_i2.File> create(
@@ -606,46 +363,49 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     _i6.Media? uploadMedia,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #create,
-          [request],
-          {
-            #enforceSingleParent: enforceSingleParent,
-            #ignoreDefaultVisibility: ignoreDefaultVisibility,
-            #includeLabels: includeLabels,
-            #includePermissionsForView: includePermissionsForView,
-            #keepRevisionForever: keepRevisionForever,
-            #ocrLanguage: ocrLanguage,
-            #supportsAllDrives: supportsAllDrives,
-            #supportsTeamDrives: supportsTeamDrives,
-            #useContentAsIndexableText: useContentAsIndexableText,
-            #$fields: $fields,
-            #uploadOptions: uploadOptions,
-            #uploadMedia: uploadMedia,
-          },
-        ),
-        returnValue: _i5.Future<_i2.File>.value(_FakeFile_13(
-          this,
-          Invocation.method(
-            #create,
-            [request],
-            {
-              #enforceSingleParent: enforceSingleParent,
-              #ignoreDefaultVisibility: ignoreDefaultVisibility,
-              #includeLabels: includeLabels,
-              #includePermissionsForView: includePermissionsForView,
-              #keepRevisionForever: keepRevisionForever,
-              #ocrLanguage: ocrLanguage,
-              #supportsAllDrives: supportsAllDrives,
-              #supportsTeamDrives: supportsTeamDrives,
-              #useContentAsIndexableText: useContentAsIndexableText,
-              #$fields: $fields,
-              #uploadOptions: uploadOptions,
-              #uploadMedia: uploadMedia,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.File>);
+            Invocation.method(
+              #create,
+              [request],
+              {
+                #enforceSingleParent: enforceSingleParent,
+                #ignoreDefaultVisibility: ignoreDefaultVisibility,
+                #includeLabels: includeLabels,
+                #includePermissionsForView: includePermissionsForView,
+                #keepRevisionForever: keepRevisionForever,
+                #ocrLanguage: ocrLanguage,
+                #supportsAllDrives: supportsAllDrives,
+                #supportsTeamDrives: supportsTeamDrives,
+                #useContentAsIndexableText: useContentAsIndexableText,
+                #$fields: $fields,
+                #uploadOptions: uploadOptions,
+                #uploadMedia: uploadMedia,
+              },
+            ),
+            returnValue: _i5.Future<_i2.File>.value(
+              _FakeFile_13(
+                this,
+                Invocation.method(
+                  #create,
+                  [request],
+                  {
+                    #enforceSingleParent: enforceSingleParent,
+                    #ignoreDefaultVisibility: ignoreDefaultVisibility,
+                    #includeLabels: includeLabels,
+                    #includePermissionsForView: includePermissionsForView,
+                    #keepRevisionForever: keepRevisionForever,
+                    #ocrLanguage: ocrLanguage,
+                    #supportsAllDrives: supportsAllDrives,
+                    #supportsTeamDrives: supportsTeamDrives,
+                    #useContentAsIndexableText: useContentAsIndexableText,
+                    #$fields: $fields,
+                    #uploadOptions: uploadOptions,
+                    #uploadMedia: uploadMedia,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.File>);
 
   @override
   _i5.Future<void> delete(
@@ -656,70 +416,50 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #delete,
-          [fileId],
-          {
-            #enforceSingleParent: enforceSingleParent,
-            #supportsAllDrives: supportsAllDrives,
-            #supportsTeamDrives: supportsTeamDrives,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+            Invocation.method(
+              #delete,
+              [fileId],
+              {
+                #enforceSingleParent: enforceSingleParent,
+                #supportsAllDrives: supportsAllDrives,
+                #supportsTeamDrives: supportsTeamDrives,
+                #$fields: $fields,
+              },
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
-  _i5.Future<_i2.Operation> download(
-    String? fileId, {
-    String? mimeType,
-    String? revisionId,
-    String? $fields,
-  }) =>
+  _i5.Future<_i2.Operation> download(String? fileId, {String? mimeType, String? revisionId, String? $fields}) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #download,
-          [fileId],
-          {
-            #mimeType: mimeType,
-            #revisionId: revisionId,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i2.Operation>.value(_FakeOperation_14(
-          this,
-          Invocation.method(
-            #download,
-            [fileId],
-            {
-              #mimeType: mimeType,
-              #revisionId: revisionId,
+            Invocation.method(#download, [fileId], {#mimeType: mimeType, #revisionId: revisionId, #$fields: $fields}),
+            returnValue: _i5.Future<_i2.Operation>.value(
+              _FakeOperation_14(
+                this,
+                Invocation.method(
+                  #download,
+                  [fileId],
+                  {#mimeType: mimeType, #revisionId: revisionId, #$fields: $fields},
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.Operation>);
+
+  @override
+  _i5.Future<void> emptyTrash({String? driveId, bool? enforceSingleParent, String? $fields}) =>
+      (super.noSuchMethod(
+            Invocation.method(#emptyTrash, [], {
+              #driveId: driveId,
+              #enforceSingleParent: enforceSingleParent,
               #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.Operation>);
-
-  @override
-  _i5.Future<void> emptyTrash({
-    String? driveId,
-    bool? enforceSingleParent,
-    String? $fields,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #emptyTrash,
-          [],
-          {
-            #driveId: driveId,
-            #enforceSingleParent: enforceSingleParent,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+            }),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
   _i5.Future<_i6.Media?> export(
@@ -729,52 +469,23 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     _i6.DownloadOptions? downloadOptions = _i6.DownloadOptions.metadata,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #export,
-          [
-            fileId,
-            mimeType,
-          ],
-          {
-            #$fields: $fields,
-            #downloadOptions: downloadOptions,
-          },
-        ),
-        returnValue: _i5.Future<_i6.Media?>.value(),
-      ) as _i5.Future<_i6.Media?>);
+            Invocation.method(#export, [fileId, mimeType], {#$fields: $fields, #downloadOptions: downloadOptions}),
+            returnValue: _i5.Future<_i6.Media?>.value(),
+          )
+          as _i5.Future<_i6.Media?>);
 
   @override
-  _i5.Future<_i2.GeneratedIds> generateIds({
-    int? count,
-    String? space,
-    String? type,
-    String? $fields,
-  }) =>
+  _i5.Future<_i2.GeneratedIds> generateIds({int? count, String? space, String? type, String? $fields}) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #generateIds,
-          [],
-          {
-            #count: count,
-            #space: space,
-            #type: type,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i2.GeneratedIds>.value(_FakeGeneratedIds_15(
-          this,
-          Invocation.method(
-            #generateIds,
-            [],
-            {
-              #count: count,
-              #space: space,
-              #type: type,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.GeneratedIds>);
+            Invocation.method(#generateIds, [], {#count: count, #space: space, #type: type, #$fields: $fields}),
+            returnValue: _i5.Future<_i2.GeneratedIds>.value(
+              _FakeGeneratedIds_15(
+                this,
+                Invocation.method(#generateIds, [], {#count: count, #space: space, #type: type, #$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.GeneratedIds>);
 
   @override
   _i5.Future<Object> get(
@@ -788,36 +499,39 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     _i6.DownloadOptions? downloadOptions = _i6.DownloadOptions.metadata,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #get,
-          [fileId],
-          {
-            #acknowledgeAbuse: acknowledgeAbuse,
-            #includeLabels: includeLabels,
-            #includePermissionsForView: includePermissionsForView,
-            #supportsAllDrives: supportsAllDrives,
-            #supportsTeamDrives: supportsTeamDrives,
-            #$fields: $fields,
-            #downloadOptions: downloadOptions,
-          },
-        ),
-        returnValue: _i5.Future<Object>.value(_FakeObject_16(
-          this,
-          Invocation.method(
-            #get,
-            [fileId],
-            {
-              #acknowledgeAbuse: acknowledgeAbuse,
-              #includeLabels: includeLabels,
-              #includePermissionsForView: includePermissionsForView,
-              #supportsAllDrives: supportsAllDrives,
-              #supportsTeamDrives: supportsTeamDrives,
-              #$fields: $fields,
-              #downloadOptions: downloadOptions,
-            },
-          ),
-        )),
-      ) as _i5.Future<Object>);
+            Invocation.method(
+              #get,
+              [fileId],
+              {
+                #acknowledgeAbuse: acknowledgeAbuse,
+                #includeLabels: includeLabels,
+                #includePermissionsForView: includePermissionsForView,
+                #supportsAllDrives: supportsAllDrives,
+                #supportsTeamDrives: supportsTeamDrives,
+                #$fields: $fields,
+                #downloadOptions: downloadOptions,
+              },
+            ),
+            returnValue: _i5.Future<Object>.value(
+              _FakeObject_16(
+                this,
+                Invocation.method(
+                  #get,
+                  [fileId],
+                  {
+                    #acknowledgeAbuse: acknowledgeAbuse,
+                    #includeLabels: includeLabels,
+                    #includePermissionsForView: includePermissionsForView,
+                    #supportsAllDrives: supportsAllDrives,
+                    #supportsTeamDrives: supportsTeamDrives,
+                    #$fields: $fields,
+                    #downloadOptions: downloadOptions,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<Object>);
 
   @override
   _i5.Future<_i2.FileList> list({
@@ -839,34 +553,7 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #list,
-          [],
-          {
-            #corpora: corpora,
-            #corpus: corpus,
-            #driveId: driveId,
-            #includeItemsFromAllDrives: includeItemsFromAllDrives,
-            #includeLabels: includeLabels,
-            #includePermissionsForView: includePermissionsForView,
-            #includeTeamDriveItems: includeTeamDriveItems,
-            #orderBy: orderBy,
-            #pageSize: pageSize,
-            #pageToken: pageToken,
-            #q: q,
-            #spaces: spaces,
-            #supportsAllDrives: supportsAllDrives,
-            #supportsTeamDrives: supportsTeamDrives,
-            #teamDriveId: teamDriveId,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i2.FileList>.value(_FakeFileList_17(
-          this,
-          Invocation.method(
-            #list,
-            [],
-            {
+            Invocation.method(#list, [], {
               #corpora: corpora,
               #corpus: corpus,
               #driveId: driveId,
@@ -883,41 +570,53 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
               #supportsTeamDrives: supportsTeamDrives,
               #teamDriveId: teamDriveId,
               #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.FileList>);
+            }),
+            returnValue: _i5.Future<_i2.FileList>.value(
+              _FakeFileList_17(
+                this,
+                Invocation.method(#list, [], {
+                  #corpora: corpora,
+                  #corpus: corpus,
+                  #driveId: driveId,
+                  #includeItemsFromAllDrives: includeItemsFromAllDrives,
+                  #includeLabels: includeLabels,
+                  #includePermissionsForView: includePermissionsForView,
+                  #includeTeamDriveItems: includeTeamDriveItems,
+                  #orderBy: orderBy,
+                  #pageSize: pageSize,
+                  #pageToken: pageToken,
+                  #q: q,
+                  #spaces: spaces,
+                  #supportsAllDrives: supportsAllDrives,
+                  #supportsTeamDrives: supportsTeamDrives,
+                  #teamDriveId: teamDriveId,
+                  #$fields: $fields,
+                }),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.FileList>);
 
   @override
-  _i5.Future<_i2.LabelList> listLabels(
-    String? fileId, {
-    int? maxResults,
-    String? pageToken,
-    String? $fields,
-  }) =>
+  _i5.Future<_i2.LabelList> listLabels(String? fileId, {int? maxResults, String? pageToken, String? $fields}) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #listLabels,
-          [fileId],
-          {
-            #maxResults: maxResults,
-            #pageToken: pageToken,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i2.LabelList>.value(_FakeLabelList_18(
-          this,
-          Invocation.method(
-            #listLabels,
-            [fileId],
-            {
-              #maxResults: maxResults,
-              #pageToken: pageToken,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.LabelList>);
+            Invocation.method(
+              #listLabels,
+              [fileId],
+              {#maxResults: maxResults, #pageToken: pageToken, #$fields: $fields},
+            ),
+            returnValue: _i5.Future<_i2.LabelList>.value(
+              _FakeLabelList_18(
+                this,
+                Invocation.method(
+                  #listLabels,
+                  [fileId],
+                  {#maxResults: maxResults, #pageToken: pageToken, #$fields: $fields},
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.LabelList>);
 
   @override
   _i5.Future<_i2.ModifyLabelsResponse> modifyLabels(
@@ -926,26 +625,15 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #modifyLabels,
-          [
-            request,
-            fileId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue: _i5.Future<_i2.ModifyLabelsResponse>.value(_FakeModifyLabelsResponse_19(
-          this,
-          Invocation.method(
-            #modifyLabels,
-            [
-              request,
-              fileId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i2.ModifyLabelsResponse>);
+            Invocation.method(#modifyLabels, [request, fileId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i2.ModifyLabelsResponse>.value(
+              _FakeModifyLabelsResponse_19(
+                this,
+                Invocation.method(#modifyLabels, [request, fileId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.ModifyLabelsResponse>);
 
   @override
   _i5.Future<_i2.File> update(
@@ -966,54 +654,51 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     _i6.Media? uploadMedia,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #update,
-          [
-            request,
-            fileId,
-          ],
-          {
-            #addParents: addParents,
-            #enforceSingleParent: enforceSingleParent,
-            #includeLabels: includeLabels,
-            #includePermissionsForView: includePermissionsForView,
-            #keepRevisionForever: keepRevisionForever,
-            #ocrLanguage: ocrLanguage,
-            #removeParents: removeParents,
-            #supportsAllDrives: supportsAllDrives,
-            #supportsTeamDrives: supportsTeamDrives,
-            #useContentAsIndexableText: useContentAsIndexableText,
-            #$fields: $fields,
-            #uploadOptions: uploadOptions,
-            #uploadMedia: uploadMedia,
-          },
-        ),
-        returnValue: _i5.Future<_i2.File>.value(_FakeFile_13(
-          this,
-          Invocation.method(
-            #update,
-            [
-              request,
-              fileId,
-            ],
-            {
-              #addParents: addParents,
-              #enforceSingleParent: enforceSingleParent,
-              #includeLabels: includeLabels,
-              #includePermissionsForView: includePermissionsForView,
-              #keepRevisionForever: keepRevisionForever,
-              #ocrLanguage: ocrLanguage,
-              #removeParents: removeParents,
-              #supportsAllDrives: supportsAllDrives,
-              #supportsTeamDrives: supportsTeamDrives,
-              #useContentAsIndexableText: useContentAsIndexableText,
-              #$fields: $fields,
-              #uploadOptions: uploadOptions,
-              #uploadMedia: uploadMedia,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.File>);
+            Invocation.method(
+              #update,
+              [request, fileId],
+              {
+                #addParents: addParents,
+                #enforceSingleParent: enforceSingleParent,
+                #includeLabels: includeLabels,
+                #includePermissionsForView: includePermissionsForView,
+                #keepRevisionForever: keepRevisionForever,
+                #ocrLanguage: ocrLanguage,
+                #removeParents: removeParents,
+                #supportsAllDrives: supportsAllDrives,
+                #supportsTeamDrives: supportsTeamDrives,
+                #useContentAsIndexableText: useContentAsIndexableText,
+                #$fields: $fields,
+                #uploadOptions: uploadOptions,
+                #uploadMedia: uploadMedia,
+              },
+            ),
+            returnValue: _i5.Future<_i2.File>.value(
+              _FakeFile_13(
+                this,
+                Invocation.method(
+                  #update,
+                  [request, fileId],
+                  {
+                    #addParents: addParents,
+                    #enforceSingleParent: enforceSingleParent,
+                    #includeLabels: includeLabels,
+                    #includePermissionsForView: includePermissionsForView,
+                    #keepRevisionForever: keepRevisionForever,
+                    #ocrLanguage: ocrLanguage,
+                    #removeParents: removeParents,
+                    #supportsAllDrives: supportsAllDrives,
+                    #supportsTeamDrives: supportsTeamDrives,
+                    #useContentAsIndexableText: useContentAsIndexableText,
+                    #$fields: $fields,
+                    #uploadOptions: uploadOptions,
+                    #uploadMedia: uploadMedia,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i2.File>);
 
   @override
   _i5.Future<_i3.$Channel01> watch(
@@ -1027,40 +712,37 @@ class MockFilesResource extends _i1.Mock implements _i2.FilesResource {
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #watch,
-          [
-            request,
-            fileId,
-          ],
-          {
-            #acknowledgeAbuse: acknowledgeAbuse,
-            #includeLabels: includeLabels,
-            #includePermissionsForView: includePermissionsForView,
-            #supportsAllDrives: supportsAllDrives,
-            #supportsTeamDrives: supportsTeamDrives,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i3.$Channel01>.value(_Fake$Channel01_20(
-          this,
-          Invocation.method(
-            #watch,
-            [
-              request,
-              fileId,
-            ],
-            {
-              #acknowledgeAbuse: acknowledgeAbuse,
-              #includeLabels: includeLabels,
-              #includePermissionsForView: includePermissionsForView,
-              #supportsAllDrives: supportsAllDrives,
-              #supportsTeamDrives: supportsTeamDrives,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i3.$Channel01>);
+            Invocation.method(
+              #watch,
+              [request, fileId],
+              {
+                #acknowledgeAbuse: acknowledgeAbuse,
+                #includeLabels: includeLabels,
+                #includePermissionsForView: includePermissionsForView,
+                #supportsAllDrives: supportsAllDrives,
+                #supportsTeamDrives: supportsTeamDrives,
+                #$fields: $fields,
+              },
+            ),
+            returnValue: _i5.Future<_i3.$Channel01>.value(
+              _Fake$Channel01_20(
+                this,
+                Invocation.method(
+                  #watch,
+                  [request, fileId],
+                  {
+                    #acknowledgeAbuse: acknowledgeAbuse,
+                    #includeLabels: includeLabels,
+                    #includePermissionsForView: includePermissionsForView,
+                    #supportsAllDrives: supportsAllDrives,
+                    #supportsTeamDrives: supportsTeamDrives,
+                    #$fields: $fields,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i3.$Channel01>);
 }
 
 /// A class which mocks [SheetsApi].
@@ -1072,13 +754,12 @@ class MockSheetsApi extends _i1.Mock implements _i4.SheetsApi {
   }
 
   @override
-  _i4.SpreadsheetsResource get spreadsheets => (super.noSuchMethod(
-        Invocation.getter(#spreadsheets),
-        returnValue: _FakeSpreadsheetsResource_21(
-          this,
-          Invocation.getter(#spreadsheets),
-        ),
-      ) as _i4.SpreadsheetsResource);
+  _i4.SpreadsheetsResource get spreadsheets =>
+      (super.noSuchMethod(
+            Invocation.getter(#spreadsheets),
+            returnValue: _FakeSpreadsheetsResource_21(this, Invocation.getter(#spreadsheets)),
+          )
+          as _i4.SpreadsheetsResource);
 }
 
 /// A class which mocks [SpreadsheetsResource].
@@ -1090,31 +771,28 @@ class MockSpreadsheetsResource extends _i1.Mock implements _i4.SpreadsheetsResou
   }
 
   @override
-  _i4.SpreadsheetsDeveloperMetadataResource get developerMetadata => (super.noSuchMethod(
-        Invocation.getter(#developerMetadata),
-        returnValue: _FakeSpreadsheetsDeveloperMetadataResource_22(
-          this,
-          Invocation.getter(#developerMetadata),
-        ),
-      ) as _i4.SpreadsheetsDeveloperMetadataResource);
+  _i4.SpreadsheetsDeveloperMetadataResource get developerMetadata =>
+      (super.noSuchMethod(
+            Invocation.getter(#developerMetadata),
+            returnValue: _FakeSpreadsheetsDeveloperMetadataResource_22(this, Invocation.getter(#developerMetadata)),
+          )
+          as _i4.SpreadsheetsDeveloperMetadataResource);
 
   @override
-  _i4.SpreadsheetsSheetsResource get sheets => (super.noSuchMethod(
-        Invocation.getter(#sheets),
-        returnValue: _FakeSpreadsheetsSheetsResource_23(
-          this,
-          Invocation.getter(#sheets),
-        ),
-      ) as _i4.SpreadsheetsSheetsResource);
+  _i4.SpreadsheetsSheetsResource get sheets =>
+      (super.noSuchMethod(
+            Invocation.getter(#sheets),
+            returnValue: _FakeSpreadsheetsSheetsResource_23(this, Invocation.getter(#sheets)),
+          )
+          as _i4.SpreadsheetsSheetsResource);
 
   @override
-  _i4.SpreadsheetsValuesResource get values => (super.noSuchMethod(
-        Invocation.getter(#values),
-        returnValue: _FakeSpreadsheetsValuesResource_24(
-          this,
-          Invocation.getter(#values),
-        ),
-      ) as _i4.SpreadsheetsValuesResource);
+  _i4.SpreadsheetsValuesResource get values =>
+      (super.noSuchMethod(
+            Invocation.getter(#values),
+            returnValue: _FakeSpreadsheetsValuesResource_24(this, Invocation.getter(#values)),
+          )
+          as _i4.SpreadsheetsValuesResource);
 
   @override
   _i5.Future<_i4.BatchUpdateSpreadsheetResponse> batchUpdate(
@@ -1123,47 +801,25 @@ class MockSpreadsheetsResource extends _i1.Mock implements _i4.SpreadsheetsResou
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batchUpdate,
-          [
-            request,
-            spreadsheetId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue: _i5.Future<_i4.BatchUpdateSpreadsheetResponse>.value(_FakeBatchUpdateSpreadsheetResponse_25(
-          this,
-          Invocation.method(
-            #batchUpdate,
-            [
-              request,
-              spreadsheetId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.BatchUpdateSpreadsheetResponse>);
+            Invocation.method(#batchUpdate, [request, spreadsheetId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.BatchUpdateSpreadsheetResponse>.value(
+              _FakeBatchUpdateSpreadsheetResponse_25(
+                this,
+                Invocation.method(#batchUpdate, [request, spreadsheetId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.BatchUpdateSpreadsheetResponse>);
 
   @override
-  _i5.Future<_i4.Spreadsheet> create(
-    _i4.Spreadsheet? request, {
-    String? $fields,
-  }) =>
+  _i5.Future<_i4.Spreadsheet> create(_i4.Spreadsheet? request, {String? $fields}) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #create,
-          [request],
-          {#$fields: $fields},
-        ),
-        returnValue: _i5.Future<_i4.Spreadsheet>.value(_FakeSpreadsheet_26(
-          this,
-          Invocation.method(
-            #create,
-            [request],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.Spreadsheet>);
+            Invocation.method(#create, [request], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.Spreadsheet>.value(
+              _FakeSpreadsheet_26(this, Invocation.method(#create, [request], {#$fields: $fields})),
+            ),
+          )
+          as _i5.Future<_i4.Spreadsheet>);
 
   @override
   _i5.Future<_i4.Spreadsheet> get(
@@ -1173,28 +829,23 @@ class MockSpreadsheetsResource extends _i1.Mock implements _i4.SpreadsheetsResou
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #get,
-          [spreadsheetId],
-          {
-            #includeGridData: includeGridData,
-            #ranges: ranges,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i4.Spreadsheet>.value(_FakeSpreadsheet_26(
-          this,
-          Invocation.method(
-            #get,
-            [spreadsheetId],
-            {
-              #includeGridData: includeGridData,
-              #ranges: ranges,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i4.Spreadsheet>);
+            Invocation.method(
+              #get,
+              [spreadsheetId],
+              {#includeGridData: includeGridData, #ranges: ranges, #$fields: $fields},
+            ),
+            returnValue: _i5.Future<_i4.Spreadsheet>.value(
+              _FakeSpreadsheet_26(
+                this,
+                Invocation.method(
+                  #get,
+                  [spreadsheetId],
+                  {#includeGridData: includeGridData, #ranges: ranges, #$fields: $fields},
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.Spreadsheet>);
 
   @override
   _i5.Future<_i4.Spreadsheet> getByDataFilter(
@@ -1203,26 +854,15 @@ class MockSpreadsheetsResource extends _i1.Mock implements _i4.SpreadsheetsResou
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getByDataFilter,
-          [
-            request,
-            spreadsheetId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue: _i5.Future<_i4.Spreadsheet>.value(_FakeSpreadsheet_26(
-          this,
-          Invocation.method(
-            #getByDataFilter,
-            [
-              request,
-              spreadsheetId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.Spreadsheet>);
+            Invocation.method(#getByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.Spreadsheet>.value(
+              _FakeSpreadsheet_26(
+                this,
+                Invocation.method(#getByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.Spreadsheet>);
 }
 
 /// A class which mocks [SpreadsheetsValuesResource].
@@ -1246,42 +886,37 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #append,
-          [
-            request,
-            spreadsheetId,
-            range,
-          ],
-          {
-            #includeValuesInResponse: includeValuesInResponse,
-            #insertDataOption: insertDataOption,
-            #responseDateTimeRenderOption: responseDateTimeRenderOption,
-            #responseValueRenderOption: responseValueRenderOption,
-            #valueInputOption: valueInputOption,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i4.AppendValuesResponse>.value(_FakeAppendValuesResponse_27(
-          this,
-          Invocation.method(
-            #append,
-            [
-              request,
-              spreadsheetId,
-              range,
-            ],
-            {
-              #includeValuesInResponse: includeValuesInResponse,
-              #insertDataOption: insertDataOption,
-              #responseDateTimeRenderOption: responseDateTimeRenderOption,
-              #responseValueRenderOption: responseValueRenderOption,
-              #valueInputOption: valueInputOption,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i4.AppendValuesResponse>);
+            Invocation.method(
+              #append,
+              [request, spreadsheetId, range],
+              {
+                #includeValuesInResponse: includeValuesInResponse,
+                #insertDataOption: insertDataOption,
+                #responseDateTimeRenderOption: responseDateTimeRenderOption,
+                #responseValueRenderOption: responseValueRenderOption,
+                #valueInputOption: valueInputOption,
+                #$fields: $fields,
+              },
+            ),
+            returnValue: _i5.Future<_i4.AppendValuesResponse>.value(
+              _FakeAppendValuesResponse_27(
+                this,
+                Invocation.method(
+                  #append,
+                  [request, spreadsheetId, range],
+                  {
+                    #includeValuesInResponse: includeValuesInResponse,
+                    #insertDataOption: insertDataOption,
+                    #responseDateTimeRenderOption: responseDateTimeRenderOption,
+                    #responseValueRenderOption: responseValueRenderOption,
+                    #valueInputOption: valueInputOption,
+                    #$fields: $fields,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.AppendValuesResponse>);
 
   @override
   _i5.Future<_i4.BatchClearValuesResponse> batchClear(
@@ -1290,26 +925,15 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batchClear,
-          [
-            request,
-            spreadsheetId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue: _i5.Future<_i4.BatchClearValuesResponse>.value(_FakeBatchClearValuesResponse_28(
-          this,
-          Invocation.method(
-            #batchClear,
-            [
-              request,
-              spreadsheetId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.BatchClearValuesResponse>);
+            Invocation.method(#batchClear, [request, spreadsheetId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.BatchClearValuesResponse>.value(
+              _FakeBatchClearValuesResponse_28(
+                this,
+                Invocation.method(#batchClear, [request, spreadsheetId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.BatchClearValuesResponse>);
 
   @override
   _i5.Future<_i4.BatchClearValuesByDataFilterResponse> batchClearByDataFilter(
@@ -1318,27 +942,15 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batchClearByDataFilter,
-          [
-            request,
-            spreadsheetId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue:
-            _i5.Future<_i4.BatchClearValuesByDataFilterResponse>.value(_FakeBatchClearValuesByDataFilterResponse_29(
-          this,
-          Invocation.method(
-            #batchClearByDataFilter,
-            [
-              request,
-              spreadsheetId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.BatchClearValuesByDataFilterResponse>);
+            Invocation.method(#batchClearByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.BatchClearValuesByDataFilterResponse>.value(
+              _FakeBatchClearValuesByDataFilterResponse_29(
+                this,
+                Invocation.method(#batchClearByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.BatchClearValuesByDataFilterResponse>);
 
   @override
   _i5.Future<_i4.BatchGetValuesResponse> batchGet(
@@ -1350,32 +962,35 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batchGet,
-          [spreadsheetId],
-          {
-            #dateTimeRenderOption: dateTimeRenderOption,
-            #majorDimension: majorDimension,
-            #ranges: ranges,
-            #valueRenderOption: valueRenderOption,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i4.BatchGetValuesResponse>.value(_FakeBatchGetValuesResponse_30(
-          this,
-          Invocation.method(
-            #batchGet,
-            [spreadsheetId],
-            {
-              #dateTimeRenderOption: dateTimeRenderOption,
-              #majorDimension: majorDimension,
-              #ranges: ranges,
-              #valueRenderOption: valueRenderOption,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i4.BatchGetValuesResponse>);
+            Invocation.method(
+              #batchGet,
+              [spreadsheetId],
+              {
+                #dateTimeRenderOption: dateTimeRenderOption,
+                #majorDimension: majorDimension,
+                #ranges: ranges,
+                #valueRenderOption: valueRenderOption,
+                #$fields: $fields,
+              },
+            ),
+            returnValue: _i5.Future<_i4.BatchGetValuesResponse>.value(
+              _FakeBatchGetValuesResponse_30(
+                this,
+                Invocation.method(
+                  #batchGet,
+                  [spreadsheetId],
+                  {
+                    #dateTimeRenderOption: dateTimeRenderOption,
+                    #majorDimension: majorDimension,
+                    #ranges: ranges,
+                    #valueRenderOption: valueRenderOption,
+                    #$fields: $fields,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.BatchGetValuesResponse>);
 
   @override
   _i5.Future<_i4.BatchGetValuesByDataFilterResponse> batchGetByDataFilter(
@@ -1384,27 +999,15 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batchGetByDataFilter,
-          [
-            request,
-            spreadsheetId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue:
-            _i5.Future<_i4.BatchGetValuesByDataFilterResponse>.value(_FakeBatchGetValuesByDataFilterResponse_31(
-          this,
-          Invocation.method(
-            #batchGetByDataFilter,
-            [
-              request,
-              spreadsheetId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.BatchGetValuesByDataFilterResponse>);
+            Invocation.method(#batchGetByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.BatchGetValuesByDataFilterResponse>.value(
+              _FakeBatchGetValuesByDataFilterResponse_31(
+                this,
+                Invocation.method(#batchGetByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.BatchGetValuesByDataFilterResponse>);
 
   @override
   _i5.Future<_i4.BatchUpdateValuesResponse> batchUpdate(
@@ -1413,26 +1016,15 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batchUpdate,
-          [
-            request,
-            spreadsheetId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue: _i5.Future<_i4.BatchUpdateValuesResponse>.value(_FakeBatchUpdateValuesResponse_32(
-          this,
-          Invocation.method(
-            #batchUpdate,
-            [
-              request,
-              spreadsheetId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.BatchUpdateValuesResponse>);
+            Invocation.method(#batchUpdate, [request, spreadsheetId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.BatchUpdateValuesResponse>.value(
+              _FakeBatchUpdateValuesResponse_32(
+                this,
+                Invocation.method(#batchUpdate, [request, spreadsheetId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.BatchUpdateValuesResponse>);
 
   @override
   _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse> batchUpdateByDataFilter(
@@ -1441,27 +1033,15 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #batchUpdateByDataFilter,
-          [
-            request,
-            spreadsheetId,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue:
-            _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse>.value(_FakeBatchUpdateValuesByDataFilterResponse_33(
-          this,
-          Invocation.method(
-            #batchUpdateByDataFilter,
-            [
-              request,
-              spreadsheetId,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse>);
+            Invocation.method(#batchUpdateByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse>.value(
+              _FakeBatchUpdateValuesByDataFilterResponse_33(
+                this,
+                Invocation.method(#batchUpdateByDataFilter, [request, spreadsheetId], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.BatchUpdateValuesByDataFilterResponse>);
 
   @override
   _i5.Future<_i4.ClearValuesResponse> clear(
@@ -1471,28 +1051,15 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #clear,
-          [
-            request,
-            spreadsheetId,
-            range,
-          ],
-          {#$fields: $fields},
-        ),
-        returnValue: _i5.Future<_i4.ClearValuesResponse>.value(_FakeClearValuesResponse_34(
-          this,
-          Invocation.method(
-            #clear,
-            [
-              request,
-              spreadsheetId,
-              range,
-            ],
-            {#$fields: $fields},
-          ),
-        )),
-      ) as _i5.Future<_i4.ClearValuesResponse>);
+            Invocation.method(#clear, [request, spreadsheetId, range], {#$fields: $fields}),
+            returnValue: _i5.Future<_i4.ClearValuesResponse>.value(
+              _FakeClearValuesResponse_34(
+                this,
+                Invocation.method(#clear, [request, spreadsheetId, range], {#$fields: $fields}),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.ClearValuesResponse>);
 
   @override
   _i5.Future<_i4.ValueRange> get(
@@ -1504,36 +1071,33 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #get,
-          [
-            spreadsheetId,
-            range,
-          ],
-          {
-            #dateTimeRenderOption: dateTimeRenderOption,
-            #majorDimension: majorDimension,
-            #valueRenderOption: valueRenderOption,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i4.ValueRange>.value(_FakeValueRange_35(
-          this,
-          Invocation.method(
-            #get,
-            [
-              spreadsheetId,
-              range,
-            ],
-            {
-              #dateTimeRenderOption: dateTimeRenderOption,
-              #majorDimension: majorDimension,
-              #valueRenderOption: valueRenderOption,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i4.ValueRange>);
+            Invocation.method(
+              #get,
+              [spreadsheetId, range],
+              {
+                #dateTimeRenderOption: dateTimeRenderOption,
+                #majorDimension: majorDimension,
+                #valueRenderOption: valueRenderOption,
+                #$fields: $fields,
+              },
+            ),
+            returnValue: _i5.Future<_i4.ValueRange>.value(
+              _FakeValueRange_35(
+                this,
+                Invocation.method(
+                  #get,
+                  [spreadsheetId, range],
+                  {
+                    #dateTimeRenderOption: dateTimeRenderOption,
+                    #majorDimension: majorDimension,
+                    #valueRenderOption: valueRenderOption,
+                    #$fields: $fields,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.ValueRange>);
 
   @override
   _i5.Future<_i4.UpdateValuesResponse> update(
@@ -1547,38 +1111,33 @@ class MockSpreadsheetsValuesResource extends _i1.Mock implements _i4.Spreadsheet
     String? $fields,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #update,
-          [
-            request,
-            spreadsheetId,
-            range,
-          ],
-          {
-            #includeValuesInResponse: includeValuesInResponse,
-            #responseDateTimeRenderOption: responseDateTimeRenderOption,
-            #responseValueRenderOption: responseValueRenderOption,
-            #valueInputOption: valueInputOption,
-            #$fields: $fields,
-          },
-        ),
-        returnValue: _i5.Future<_i4.UpdateValuesResponse>.value(_FakeUpdateValuesResponse_36(
-          this,
-          Invocation.method(
-            #update,
-            [
-              request,
-              spreadsheetId,
-              range,
-            ],
-            {
-              #includeValuesInResponse: includeValuesInResponse,
-              #responseDateTimeRenderOption: responseDateTimeRenderOption,
-              #responseValueRenderOption: responseValueRenderOption,
-              #valueInputOption: valueInputOption,
-              #$fields: $fields,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i4.UpdateValuesResponse>);
+            Invocation.method(
+              #update,
+              [request, spreadsheetId, range],
+              {
+                #includeValuesInResponse: includeValuesInResponse,
+                #responseDateTimeRenderOption: responseDateTimeRenderOption,
+                #responseValueRenderOption: responseValueRenderOption,
+                #valueInputOption: valueInputOption,
+                #$fields: $fields,
+              },
+            ),
+            returnValue: _i5.Future<_i4.UpdateValuesResponse>.value(
+              _FakeUpdateValuesResponse_36(
+                this,
+                Invocation.method(
+                  #update,
+                  [request, spreadsheetId, range],
+                  {
+                    #includeValuesInResponse: includeValuesInResponse,
+                    #responseDateTimeRenderOption: responseDateTimeRenderOption,
+                    #responseValueRenderOption: responseValueRenderOption,
+                    #valueInputOption: valueInputOption,
+                    #$fields: $fields,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.UpdateValuesResponse>);
 }

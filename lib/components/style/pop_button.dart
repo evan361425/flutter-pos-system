@@ -7,11 +7,7 @@ class PopButton extends StatelessWidget {
 
   final VoidCallback? onPressed;
 
-  const PopButton({
-    super.key,
-    this.title,
-    this.onPressed,
-  });
+  const PopButton({super.key, this.title, this.onPressed});
 
   static safePop<T>(BuildContext context, {String path = Routes.base, T? value}) {
     if (context.mounted) {
@@ -29,15 +25,9 @@ class PopButton extends StatelessWidget {
     cb() => onPressed == null ? safePop(context) : onPressed!();
 
     if (title != null) {
-      return TextButton(
-        onPressed: cb,
-        child: Text(title!),
-      );
+      return TextButton(onPressed: cb, child: Text(title!));
     }
 
-    return BackButton(
-      key: const Key('pop'),
-      onPressed: cb,
-    );
+    return BackButton(key: const Key('pop'), onPressed: cb);
   }
 }

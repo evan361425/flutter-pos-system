@@ -10,20 +10,11 @@ const _isDebug = kDebugMode || isLocalTest;
 class Log {
   static Future<void>? current;
 
-  static void out(
-    String msg,
-    String code, {
-    Object? error,
-    StackTrace? stackTrace,
-  }) {
+  static void out(String msg, String code, {Object? error, StackTrace? stackTrace}) {
     developer.log(msg, name: code, error: error, stackTrace: stackTrace);
   }
 
-  static void ger(
-    String event, [
-    Map<String, Object?>? parameters,
-    @visibleForTesting bool forceSend = false,
-  ]) async {
+  static void ger(String event, [Map<String, Object?>? parameters, @visibleForTesting bool forceSend = false]) async {
     assert(!event.contains('.'), 'should not contain "."');
     final message = parameters?.entries.map((e) => '${e.key}=${e.value}').join(' ');
     Log.out(message ?? '', event);
@@ -40,12 +31,7 @@ class Log {
     }
   }
 
-  static void err(
-    Object error,
-    String code, [
-    StackTrace? stackTrace,
-    @visibleForTesting bool forceSend = false,
-  ]) {
+  static void err(Object error, String code, [StackTrace? stackTrace, @visibleForTesting bool forceSend = false]) {
     assert(() {
       errorCount++;
       return !code.contains('.');
@@ -53,11 +39,7 @@ class Log {
     out(error.toString(), code, error: error, stackTrace: stackTrace);
 
     if (forceSend || allowSendEvents) {
-      FirebaseCrashlytics.instance.recordError(
-        error,
-        stackTrace,
-        reason: code,
-      );
+      FirebaseCrashlytics.instance.recordError(error, stackTrace, reason: code);
     }
   }
 

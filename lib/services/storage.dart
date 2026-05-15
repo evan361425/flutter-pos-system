@@ -10,11 +10,7 @@ class Storage {
   bool _initialized = false;
 
   /// add data into record, overwrite and create if needed
-  Future<void> add(
-    Stores storeId,
-    String recordId,
-    Map<String, Object?> data,
-  ) {
+  Future<void> add(Stores storeId, String recordId, Map<String, Object?> data) {
     return getStore(storeId).record(recordId).put(db, data);
   }
 
@@ -40,10 +36,7 @@ class Storage {
     db = await (opener ?? databaseFactoryIo.openDatabase)(path);
   }
 
-  Future<void> reset(
-    Stores? storeId, [
-    Future<void> Function(String path)? del,
-  ]) async {
+  Future<void> reset(Stores? storeId, [Future<void> Function(String path)? del]) async {
     if (storeId == null) {
       return (del ?? databaseFactoryIo.deleteDatabase)(await getRootPath());
     }
@@ -63,19 +56,23 @@ class Storage {
     final sanitizedData = sanitize(data);
     final store = getStore(storeId);
 
-    return db.transaction((txn) => Future.wait(sanitizedData.data.entries.map((entry) {
+    return db.transaction(
+      (txn) => Future.wait(
+        sanitizedData.data.entries.map((entry) {
           return entry.value == null
               ? store.record(entry.key).delete(txn)
               : store.record(entry.key).update(txn, entry.value);
-        })));
+        }),
+      ),
+    );
   }
 
   Future<void> setAll(Stores storeId, Map<String, Object?> data) {
     final store = getStore(storeId);
 
-    return db.transaction((txn) => Future.wait(data.entries.map(
-          (e) => store.record(e.key).put(txn, e.value, merge: true),
-        )));
+    return db.transaction(
+      (txn) => Future.wait(data.entries.map((e) => store.record(e.key).put(txn, e.value, merge: true))),
+    );
   }
 
   static Future<String> getRootPath() async {
@@ -147,16 +144,7 @@ class StorageSanitizedData {
   }
 }
 
-enum Stores {
-  menu,
-  stock,
-  replenisher,
-  quantities,
-  cashier,
-  orderAttributes,
-  analysis,
-  printers,
-}
+enum Stores { menu, stock, replenisher, quantities, cashier, orderAttributes, analysis, printers }
 
 class StorageSanitizedValue {
   late final String id;
@@ -176,10 +164,11 @@ class StorageSanitizedValue {
   }
 }
 
-typedef StorageOpener = Future<Database> Function(
-  String path, {
-  int? version,
-  Future<dynamic> Function(Database, int, int)? onVersionChanged,
-  DatabaseMode? mode,
-  SembastCodec? codec,
-});
+typedef StorageOpener =
+    Future<Database> Function(
+      String path, {
+      int? version,
+      Future<dynamic> Function(Database, int, int)? onVersionChanged,
+      DatabaseMode? mode,
+      SembastCodec? codec,
+    });

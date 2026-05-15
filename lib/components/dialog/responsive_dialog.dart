@@ -32,10 +32,10 @@ class ResponsiveDialog extends StatelessWidget {
     if (dialog) {
       final dialog = AlertDialog(
         title: title,
-        contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+        contentPadding: const .fromLTRB(24, 16, 24, 0),
         // M3 recommends max width 560, but we have to leave some space for SegmentedButton
         constraints: const BoxConstraints(maxWidth: 600),
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: .hardEdge,
         scrollable: scrollable,
         content: Stack(
           children: [
@@ -48,22 +48,13 @@ class ResponsiveDialog extends StatelessWidget {
               left: 0,
               right: 0,
               height: kDialogBottomSpacing,
-              child: GradientScrollHint(
-                isDialog: true,
-                direction: Axis.vertical,
-              ),
+              child: GradientScrollHint(isDialog: true, direction: .vertical),
             ),
           ],
         ),
         actions: action == null
             ? null
-            : [
-                PopButton(
-                  key: const Key('pop'),
-                  title: MaterialLocalizations.of(context).cancelButtonLabel,
-                ),
-                action!,
-              ],
+            : [PopButton(key: const Key('pop'), title: MaterialLocalizations.of(context).cancelButtonLabel), action!],
       );
 
       // Using _PropertyHolderWidget to allow [Scaffold]'s snackbar able to be
@@ -71,18 +62,20 @@ class ResponsiveDialog extends StatelessWidget {
       // https://stackoverflow.com/a/56290622/12089368
       return ScaffoldMessenger(
         key: scaffoldMessengerKey,
-        child: Stack(children: [
-          _Transparent(child: dialog),
-          _Transparent(
-            foreground: true,
-            child: Scaffold(
-              primary: false,
-              floatingActionButton: floatingActionButton,
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-              backgroundColor: Colors.transparent,
+        child: Stack(
+          children: [
+            _Transparent(child: dialog),
+            _Transparent(
+              foreground: true,
+              child: Scaffold(
+                primary: false,
+                floatingActionButton: floatingActionButton,
+                floatingActionButtonLocation: .centerFloat,
+                backgroundColor: Colors.transparent,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
@@ -92,7 +85,7 @@ class ResponsiveDialog extends StatelessWidget {
         child: Scaffold(
           primary: false,
           floatingActionButton: floatingActionButton,
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: .centerFloat,
           appBar: AppBar(
             primary: false,
             title: title,
@@ -109,10 +102,7 @@ class ResponsiveDialog extends StatelessWidget {
 class _Transparent extends SingleChildRenderObjectWidget {
   final bool foreground;
 
-  const _Transparent({
-    this.foreground = false,
-    required super.child,
-  });
+  const _Transparent({this.foreground = false, required super.child});
 
   @override
   RenderObject createRenderObject(BuildContext context) {

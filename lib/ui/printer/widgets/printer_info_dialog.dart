@@ -9,42 +9,40 @@ class PrinterInfoDialog extends StatelessWidget {
   final BluetoothSignal? signal;
   final PrinterStatus? status;
 
-  const PrinterInfoDialog({
-    super.key,
-    required this.printer,
-    this.signal,
-    this.status,
-  });
+  const PrinterInfoDialog({super.key, required this.printer, this.signal, this.status});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(S.printerInfoTitle),
       scrollable: true,
-      content: Column(mainAxisSize: MainAxisSize.min, children: [
-        ListTile(
-          title: Text(S.printerInfoName),
-          leading: const Icon(Icons.text_fields),
-          subtitle: Text(printer.name),
-        ),
-        ListTile(
-          title: Text(S.printerInfoAddress),
-          leading: const Icon(Icons.location_on),
-          subtitle: Text(printer.address),
-        ),
-        if (signal != null)
+      content: Column(
+        mainAxisSize: .min,
+        children: [
           ListTile(
-            title: Text(S.printerInfoSignal),
-            leading: signalIcons[signal],
-            subtitle: Text(S.printerSignalName(signal!.name)),
+            title: Text(S.printerInfoName),
+            leading: const Icon(Icons.text_fields),
+            subtitle: Text(printer.name),
           ),
-        if (status != null)
           ListTile(
-            title: Text(S.printerInfoStatus),
-            leading: statusIcons[status],
-            subtitle: Text(S.printerStatusName(status!.name)),
+            title: Text(S.printerInfoAddress),
+            leading: const Icon(Icons.location_on),
+            subtitle: Text(printer.address),
           ),
-      ]),
+          if (signal != null)
+            ListTile(
+              title: Text(S.printerInfoSignal),
+              leading: signalIcons[signal],
+              subtitle: Text(S.printerSignalName(signal!.name)),
+            ),
+          if (status != null)
+            ListTile(
+              title: Text(S.printerInfoStatus),
+              leading: statusIcons[status],
+              subtitle: Text(S.printerStatusName(status!.name)),
+            ),
+        ],
+      ),
       actions: [
         PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
         ElevatedButton(

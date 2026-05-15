@@ -37,15 +37,15 @@ class MaterialDialogPage<T> extends Page<T> {
 
   @override
   Route<T> createRoute(BuildContext context) => DialogRoute<T>(
-        context: context,
-        settings: this,
-        builder: builder ?? (context) => child!,
-        anchorPoint: anchorPoint,
-        barrierColor: barrierColor,
-        barrierDismissible: barrierDismissible,
-        barrierLabel: barrierLabel,
-        useSafeArea: useSafeArea,
-        themes: themes,
-        traversalEdgeBehavior: traversalEdgeBehavior,
-      );
+    context: context,
+    settings: this,
+    builder: builder ?? (context) => child!,
+    anchorPoint: anchorPoint,
+    barrierColor: barrierColor,
+    barrierDismissible: barrierDismissible,
+    barrierLabel: barrierLabel,
+    useSafeArea: useSafeArea,
+    themes: themes,
+    traversalEdgeBehavior: traversalEdgeBehavior,
+  );
 }

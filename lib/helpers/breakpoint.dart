@@ -31,7 +31,7 @@ enum Breakpoint {
   ///
   /// - Desktop
   /// - Ultra-wide
-  extraLarge(1600, double.maxFinite);
+  extraLarge(1600, .maxFinite);
 
   final double min;
   final double max;
@@ -58,27 +58,21 @@ enum Breakpoint {
   }
 
   /// Lookup the value based on the breakpoint
-  T lookup<T>({
-    T? extraLarge,
-    T? large,
-    T? expanded,
-    T? medium,
-    required T compact,
-  }) {
+  T lookup<T>({T? extraLarge, T? large, T? expanded, T? medium, required T compact}) {
     switch (this) {
-      case Breakpoint.extraLarge:
+      case .extraLarge:
         if (extraLarge != null) {
           return extraLarge;
         }
-      case Breakpoint.large:
+      case .large:
         if (large != null) {
           return large;
         }
-      case Breakpoint.expanded:
+      case .expanded:
         if (expanded != null) {
           return expanded;
         }
-      case Breakpoint.medium:
+      case .medium:
         if (medium != null) {
           return medium;
         }

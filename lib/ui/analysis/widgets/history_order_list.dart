@@ -10,17 +10,11 @@ import 'package:possystem/translator.dart';
 class HistoryOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> notifier;
 
-  const HistoryOrderList({
-    super.key,
-    required this.notifier,
-  });
+  const HistoryOrderList({super.key, required this.notifier});
 
   @override
   Widget build(BuildContext context) {
-    return OrderLoader(
-      builder: _buildOrder,
-      ranger: notifier,
-    );
+    return OrderLoader(builder: _buildOrder, ranger: notifier);
   }
 
   Widget _buildOrder(BuildContext context, OrderObject order) {
@@ -34,19 +28,17 @@ class HistoryOrderList extends StatelessWidget {
     return ListTile(
       key: Key('history.order.${order.id}'),
       leading: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
+        padding: const .only(top: 8.0),
         child: Text(DateFormat.Hm(S.localeName).format(order.createdAt)),
       ),
       title: MetaBlock.withString(
         context,
-        order.products
-            .map((product) => product.count == 1 ? product.productName : '${product.productName} * ${product.count}'),
+        order.products.map(
+          (product) => product.count == 1 ? product.productName : '${product.productName} * ${product.count}',
+        ),
       ),
       subtitle: subtitle,
-      onTap: () => context.pushNamed(
-        Routes.historyOrder,
-        pathParameters: {'id': order.id?.toString() ?? ''},
-      ),
+      onTap: () => context.pushNamed(Routes.historyOrder, pathParameters: {'id': order.id?.toString() ?? ''}),
     );
   }
 }

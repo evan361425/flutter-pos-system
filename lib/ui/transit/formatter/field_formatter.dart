@@ -20,11 +20,11 @@ ModelFormatter<Repository, CellData> findFieldFormatter(FormattableModel able) {
   final parser = able.toParser();
 
   return switch (able) {
-    FormattableModel.menu => _MenuFormatter(Menu.instance, parser) as ModelFormatter<Repository, CellData>,
-    FormattableModel.stock => _StockFormatter(Stock.instance, parser),
-    FormattableModel.quantities => _QuantitiesFormatter(Quantities.instance, parser),
-    FormattableModel.replenisher => _ReplenisherFormatter(Replenisher.instance, parser),
-    FormattableModel.orderAttr => _OAFormatter(OrderAttributes.instance, parser),
+    .menu => _MenuFormatter(.instance, parser) as ModelFormatter<Repository, CellData>,
+    .stock => _StockFormatter(.instance, parser),
+    .quantities => _QuantitiesFormatter(.instance, parser),
+    .replenisher => _ReplenisherFormatter(.instance, parser),
+    .orderAttr => _OAFormatter(.instance, parser),
   };
 }
 
@@ -33,28 +33,23 @@ class _MenuFormatter extends ModelFormatter<Menu, CellData> {
 
   @override
   List<CellData> getHeader() => [
-        CellData(string: S.menuCatalogNameLabel, isBold: true),
-        CellData(string: S.menuProductNameLabel, isBold: true),
-        CellData(string: S.menuProductPriceLabel, isBold: true),
-        CellData(string: S.menuProductCostLabel, isBold: true),
-        CellData(
-          string: S.transitFormatFieldProductIngredientTitle,
-          note: S.transitFormatFieldProductIngredientNote,
-          isBold: true,
-        ),
-      ];
+    CellData(string: S.menuCatalogNameLabel, isBold: true),
+    CellData(string: S.menuProductNameLabel, isBold: true),
+    CellData(string: S.menuProductPriceLabel, isBold: true),
+    CellData(string: S.menuProductCostLabel, isBold: true),
+    CellData(
+      string: S.transitFormatFieldProductIngredientTitle,
+      note: S.transitFormatFieldProductIngredientNote,
+      isBold: true,
+    ),
+  ];
 
   @override
   List<List<CellData>> getRows() {
     return target.products.map<List<CellData>>((product) {
       final ingredientInfo = [
         for (var ingredient in product.items)
-          '- ${ingredient.name},${ingredient.amount}${ingredient.itemList.map((quantity) => <String>[
-                '\n  + ${quantity.name}',
-                quantity.amount.toString(),
-                quantity.additionalPrice.toString(),
-                quantity.additionalCost.toString(),
-              ].join(',')).join('')}'
+          '- ${ingredient.name},${ingredient.amount}${ingredient.itemList.map((quantity) => <String>['\n  + ${quantity.name}', quantity.amount.toString(), quantity.additionalPrice.toString(), quantity.additionalCost.toString()].join(',')).join('')}',
       ].join('\n');
 
       return [
@@ -73,22 +68,24 @@ class _StockFormatter extends ModelFormatter<Stock, CellData> {
 
   @override
   List<CellData> getHeader() => [
-        CellData(string: S.stockIngredientNameLabel, isBold: true),
-        CellData(string: S.stockIngredientAmountLabel, isBold: true),
-        CellData(string: S.stockIngredientAmountMaxLabel, isBold: true),
-        CellData(string: S.stockIngredientRestockPriceLabel, isBold: true),
-        CellData(string: S.stockIngredientRestockQuantityLabel, isBold: true),
-      ];
+    CellData(string: S.stockIngredientNameLabel, isBold: true),
+    CellData(string: S.stockIngredientAmountLabel, isBold: true),
+    CellData(string: S.stockIngredientAmountMaxLabel, isBold: true),
+    CellData(string: S.stockIngredientRestockPriceLabel, isBold: true),
+    CellData(string: S.stockIngredientRestockQuantityLabel, isBold: true),
+  ];
 
   @override
   List<List<CellData>> getRows() => target.itemList
-      .map((ingredient) => [
-            CellData(string: ingredient.name),
-            CellData(number: ingredient.currentAmount),
-            CellData(number: ingredient.totalAmount),
-            CellData(number: ingredient.restockPrice),
-            CellData(number: ingredient.restockQuantity),
-          ])
+      .map(
+        (ingredient) => [
+          CellData(string: ingredient.name),
+          CellData(number: ingredient.currentAmount),
+          CellData(number: ingredient.totalAmount),
+          CellData(number: ingredient.restockPrice),
+          CellData(number: ingredient.restockQuantity),
+        ],
+      )
       .toList();
 }
 
@@ -97,16 +94,13 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, CellData> {
 
   @override
   List<CellData> getHeader() => [
-        CellData(string: S.stockQuantityNameLabel, isBold: true),
-        CellData(string: S.stockQuantityProportionLabel, note: S.stockQuantityProportionHelper, isBold: true),
-      ];
+    CellData(string: S.stockQuantityNameLabel, isBold: true),
+    CellData(string: S.stockQuantityProportionLabel, note: S.stockQuantityProportionHelper, isBold: true),
+  ];
 
   @override
   List<List<CellData>> getRows() => target.itemList
-      .map((quantity) => [
-            CellData(string: quantity.name),
-            CellData(number: quantity.defaultProportion),
-          ])
+      .map((quantity) => [CellData(string: quantity.name), CellData(number: quantity.defaultProportion)])
       .toList();
 }
 
@@ -115,24 +109,15 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, CellData> {
 
   @override
   List<CellData> getHeader() => [
-        CellData(string: S.stockReplenishmentNameLabel, isBold: true),
-        CellData(
-          string: S.transitFormatFieldReplenishmentTitle,
-          note: S.transitFormatFieldReplenishmentNote,
-          isBold: true,
-        ),
-      ];
+    CellData(string: S.stockReplenishmentNameLabel, isBold: true),
+    CellData(string: S.transitFormatFieldReplenishmentTitle, note: S.transitFormatFieldReplenishmentNote, isBold: true),
+  ];
 
   @override
   List<List<CellData>> getRows() => target.itemList.map((e) {
-        final info = [
-          for (final entry in e.ingredientData.entries) '- ${entry.key.name},${entry.value}',
-        ].join('\n');
-        return [
-          CellData(string: e.name),
-          CellData(string: info),
-        ];
-      }).toList();
+    final info = [for (final entry in e.ingredientData.entries) '- ${entry.key.name},${entry.value}'].join('\n');
+    return [CellData(string: e.name), CellData(string: info)];
+  }).toList();
 }
 
 class _OAFormatter extends ModelFormatter<OrderAttributes, CellData> {

@@ -8,7 +8,7 @@ class Analysis extends ChangeNotifier with Repository<Chart>, RepositoryStorage<
   static late Analysis instance;
 
   @override
-  final Stores storageStore = Stores.analysis;
+  final Stores storageStore = .analysis;
 
   Analysis() {
     instance = this;

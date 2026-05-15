@@ -31,19 +31,13 @@ class _OrderCheckoutPageState extends State<OrderCheckoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraint) {
-      return Breakpoint.find(width: constraint.maxWidth) <= Breakpoint.medium
-          ? _Mobile(
-              paid: paid,
-              price: price,
-              viewIndex: viewIndex,
-            )
-          : _Desktop(
-              paid: paid,
-              price: price,
-              viewIndex: viewIndex,
-            );
-    });
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        return Breakpoint.find(width: constraint.maxWidth) <= .medium
+            ? _Mobile(paid: paid, price: price, viewIndex: viewIndex)
+            : _Desktop(paid: paid, price: price, viewIndex: viewIndex);
+      },
+    );
   }
 
   @override
@@ -70,11 +64,7 @@ class _Mobile extends StatefulWidget {
 
   final ValueNotifier<int> viewIndex;
 
-  const _Mobile({
-    required this.paid,
-    required this.price,
-    required this.viewIndex,
-  });
+  const _Mobile({required this.paid, required this.price, required this.viewIndex});
 
   @override
   State<_Mobile> createState() => _MobileState();
@@ -95,10 +85,7 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
         leading: const PopButton(),
         actions: Cart.instance.isEmpty
             ? null
-            : <Widget>[
-                const _StashButton(),
-                _ConfirmButton(price: widget.price, paid: widget.paid),
-              ],
+            : <Widget>[const _StashButton(), _ConfirmButton(price: widget.price, paid: widget.paid)],
         bottom: TabBar(
           controller: _controller,
           tabs: [
@@ -114,72 +101,74 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
 
   Widget _buildBody() {
     if (Cart.instance.isEmpty) {
-      return TabBarView(controller: _controller, children: [
-        CheckoutAttributeView(price: widget.price),
-        Center(child: HintText(S.orderCheckoutEmptyCart)),
-        const StashedOrderListView(),
-      ]);
+      return TabBarView(
+        controller: _controller,
+        children: [
+          CheckoutAttributeView(price: widget.price),
+          Center(child: HintText(S.orderCheckoutEmptyCart)),
+          const StashedOrderListView(),
+        ],
+      );
     }
 
-    return Stack(children: [
-      Positioned.fill(
-        child: GestureDetector(
-          onTap: () => draggableController?.reset(),
-          child: TabBarView(controller: _controller, children: [
-            CheckoutAttributeView(price: widget.price),
-            ValueListenableBuilder(
-              valueListenable: widget.paid,
-              builder: (context, value, child) => OrderObjectView(
-                order: Cart.instance.toObject(paid: value),
-              ),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: GestureDetector(
+            onTap: () => draggableController?.reset(),
+            child: TabBarView(
+              controller: _controller,
+              children: [
+                CheckoutAttributeView(price: widget.price),
+                ValueListenableBuilder(
+                  valueListenable: widget.paid,
+                  builder: (context, value, child) => OrderObjectView(order: Cart.instance.toObject(paid: value)),
+                ),
+                const StashedOrderListView(),
+              ],
             ),
-            const StashedOrderListView(),
-          ]),
+          ),
         ),
-      ),
-      Positioned.fill(
-        child: ScrollableDraggableSheet(
-          indicator: const DraggableIndicator(key: Key('order.details.ds')),
-          snapSizes: const [snapshotHeight, calculatorHeight],
-          builder: (controller, scroll, _) {
-            draggableController = controller;
-            return [
-              FixedHeightClipper(
-                controller: controller,
-                height: snapshotHeight,
-                baseline: -2 * snapshotHeight,
-                valueScalar: -1,
-                child: CheckoutCashierSnapshot(price: widget.price, paid: widget.paid),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scroll,
-                  child: SizedBox(
-                    height: calculatorHeight,
-                    child: CheckoutCashierCalculator(
-                      onSubmit: () => _ConfirmButton.confirm(context, paid: widget.paid.value),
-                      price: widget.price,
-                      paid: widget.paid,
+        Positioned.fill(
+          child: ScrollableDraggableSheet(
+            indicator: const DraggableIndicator(key: Key('order.details.ds')),
+            snapSizes: const [snapshotHeight, calculatorHeight],
+            builder: (controller, scroll, _) {
+              draggableController = controller;
+              return [
+                FixedHeightClipper(
+                  controller: controller,
+                  height: snapshotHeight,
+                  baseline: -2 * snapshotHeight,
+                  valueScalar: -1,
+                  child: CheckoutCashierSnapshot(price: widget.price, paid: widget.paid),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: scroll,
+                    child: SizedBox(
+                      height: calculatorHeight,
+                      child: CheckoutCashierCalculator(
+                        onSubmit: () => _ConfirmButton.confirm(context, paid: widget.paid.value),
+                        price: widget.price,
+                        paid: widget.paid,
+                      ),
                     ),
                   ),
                 ),
-              )
-            ];
-          },
+              ];
+            },
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   @override
   void initState() {
     super.initState();
 
-    _controller = TabController(
-      initialIndex: widget.viewIndex.value,
-      length: 3,
-      vsync: this,
-    );
+    _controller = TabController(initialIndex: widget.viewIndex.value, length: 3, vsync: this);
     _controller.addListener(() {
       widget.viewIndex.value = _controller.index;
     });
@@ -199,11 +188,7 @@ class _Desktop extends StatelessWidget {
 
   final ValueNotifier<int> viewIndex;
 
-  const _Desktop({
-    required this.paid,
-    required this.price,
-    required this.viewIndex,
-  });
+  const _Desktop({required this.paid, required this.price, required this.viewIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -214,12 +199,7 @@ class _Desktop extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                kHorizontalSpacing,
-                kTopSpacing,
-                kHorizontalSpacing,
-                kInternalSpacing,
-              ),
+              padding: const .fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
               child: SizedBox(
                 height: 36,
                 child: CheckoutCashierSnapshot(price: price, paid: paid, showChange: false),
@@ -240,12 +220,7 @@ class _Desktop extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
-        actions: Cart.instance.isEmpty
-            ? null
-            : [
-                const _StashButton(),
-                _ConfirmButton(price: price, paid: paid),
-              ],
+        actions: Cart.instance.isEmpty ? null : [const _StashButton(), _ConfirmButton(price: price, paid: paid)],
       ),
       body: ListenableBuilder(
         listenable: viewIndex,
@@ -256,10 +231,12 @@ class _Desktop extends StatelessWidget {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 800),
-                    child: Column(children: [
-                      _buildSwitcher(),
-                      Expanded(child: _buildBody(context)),
-                    ]),
+                    child: Column(
+                      children: [
+                        _buildSwitcher(),
+                        Expanded(child: _buildBody(context)),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -285,9 +262,7 @@ class _Desktop extends StatelessWidget {
 
       return ValueListenableBuilder(
         valueListenable: paid,
-        builder: (context, value, child) => OrderObjectView(
-          order: Cart.instance.toObject(paid: value),
-        ),
+        builder: (context, value, child) => OrderObjectView(order: Cart.instance.toObject(paid: value)),
       );
     }
 
@@ -338,7 +313,7 @@ class _ConfirmButton extends StatelessWidget {
     final status = await showSnackbarWhenFutureError(future, 'order_checkout', context: context);
 
     if (context.mounted && status != null) {
-      if (status == CheckoutStatus.paidNotEnough) {
+      if (status == .paidNotEnough) {
         showSnackBar(S.orderCheckoutSnackbarPaidFailed, context: context);
       } else if (context.canPop()) {
         // send success message

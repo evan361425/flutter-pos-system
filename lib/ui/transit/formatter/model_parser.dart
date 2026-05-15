@@ -44,7 +44,8 @@ class MenuParser extends ModelParser<Menu, Product> {
   String? validate(List<String> row) {
     if (row.length < 4) return S.transitImportErrorBasicColumnCount(4);
 
-    final errorMsg = Validator.textLimit(S.menuCatalogNameLabel, 30)(row[0]) ??
+    final errorMsg =
+        Validator.textLimit(S.menuCatalogNameLabel, 30)(row[0]) ??
         Validator.textLimit(S.menuProductNameLabel, 30)(row[1]) ??
         Validator.isNumber(S.menuProductPriceLabel)(row[2]) ??
         Validator.positiveNumber(S.menuProductCostLabel)(row[3]);
@@ -53,14 +54,8 @@ class MenuParser extends ModelParser<Menu, Product> {
 
     final vIng = Validator.textLimit(S.stockIngredientNameLabel, 30);
     final vQua = Validator.textLimit(S.stockQuantityNameLabel, 30);
-    final vAmount = Validator.positiveNumber(
-      S.stockIngredientAmountLabel,
-      allowNull: true,
-    );
-    final vQuaAmount = Validator.positiveNumber(
-      S.menuQuantityAmountLabel,
-      allowNull: true,
-    );
+    final vAmount = Validator.positiveNumber(S.stockIngredientAmountLabel, allowNull: true);
+    final vQuaAmount = Validator.positiveNumber(S.menuQuantityAmountLabel, allowNull: true);
 
     final lines = row[4].toString().split('\n').map((e) => e.trim());
     for (final line in lines) {
@@ -82,12 +77,9 @@ class MenuParser extends ModelParser<Menu, Product> {
 
   @override
   Product parse(List<String> row, int index) {
-    final catalog = target.getStagedByName(row[0]) ??
-        Catalog.fromRow(
-          target.getItemByName(row[0]),
-          row,
-          index: Menu.instance.stagedItems.length + 1,
-        );
+    final catalog =
+        target.getStagedByName(row[0]) ??
+        Catalog.fromRow(target.getItemByName(row[0]), row, index: Menu.instance.stagedItems.length + 1);
     Menu.instance.addStaged(catalog);
 
     final oriProduct = target.getProductByName(row[1]);
@@ -114,10 +106,7 @@ class MenuParser extends ModelParser<Menu, Product> {
         final columns = line.substring(2).split(',');
         if (columns.isEmpty) continue;
 
-        final quantity = ProductQuantity.fromRow(
-          oriIngredient?.getItemByName(columns[0]),
-          columns,
-        );
+        final quantity = ProductQuantity.fromRow(oriIngredient?.getItemByName(columns[0]), columns);
         ingredient.addItem(quantity, save: false);
       }
     }
@@ -134,18 +123,11 @@ class StockParser extends ModelParser<Stock, Ingredient> {
     if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
-        Validator.positiveNumber(
-          S.stockIngredientAmountLabel,
-          allowNull: true,
-        )(row.length > 1 ? row[1] : null) ??
-        Validator.positiveNumber(
-          S.stockIngredientRestockPriceLabel,
-          allowNull: true,
-        )(row.length > 2 ? row[2] : null) ??
-        Validator.positiveNumber(
-          S.stockIngredientRestockQuantityLabel,
-          allowNull: true,
-        )(row.length > 3 ? row[3] : null);
+        Validator.positiveNumber(S.stockIngredientAmountLabel, allowNull: true)(row.length > 1 ? row[1] : null) ??
+        Validator.positiveNumber(S.stockIngredientRestockPriceLabel, allowNull: true)(row.length > 2 ? row[2] : null) ??
+        Validator.positiveNumber(S.stockIngredientRestockQuantityLabel, allowNull: true)(
+          row.length > 3 ? row[3] : null,
+        );
   }
 
   @override
@@ -165,11 +147,9 @@ class QuantitiesParser extends ModelParser<Quantities, Quantity> {
     if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockQuantityNameLabel, 30)(row[0]) ??
-        Validator.positiveNumber(
-          S.stockQuantityProportionLabel,
-          maximum: 100,
-          allowNull: true,
-        )(row.length > 1 ? row[1] : null);
+        Validator.positiveNumber(S.stockQuantityProportionLabel, maximum: 100, allowNull: true)(
+          row.length > 1 ? row[1] : null,
+        );
   }
 
   @override
@@ -231,10 +211,7 @@ class ReplenisherParser extends ModelParser<Replenisher, Replenishment> {
 
       Ingredient? ing = Stock.instance.getItemByName(columns[0]) ?? Stock.instance.getStagedByName(columns[0]);
       if (ing == null) {
-        ing = Ingredient(
-          name: columns[0],
-          status: ModelStatus.staged,
-        );
+        ing = Ingredient(name: columns[0], status: .staged);
         Stock.instance.addStaged(ing);
       }
 
@@ -256,7 +233,7 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
     if (msg != null || row.length == 2) return msg;
 
     final lines = row[2].toString().split('\n');
-    final shouldValidateMode = _str2mode(row[1]) == OrderAttributeMode.changeDiscount;
+    final shouldValidateMode = _str2mode(row[1]) == .changeDiscount;
     final vName = Validator.textLimit(S.orderAttributeOptionNameLabel, 30);
     final vMode = Validator.positiveInt(row[1], maximum: 1000, allowNull: true);
     for (var line in lines) {
@@ -274,12 +251,7 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
   @override
   OrderAttribute parse(List<String> row, int index) {
     final ori = target.getItemByName(row[0]);
-    final attr = OrderAttribute.fromRow(
-      ori,
-      row,
-      index: index,
-      mode: _str2mode(row[1]),
-    );
+    final attr = OrderAttribute.fromRow(ori, row, index: index, mode: _str2mode(row[1]));
     OrderAttributes.instance.addStaged(attr);
 
     if (row.length >= 3) {
@@ -291,10 +263,7 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
     return attr;
   }
 
-  Iterable<OrderAttributeOption> _formatOptions(
-    OrderAttribute? ori,
-    String value,
-  ) sync* {
+  Iterable<OrderAttributeOption> _formatOptions(OrderAttribute? ori, String value) sync* {
     final lines = value.split('\n');
     int counter = 1;
     for (var line in lines.map((e) => e.trim())) {
@@ -302,11 +271,7 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
 
       final columns = line.substring(2).split(',');
 
-      yield OrderAttributeOption.fromRow(
-        ori?.getItemByName(columns[0]),
-        columns,
-        index: counter++,
-      );
+      yield OrderAttributeOption.fromRow(ori?.getItemByName(columns[0]), columns, index: counter++);
     }
   }
 

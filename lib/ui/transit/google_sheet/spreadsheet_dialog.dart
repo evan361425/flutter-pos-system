@@ -43,7 +43,7 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
       if (context.mounted) {
         showMoreInfoSnackBar(
           S.transitGoogleSheetErrorCreateTitle,
-          Text(S.transitGoogleSheetErrorCreateHelper, textAlign: TextAlign.start),
+          Text(S.transitGoogleSheetErrorCreateHelper, textAlign: .start),
           context: context,
         );
       }
@@ -78,7 +78,7 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
     if (context.mounted) {
       showMoreInfoSnackBar(
         S.transitGoogleSheetErrorFulfillTitle,
-        Text(S.transitGoogleSheetErrorFulfillHelper, textAlign: TextAlign.start),
+        Text(S.transitGoogleSheetErrorFulfillHelper, textAlign: .start),
         context: context,
       );
     }
@@ -147,36 +147,34 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     return AlertDialog(
       title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(
-        child: Column(children: [
-          if (widget.allowCreateNew) ...[
-            CheckboxListTile(
-              dense: true,
-              value: createNew,
-              title: Text(S.transitGoogleSheetDialogCreate),
-              onChanged: (v) => setState(() => createNew = v!),
-            ),
-            CheckboxListTile(
-              dense: true,
-              value: !createNew,
-              title: Text(S.transitGoogleSheetDialogSelectExist),
-              onChanged: (v) => setState(() => createNew = !v!),
-            ),
-            const Divider(),
-          ],
-          if (!createNew) ...[
-            _buildTextField(),
-            if (errorText != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(errorText!, style: Theme.of(context).inputDecorationTheme.errorStyle),
+        child: Column(
+          children: [
+            if (widget.allowCreateNew) ...[
+              CheckboxListTile(
+                dense: true,
+                value: createNew,
+                title: Text(S.transitGoogleSheetDialogCreate),
+                onChanged: (v) => setState(() => createNew = v!),
               ),
+              CheckboxListTile(
+                dense: true,
+                value: !createNew,
+                title: Text(S.transitGoogleSheetDialogSelectExist),
+                onChanged: (v) => setState(() => createNew = !v!),
+              ),
+              const Divider(),
+            ],
+            if (!createNew) ...[
+              _buildTextField(),
+              if (errorText != null)
+                Padding(
+                  padding: const .only(top: 8.0),
+                  child: Text(errorText!, style: Theme.of(context).inputDecorationTheme.errorStyle),
+                ),
+            ],
+            if (showTutorial) Padding(padding: const .only(top: 8.0), child: _buildTutorialImage()),
           ],
-          if (showTutorial)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: _buildTutorialImage(),
-            ),
-        ]),
+        ),
       ),
       actions: [
         PopButton(
@@ -199,14 +197,14 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
         key: const Key('transit.spreadsheet_editor'),
         autocorrect: false,
         controller: textController,
-        keyboardType: TextInputType.text,
-        textInputAction: TextInputAction.done,
+        keyboardType: .text,
+        textInputAction: .done,
         validator: _validate,
         onSaved: _submit,
         decoration: InputDecoration(
           labelText: S.transitGoogleSheetDialogIdLabel,
           helperText: S.transitGoogleSheetDialogIdHelper,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
+          floatingLabelBehavior: .always,
           errorMaxLines: 5,
           suffixIcon: IconButton(
             icon: Icon(showTutorial ? Icons.help : Icons.help_outline),

@@ -13,12 +13,7 @@ class CheckoutCashierCalculator extends StatefulWidget {
 
   final ValueNotifier<num> paid;
 
-  const CheckoutCashierCalculator({
-    super.key,
-    required this.onSubmit,
-    required this.price,
-    required this.paid,
-  });
+  const CheckoutCashierCalculator({super.key, required this.onSubmit, required this.price, required this.paid});
 
   @override
   State<CheckoutCashierCalculator> createState() => _CheckoutCashierCalculatorState();
@@ -34,110 +29,132 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(children: [
-      // avoid rounded border of accessor and causing overlapping.
-      const SizedBox(height: 8.0),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(children: [
-          _SingleField(
-            key: paidState,
-            id: 'cashier.calculator.paid',
-            prefix: S.orderCheckoutDetailsCalculatorLabelPaid,
-            defaultText: widget.price.value.toCurrency(),
-            errorText: '',
+    return Column(
+      children: [
+        // avoid rounded border of accessor and causing overlapping.
+        const SizedBox(height: 8.0),
+        Padding(
+          padding: const .symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              _SingleField(
+                key: paidState,
+                id: 'cashier.calculator.paid',
+                prefix: S.orderCheckoutDetailsCalculatorLabelPaid,
+                defaultText: widget.price.value.toCurrency(),
+                errorText: '',
+              ),
+              const Divider(),
+              _SingleField(
+                key: changeState,
+                id: 'cashier.calculator.change',
+                prefix: S.orderCheckoutDetailsCalculatorLabelChange,
+                defaultText: '0',
+                errorText: S.orderCheckoutSnackbarPaidFailed,
+              ),
+              const Divider(),
+            ],
           ),
-          const Divider(),
-          _SingleField(
-            key: changeState,
-            id: 'cashier.calculator.change',
-            prefix: S.orderCheckoutDetailsCalculatorLabelChange,
-            defaultText: '0',
-            errorText: S.orderCheckoutSnackbarPaidFailed,
-          ),
-          const Divider(),
-        ]),
-      ),
-      Expanded(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: kFABSpacing),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Column(mainAxisSize: MainAxisSize.min, children: [
-                  _CalculatorPostfixAction(action: _execPostfix, text: '1'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '4'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '7'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '00'),
-                ]),
-                Column(mainAxisSize: MainAxisSize.min, children: [
-                  _CalculatorPostfixAction(action: _execPostfix, text: '2'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '5'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '8'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '0'),
-                ]),
-                Column(mainAxisSize: MainAxisSize.min, children: [
-                  _CalculatorPostfixAction(action: _execPostfix, text: '3'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '6'),
-                  _CalculatorPostfixAction(action: _execPostfix, text: '9'),
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.dot'),
-                    action: _execDot,
-                    child: const Text('.'),
-                  ),
-                ]),
-                Column(mainAxisSize: MainAxisSize.min, children: [
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.plus'),
-                    action: () => _addOperator('+'),
-                    color: theme.colorScheme.secondary,
-                    child: const Icon(Icons.add_outlined, size: 24),
-                  ),
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.minus'),
-                    action: () => _addOperator('-'),
-                    color: theme.colorScheme.secondary,
-                    child: const Icon(Icons.remove_outlined, size: 24),
-                  ),
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.times'),
-                    action: () => _addOperator('x'),
-                    color: theme.colorScheme.secondary,
-                    child: const Icon(Icons.clear_outlined, size: 24),
-                  ),
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.ceil'),
-                    action: _execCeil,
-                    color: theme.colorScheme.secondary,
-                    child: const Icon(Icons.merge_type_rounded, size: 24),
-                  ),
-                ]),
-                Column(mainAxisSize: MainAxisSize.min, children: [
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.back'),
-                    action: _execBack,
-                    color: theme.colorScheme.error,
-                    child: const Icon(Icons.arrow_back_rounded, size: 24),
-                  ),
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.clear'),
-                    action: _execClear,
-                    color: theme.colorScheme.error,
-                    child: const Icon(Icons.refresh_outlined, size: 24),
-                  ),
-                  _CalculatorAction(
-                    key: const Key('cashier.calculator.submit'),
-                    action: _execSubmit,
-                    height: 124,
-                    child: isOperating ? const Text('=') : const Icon(Icons.check_outlined, size: 24),
-                  ),
-                ]),
-              ]),
+        ),
+        Expanded(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const .only(bottom: kFABSpacing),
+                child: Row(
+                  mainAxisSize: .min,
+                  children: [
+                    Column(
+                      mainAxisSize: .min,
+                      children: [
+                        _CalculatorPostfixAction(action: _execPostfix, text: '1'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '4'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '7'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '00'),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: .min,
+                      children: [
+                        _CalculatorPostfixAction(action: _execPostfix, text: '2'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '5'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '8'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '0'),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: .min,
+                      children: [
+                        _CalculatorPostfixAction(action: _execPostfix, text: '3'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '6'),
+                        _CalculatorPostfixAction(action: _execPostfix, text: '9'),
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.dot'),
+                          action: _execDot,
+                          child: const Text('.'),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: .min,
+                      children: [
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.plus'),
+                          action: () => _addOperator('+'),
+                          color: theme.colorScheme.secondary,
+                          child: const Icon(Icons.add_outlined, size: 24),
+                        ),
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.minus'),
+                          action: () => _addOperator('-'),
+                          color: theme.colorScheme.secondary,
+                          child: const Icon(Icons.remove_outlined, size: 24),
+                        ),
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.times'),
+                          action: () => _addOperator('x'),
+                          color: theme.colorScheme.secondary,
+                          child: const Icon(Icons.clear_outlined, size: 24),
+                        ),
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.ceil'),
+                          action: _execCeil,
+                          color: theme.colorScheme.secondary,
+                          child: const Icon(Icons.merge_type_rounded, size: 24),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: .min,
+                      children: [
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.back'),
+                          action: _execBack,
+                          color: theme.colorScheme.error,
+                          child: const Icon(Icons.arrow_back_rounded, size: 24),
+                        ),
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.clear'),
+                          action: _execClear,
+                          color: theme.colorScheme.error,
+                          child: const Icon(Icons.refresh_outlined, size: 24),
+                        ),
+                        _CalculatorAction(
+                          key: const Key('cashier.calculator.submit'),
+                          action: _execSubmit,
+                          height: 124,
+                          child: isOperating ? const Text('=') : const Icon(Icons.check_outlined, size: 24),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   @override
@@ -258,26 +275,17 @@ class _CalculatorAction extends StatelessWidget {
 
   final Widget child;
 
-  const _CalculatorAction({
-    super.key,
-    required this.action,
-    required this.child,
-    this.height = 60,
-    this.color,
-  });
+  const _CalculatorAction({super.key, required this.action, required this.child, this.height = 60, this.color});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(2),
+      padding: const .all(2),
       child: SizedBox(
         width: 60,
         height: height,
         child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: color,
-            padding: EdgeInsets.zero,
-          ),
+          style: OutlinedButton.styleFrom(foregroundColor: color, padding: .zero),
           onPressed: action,
           child: child,
         ),
@@ -295,11 +303,7 @@ class _CalculatorPostfixAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _CalculatorAction(
-      key: Key('cashier.calculator.$text'),
-      action: () => action(text),
-      child: Text(text),
-    );
+    return _CalculatorAction(key: Key('cashier.calculator.$text'), action: () => action(text), child: Text(text));
   }
 }
 
@@ -329,15 +333,17 @@ class _SingleFieldState extends State<_SingleField> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Text(widget.prefix),
-      const Spacer(),
-      _text == null
-          ? Text(widget.errorText, key: Key('${widget.id}.error'))
-          : _text!.isEmpty
-              ? Text(widget.defaultText, key: Key('${widget.id}.hint'))
-              : Text(_text!, key: Key(widget.id)),
-    ]);
+    return Row(
+      children: [
+        Text(widget.prefix),
+        const Spacer(),
+        _text == null
+            ? Text(widget.errorText, key: Key('${widget.id}.error'))
+            : _text!.isEmpty
+            ? Text(widget.defaultText, key: Key('${widget.id}.hint'))
+            : Text(_text!, key: Key(widget.id)),
+      ],
+    );
   }
 
   String? get text => _text;

@@ -19,22 +19,23 @@ import '../../../test_helpers/translator.dart';
 void main() {
   group('Transit - Plain Text - Export Basic', () {
     final MockClipboard mockClipboard = MockClipboard();
-    TestWidgetsFlutterBinding.ensureInitialized()
-        .defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, mockClipboard.handleMethodCall);
+    TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      mockClipboard.handleMethodCall,
+    );
 
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const TransitStation(
-              exporter: PlainTextExporter(),
-              catalog: TransitCatalog.exportModel,
-              method: TransitMethod.plainText,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) =>
+                  const TransitStation(exporter: PlainTextExporter(), catalog: .exportModel, method: .plainText),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
@@ -53,11 +54,11 @@ void main() {
 
       final copied = await Clipboard.getData('text/plain');
       expect(
-          copied?.text,
-          equals([
-            S.transitFormatTextQuantitiesHeader(1),
-            S.transitFormatTextQuantitiesQuantity('1', 'q1', '1'),
-          ].join('\n\n')));
+        copied?.text,
+        equals(
+          [S.transitFormatTextQuantitiesHeader(1), S.transitFormatTextQuantitiesQuantity('1', 'q1', '1')].join('\n\n'),
+        ),
+      );
     });
 
     setUpAll(() {
@@ -77,15 +78,11 @@ void main() {
 
 // copy from https://github.com/flutter/flutter/blob/master/packages/flutter/test/widgets/clipboard_utils.dart
 class MockClipboard {
-  MockClipboard({
-    this.hasStringsThrows = false,
-  });
+  MockClipboard({this.hasStringsThrows = false});
 
   final bool hasStringsThrows;
 
-  dynamic clipboardData = <String, dynamic>{
-    'text': null,
-  };
+  dynamic clipboardData = <String, dynamic>{'text': null};
 
   Future<Object?> handleMethodCall(MethodCall methodCall) async {
     switch (methodCall.method) {

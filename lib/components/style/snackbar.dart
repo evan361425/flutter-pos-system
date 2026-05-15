@@ -13,6 +13,7 @@ void showSnackBar(
   BuildContext? context,
   GlobalKey<ScaffoldMessengerState>? key,
   SnackBarAction? action,
+  bool? persist,
 }) {
   ScaffoldMessengerState? state;
   if (context != null) {
@@ -27,14 +28,17 @@ void showSnackBar(
 
   if (state != null) {
     state.clearSnackBars();
-    state.showSnackBar(SnackBar(
-      showCloseIcon: true,
-      // make floating button below
-      behavior: SnackBarBehavior.floating,
-      content: Text(message),
-      width: Routes.homeMode.value.isMobile() ? null : 600,
-      action: action,
-    ));
+    state.showSnackBar(
+      SnackBar(
+        showCloseIcon: true,
+        // make floating button below
+        behavior: .floating,
+        content: Text(message),
+        width: Routes.homeMode.value.isMobile() ? null : 600,
+        action: action,
+        persist: persist,
+      ),
+    );
   }
 }
 
@@ -101,16 +105,14 @@ void showMoreInfoSnackBar(
   Widget? content, {
   BuildContext? context,
   GlobalKey<ScaffoldMessengerState>? key,
+  bool persist = false,
 }) {
   final ctx = context ?? key?.currentContext;
   final action = content == null || ctx == null
       ? null
-      : SnackBarAction(
-          label: S.actMoreInfo,
-          onPressed: () => showMoreInfoDialog(ctx, message, content),
-        );
+      : SnackBarAction(label: S.actMoreInfo, onPressed: () => showMoreInfoDialog(ctx, message, content));
 
-  showSnackBar(message, action: action, context: context, key: key);
+  showSnackBar(message, action: action, context: context, key: key, persist: persist);
 }
 
 void showMoreInfoDialog(BuildContext context, String title, Widget body) {
@@ -120,7 +122,7 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
     builder: (context) {
       return AlertDialog.adaptive(
         title: Text(title),
-        contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 16.0),
+        contentPadding: const .fromLTRB(24.0, 8.0, 24.0, 16.0),
         content: body,
         actions: [PopButton(title: MaterialLocalizations.of(context).okButtonLabel)],
       );
@@ -128,23 +130,13 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
   );
 }
 
-void _prettierError(
-  Object e, {
-  BuildContext? context,
-  GlobalKey<ScaffoldMessengerState>? key,
-  String? moreMessage,
-}) {
+void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key, String? moreMessage}) {
   void show(String msg, [String? more]) {
     if (kDebugMode) {
       print('snackbar debug error: $msg');
       print('snackbar debug stack: ${e is Error ? e.stackTrace : null}');
     }
-    showMoreInfoSnackBar(
-      msg,
-      more == null ? null : Linkify.fromString(more),
-      context: context,
-      key: key,
-    );
+    showMoreInfoSnackBar(msg, more == null ? null : Linkify.fromString(more), context: context, key: key);
   }
 
   if (e is PlatformException) {

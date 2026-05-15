@@ -12,10 +12,7 @@ void main() {
     });
 
     test('#toUTC', () {
-      expect(
-        Util.toUTC(now: DateTime.utc(2021, 6, 14, 2, 59, 33)),
-        equals(1623639573),
-      );
+      expect(Util.toUTC(now: .utc(2021, 6, 14, 2, 59, 33)), equals(1623639573));
 
       final date = Util.toUTC(hour: 0);
       final utc = DateTime.now().timeZoneOffset.inSeconds + date;
@@ -35,7 +32,7 @@ void main() {
 
     test('#formatCompact', () {
       initializeDateFormatting('en', null);
-      DateTimeRange range = Util.getDateRange(now: DateTime.utc(2021, 6, 14), days: 3);
+      DateTimeRange range = Util.getDateRange(now: .utc(2021, 6, 14), days: 3);
 
       expect(range.formatCompact('en'), equals('20210614 - 20210616'));
     });
@@ -43,11 +40,9 @@ void main() {
     testWidgets('#handleSnapshot error', (WidgetTester tester) async {
       Object? gotten;
       final f = Util.handleSnapshot((context, data) => const SizedBox.shrink(), onError: (err) => gotten = err);
-      const err = AsyncSnapshot<String>.withError(ConnectionState.done, 'test');
+      const AsyncSnapshot<String> err = .withError(.done, 'test');
 
-      await tester.pumpWidget(MaterialApp(
-        home: Builder(builder: (BuildContext context) => f(context, err)),
-      ));
+      await tester.pumpWidget(MaterialApp(home: Builder(builder: (BuildContext context) => f(context, err))));
 
       expect(find.text('test'), findsOneWidget);
       expect(gotten, equals('test'));

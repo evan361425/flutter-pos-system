@@ -51,10 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   SubmenuButton(
                     key: const Key('history.action.export'),
                     menuChildren: TransitMethod.values
-                        .map((e) => MenuItemButton(
-                              onPressed: () => _onExport(e),
-                              child: Text(e.l10nName),
-                            ))
+                        .map((e) => MenuItemButton(onPressed: () => _onExport(e), child: Text(e.l10nName)))
                         .toList(),
                     child: Text(S.analysisHistoryActionExport),
                   ),
@@ -97,7 +94,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildTwoColumns() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Expanded(child: _buildCalendar(shouldFillViewport: true)),
         Expanded(child: _buildOrderList()),
@@ -106,15 +103,17 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildSingleColumn() {
-    return Column(children: [
-      PhysicalModel(
-        elevation: 5,
-        color: Theme.of(context).colorScheme.surface,
-        shadowColor: Colors.transparent,
-        child: _buildCalendar(shouldFillViewport: false),
-      ),
-      Expanded(child: _buildOrderList()),
-    ]);
+    return Column(
+      children: [
+        PhysicalModel(
+          elevation: 5,
+          color: Theme.of(context).colorScheme.surface,
+          shadowColor: Colors.transparent,
+          child: _buildCalendar(shouldFillViewport: false),
+        ),
+        Expanded(child: _buildOrderList()),
+      ],
+    );
   }
 
   Widget _buildCalendar({required bool shouldFillViewport}) {
@@ -123,10 +122,7 @@ class _HistoryPageState extends State<HistoryPage> {
       title: S.analysisHistoryCalendarTutorialTitle,
       message: S.analysisHistoryCalendarTutorialContent,
       spotlightBuilder: const SpotlightRectBuilder(),
-      child: HistoryCalendarView(
-        shouldFillViewport: shouldFillViewport,
-        notifier: notifier,
-      ),
+      child: HistoryCalendarView(shouldFillViewport: shouldFillViewport, notifier: notifier),
     );
   }
 

@@ -33,31 +33,32 @@ void main() {
       final baseRoute = Routes.getDesiredRoute(0).routes[0] as GoRoute;
       return MaterialApp.router(
         darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.dark,
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, __) {
-              final singleView = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= Breakpoint.medium;
-              return singleView ? const MenuPage() : const Scaffold(body: MenuPage());
-            },
-            routes: [
-              GoRoute(
-                name: Routes.imageGallery,
-                path: 'image_gallery',
-                builder: (context, __) => TextButton(
-                  onPressed: () => context.pop(popImage),
-                  child: const Text('tap me'),
+        themeMode: .dark,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, __) {
+                final singleView = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= .medium;
+                return singleView ? const MenuPage() : const Scaffold(body: MenuPage());
+              },
+              routes: [
+                GoRoute(
+                  name: Routes.imageGallery,
+                  path: 'image_gallery',
+                  builder: (context, __) =>
+                      TextButton(onPressed: () => context.pop(popImage), child: const Text('tap me')),
                 ),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: baseRoute.path,
-            redirect: baseRoute.redirect,
-            routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
-          ),
-        ]),
+              ],
+            ),
+            GoRoute(
+              path: baseRoute.path,
+              redirect: baseRoute.redirect,
+              routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
+            ),
+          ],
+        ),
       );
     }
 
@@ -65,13 +66,15 @@ void main() {
       group(device.name, () {
         testWidgets('Add catalog with image', (WidgetTester tester) async {
           deviceAs(device, tester);
-          await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Menu>.value(value: Menu()),
-              ChangeNotifierProvider<Stock>.value(value: Stock()),
-            ],
-            child: buildApp('test-image'),
-          ));
+          await tester.pumpWidget(
+            MultiProvider(
+              providers: [
+                ChangeNotifierProvider<Menu>.value(value: Menu()),
+                ChangeNotifierProvider<Stock>.value(value: Stock()),
+              ],
+              child: buildApp('test-image'),
+            ),
+          );
 
           await tester.tap(find.byKey(const Key('empty_body')));
           await tester.pumpAndSettle();
@@ -82,7 +85,7 @@ void main() {
           await tester.pumpAndSettle();
 
           await tester.enterText(find.byKey(const Key('catalog.name')), 'name');
-          await tester.testTextInput.receiveAction(TextInputAction.done);
+          await tester.testTextInput.receiveAction(.done);
           await tester.pumpAndSettle();
           await tester.pumpAndSettle();
 
@@ -93,17 +96,23 @@ void main() {
           expect(catalog.name, equals('name'));
           expect(catalog.index, equals(1));
 
-          verify(storage.add(
-            any,
-            any,
-            argThat(predicate((data) =>
-                data is Map &&
-                data['name'] == 'name' &&
-                data['index'] == 1 &&
-                data['createdAt'] > 0 &&
-                data['imagePath'] == 'test-image' &&
-                (data['products'] as Map).isEmpty)),
-          ));
+          verify(
+            storage.add(
+              any,
+              any,
+              argThat(
+                predicate(
+                  (data) =>
+                      data is Map &&
+                      data['name'] == 'name' &&
+                      data['index'] == 1 &&
+                      data['createdAt'] > 0 &&
+                      data['imagePath'] == 'test-image' &&
+                      (data['products'] as Map).isEmpty,
+                ),
+              ),
+            ),
+          );
         });
 
         testWidgets('Edit catalog', (WidgetTester tester) async {
@@ -113,12 +122,12 @@ void main() {
           final catalog2 = Catalog(id: 'c-2', name: 'c-2');
           Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
 
-          await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-            ],
-            child: buildApp(newImage),
-          ));
+          await tester.pumpWidget(
+            MultiProvider(
+              providers: [ChangeNotifierProvider<Menu>.value(value: Menu.instance)],
+              child: buildApp(newImage),
+            ),
+          );
 
           await tester.longPress(find.byKey(const Key('catalog.c-1')));
           await tester.pumpAndSettle();
@@ -137,7 +146,7 @@ void main() {
           await tester.pumpAndSettle();
 
           await tester.enterText(find.byKey(const Key('catalog.name')), 'new-name');
-          await tester.testTextInput.receiveAction(TextInputAction.done);
+          await tester.testTextInput.receiveAction(.done);
           await tester.pumpAndSettle();
           await tester.pumpAndSettle();
 
@@ -146,13 +155,7 @@ void main() {
           expect(((w as ListTile).title as Text).data, equals('new-name'));
           expect(catalog1.imagePath, equals(newImage));
 
-          verify(storage.set(
-            any,
-            argThat(equals({
-              'c-1.name': 'new-name',
-              'c-1.imagePath': newImage,
-            })),
-          ));
+          verify(storage.set(any, argThat(equals({'c-1.name': 'new-name', 'c-1.imagePath': newImage}))));
         });
 
         testWidgets('Reorder catalog', (WidgetTester tester) async {
@@ -162,9 +165,12 @@ void main() {
           final catalog3 = Catalog(name: 'c-3', id: 'c-3', index: 3);
           Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2, 'c-3': catalog3});
 
-          await tester.pumpWidget(MultiProvider(providers: [
-            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-          ], child: buildApp()));
+          await tester.pumpWidget(
+            MultiProvider(
+              providers: [ChangeNotifierProvider<Menu>.value(value: Menu.instance)],
+              child: buildApp(),
+            ),
+          );
 
           await tester.tap(find.byIcon(KIcons.reorder));
           await tester.pumpAndSettle();
@@ -182,10 +188,7 @@ void main() {
           expect(itemList[1].id, equals('c-1'));
           expect(itemList[2].id, equals('c-3'));
 
-          verify(storage.set(
-            any,
-            argThat(equals({'c-1.index': 2, 'c-2.index': 1})),
-          ));
+          verify(storage.set(any, argThat(equals({'c-1.index': 2, 'c-2.index': 1}))));
         });
 
         testWidgets('Delete catalog', (WidgetTester tester) async {
@@ -193,16 +196,21 @@ void main() {
           final productImage = await createImage('product');
           final catalogImage = await createImage('catalog');
           final catalog1 = Catalog(id: 'c-1');
-          final catalog2 = Catalog(id: 'c-2', imagePath: catalogImage, products: {
-            'p-1': Product(id: 'p-1', imagePath: productImage),
-          });
+          final catalog2 = Catalog(
+            id: 'c-2',
+            imagePath: catalogImage,
+            products: {'p-1': Product(id: 'p-1', imagePath: productImage)},
+          );
           Menu().replaceItems({'c-1': catalog1, 'c-2': catalog2});
           await createImage('product-avator');
           await createImage('catalog-avator');
 
-          await tester.pumpWidget(MultiProvider(providers: [
-            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-          ], child: buildApp()));
+          await tester.pumpWidget(
+            MultiProvider(
+              providers: [ChangeNotifierProvider<Menu>.value(value: Menu.instance)],
+              child: buildApp(),
+            ),
+          );
 
           await tester.longPress(find.byKey(const Key('catalog.c-1')));
           await tester.pumpAndSettle();
@@ -216,7 +224,7 @@ void main() {
           verify(storage.set(any, argThat(equals({catalog1.prefix: null}))));
 
           await tester.longPress(find.byKey(const Key('catalog.c-2')));
-          await (device == Device.mobile ? tester.pumpAndSettle() : tester.pump(const Duration(milliseconds: 500)));
+          await (device == .mobile ? tester.pumpAndSettle() : tester.pump(const Duration(milliseconds: 500)));
           await tester.tap(find.byIcon(KIcons.delete));
           await tester.pumpAndSettle();
 
@@ -233,10 +241,15 @@ void main() {
     testWidgets('Navigate to catalog', (WidgetTester tester) async {
       Menu().replaceItems({'c-1': Catalog(id: 'c-1', name: 'c-1')});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-        ChangeNotifierProvider<Stock>.value(value: Stock()),
-      ], child: buildApp()));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+          ],
+          child: buildApp(),
+        ),
+      );
 
       await tester.tap(find.byKey(const Key('catalog.c-1')));
       await tester.pumpAndSettle();
@@ -245,41 +258,48 @@ void main() {
     });
 
     testWidgets('Search product', (WidgetTester tester) async {
-      final now = DateTime.now();
-      final product = Product(id: 'p-1', name: 'p-1', searchedAt: now, ingredients: {
-        'pi-1': ProductIngredient(id: 'pi-1', ingredient: Ingredient(id: 'i-1', name: 'i-1'), quantities: {
-          'pq-1': ProductQuantity(
-            id: 'pq-1',
-            quantity: Quantity(id: 'q-1', name: 'q-1'),
+      final DateTime now = .now();
+      final product = Product(
+        id: 'p-1',
+        name: 'p-1',
+        searchedAt: now,
+        ingredients: {
+          'pi-1': ProductIngredient(
+            id: 'pi-1',
+            ingredient: Ingredient(id: 'i-1', name: 'i-1'),
+            quantities: {
+              'pq-1': ProductQuantity(
+                id: 'pq-1',
+                quantity: Quantity(id: 'q-1', name: 'q-1'),
+              ),
+            },
+          )..prepareItem(),
+          'pi-2': ProductIngredient(
+            id: 'pi-2',
+            ingredient: Ingredient(id: 'i-2', name: 'i-2'),
           ),
-        })
-          ..prepareItem(),
-        'pi-2': ProductIngredient(
-          id: 'pi-2',
-          ingredient: Ingredient(id: 'i-2', name: 'i-2'),
-        ),
-      })
-        ..prepareItem();
+        },
+      )..prepareItem();
       Menu().replaceItems({
-        'c-1': Catalog(id: 'c-1', products: {
-          'p-1': product,
-          'p-2': Product(
-            id: 'p-2',
-            name: 'p-2',
-            searchedAt: DateTime(now.year + 1),
-          ),
-        })
-          ..prepareItem()
+        'c-1': Catalog(
+          id: 'c-1',
+          products: {
+            'p-1': product,
+            'p-2': Product(id: 'p-2', name: 'p-2', searchedAt: DateTime(now.year + 1)),
+          },
+        )..prepareItem(),
       });
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Stock>.value(value: Stock()),
-          ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-          ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-        ],
-        child: buildApp(),
-      ));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: Stock()),
+            ChangeNotifierProvider<Quantities>.value(value: Quantities()),
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+          ],
+          child: buildApp(),
+        ),
+      );
       await tester.tap(find.byKey(const Key('menu.search')));
       await tester.pumpAndSettle();
 
@@ -316,38 +336,47 @@ void main() {
       expect(find.byKey(const Key('product_ingredient.pi-2')), findsOneWidget);
 
       // should update searchedAt
-      verify(storage.set(any, argThat(predicate((data) {
-        return data is Map && data['${product.prefix}.searchedAt'] > 0;
-      }))));
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((data) {
+              return data is Map && data['${product.prefix}.searchedAt'] > 0;
+            }),
+          ),
+        ),
+      );
     });
 
     testWidgets('Pop back to catalog list', (WidgetTester tester) async {
       Menu().replaceItems({'c-1': Catalog(id: 'c-1', name: 'c-1')});
       OrderAttributes();
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-          ChangeNotifierProvider<OrderAttributes>.value(value: OrderAttributes.instance),
-          ChangeNotifierProvider.value(value: Printers()),
-        ],
-        child: MaterialApp.router(
-          theme: AppThemes.lightTheme,
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, __) => TextButton(
-                onPressed: () => context.goNamed(
-                  Routes.menu,
-                  queryParameters: {'id': 'c-1'},
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+            ChangeNotifierProvider<OrderAttributes>.value(value: OrderAttributes.instance),
+            ChangeNotifierProvider.value(value: Printers()),
+          ],
+          child: MaterialApp.router(
+            theme: AppThemes.lightTheme,
+            routerConfig: GoRouter(
+              navigatorKey: Routes.rootNavigatorKey,
+              routes: [
+                GoRoute(
+                  path: '/',
+                  builder: (context, __) => TextButton(
+                    onPressed: () => context.goNamed(Routes.menu, queryParameters: {'id': 'c-1'}),
+                    child: const Text('go'),
+                  ),
                 ),
-                child: const Text('go'),
-              ),
+                ...Routes.getDesiredRoute(0).routes,
+              ],
             ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('go'));

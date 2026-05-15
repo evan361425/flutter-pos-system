@@ -16,10 +16,7 @@ import 'package:possystem/translator.dart';
 class ProductIngredientView extends StatelessWidget {
   final ProductIngredient ingredient;
 
-  const ProductIngredientView(
-    this.ingredient, {
-    super.key,
-  });
+  const ProductIngredientView(this.ingredient, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,26 +25,25 @@ class ProductIngredientView extends StatelessWidget {
       key: Key(key),
       title: Text(ingredient.name),
       subtitle: Text(S.menuIngredientMetaAmount(ingredient.amount)),
-      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      expandedCrossAxisAlignment: .stretch,
       children: [
-        Row(children: [
-          const SizedBox(width: kHorizontalSpacing),
-          Expanded(
-            child: RouteElevatedIconButton(
-              key: Key('$key.add'),
-              icon: const Icon(KIcons.add),
-              label: S.menuQuantityTitleCreate,
-              route: Routes.menuProductUpdateIngredient,
-              pathParameters: {'id': ingredient.product.id},
-              queryParameters: {'iid': ingredient.id, 'qid': ''},
+        Row(
+          children: [
+            const SizedBox(width: kHorizontalSpacing),
+            Expanded(
+              child: RouteElevatedIconButton(
+                key: Key('$key.add'),
+                icon: const Icon(KIcons.add),
+                label: S.menuQuantityTitleCreate,
+                route: Routes.menuProductUpdateIngredient,
+                pathParameters: {'id': ingredient.product.id},
+                queryParameters: {'iid': ingredient.id, 'qid': ''},
+              ),
             ),
-          ),
-          EntryMoreButton(
-            key: Key('$key.more'),
-            onPressed: showActions,
-          ),
-          const SizedBox(width: kHorizontalSpacing),
-        ]),
+            EntryMoreButton(key: Key('$key.more'), onPressed: showActions),
+            const SizedBox(width: kHorizontalSpacing),
+          ],
+        ),
         for (final item in ingredient.items) _QuantityTile(item),
       ],
     );
@@ -100,10 +96,7 @@ class _QuantityTile extends StatelessWidget {
         onTap: () => context.pushNamed(
           Routes.menuProductUpdateIngredient,
           pathParameters: {'id': quantity.ingredient.product.id},
-          queryParameters: {
-            'iid': quantity.ingredient.id,
-            'qid': quantity.id,
-          },
+          queryParameters: {'iid': quantity.ingredient.id, 'qid': quantity.id},
         ),
       ),
     );

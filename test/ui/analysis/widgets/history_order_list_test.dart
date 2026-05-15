@@ -25,21 +25,20 @@ void main() {
   group('History Order List', () {
     Widget buildApp(ValueNotifier<DateTimeRange> notifier) {
       when(cache.get(any)).thenReturn(null);
-      when(cache.get(
-        argThat(predicate((String e) => e.startsWith('tutorial.'))),
-      )).thenReturn(true);
+      when(cache.get(argThat(predicate((String e) => e.startsWith('tutorial.'))))).thenReturn(true);
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) {
-              return Material(
-                child: HistoryOrderList(notifier: notifier),
-              );
-            },
-          ),
-          ...Routes.getDesiredRoute(0).routes,
-        ]),
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) {
+                return Material(child: HistoryOrderList(notifier: notifier));
+              },
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ],
+        ),
       );
     }
 
@@ -62,10 +61,7 @@ void main() {
 
       when(mockGetOrders()).thenAnswer((_) {
         loadCount++;
-        return Future.delayed(
-          const Duration(milliseconds: 100),
-          () => Future.value(<Map<String, Object?>>[]),
-        );
+        return Future.delayed(const Duration(milliseconds: 100), () => Future.value(<Map<String, Object?>>[]));
       });
       OrderSetter.setMetrics([]);
 
@@ -84,17 +80,16 @@ void main() {
     });
 
     testWidgets('should load more and refresh', (tester) async {
-      final data = List<Map<String, int>>.generate(21, (i) => {});
+      final List<Map<String, int>> data = .generate(21, (i) => {});
       final notifier = ValueNotifier(Util.getDateRange());
       var loadCount = 0;
 
       when(mockGetOrders()).thenAnswer((_) {
-        return Future.value(loadCount * 10 > data.length
-            ? <Map<String, int>>[]
-            : data.sublist(
-                loadCount++ * 10,
-                min(loadCount * 10, data.length),
-              ));
+        return Future.value(
+          loadCount * 10 > data.length
+              ? <Map<String, int>>[]
+              : data.sublist(loadCount++ * 10, min(loadCount * 10, data.length)),
+        );
       });
       OrderSetter.setMetrics([]);
 
@@ -169,22 +164,18 @@ void main() {
       await tester.pumpAndSettle();
 
       final txn = MockDatabaseExecutor();
-      when(txn.delete(
-        Seller.orderTable,
-        where: argThat(equals('id = 1'), named: 'where'),
-      )).thenAnswer((_) => Future.value(1));
-      when(txn.delete(
-        Seller.productTable,
-        where: argThat(equals('orderId = 1'), named: 'where'),
-      )).thenAnswer((_) => Future.value(1));
-      when(txn.delete(
-        Seller.ingredientTable,
-        where: argThat(equals('orderId = 1'), named: 'where'),
-      )).thenAnswer((_) => Future.value(1));
-      when(txn.delete(
-        Seller.attributeTable,
-        where: argThat(equals('orderId = 1'), named: 'where'),
-      )).thenAnswer((_) => Future.value(1));
+      when(
+        txn.delete(Seller.orderTable, where: argThat(equals('id = 1'), named: 'where')),
+      ).thenAnswer((_) => Future.value(1));
+      when(
+        txn.delete(Seller.productTable, where: argThat(equals('orderId = 1'), named: 'where')),
+      ).thenAnswer((_) => Future.value(1));
+      when(
+        txn.delete(Seller.ingredientTable, where: argThat(equals('orderId = 1'), named: 'where')),
+      ).thenAnswer((_) => Future.value(1));
+      when(
+        txn.delete(Seller.attributeTable, where: argThat(equals('orderId = 1'), named: 'where')),
+      ).thenAnswer((_) => Future.value(1));
       when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
 
       await tester.tap(find.byKey(const Key('delete_dialog.confirm')));

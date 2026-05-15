@@ -8,34 +8,28 @@ class CartProductSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: <Widget>[
-      const SizedBox(width: 16.0),
-      Expanded(
-        child: OutlinedButton(
-          key: const Key('cart.select_all'),
-          style: OutlinedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+    return Row(
+      children: <Widget>[
+        const SizedBox(width: 16.0),
+        Expanded(
+          child: OutlinedButton(
+            key: const Key('cart.select_all'),
+            style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: .circular(8))),
+            onPressed: () => Cart.instance.toggleAll(true),
+            child: Text(S.orderCartActionSelectAll),
           ),
-          onPressed: () => Cart.instance.toggleAll(true),
-          child: Text(S.orderCartActionSelectAll),
         ),
-      ),
-      const SizedBox(width: 4.0),
-      Expanded(
-        child: OutlinedButton(
-          key: const Key('cart.toggle_all'),
-          style: OutlinedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+        const SizedBox(width: 4.0),
+        Expanded(
+          child: OutlinedButton(
+            key: const Key('cart.toggle_all'),
+            style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: .circular(8))),
+            onPressed: () => Cart.instance.toggleAll(null),
+            child: Text(S.orderCartActionToggle),
           ),
-          onPressed: () => Cart.instance.toggleAll(null),
-          child: Text(S.orderCartActionToggle),
         ),
-      ),
-      const SizedBox(width: 16.0),
-    ]);
+        const SizedBox(width: 16.0),
+      ],
+    );
   }
 }

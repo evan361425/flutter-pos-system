@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:excel/excel.dart' hide CellValue;
 import 'package:possystem/models/xfile.dart';
 import 'package:possystem/translator.dart';
@@ -39,8 +37,8 @@ class ExcelExporter extends DataExporter {
           final value = cell.string != null
               ? TextCellValue(cell.string!)
               : cell.number != null
-                  ? DoubleCellValue(cell.number!.toDouble())
-                  : null;
+              ? DoubleCellValue(cell.number!.toDouble())
+              : null;
           if (value != null) {
             sheet.updateCell(CellIndex.indexByColumnRow(columnIndex: columnIdx, rowIndex: rowIdx), value);
           }
@@ -52,7 +50,7 @@ class ExcelExporter extends DataExporter {
 
     final bytes = excel.encode();
     return await XFile.save(
-      bytes: Uint8List.fromList(bytes ?? []),
+      bytes: .fromList(bytes ?? []),
       fileName: fileName,
       dialogTitle: S.transitExportFileDialogTitle,
     );

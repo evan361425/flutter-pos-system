@@ -28,7 +28,7 @@ class ImageHolder extends StatelessWidget {
     this.onPressed,
     this.onImageError,
     this.focusNode,
-    this.padding = const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
+    this.padding = const .fromLTRB(4.0, 8.0, 4.0, 8.0),
   });
 
   @override
@@ -40,36 +40,28 @@ class ImageHolder extends StatelessWidget {
     Widget body = title == null
         ? const SizedBox.expand()
         : Container(
-            width: double.infinity,
+            width: .infinity,
             decoration: const BoxDecoration(border: Border()),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                width: double.infinity,
+                width: .infinity,
                 padding: padding,
                 decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: colors[0])),
-                  gradient: LinearGradient(
-                    colors: colors,
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                  ),
+                  gradient: LinearGradient(colors: colors, begin: Alignment.bottomCenter, end: Alignment.topCenter),
                 ),
                 child: Text(
                   title!,
-                  textAlign: TextAlign.center,
-                  style: style?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: .center,
+                  style: style?.copyWith(fontWeight: .bold),
                 ),
               ),
             ),
           );
 
     if (onPressed != null) {
-      body = InkWell(
-        onTap: onPressed,
-        focusNode: focusNode,
-        child: body,
-      );
+      body = InkWell(onTap: onPressed, focusNode: focusNode, child: body);
     }
 
     return ConstrainedBox(
@@ -77,11 +69,11 @@ class ImageHolder extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 1,
         child: Material(
-          type: MaterialType.transparency,
+          type: .transparency,
           child: Ink.image(
-            padding: EdgeInsets.zero,
+            padding: .zero,
             image: image,
-            fit: BoxFit.cover,
+            fit: .cover,
             onImageError: (error, stack) {
               Log.err(error, 'image_error', stack);
               onImageError?.call();
@@ -100,25 +92,22 @@ class EditImageHolder extends StatelessWidget {
   final void Function()? onPressed;
   final double size;
 
-  const EditImageHolder({
-    super.key,
-    this.path,
-    this.onSelected,
-    this.onPressed,
-    this.size = 256,
-  }) : assert(onSelected != null || onPressed != null);
+  const EditImageHolder({super.key, this.path, this.onSelected, this.onPressed, this.size = 256})
+    : assert(onSelected != null || onPressed != null);
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider image =
-        path == null ? const AssetImage("assets/food_placeholder.png") as ImageProvider : FileImage(XFile(path!).file);
+    final ImageProvider image = path == null
+        ? const AssetImage("assets/food_placeholder.png") as ImageProvider
+        : FileImage(XFile(path!).file);
 
     return ImageHolder(
       key: const Key('image_holder.edit'),
       image: image,
       title: path == null ? S.imageHolderCreate : S.imageHolderUpdate,
       size: size,
-      onPressed: onPressed ??
+      onPressed:
+          onPressed ??
           () async {
             final file = await context.pushNamed(Routes.imageGallery);
             if (file != null && file is String) onSelected!(file);

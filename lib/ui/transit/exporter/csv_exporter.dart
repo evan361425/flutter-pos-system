@@ -18,17 +18,21 @@ class CSVExporter extends DataExporter {
 
     int lineNo = 0;
     return parts.map((part) {
-      final result = part.split('\n').where((e) {
-        lineNo++;
-        return e.isNotEmpty;
-      }).map((line) {
-        try {
-          return split(line);
-        } catch (e) {
-          Log.out('parse csv failed at line $lineNo: ${e.toString()}', 'csv');
-          return [line];
-        }
-      }).toList();
+      final result = part
+          .split('\n')
+          .where((e) {
+            lineNo++;
+            return e.isNotEmpty;
+          })
+          .map((line) {
+            try {
+              return split(line);
+            } catch (e) {
+              Log.out('parse csv failed at line $lineNo: ${e.toString()}', 'csv');
+              return [line];
+            }
+          })
+          .toList();
 
       lineNo += 2;
       return result;
@@ -63,10 +67,12 @@ class CSVExporter extends DataExporter {
   }
 
   static String join(Iterable<String> fields) {
-    return fields.map((e) {
-      final v = e.replaceAll('"', '""').replaceAll('\n', '\\n');
-      return v.contains(',') || v.contains('"') || v.contains('\\n') ? '"$v"' : v;
-    }).join(',');
+    return fields
+        .map((e) {
+          final v = e.replaceAll('"', '""').replaceAll('\n', '\\n');
+          return v.contains(',') || v.contains('"') || v.contains('\\n') ? '"$v"' : v;
+        })
+        .join(',');
   }
 
   /// Split a CSV line into fields

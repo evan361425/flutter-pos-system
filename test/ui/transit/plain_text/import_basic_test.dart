@@ -17,11 +17,7 @@ void main() {
   group('Transit - Plain Text - Import Basic', () {
     Widget buildApp() {
       return const MaterialApp(
-        home: TransitStation(
-          exporter: PlainTextExporter(),
-          catalog: TransitCatalog.importModel,
-          method: TransitMethod.plainText,
-        ),
+        home: TransitStation(exporter: PlainTextExporter(), catalog: .importModel, method: .plainText),
       );
     }
 
@@ -47,9 +43,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.byKey(const Key('transit.pt_text')),
-          '${S.transitFormatTextQuantitiesHeader(1)}\n\n'
-          '${S.transitFormatTextQuantitiesQuantity('1', 'q1', '1')}');
+        find.byKey(const Key('transit.pt_text')),
+        '${S.transitFormatTextQuantitiesHeader(1)}\n\n'
+        '${S.transitFormatTextQuantitiesQuantity('1', 'q1', '1')}',
+      );
       await tester.tap(find.byKey(const Key('transit.pt_preview')));
       await tester.pumpAndSettle();
 

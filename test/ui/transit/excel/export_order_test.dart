@@ -18,10 +18,7 @@ void main() {
   group('Transit - Excel - Export Order', () {
     Widget buildApp() {
       return const MaterialApp(
-        home: TransitStation(
-          catalog: TransitCatalog.exportOrder,
-          method: TransitMethod.excel,
-        ),
+        home: TransitStation(catalog: .exportOrder, method: .excel),
       );
     }
 
@@ -42,11 +39,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitExportOrderSuccessExcel), findsOneWidget);
-      verify(picker.saveFile(
-        dialogTitle: anyNamed('dialogTitle'),
-        fileName: '${S.transitExportOrderFileName}.xlsx',
-        bytes: anyNamed('bytes'),
-      ));
+      verify(
+        picker.saveFile(
+          dialogTitle: anyNamed('dialogTitle'),
+          fileName: '${S.transitExportOrderFileName}.xlsx',
+          bytes: anyNamed('bytes'),
+        ),
+      );
 
       final excel = Excel.decodeBytes(XFile('$path/${S.transitExportOrderFileName}.xlsx').file.readAsBytesSync());
       expect(excel.sheets.keys.toList(), equals(FormattableOrder.values.map((e) => e.l10nName).toList()));

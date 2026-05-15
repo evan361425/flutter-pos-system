@@ -27,25 +27,22 @@ class StashedOrderListView extends StatelessWidget {
       loader: (int offset) {
         return StashedOrders.instance.getItems(offset: offset);
       },
-      prototypeItem: _buildTile(
-        context,
-        OrderObject(createdAt: DateTime.now()),
-      ),
+      prototypeItem: _buildTile(context, OrderObject(createdAt: .now())),
       metricsLoader: StashedOrders.instance.getMetrics,
       metricsBuilder: (metrics) {
         return Center(child: Text(S.totalCount(metrics.count)));
       },
       emptyChild: Center(child: HintText(S.orderCheckoutStashEmpty)),
-      padding: const EdgeInsets.only(bottom: 428),
+      padding: const .only(bottom: 428),
     );
   }
 
   Widget _buildTile(BuildContext context, OrderObject order) {
-    final n = DateTime.now();
+    final DateTime n = .now();
     final title = order.createdAt.isBefore(DateTime(n.year, n.month, n.day))
         ? DateFormat.MMMd(S.localeName).format(order.createdAt) +
-            MetaBlock.string +
-            DateFormat.Hm(S.localeName).format(order.createdAt)
+              MetaBlock.string +
+              DateFormat.Hm(S.localeName).format(order.createdAt)
         : DateFormat.Hms(S.localeName).format(order.createdAt);
 
     final products = order.products
@@ -63,39 +60,39 @@ class StashedOrderListView extends StatelessWidget {
         alignment: AlignmentDirectional.centerEnd,
         color: const Color(0xFF198753),
         child: const Padding(
-          padding: EdgeInsets.only(right: 10.0),
+          padding: .only(right: 10.0),
           child: Icon(Icons.file_upload, color: Color(0xFF051B11)),
         ),
       ),
-      direction: DismissDirection.endToStart,
-      confirmDismiss: (_) => _act(_Action.restore, context, order),
+      direction: .endToStart,
+      confirmDismiss: (_) => _act(.restore, context, order),
       child: ListTile(
         key: Key('stashed_order.${order.id}'),
         title: Text(title),
         subtitle: MetaBlock.withString(context, products, emptyText: S.orderCheckoutStashNoProducts),
         trailing: MoreButton(onPressed: (context) => _showActions(context, order)),
-        onTap: () => _act(_Action.checkout, context, order),
+        onTap: () => _act(.checkout, context, order),
         onLongPress: () => _showActions(context, order),
       ),
     );
   }
 
   void _showActions(BuildContext context, OrderObject order) async {
-    final action = await MenuActionGroup.withDelete(
+    final action = await MenuActionGroup.withDelete<_Action>(
       context,
-      deleteValue: _Action.delete,
+      deleteValue: .delete,
       warningContent: S.dialogDeletionContent(S.orderCheckoutStashDialogDeleteName, ''),
-      deleteCallback: () => _act(_Action.delete, context, order),
+      deleteCallback: () => _act(.delete, context, order),
       actions: [
-        MenuAction(
+        MenuAction<_Action>(
           title: Text(S.orderCheckoutStashActionCheckout),
           leading: const Icon(Icons.price_check_outlined),
-          returnValue: _Action.checkout,
+          returnValue: .checkout,
         ),
-        MenuAction(
+        MenuAction<_Action>(
           title: Text(S.orderCheckoutStashActionRestore),
           leading: const Icon(Icons.file_upload_outlined),
-          returnValue: _Action.restore,
+          returnValue: .restore,
         ),
       ],
     );
@@ -107,13 +104,9 @@ class StashedOrderListView extends StatelessWidget {
     }
   }
 
-  Future<bool?> _act(
-    _Action act,
-    BuildContext context,
-    OrderObject order,
-  ) async {
+  Future<bool?> _act(_Action act, BuildContext context, OrderObject order) async {
     switch (act) {
-      case _Action.restore:
+      case .restore:
         bool ok = true;
         if (!Cart.instance.isEmpty) {
           ok = await ConfirmDialog.show(
@@ -132,11 +125,11 @@ class StashedOrderListView extends StatelessWidget {
           }
         }
         return ok;
-      case _Action.checkout:
+      case .checkout:
         // ignore: use_build_context_synchronously
         await _checkout(context, order);
         break;
-      case _Action.delete:
+      case .delete:
         await StashedOrders.instance.delete(order.id ?? 0);
         if (context.mounted) {
           showSnackBar(S.actSuccess, context: context);
@@ -145,33 +138,20 @@ class StashedOrderListView extends StatelessWidget {
     return true;
   }
 
-  Future<void> _checkout(
-    BuildContext context,
-    OrderObject order,
-  ) async {
+  Future<void> _checkout(BuildContext context, OrderObject order) async {
     final cart = Cart(name: 'stashed')..restore(order);
     final price = ValueNotifier<num>(cart.price);
     final paid = ValueNotifier<num>(price.value);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => SimpleDialog(
-        insetPadding: const EdgeInsets.symmetric(
-          horizontal: 4.0,
-          vertical: 24.0,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 8.0,
-        ),
+        insetPadding: const .symmetric(horizontal: 4.0, vertical: 24.0),
+        contentPadding: const .symmetric(vertical: 16.0, horizontal: 8.0),
         semanticLabel: S.orderCheckoutStashDialogCalculator,
         children: [
           SizedBox(
             height: 360.0,
-            child: CheckoutCashierCalculator(
-              onSubmit: () => Navigator.of(context).pop(true),
-              price: price,
-              paid: paid,
-            ),
+            child: CheckoutCashierCalculator(onSubmit: () => Navigator.of(context).pop(true), price: price, paid: paid),
           ),
         ],
       ),
@@ -181,7 +161,7 @@ class StashedOrderListView extends StatelessWidget {
       final future = cart.checkout(paid: paid.value, context: context);
       final status = await showSnackbarWhenFutureError(future, 'stashed_order_checkout', context: context);
 
-      if (status == CheckoutStatus.paidNotEnough || status == null) {
+      if (status == .paidNotEnough || status == null) {
         if (context.mounted && status != null) {
           showSnackBar(S.orderCheckoutSnackbarPaidFailed, context: context);
         }
@@ -203,8 +183,4 @@ class StashedOrderListView extends StatelessWidget {
   }
 }
 
-enum _Action {
-  delete,
-  restore,
-  checkout,
-}
+enum _Action { delete, restore, checkout }

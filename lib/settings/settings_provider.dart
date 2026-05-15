@@ -9,9 +9,9 @@ import 'setting.dart';
 import 'theme_setting.dart';
 
 class SettingsProvider extends ChangeNotifier {
-  static SettingsProvider instance = SettingsProvider._();
+  static SettingsProvider instance = ._();
 
-  final settings = List<Setting>.from(<Setting>[
+  final List<Setting<dynamic>> settings = .from(<Setting>[
     LanguageSetting.instance,
     ThemeSetting.instance,
     CurrencySetting.instance,

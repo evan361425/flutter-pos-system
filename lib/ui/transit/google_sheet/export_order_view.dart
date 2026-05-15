@@ -26,10 +26,7 @@ class ExportOrderHeader extends TransitOrderHeader {
 
   @override
   Widget build(BuildContext context) {
-    return SignInButton(
-      padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 4.0),
-      signedInWidget: super.build(context),
-    );
+    return SignInButton(padding: const .fromLTRB(8.0, 0, 8.0, 4.0), signedInWidget: super.build(context));
   }
 
   /// Export all data to spreadsheet.
@@ -71,21 +68,18 @@ class ExportOrderHeader extends TransitOrderHeader {
     // Step 3
     Log.ger('gs_export', {'spreadsheet': ss.id, 'sheets': titles});
     final sheets = ss.sheets.where((e) => titles.contains(e.title)).toList();
-    final data = ables.map((able) => orders.expand((order) {
-          return able.formatRows(order).map((l) {
-            return l.map((v) => v.value).toList();
-          });
-        }));
+    final data = ables.map(
+      (able) => orders.expand((order) {
+        return able.formatRows(order).map((l) {
+          return l.map((v) => v.value).toList();
+        });
+      }),
+    );
 
     var link = '';
     if (settings!.value.isOverwrite) {
       stateNotifier.value = S.transitExportOrderProgressGoogleSheetOverwrite;
-      await exporter.updateSheetValues(
-        ss,
-        sheets,
-        data,
-        ables.map((able) => able.formatHeader()),
-      );
+      await exporter.updateSheetValues(ss, sheets, data, ables.map((able) => able.formatHeader()));
 
       link = ss.toLink();
     } else {
@@ -114,10 +108,7 @@ class ExportOrderHeader extends TransitOrderHeader {
 }
 
 class ExportOrderView extends TransitOrderList {
-  const ExportOrderView({
-    super.key,
-    required super.ranger,
-  });
+  const ExportOrderView({super.key, required super.ranger});
 
   @override
   String get helpMessage => S.transitExportOrderSubtitleGoogleSheet;

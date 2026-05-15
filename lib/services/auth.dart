@@ -13,8 +13,8 @@ class Auth {
   final FirebaseAuth _firebaseAuth;
 
   Auth([GoogleSignIn? service, FirebaseAuth? auth])
-      : _service = service ?? GoogleSignIn(scopes: []),
-        _firebaseAuth = auth ?? FirebaseAuth.instance;
+    : _service = service ?? GoogleSignIn(scopes: []),
+      _firebaseAuth = auth ?? .instance;
 
   Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();
 
@@ -58,10 +58,7 @@ class Auth {
 
     Log.out('allow authentication', 'login');
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: auth.accessToken,
-      idToken: auth.idToken,
-    );
+    final credential = GoogleAuthProvider.credential(accessToken: auth.accessToken, idToken: auth.idToken);
 
     // Once signed in, return the UserCredential
     await _firebaseAuth.signInWithCredential(credential);

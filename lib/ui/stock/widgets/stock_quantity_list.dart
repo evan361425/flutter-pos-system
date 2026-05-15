@@ -14,11 +14,7 @@ class StockQuantityList extends StatelessWidget {
 
   final Widget leading;
 
-  const StockQuantityList({
-    super.key,
-    required this.quantities,
-    required this.leading,
-  });
+  const StockQuantityList({super.key, required this.quantities, required this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +67,7 @@ class _Tile extends StatelessWidget {
       subtitle: Text(S.stockQuantityMetaProportion(item.defaultProportion)),
       trailing: EntryMoreButton(onPressed: actor),
       onLongPress: actor,
-      onTap: () => context.pushNamed(
-        Routes.quantityUpdate,
-        pathParameters: {'id': item.id},
-      ),
+      onTap: () => context.pushNamed(Routes.quantityUpdate, pathParameters: {'id': item.id}),
     );
   }
 }

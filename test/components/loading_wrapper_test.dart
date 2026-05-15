@@ -6,15 +6,13 @@ void main() {
   group('Widget LoadingWrapper', () {
     testWidgets('should show status', (tester) async {
       final loader = GlobalKey<LoadingWrapperState>();
-      await tester.pumpWidget(Material(
-        child: MaterialApp(
-          home: LoadingWrapper(
-            key: loader,
-            isLoading: true,
-            child: const Text('hi'),
+      await tester.pumpWidget(
+        Material(
+          child: MaterialApp(
+            home: LoadingWrapper(key: loader, isLoading: true, child: const Text('hi')),
           ),
         ),
-      ));
+      );
 
       loader.currentState?.setStatus('Hello World');
       await tester.pump();

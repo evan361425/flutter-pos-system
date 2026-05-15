@@ -9,7 +9,7 @@ void main() {
     test('set', () {
       when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
 
-      CurrencySetting.instance.updateRemotely(CurrencyTypes.usd);
+      CurrencySetting.instance.updateRemotely(.usd);
 
       verify(cache.set('currency', 1));
     });

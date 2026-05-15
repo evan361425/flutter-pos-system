@@ -16,13 +16,10 @@ void main() {
       final provider = MethodChannelPathProvider();
       PathProviderPlatform.instance = provider;
 
-      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        provider.methodChannel,
-        (MethodCall methodCall) {
-          expect(methodCall.method, 'getApplicationDocumentsDirectory');
-          return Future.value('');
-        },
-      );
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(provider.methodChannel, (MethodCall methodCall) {
+        expect(methodCall.method, 'getApplicationDocumentsDirectory');
+        return Future.value('');
+      });
 
       await XFile.getRootPath();
 

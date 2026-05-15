@@ -30,29 +30,29 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       notifier = TransitStateNotifier();
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => TransitStation(
-              catalog: TransitCatalog.exportOrder,
-              method: TransitMethod.googleSheet,
-              notifier: notifier,
-              exporter: GoogleSheetExporter(
-                sheetsApi: sheetsApi,
-                scopes: gsExporterScopes,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => TransitStation(
+                catalog: .exportOrder,
+                method: .googleSheet,
+                notifier: notifier,
+                exporter: GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
     test('warning message', () {
       final view = ExportOrderView(
-          ranger: ValueNotifier(DateTimeRange(
-        start: DateTime.now().subtract(const Duration(days: 1)),
-        end: DateTime.now(),
-      )));
+        ranger: ValueNotifier(
+          DateTimeRange(start: DateTime.now().subtract(const Duration(days: 1)), end: DateTime.now()),
+        ),
+      );
 
       expect(view.warningMessage, isNotNull);
     });
@@ -78,10 +78,9 @@ void main() {
 
     testWidgets('prepare spreadsheet failed', (tester) async {
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.create(
-        any,
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+      when(
+        sheetsApi.spreadsheets.create(any, $fields: anyNamed('\$fields')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await start(tester);
@@ -92,87 +91,77 @@ void main() {
 
     void prepareSpreadsheet(CustomMockSheetsApi sheetsApi) {
       when(cache.get('exporter_order_meta.withPrefix')).thenReturn(false);
-      when(sheetsApi.spreadsheets.create(
-        any,
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet(
+      when(sheetsApi.spreadsheets.create(any, $fields: anyNamed('\$fields'))).thenAnswer(
+        (_) => Future.value(
+          gs.Spreadsheet(
             spreadsheetId: 'abc',
             sheets: FormattableOrder.values.map((e) {
               return gs.Sheet(
-                properties: gs.SheetProperties(
-                  sheetId: e.index,
-                  title: e.l10nName,
-                ),
+                properties: gs.SheetProperties(sheetId: e.index, title: e.l10nName),
               );
             }).toList(),
-          )));
+          ),
+        ),
+      );
     }
 
     testWidgets('export orders to spreadsheet and overwrite', (tester) async {
       final sheetsApi = getMockSheetsApi();
       prepareSpreadsheet(sheetsApi);
-      when(sheetsApi.spreadsheets.values.batchUpdate(
-        any,
-        any,
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.BatchUpdateValuesResponse()));
+      when(
+        sheetsApi.spreadsheets.values.batchUpdate(any, any, $fields: anyNamed('\$fields')),
+      ).thenAnswer((_) => Future.value(gs.BatchUpdateValuesResponse()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await start(tester);
 
       final expected = [
-        [
-          OrderFormatter.basicHeaders,
-          ...OrderFormatter.formatBasic(order),
-        ],
-        [
-          OrderFormatter.attrHeaders,
-          ...OrderFormatter.formatAttr(order),
-        ],
-        [
-          OrderFormatter.productHeaders,
-          ...OrderFormatter.formatProduct(order),
-        ],
-        [
-          OrderFormatter.ingredientHeaders,
-          ...OrderFormatter.formatIngredient(order),
-        ],
+        [OrderFormatter.basicHeaders, ...OrderFormatter.formatBasic(order)],
+        [OrderFormatter.attrHeaders, ...OrderFormatter.formatAttr(order)],
+        [OrderFormatter.productHeaders, ...OrderFormatter.formatProduct(order)],
+        [OrderFormatter.ingredientHeaders, ...OrderFormatter.formatIngredient(order)],
       ];
-      verify(sheetsApi.spreadsheets.values.batchUpdate(
-        argThat(predicate<gs.BatchUpdateValuesRequest?>((batch) {
-          for (var e1 in expected) {
-            final req = batch?.data?.removeAt(0);
-            for (var e2 in e1) {
-              final row = req?.values?.removeAt(0);
-              for (var e3 in e2) {
-                final cell = row?.removeAt(0);
-                final val = e3 is CellData ? e3.value : e3;
-                if (cell != val) {
-                  return false;
+      verify(
+        sheetsApi.spreadsheets.values.batchUpdate(
+          argThat(
+            predicate<gs.BatchUpdateValuesRequest?>((batch) {
+              for (var e1 in expected) {
+                final req = batch?.data?.removeAt(0);
+                for (var e2 in e1) {
+                  final row = req?.values?.removeAt(0);
+                  for (var e3 in e2) {
+                    final cell = row?.removeAt(0);
+                    final val = e3 is CellData ? e3.value : e3;
+                    if (cell != val) {
+                      return false;
+                    }
+                  }
                 }
               }
-            }
-          }
-          return true;
-        })),
-        any,
-        $fields: anyNamed('\$fields'),
-      )).called(1);
+              return true;
+            }),
+          ),
+          any,
+          $fields: anyNamed('\$fields'),
+        ),
+      ).called(1);
     });
 
     testWidgets('export orders to spreadsheet and append it', (tester) async {
       when(cache.get('exporter_order_meta.isOverwrite')).thenReturn(false);
       final sheetsApi = getMockSheetsApi();
       prepareSpreadsheet(sheetsApi);
-      when(sheetsApi.spreadsheets.values.append(
-        any,
-        any,
-        any,
-        includeValuesInResponse: anyNamed('includeValuesInResponse'),
-        insertDataOption: anyNamed('insertDataOption'),
-        valueInputOption: anyNamed('valueInputOption'),
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.AppendValuesResponse()));
+      when(
+        sheetsApi.spreadsheets.values.append(
+          any,
+          any,
+          any,
+          includeValuesInResponse: anyNamed('includeValuesInResponse'),
+          insertDataOption: anyNamed('insertDataOption'),
+          valueInputOption: anyNamed('valueInputOption'),
+          $fields: anyNamed('\$fields'),
+        ),
+      ).thenAnswer((_) => Future.value(gs.AppendValuesResponse()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await start(tester);
@@ -184,27 +173,31 @@ void main() {
         FormattableOrder.ingredient.l10nName: OrderFormatter.formatIngredient(order),
       };
       for (final e in expected.entries) {
-        verify(sheetsApi.spreadsheets.values.append(
-          argThat(predicate<gs.ValueRange?>((vr) {
-            if (vr?.range != "'${e.key}'") return false;
-            for (var e1 in e.value) {
-              final row = vr?.values?.removeAt(0);
-              for (var e2 in e1) {
-                final cell = row?.removeAt(0);
-                if (cell != e2.value) {
-                  return false;
+        verify(
+          sheetsApi.spreadsheets.values.append(
+            argThat(
+              predicate<gs.ValueRange?>((vr) {
+                if (vr?.range != "'${e.key}'") return false;
+                for (var e1 in e.value) {
+                  final row = vr?.values?.removeAt(0);
+                  for (var e2 in e1) {
+                    final cell = row?.removeAt(0);
+                    if (cell != e2.value) {
+                      return false;
+                    }
+                  }
                 }
-              }
-            }
-            return true;
-          })),
-          any,
-          "'${e.key}'",
-          includeValuesInResponse: anyNamed('includeValuesInResponse'),
-          insertDataOption: anyNamed('insertDataOption'),
-          valueInputOption: anyNamed('valueInputOption'),
-          $fields: anyNamed('\$fields'),
-        ));
+                return true;
+              }),
+            ),
+            any,
+            "'${e.key}'",
+            includeValuesInResponse: anyNamed('includeValuesInResponse'),
+            insertDataOption: anyNamed('insertDataOption'),
+            valueInputOption: anyNamed('valueInputOption'),
+            $fields: anyNamed('\$fields'),
+          ),
+        );
       }
     });
 

@@ -32,14 +32,14 @@ class ChoiceChipWithHelpState<T> extends State<ChoiceChipWithHelp<T>> {
     final li = widget.labels.iterator;
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const .all(8.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           SizedBox(
-            width: double.infinity,
+            width: .infinity,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const .all(8.0),
               child: Wrap(
                 spacing: 4.0,
                 runSpacing: 4.0,

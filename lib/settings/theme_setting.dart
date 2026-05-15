@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:possystem/settings/setting.dart';
 
 class ThemeSetting extends Setting<ThemeMode> {
-  static final instance = ThemeSetting._();
+  static final ThemeSetting instance = ._();
 
-  static const defaultValue = ThemeMode.system;
+  static const ThemeMode defaultValue = .system;
 
   ThemeSetting._() {
     value = defaultValue;

@@ -7,10 +7,7 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'data_exporter.dart';
 
 class GoogleSheetExporter extends DataExporter {
-  GoogleSheetExporter({
-    this.sheetsApi,
-    this.scopes = const [],
-  });
+  GoogleSheetExporter({this.sheetsApi, this.scopes = const []});
 
   gs.SheetsApi? sheetsApi;
 
@@ -25,15 +22,12 @@ class GoogleSheetExporter extends DataExporter {
   }
 
   gs.SheetProperties getNewSheetProperties(String title) => gs.SheetProperties(
-        title: title,
-        // indigo
-        tabColor: gs.Color(red: 0.24706, green: 0.31765, blue: 0.70980),
-      );
+    title: title,
+    // indigo
+    tabColor: gs.Color(red: 0.24706, green: 0.31765, blue: 0.70980),
+  );
 
-  Future<GoogleSpreadsheet?> addSpreadsheet(
-    String title,
-    List<String> sheetTitles,
-  ) async {
+  Future<GoogleSpreadsheet?> addSpreadsheet(String title, List<String> sheetTitles) async {
     final sheetsApi = await getSheetsApi(true);
     Log.out('add_spreadsheet start', _logCode);
     final result = await sheetsApi?.spreadsheets.create(
@@ -82,17 +76,9 @@ class GoogleSheetExporter extends DataExporter {
     );
   }
 
-  Future<List<GoogleSheetProperties>?> addSheets(
-    GoogleSpreadsheet spreadsheet,
-    List<String> titles,
-  ) async {
+  Future<List<GoogleSheetProperties>?> addSheets(GoogleSpreadsheet spreadsheet, List<String> titles) async {
     final requests = [
-      for (final title in titles)
-        gs.Request(
-          addSheet: gs.AddSheetRequest(
-            properties: getNewSheetProperties(title),
-          ),
-        ),
+      for (final title in titles) gs.Request(addSheet: gs.AddSheetRequest(properties: getNewSheetProperties(title))),
     ];
 
     final sheetApi = await getSheetsApi(spreadsheet.isOrigin);
@@ -114,9 +100,7 @@ class GoogleSheetExporter extends DataExporter {
         .toList();
   }
 
-  Future<List<GoogleSheetProperties>> getSheets(
-    GoogleSpreadsheet spreadsheet,
-  ) async {
+  Future<List<GoogleSheetProperties>> getSheets(GoogleSpreadsheet spreadsheet) async {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     Log.out('get_sheets start', _logCode);
     final res = await sheetsApi?.spreadsheets.get(
@@ -144,20 +128,11 @@ class GoogleSheetExporter extends DataExporter {
       return gs.Request(
         updateCells: gs.UpdateCellsRequest(
           rows: [
-            gs.RowData(values: [
-              for (final cell in hi.current) cell.toGoogleFormat(),
-            ]),
-            for (final row in di.current)
-              gs.RowData(values: [
-                for (final cell in row) cell.toGoogleFormat(),
-              ])
+            gs.RowData(values: [for (final cell in hi.current) cell.toGoogleFormat()]),
+            for (final row in di.current) gs.RowData(values: [for (final cell in row) cell.toGoogleFormat()]),
           ],
           fields: 'userEnteredValue,userEnteredFormat,dataValidation,note',
-          start: gs.GridCoordinate(
-            rowIndex: 0,
-            columnIndex: 0,
-            sheetId: sheet.id,
-          ),
+          start: gs.GridCoordinate(rowIndex: 0, columnIndex: 0, sheetId: sheet.id),
         ),
       );
     }).toList();
@@ -184,11 +159,7 @@ class GoogleSheetExporter extends DataExporter {
     final values = sheets.map((sheet) {
       hi.moveNext();
       di.moveNext();
-      return gs.ValueRange(
-        majorDimension: 'ROWS',
-        range: sheet.title,
-        values: [hi.current.toList(), ...di.current],
-      );
+      return gs.ValueRange(majorDimension: 'ROWS', range: sheet.title, values: [hi.current.toList(), ...di.current]);
     });
 
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
@@ -214,11 +185,7 @@ class GoogleSheetExporter extends DataExporter {
     final sheetsApi = await getSheetsApi(spreadsheet.isOrigin);
     Log.out('append_values ${sheet.title}', _logCode);
     await sheetsApi?.spreadsheets.values.append(
-      gs.ValueRange(
-        majorDimension: 'ROWS',
-        range: "'${sheet.title}'",
-        values: data.toList(),
-      ),
+      gs.ValueRange(majorDimension: 'ROWS', range: "'${sheet.title}'", values: data.toList()),
       spreadsheet.id,
       "'${sheet.title}'",
       includeValuesInResponse: false,
@@ -277,12 +244,7 @@ class GoogleSpreadsheet {
   // If this spreadsheet created by pos-system
   final bool isOrigin;
 
-  GoogleSpreadsheet({
-    required this.id,
-    required this.name,
-    required this.sheets,
-    this.isOrigin = false,
-  });
+  GoogleSpreadsheet({required this.id, required this.name, required this.sheets, this.isOrigin = false});
 
   static GoogleSpreadsheet? fromString(String value) {
     try {
@@ -293,12 +255,7 @@ class GoogleSpreadsheet {
       final isOrigin = value.substring(0, index) == 'true';
       final name = value.substring(index + 1);
 
-      return GoogleSpreadsheet(
-        id: id,
-        name: name,
-        sheets: [],
-        isOrigin: isOrigin,
-      );
+      return GoogleSpreadsheet(id: id, name: name, sheets: [], isOrigin: isOrigin);
     } catch (error, stack) {
       Log.err(error, '${_logCode}_format_failed', stack);
       return null;
@@ -336,12 +293,11 @@ class GoogleSheetProperties {
 
   static List<GoogleSheetProperties> fromSheet(List<gs.Sheet>? sheets) {
     return sheets
-            ?.where((sheet) =>
-                sheet.properties != null && sheet.properties!.sheetId != null && sheet.properties!.title != null)
-            .map((sheet) => GoogleSheetProperties(
-                  sheet.properties!.sheetId!,
-                  sheet.properties!.title!,
-                ))
+            ?.where(
+              (sheet) =>
+                  sheet.properties != null && sheet.properties!.sheetId != null && sheet.properties!.title != null,
+            )
+            .map((sheet) => GoogleSheetProperties(sheet.properties!.sheetId!, sheet.properties!.title!))
             .toList() ??
         <GoogleSheetProperties>[];
   }
@@ -360,17 +316,9 @@ class GoogleSheetCellData extends CellData {
 
   final gs.CellFormat? format;
 
-  GoogleSheetCellData({
-    super.string,
-    super.number,
-    super.isBold,
-    super.note,
-    super.options,
-  })  : gsValue = gs.ExtendedValue(
-          numberValue: number?.toDouble(),
-          stringValue: string,
-        ),
-        format = isBold == true ? gs.CellFormat(textFormat: gs.TextFormat(bold: true)) : null;
+  GoogleSheetCellData({super.string, super.number, super.isBold, super.note, super.options})
+    : gsValue = gs.ExtendedValue(numberValue: number?.toDouble(), stringValue: string),
+      format = isBold == true ? gs.CellFormat(textFormat: gs.TextFormat(bold: true)) : null;
 
   factory GoogleSheetCellData.fromCellData(CellData cell) {
     return GoogleSheetCellData(

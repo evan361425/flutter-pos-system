@@ -33,30 +33,37 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
       child: ListenableBuilder(
         listenable: Analysis.instance,
         builder: (context, child) {
-          return LayoutBuilder(builder: (context, constraints) {
-            final bp = Breakpoint.find(box: constraints);
-            return CustomScrollView(slivers: <Widget>[
-              child!,
-              SliverAppBar(
-                primary: false,
-                automaticallyImplyLeading: false, // avoid giving drawer's menu icon
-                title: Text(S.analysisChartTitle), actions: const [_MoreButton()],
-              ),
-              _buildChartHeader(),
-              _buildCharts(Analysis.instance.itemList, bp),
-            ]);
-          });
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final Breakpoint bp = .find(box: constraints);
+              return CustomScrollView(
+                slivers: <Widget>[
+                  child!,
+                  SliverAppBar(
+                    primary: false,
+                    automaticallyImplyLeading: false, // avoid giving drawer's menu icon
+                    title: Text(S.analysisChartTitle),
+                    actions: const [_MoreButton()],
+                  ),
+                  _buildChartHeader(),
+                  _buildCharts(Analysis.instance.itemList, bp),
+                ],
+              );
+            },
+          );
         },
-        child: SliverList.list(children: [
-          GoalsCardView(
-            action: RouteIconButton(
-              key: const Key('anal.history'),
-              route: Routes.history,
-              icon: const Icon(Icons.calendar_month_outlined),
-              label: S.analysisHistoryBtn,
+        child: SliverList.list(
+          children: [
+            GoalsCardView(
+              action: RouteIconButton(
+                key: const Key('anal.history'),
+                route: Routes.history,
+                icon: const Icon(Icons.calendar_month_outlined),
+                label: S.analysisHistoryBtn,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
@@ -93,12 +100,9 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   Widget _buildCharts(List<Chart> items, Breakpoint bp) {
     final col = bp.lookup<int>(compact: 1, medium: 2, expanded: 3, large: 4);
     return SliverPadding(
-      padding: const EdgeInsets.only(bottom: kFABSpacing),
+      padding: const .only(bottom: kFABSpacing),
       sliver: SliverGrid.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: col,
-          mainAxisExtent: 376,
-        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: col, mainAxisExtent: 376),
         itemCount: items.length + 1,
         itemBuilder: (context, index) {
           if (index == items.length) {
@@ -124,10 +128,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
           }
 
           return Center(
-            child: ChartCardView(
-              chart: items.elementAt(index),
-              range: range,
-            ),
+            child: ChartCardView(chart: items.elementAt(index), range: range),
           );
         },
       ),
@@ -141,10 +142,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
 
   @override
   void initState() {
-    range = ValueNotifier(Util.getDateRange(
-      now: DateTime.now().subtract(const Duration(days: 7)),
-      days: 7,
-    ));
+    range = ValueNotifier(Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 7)), days: 7));
 
     super.initState();
   }
@@ -161,10 +159,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   }
 
   void _updateRange(Duration dur) {
-    range.value = Util.getDateRange(
-      now: range.value.start.add(dur),
-      days: interval,
-    );
+    range.value = Util.getDateRange(now: range.value.start.add(dur), days: interval);
   }
 }
 

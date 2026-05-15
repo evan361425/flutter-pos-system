@@ -54,13 +54,15 @@ abstract class ImportBasicBaseHeader extends BasicModelPicker {
   @override
   void onTap(BuildContext context) {
     Log.out('start importing', 'import_picker');
-    stateNotifier.exec(() => showSnackbarWhenFutureError(
-          onImport(context).then((v) => formatter.value = v),
-          'transit_import_$logName',
-          context: context,
-          message: errorMessage,
-          more: moreMessage,
-        ));
+    stateNotifier.exec(
+      () => showSnackbarWhenFutureError(
+        onImport(context).then((v) => formatter.value = v),
+        'transit_import_$logName',
+        context: context,
+        message: errorMessage,
+        more: moreMessage,
+      ),
+    );
   }
 
   @override
@@ -103,10 +105,7 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
           return Center(child: HintText(widget.hint));
         }
 
-        return PreviewPageWrapper(
-          models: widget.selected.value?.toList() ?? FormattableModel.values,
-          formatter: f,
-        );
+        return PreviewPageWrapper(models: widget.selected.value?.toList() ?? FormattableModel.values, formatter: f);
       },
     );
   }
@@ -116,11 +115,7 @@ abstract class ExportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
   final ValueNotifier<FormattableModel?> selected;
 
-  const ExportView({
-    super.key,
-    required this.stateNotifier,
-    required this.selected,
-  });
+  const ExportView({super.key, required this.stateNotifier, required this.selected});
 
   @override
   State<ExportView> createState() => _ExportViewState();
@@ -134,9 +129,7 @@ abstract class ExportView extends StatefulWidget {
     final data = getSourceAndHeaders(able);
     return SingleChildScrollView(
       child: PaginatedDataTable(
-        columns: [
-          for (final cell in data.headers) _buildColumn(cell),
-        ],
+        columns: [for (final cell in data.headers) _buildColumn(cell)],
         source: data.source,
         showCheckboxColumn: false,
       ),
@@ -146,22 +139,18 @@ abstract class ExportView extends StatefulWidget {
   DataColumn _buildColumn(CellData cell) {
     if (cell.note == null) {
       return DataColumn(
-        label: Text(
-          cell.toString(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        label: Text(cell.toString(), style: const TextStyle(fontWeight: .bold)),
       );
     }
 
     return DataColumn(
-      label: Row(children: [
-        Text(
-          cell.toString(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(width: 4),
-        InfoPopup(cell.note!),
-      ]),
+      label: Row(
+        children: [
+          Text(cell.toString(), style: const TextStyle(fontWeight: .bold)),
+          const SizedBox(width: 4),
+          InfoPopup(cell.note!),
+        ],
+      ),
     );
   }
 }
@@ -171,25 +160,27 @@ class _ExportViewState extends State<ExportView> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      TabBar.secondary(controller: controller, isScrollable: true, tabs: [
-        for (final able in FormattableModel.values) Tab(text: able.l10nName),
-      ]),
-      Expanded(
-        child: TabBarView(controller: controller, children: [
-          for (final able in FormattableModel.values) widget.buildModel(context, able),
-        ]),
-      ),
-    ]);
+    return Column(
+      children: <Widget>[
+        TabBar.secondary(
+          controller: controller,
+          isScrollable: true,
+          tabs: [for (final able in FormattableModel.values) Tab(text: able.l10nName)],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: controller,
+            children: [for (final able in FormattableModel.values) widget.buildModel(context, able)],
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   initState() {
     super.initState();
-    controller = TabController(
-      length: FormattableModel.values.length,
-      vsync: this,
-    );
+    controller = TabController(length: FormattableModel.values.length, vsync: this);
 
     controller.addListener(() {
       final model = FormattableModel.values[controller.index];
@@ -245,11 +236,9 @@ abstract class BasicModelPicker extends StatefulWidget {
   String get label;
 
   void onTap(BuildContext context) {
-    stateNotifier.exec(() => showSnackbarWhenFutureError(
-          onExport(context, selected.value),
-          'transit_basic_export',
-          context: context,
-        ));
+    stateNotifier.exec(
+      () => showSnackbarWhenFutureError(onExport(context, selected.value), 'transit_basic_export', context: context),
+    );
   }
 
   /// Action to export the data.
@@ -260,43 +249,45 @@ class _BasicModelPickerState extends State<BasicModelPicker> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(left: 8, right: 8, bottom: 4),
+      margin: const .only(left: 8, right: 8, bottom: 4),
       child: Padding(
-        padding: const EdgeInsets.only(left: 8.0, bottom: 2, top: 2),
-        child: Row(children: [
-          Expanded(
-            child: DropdownButtonFormField<FormattableModel?>(
-              key: const Key('transit.model_picker'),
-              initialValue: widget.selected.value,
-              decoration: InputDecoration(
-                label: Text(S.transitImportModelSelectionLabel),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+        padding: const .only(left: 8.0, bottom: 2, top: 2),
+        child: Row(
+          children: [
+            Expanded(
+              child: DropdownButtonFormField<FormattableModel?>(
+                key: const Key('transit.model_picker'),
+                initialValue: widget.selected.value,
+                decoration: InputDecoration(
+                  label: Text(S.transitImportModelSelectionLabel),
+                  floatingLabelBehavior: .always,
+                ),
+                onChanged: (value) => widget.selected.value = value,
+                items: [
+                  if (widget.allowAll)
+                    DropdownMenuItem(
+                      key: const Key('transit.model_picker._all'),
+                      value: null,
+                      child: Text(S.transitImportModelSelectionAll),
+                    ),
+                  for (final able in FormattableModel.values)
+                    DropdownMenuItem(
+                      key: Key('transit.model_picker.${able.name}'),
+                      value: able,
+                      child: Text(able.l10nName),
+                    ),
+                ],
               ),
-              onChanged: (value) => widget.selected.value = value,
-              items: [
-                if (widget.allowAll)
-                  DropdownMenuItem(
-                    key: const Key('transit.model_picker._all'),
-                    value: null,
-                    child: Text(S.transitImportModelSelectionAll),
-                  ),
-                for (final able in FormattableModel.values)
-                  DropdownMenuItem(
-                    key: Key('transit.model_picker.${able.name}'),
-                    value: able,
-                    child: Text(able.l10nName),
-                  ),
-              ],
             ),
-          ),
-          const SizedBox(width: 8),
-          IconButton.filled(
-            key: const Key('transit.model_export'),
-            onPressed: () => widget.onTap(context),
-            tooltip: widget.label,
-            icon: widget.icon,
-          ),
-        ]),
+            const SizedBox(width: 8),
+            IconButton.filled(
+              key: const Key('transit.model_export'),
+              onPressed: () => widget.onTap(context),
+              tooltip: widget.label,
+              icon: widget.icon,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -304,7 +295,7 @@ class _BasicModelPickerState extends State<BasicModelPicker> {
   @override
   void initState() {
     super.initState();
-    widget.selected.value = widget.allowAll ? null : FormattableModel.menu;
+    widget.selected.value = widget.allowAll ? null : .menu;
     widget.selected.addListener(_onModelChange);
   }
 
@@ -337,13 +328,11 @@ class ModelDataTableSource extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
-    return DataRow(cells: [
-      for (final item in data[index])
-        DataCell(Tooltip(
-          message: item.toString(),
-          child: Text(item.toString()),
-        )),
-    ]);
+    return DataRow(
+      cells: [
+        for (final item in data[index]) DataCell(Tooltip(message: item.toString(), child: Text(item.toString()))),
+      ],
+    );
   }
 
   @override

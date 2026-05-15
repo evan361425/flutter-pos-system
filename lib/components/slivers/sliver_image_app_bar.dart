@@ -8,17 +8,13 @@ class SliverImageAppBar extends StatelessWidget {
 
   final List<Widget>? actions;
 
-  const SliverImageAppBar({
-    super.key,
-    required this.model,
-    this.actions,
-  });
+  const SliverImageAppBar({super.key, required this.model, this.actions});
 
   @override
   Widget build(BuildContext context) {
     final background = ImageHolder(
       image: model.image,
-      padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
+      padding: const .fromLTRB(0, 36, 0, 0),
       onImageError: () => model.saveImage(null),
     );
 
@@ -31,7 +27,7 @@ class SliverImageAppBar extends StatelessWidget {
           model.name,
           style: TextStyle(
             foreground: Paint()
-              ..blendMode = BlendMode.difference
+              ..blendMode = .difference
               ..color = Colors.white,
           ),
         ),

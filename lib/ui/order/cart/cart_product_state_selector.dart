@@ -21,31 +21,24 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
   @override
   Widget build(BuildContext context) {
     if (_Status.allowChoose != status) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SingleRowWrap(
-          key: Key('order.ingredient.${status.name}'),
-          color: Colors.transparent,
-          children: <Widget>[
-            ChoiceChip(
-              selected: false,
-              label: Text(S.orderCartIngredientStatus(status.name)),
-            ),
-          ],
-        ),
-        SingleRowWrap(
-          color: Colors.transparent,
-          children: <Widget>[
-            ChoiceChip(
-              selected: false,
-              label: Text(S.orderCartQuantityNotAble),
-            ),
-          ],
-        ),
-      ]);
+      return Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          SingleRowWrap(
+            key: Key('order.ingredient.${status.name}'),
+            color: Colors.transparent,
+            children: <Widget>[ChoiceChip(selected: false, label: Text(S.orderCartIngredientStatus(status.name)))],
+          ),
+          SingleRowWrap(
+            color: Colors.transparent,
+            children: <Widget>[ChoiceChip(selected: false, label: Text(S.orderCartQuantityNotAble))],
+          ),
+        ],
+      );
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: .stretch,
       children: [
         const SizedBox(height: 4),
         SingleRowWrap(
@@ -112,14 +105,14 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
   void _changeProduct(CartProduct? p) {
     product = p;
     if (p == null) {
-      status = Cart.instance.isEmpty ? _Status.emptyCart : _Status.differentProducts;
+      status = Cart.instance.isEmpty ? .emptyCart : .differentProducts;
       return;
     } else if (p.product.isEmpty) {
-      status = _Status.noNeedIngredient;
+      status = .noNeedIngredient;
       return;
     }
 
-    status = _Status.allowChoose;
+    status = .allowChoose;
     ingredient = p.product.items.first;
     quantityId = product!.getQuantityId(ingredient.id);
   }
@@ -134,9 +127,4 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
   }
 }
 
-enum _Status {
-  emptyCart,
-  differentProducts,
-  noNeedIngredient,
-  allowChoose,
-}
+enum _Status { emptyCart, differentProducts, noNeedIngredient, allowChoose }

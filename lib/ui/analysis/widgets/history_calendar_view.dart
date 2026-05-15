@@ -17,11 +17,7 @@ class HistoryCalendarView extends StatefulWidget {
 
   final bool shouldFillViewport;
 
-  const HistoryCalendarView({
-    super.key,
-    required this.notifier,
-    required this.shouldFillViewport,
-  });
+  const HistoryCalendarView({super.key, required this.notifier, required this.shouldFillViewport});
 
   @override
   State<HistoryCalendarView> createState() => _HistoryCalendarViewState();
@@ -30,10 +26,7 @@ class HistoryCalendarView extends StatefulWidget {
 class _HistoryCalendarViewState extends State<HistoryCalendarView> {
   final List<int> _loadedMonths = <int>[];
 
-  final LinkedHashMap<DateTime, int> _loadedCounts = LinkedHashMap(
-    equals: isSameDay,
-    hashCode: _hashDate,
-  );
+  final LinkedHashMap<DateTime, int> _loadedCounts = LinkedHashMap(equals: isSameDay, hashCode: _hashDate);
 
   late CalendarFormat _calendarFormat;
 
@@ -47,12 +40,12 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
     return MediaQuery.withNoTextScaling(
       child: TableCalendar<void>(
         firstDay: DateTime(2021, 1),
-        lastDay: DateTime.now(),
+        lastDay: .now(),
         focusedDay: _focusedDay,
         calendarFormat: _calendarFormat,
         shouldFillViewport: widget.shouldFillViewport,
-        startingDayOfWeek: StartingDayOfWeek.monday,
-        rangeSelectionMode: RangeSelectionMode.disabled,
+        startingDayOfWeek: .monday,
+        rangeSelectionMode: .disabled,
         locale: LanguageSetting.instance.language.locale.toString(),
         // header
         // chinese will be hidden if using default value
@@ -70,10 +63,7 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
         // event handlers
         selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
         eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, null),
-        calendarBuilders: CalendarBuilders(
-          markerBuilder: _badgeBuilder,
-          defaultBuilder: _defaultBuilder,
-        ),
+        calendarBuilders: CalendarBuilders(markerBuilder: _badgeBuilder, defaultBuilder: _defaultBuilder),
         onPageChanged: _searchPageData,
         onFormatChanged: (format) async {
           setState(() => _calendarFormat = format);
@@ -90,7 +80,8 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
 
     // cache from last time, or default to month if in wide screen else week
     final cached = Cache.instance.get<int>('history.calendar_format') ?? CalendarFormat.values.length;
-    _calendarFormat = CalendarFormat.values.elementAtOrNull(cached) ??
+    _calendarFormat =
+        CalendarFormat.values.elementAtOrNull(cached) ??
         (widget.shouldFillViewport ? CalendarFormat.month : CalendarFormat.week);
 
     super.initState();
@@ -110,28 +101,18 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
     if (value.isEmpty) return null;
 
     final length = value.length;
-    return Positioned(
-      right: 0,
-      top: 0,
-      child: Badge(label: Text(length > 99 ? '99+' : length.toString())),
-    );
+    return Positioned(right: 0, top: 0, child: Badge(label: Text(length > 99 ? '99+' : length.toString())));
   }
 
-  Widget _defaultBuilder(
-    BuildContext context,
-    DateTime day,
-    DateTime focusedDay,
-  ) {
+  Widget _defaultBuilder(BuildContext context, DateTime day, DateTime focusedDay) {
     final local = day.toLocal();
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
-      margin: const EdgeInsets.all(6.0),
-      padding: EdgeInsets.zero,
+      margin: const .all(6.0),
+      padding: .zero,
       decoration: _loadedCounts.containsKey(local)
-          ? const ShapeDecoration(
-              shape: CircleBorder(side: BorderSide()),
-            )
-          : const BoxDecoration(shape: BoxShape.circle),
+          ? const ShapeDecoration(shape: CircleBorder(side: BorderSide()))
+          : const BoxDecoration(shape: .circle),
       alignment: Alignment.center,
       child: Text(local.day.toString()),
     );
@@ -162,18 +143,12 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
     final end = DateTime(local.year, local.month + 1, 7);
     final start = DateTime(local.year, local.month).subtract(const Duration(days: 7));
 
-    final metrics = await Seller.instance.getMetricsInPeriod(
-      start,
-      end,
-      types: [OrderMetricType.count],
-    );
+    final metrics = await Seller.instance.getMetricsInPeriod(start, end, types: [OrderMetricType.count]);
 
     if (mounted) {
       setState(() {
         _loadedMonths.add(_hashMonth(local));
-        _loadedCounts.addAll({
-          for (final m in metrics) m.at: m.count,
-        });
+        _loadedCounts.addAll({for (final m in metrics) m.at: m.count});
       });
     }
   }

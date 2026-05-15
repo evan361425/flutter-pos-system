@@ -19,11 +19,7 @@ class ProductIngredientModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ProductIngredientModal({
-    super.key,
-    this.ingredient,
-    required this.product,
-  }) : isNew = ingredient == null;
+  const ProductIngredientModal({super.key, this.ingredient, required this.product}) : isNew = ingredient == null;
 
   @override
   State<ProductIngredientModal> createState() => _ProductIngredientModalState();
@@ -44,36 +40,37 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
     return [
       // avoid search-bar's label overflow
       const SizedBox(height: 12.0),
-      p(SearchBarWrapper(
-        key: const Key('product_ingredient.search'),
-        text: ingredientName,
-        labelText: S.menuIngredientSearchLabel,
-        hintText: widget.ingredient?.name ?? S.menuIngredientSearchHint,
-        validator: Validator.textLimit(S.menuIngredientSearchLabel, 30),
-        formValidator: _validateIngredient,
-        initData: Stock.instance.itemList,
-        search: (text) async => Stock.instance.sortBySimilarity(text),
-        itemBuilder: _searchItemBuilder,
-        emptyBuilder: _searchEmptyBuilder,
-      )),
-      p(TextFormField(
-        key: const Key('product_ingredient.amount'),
-        controller: _amountController,
-        textInputAction: TextInputAction.done,
-        onFieldSubmitted: handleFieldSubmit,
-        keyboardType: TextInputType.number,
-        focusNode: _amountFocusNode,
-        decoration: InputDecoration(
-          labelText: S.menuIngredientAmountLabel,
-          helperText: S.menuIngredientAmountHelper,
-          helperMaxLines: 10,
-          filled: false,
+      p(
+        SearchBarWrapper(
+          key: const Key('product_ingredient.search'),
+          text: ingredientName,
+          labelText: S.menuIngredientSearchLabel,
+          hintText: widget.ingredient?.name ?? S.menuIngredientSearchHint,
+          validator: Validator.textLimit(S.menuIngredientSearchLabel, 30),
+          formValidator: _validateIngredient,
+          initData: Stock.instance.itemList,
+          search: (text) async => Stock.instance.sortBySimilarity(text),
+          itemBuilder: _searchItemBuilder,
+          emptyBuilder: _searchEmptyBuilder,
         ),
-        validator: Validator.positiveNumber(
-          S.menuIngredientAmountLabel,
+      ),
+      p(
+        TextFormField(
+          key: const Key('product_ingredient.amount'),
+          controller: _amountController,
+          textInputAction: .done,
+          onFieldSubmitted: handleFieldSubmit,
+          keyboardType: .number,
           focusNode: _amountFocusNode,
+          decoration: InputDecoration(
+            labelText: S.menuIngredientAmountLabel,
+            helperText: S.menuIngredientAmountHelper,
+            helperMaxLines: 10,
+            filled: false,
+          ),
+          validator: Validator.positiveNumber(S.menuIngredientAmountLabel, focusNode: _amountFocusNode),
         ),
-      )),
+      ),
     ];
   }
 
@@ -116,11 +113,13 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
     final object = _parseObject();
 
     if (widget.isNew) {
-      await widget.product.addItem(ProductIngredient(
-        ingredient: Stock.instance.getItem(ingredientId),
-        amount: object.amount!,
-        index: widget.product.newIndex,
-      ));
+      await widget.product.addItem(
+        ProductIngredient(
+          ingredient: Stock.instance.getItem(ingredientId),
+          amount: object.amount!,
+          index: widget.product.newIndex,
+        ),
+      );
     } else {
       await widget.ingredient!.update(object);
     }
@@ -131,10 +130,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
   }
 
   ProductIngredientObject _parseObject() {
-    return ProductIngredientObject(
-      ingredientId: ingredientId,
-      amount: num.tryParse(_amountController.text),
-    );
+    return ProductIngredientObject(ingredientId: ingredientId, amount: num.tryParse(_amountController.text));
   }
 
   String? _validateIngredient(String? name) {
@@ -172,10 +168,7 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
         onPressed: () {
           // pop off search page
           Navigator.of(context).pop();
-          context.pushNamed(
-            Routes.stockIngrUpdate,
-            pathParameters: {'id': ingredient.id},
-          );
+          context.pushNamed(Routes.stockIngrUpdate, pathParameters: {'id': ingredient.id});
         },
       ),
       onTap: () => _updateIngredient(context, ingredient),

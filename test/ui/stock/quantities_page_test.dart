@@ -21,29 +21,27 @@ void main() {
   group('Quantity Page', () {
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const Scaffold(body: QuantitiesPage()),
-          ),
-          ...Routes.getDesiredRoute(0).routes,
-        ]),
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const Scaffold(body: QuantitiesPage()),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ],
+        ),
       );
     }
 
     testWidgets('Edit quantity', (tester) async {
       final quantity = Quantity(id: 'q-1', name: 'q-1');
-      final quantities = Quantities()
-        ..replaceItems({
-          'q-1': quantity,
-          'q-2': Quantity(id: 'q-2', name: 'q-2'),
-        });
+      final quantities = Quantities()..replaceItems({'q-1': quantity, 'q-2': Quantity(id: 'q-2', name: 'q-2')});
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-      await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
-        value: quantities,
-        builder: (_, __) => buildApp(),
-      ));
+      await tester.pumpWidget(
+        ChangeNotifierProvider<Quantities>.value(value: quantities, builder: (_, __) => buildApp()),
+      );
 
       await tester.tap(find.byKey(const Key('quantities.q-1')));
       await tester.pumpAndSettle();
@@ -55,7 +53,7 @@ void main() {
 
       await tester.enterText(find.byKey(const Key('quantity.name')), 'q-3');
       await tester.enterText(find.byKey(const Key('quantity.proportion')), '2');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.testTextInput.receiveAction(.done);
       // update to storage
       await tester.pumpAndSettle();
       // pop
@@ -70,10 +68,9 @@ void main() {
       final quantities = Quantities()..replaceItems({});
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-      await tester.pumpWidget(ChangeNotifierProvider<Quantities>.value(
-        value: quantities,
-        builder: (_, __) => buildApp(),
-      ));
+      await tester.pumpWidget(
+        ChangeNotifierProvider<Quantities>.value(value: quantities, builder: (_, __) => buildApp()),
+      );
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -95,21 +92,18 @@ void main() {
 
     testWidgets('Delete quantity', (tester) async {
       final quantity = Quantity(id: 'q-1', name: 'q-1');
-      final quantities = Quantities()
-        ..replaceItems({
-          'q-1': quantity,
-          'q-2': Quantity(id: 'q-2', name: 'q-2'),
-        });
+      final quantities = Quantities()..replaceItems({'q-1': quantity, 'q-2': Quantity(id: 'q-2', name: 'q-2')});
       final pIng = ProductIngredient(
         id: 'pi-1',
         ingredient: Ingredient(id: 'i-1', name: 'i-1'),
-        quantities: {
-          'pq-1': ProductQuantity(id: 'pq-1', quantity: quantity),
+        quantities: {'pq-1': ProductQuantity(id: 'pq-1', quantity: quantity)},
+      );
+      final catalog = Catalog(
+        id: 'c-1',
+        products: {
+          'p-1': Product(id: 'p-1', ingredients: {'pi-1': pIng}),
         },
       );
-      final catalog = Catalog(id: 'c-1', products: {
-        'p-1': Product(id: 'p-1', ingredients: {'pi-1': pIng}),
-      });
       final menu = Menu()..replaceItems({'c-1': catalog});
       for (var pro in catalog.items) {
         pro.catalog = catalog;
@@ -122,13 +116,15 @@ void main() {
       }
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<Menu>.value(value: menu),
-          ChangeNotifierProvider<Quantities>.value(value: quantities),
-        ],
-        builder: (_, __) => buildApp(),
-      ));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Menu>.value(value: menu),
+            ChangeNotifierProvider<Quantities>.value(value: quantities),
+          ],
+          builder: (_, __) => buildApp(),
+        ),
+      );
 
       deleteQuantity(String id) async {
         await tester.longPress(find.byKey(Key('quantities.$id')));

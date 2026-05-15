@@ -84,7 +84,7 @@ class OrderObject extends _Object {
         singlePrice: object.singlePrice,
         quantities: {
           for (final item in object.ingredients)
-            if (item.productQuantityId != null) item.productIngredientId: item.productQuantityId!
+            if (item.productQuantityId != null) item.productIngredientId: item.productQuantityId!,
         },
       );
     }
@@ -93,9 +93,7 @@ class OrderObject extends _Object {
   /// Get [attributes] as map.
   ///
   /// Help to restore from stash.
-  Map<String, String> get selectedAttributes => {
-        for (final attr in attributes) attr.attributeId: attr.optionId,
-      };
+  Map<String, String> get selectedAttributes => {for (final attr in attributes) attr.attributeId: attr.optionId};
 
   String get createDateTimeString => DateFormat.MMMd().addPattern(' ').add_Hms().format(createdAt);
 
@@ -154,12 +152,8 @@ class OrderObject extends _Object {
       note: order['note'] as String? ?? '',
       productsCount: order['productsCount'] as int? ?? 0,
       productsPrice: order['productsPrice'] as num? ?? 0,
-      products: [
-        for (Map<String, dynamic> product in products) OrderProductObject.fromMap(product, ingredients),
-      ],
-      attributes: [
-        for (Map<String, dynamic> attr in attributes) OrderSelectedAttributeObject.fromMap(attr),
-      ],
+      products: [for (Map<String, dynamic> product in products) OrderProductObject.fromMap(product, ingredients)],
+      attributes: [for (Map<String, dynamic> attr in attributes) OrderSelectedAttributeObject.fromMap(attr)],
       createdAt: Util.fromUTC(order['createdAt'] as int? ?? 0),
     );
   }
@@ -251,8 +245,10 @@ class OrderProductObject extends _Object {
       'productId': productId,
       'count': count,
       'singlePrice': singlePrice,
-      'ingredients':
-          ingredients.map((e) => e.productQuantityId == null ? null : e.toStashMap()).where((e) => e != null).toList(),
+      'ingredients': ingredients
+          .map((e) => e.productQuantityId == null ? null : e.toStashMap())
+          .where((e) => e != null)
+          .toList(),
     };
   }
 
@@ -260,10 +256,7 @@ class OrderProductObject extends _Object {
   ///
   /// All property make it to optional for easy fetching metadata.
   /// See detailed in [Seller.getOrders].
-  factory OrderProductObject.fromMap(
-    Map<String, dynamic> data,
-    Iterable<Map<String, Object?>> ingredients,
-  ) {
+  factory OrderProductObject.fromMap(Map<String, dynamic> data, Iterable<Map<String, Object?>> ingredients) {
     final id = data['id'] ?? 0;
     // null-safety to make test easy
     return OrderProductObject(
@@ -288,9 +281,7 @@ class OrderProductObject extends _Object {
       productId: data['productId'],
       count: data['count'],
       singlePrice: data['singlePrice'],
-      ingredients: [
-        for (final ing in data['ingredients']) OrderIngredientObject.fromStashMap(ing),
-      ],
+      ingredients: [for (final ing in data['ingredients']) OrderIngredientObject.fromStashMap(ing)],
     );
   }
 }
@@ -349,10 +340,7 @@ class OrderIngredientObject extends _Object {
 
   @override
   Map<String, Object?> toStashMap() {
-    return {
-      'productIngredientId': productIngredientId,
-      'productQuantityId': productQuantityId,
-    };
+    return {'productIngredientId': productIngredientId, 'productQuantityId': productQuantityId};
   }
 
   /// Create object from DB format.
@@ -377,10 +365,7 @@ class OrderIngredientObject extends _Object {
   }
 
   /// Create object from model.
-  factory OrderIngredientObject.fromModel(
-    ProductIngredient ingredient,
-    String? quantityId,
-  ) {
+  factory OrderIngredientObject.fromModel(ProductIngredient ingredient, String? quantityId) {
     final quantity = quantityId == null ? null : ingredient.getItem(quantityId);
 
     return OrderIngredientObject(
@@ -432,28 +417,17 @@ class OrderSelectedAttributeObject extends _Object {
 
   @override
   Map<String, Object?> toMap() {
-    return {
-      'name': name,
-      'optionName': optionName,
-      'mode': mode.index,
-      'modeValue': modeValue,
-    };
+    return {'name': name, 'optionName': optionName, 'mode': mode.index, 'modeValue': modeValue};
   }
 
   @override
   Map<String, Object?> toStashMap() {
-    return {
-      'attributeId': attributeId,
-      'optionId': optionId,
-    };
+    return {'attributeId': attributeId, 'optionId': optionId};
   }
 
   /// Create object from map.
   factory OrderSelectedAttributeObject.fromMap(Map<String, dynamic> data) {
-    final modeIndex = min(
-      data['mode'] as int? ?? 0,
-      OrderAttributeMode.values.length - 1,
-    );
+    final modeIndex = min(data['mode'] as int? ?? 0, OrderAttributeMode.values.length - 1);
     final mode = OrderAttributeMode.values[max(modeIndex, 0)];
 
     // null-safety to make test easy
@@ -468,10 +442,7 @@ class OrderSelectedAttributeObject extends _Object {
 
   /// Create object from DB format.
   factory OrderSelectedAttributeObject.fromStashMap(Map<String, dynamic> data) {
-    return OrderSelectedAttributeObject(
-      attributeId: data['attributeId'],
-      optionId: data['optionId'],
-    );
+    return OrderSelectedAttributeObject(attributeId: data['attributeId'], optionId: data['optionId']);
   }
 
   /// Create object from model.

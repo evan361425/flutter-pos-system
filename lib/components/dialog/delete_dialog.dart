@@ -11,12 +11,10 @@ class DeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final local = MaterialLocalizations.of(context);
+    final MaterialLocalizations local = .of(context);
     return AlertDialog.adaptive(
       title: Text(S.dialogDeletionTitle),
-      content: SingleChildScrollView(
-        child: Text(content, textAlign: TextAlign.start),
-      ),
+      content: SingleChildScrollView(child: Text(content, textAlign: .start)),
       actions: <Widget>[
         PopButton(title: local.cancelButtonLabel),
         TextButton(

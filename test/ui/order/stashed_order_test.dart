@@ -26,20 +26,21 @@ void main() {
   group('Stashed Order', () {
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(initialLocation: '/test', routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const Text('Home Page'),
-            routes: [
-              GoRoute(
-                path: 'test',
-                builder: (context, state) => const Scaffold(
-                  body: StashedOrderListView(),
+        routerConfig: GoRouter(
+          initialLocation: '/test',
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const Text('Home Page'),
+              routes: [
+                GoRoute(
+                  path: 'test',
+                  builder: (context, state) => const Scaffold(body: StashedOrderListView()),
                 ),
-              ),
-            ],
-          ),
-        ]),
+              ],
+            ),
+          ],
+        ),
       );
     }
 
@@ -79,14 +80,8 @@ void main() {
               singleCost: 10,
               isDiscount: false,
               ingredients: [
-                OrderIngredientObject(
-                  productIngredientId: 'i-1',
-                  productQuantityId: 'q-1',
-                ),
-                OrderIngredientObject(
-                  productIngredientId: 'i-2',
-                  productQuantityId: null,
-                ),
+                OrderIngredientObject(productIngredientId: 'i-1', productQuantityId: 'q-1'),
+                OrderIngredientObject(productIngredientId: 'i-2', productQuantityId: null),
               ],
             ),
             OrderProductObject(
@@ -99,37 +94,25 @@ void main() {
               singleCost: 20,
               isDiscount: false,
             ),
-            OrderProductObject(
-              productId: "p-3",
-              count: 2,
-              singlePrice: 666,
-            ),
+            OrderProductObject(productId: "p-3", count: 2, singlePrice: 666),
           ],
-          attributes: const [
-            OrderSelectedAttributeObject(attributeId: 'a-1', optionId: 'ao-1'),
-          ],
-        )
+          attributes: const [OrderSelectedAttributeObject(attributeId: 'a-1', optionId: 'ao-1')],
+        ),
       ];
 
-      when(database.query(
-        any,
-        orderBy: 'createdAt desc',
-        limit: 10,
-        offset: 0,
-      )).thenAnswer(
-        (_) => Future.value(orders.mapIndexed((i, e) {
-          final m = e.toStashMap();
-          m['id'] = i;
-          return m;
-        }).toList()),
+      when(database.query(any, orderBy: 'createdAt desc', limit: 10, offset: 0)).thenAnswer(
+        (_) => Future.value(
+          orders.mapIndexed((i, e) {
+            final m = e.toStashMap();
+            m['id'] = i;
+            return m;
+          }).toList(),
+        ),
       );
 
-      when(database.query(
-        any,
-        columns: argThat(equals(['COUNT(*) count']), named: 'columns'),
-      )).thenAnswer(
+      when(database.query(any, columns: argThat(equals(['COUNT(*) count']), named: 'columns'))).thenAnswer(
         (_) => Future.value([
-          {'count': orders.length}
+          {'count': orders.length},
         ]),
       );
 
@@ -142,7 +125,7 @@ void main() {
     }
 
     testWidgets('delete should reload the page', (tester) async {
-      prepareOrders(now: DateTime.now());
+      prepareOrders(now: .now());
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -161,16 +144,13 @@ void main() {
     });
 
     testWidgets('drag to recover', (tester) async {
-      final now = DateTime.now();
+      final DateTime now = .now();
       final orders = prepareOrders(now: now);
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await tester.drag(
-        find.byKey(const Key('stashed_order.0')),
-        const Offset(-1200, 0),
-      );
+      await tester.drag(find.byKey(const Key('stashed_order.0')), const Offset(-1200, 0));
       await tester.pumpAndSettle();
 
       // should pop
@@ -185,7 +165,7 @@ void main() {
     });
 
     testWidgets('recover should pop', (tester) async {
-      final now = DateTime.now();
+      final DateTime now = .now();
       final orders = prepareOrders(now: now.subtract(const Duration(days: 2)));
 
       // should confirm later to test overwriting.
@@ -215,7 +195,7 @@ void main() {
     });
 
     testWidgets('checkout will failed if paid not enough', (tester) async {
-      prepareOrders(now: DateTime.now());
+      prepareOrders(now: .now());
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -233,7 +213,7 @@ void main() {
     });
 
     testWidgets('checkout will delete order after success', (tester) async {
-      final now = DateTime.now();
+      final DateTime now = .now();
       Cart.timer = () => now;
       final order = prepareOrders(now: now)[0];
       // ignore verify ingredients has pushed

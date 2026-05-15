@@ -8,11 +8,7 @@ import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/storage.dart';
 
-enum ModelStatus {
-  normal,
-  staged,
-  updated,
-}
+enum ModelStatus { normal, staged, updated }
 
 abstract class Model<T extends ModelObject> extends ChangeNotifier {
   final String id;
@@ -24,11 +20,7 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
   /// This is used to import/export data.
   ModelStatus status;
 
-  Model({
-    String? id,
-    required this.name,
-    required this.status,
-  }) : id = id ?? Util.uuidV4();
+  Model({String? id, required this.name, required this.status}) : id = id ?? Util.uuidV4();
 
   String get logName;
 
@@ -85,17 +77,16 @@ mixin ModelImage<T extends ModelObject> on Model<T> {
 
   Widget get avator {
     if (useDefaultImage || _avatorMissed) {
-      return CircleAvatar(
-        child: Text(name.characters.first.toUpperCase()),
-      );
+      return CircleAvatar(child: Text(name.characters.first.toUpperCase()));
     }
 
     final image = FileImage(XFile(_avatorPath).file);
     return CircleAvatar(
-        foregroundImage: image,
-        onForegroundImageError: (err, stack) {
-          _avatorMissed = true;
-        });
+      foregroundImage: image,
+      onForegroundImageError: (err, stack) {
+        _avatorMissed = true;
+      },
+    );
   }
 
   ImageProvider get image {
@@ -143,8 +134,8 @@ mixin ModelSearchable<T extends ModelObject> on Model<T> {
         final addition = e.startsWith(p)
             ? 2
             : e.contains(p)
-                ? 1
-                : 0;
+            ? 1
+            : 0;
         return value + addition;
       });
     }

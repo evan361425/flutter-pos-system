@@ -22,25 +22,24 @@ class QuantitiesPage extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     if (Quantities.instance.isEmpty) {
-      return EmptyBody(
-        content: S.stockQuantityEmptyBody,
-        routeName: Routes.quantityCreate,
-      );
+      return EmptyBody(content: S.stockQuantityEmptyBody, routeName: Routes.quantityCreate);
     }
 
     return SafeArea(
       child: StockQuantityList(
         quantities: Quantities.instance.itemList,
-        leading: Row(children: [
-          Expanded(
-            child: RouteElevatedIconButton(
-              key: const Key('quantity.add'),
-              route: Routes.quantityCreate,
-              label: S.stockQuantityTitleCreate,
-              icon: const Icon(KIcons.add),
+        leading: Row(
+          children: [
+            Expanded(
+              child: RouteElevatedIconButton(
+                key: const Key('quantity.add'),
+                route: Routes.quantityCreate,
+                label: S.stockQuantityTitleCreate,
+                icon: const Icon(KIcons.add),
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }

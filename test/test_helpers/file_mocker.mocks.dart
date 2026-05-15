@@ -48,26 +48,23 @@ class MockFilePicker extends _i1.Mock implements _i2.FilePicker {
     bool? readSequential = false,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #pickFiles,
-          [],
-          {
-            #dialogTitle: dialogTitle,
-            #initialDirectory: initialDirectory,
-            #type: type,
-            #allowedExtensions: allowedExtensions,
-            #onFileLoading: onFileLoading,
-            #allowCompression: allowCompression,
-            #compressionQuality: compressionQuality,
-            #allowMultiple: allowMultiple,
-            #withData: withData,
-            #withReadStream: withReadStream,
-            #lockParentWindow: lockParentWindow,
-            #readSequential: readSequential,
-          },
-        ),
-        returnValue: _i3.Future<_i4.FilePickerResult?>.value(),
-      ) as _i3.Future<_i4.FilePickerResult?>);
+            Invocation.method(#pickFiles, [], {
+              #dialogTitle: dialogTitle,
+              #initialDirectory: initialDirectory,
+              #type: type,
+              #allowedExtensions: allowedExtensions,
+              #onFileLoading: onFileLoading,
+              #allowCompression: allowCompression,
+              #compressionQuality: compressionQuality,
+              #allowMultiple: allowMultiple,
+              #withData: withData,
+              #withReadStream: withReadStream,
+              #lockParentWindow: lockParentWindow,
+              #readSequential: readSequential,
+            }),
+            returnValue: _i3.Future<_i4.FilePickerResult?>.value(),
+          )
+          as _i3.Future<_i4.FilePickerResult?>);
 
   @override
   _i3.Future<List<String>?> pickFileAndDirectoryPaths({
@@ -76,26 +73,19 @@ class MockFilePicker extends _i1.Mock implements _i2.FilePicker {
     List<String>? allowedExtensions,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #pickFileAndDirectoryPaths,
-          [],
-          {
-            #initialDirectory: initialDirectory,
-            #type: type,
-            #allowedExtensions: allowedExtensions,
-          },
-        ),
-        returnValue: _i3.Future<List<String>?>.value(),
-      ) as _i3.Future<List<String>?>);
+            Invocation.method(#pickFileAndDirectoryPaths, [], {
+              #initialDirectory: initialDirectory,
+              #type: type,
+              #allowedExtensions: allowedExtensions,
+            }),
+            returnValue: _i3.Future<List<String>?>.value(),
+          )
+          as _i3.Future<List<String>?>);
 
   @override
-  _i3.Future<bool?> clearTemporaryFiles() => (super.noSuchMethod(
-        Invocation.method(
-          #clearTemporaryFiles,
-          [],
-        ),
-        returnValue: _i3.Future<bool?>.value(),
-      ) as _i3.Future<bool?>);
+  _i3.Future<bool?> clearTemporaryFiles() =>
+      (super.noSuchMethod(Invocation.method(#clearTemporaryFiles, []), returnValue: _i3.Future<bool?>.value())
+          as _i3.Future<bool?>);
 
   @override
   _i3.Future<String?> getDirectoryPath({
@@ -104,17 +94,14 @@ class MockFilePicker extends _i1.Mock implements _i2.FilePicker {
     String? initialDirectory,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getDirectoryPath,
-          [],
-          {
-            #dialogTitle: dialogTitle,
-            #lockParentWindow: lockParentWindow,
-            #initialDirectory: initialDirectory,
-          },
-        ),
-        returnValue: _i3.Future<String?>.value(),
-      ) as _i3.Future<String?>);
+            Invocation.method(#getDirectoryPath, [], {
+              #dialogTitle: dialogTitle,
+              #lockParentWindow: lockParentWindow,
+              #initialDirectory: initialDirectory,
+            }),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
 
   @override
   _i3.Future<String?> saveFile({
@@ -127,19 +114,16 @@ class MockFilePicker extends _i1.Mock implements _i2.FilePicker {
     bool? lockParentWindow = false,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #saveFile,
-          [],
-          {
-            #dialogTitle: dialogTitle,
-            #fileName: fileName,
-            #initialDirectory: initialDirectory,
-            #type: type,
-            #allowedExtensions: allowedExtensions,
-            #bytes: bytes,
-            #lockParentWindow: lockParentWindow,
-          },
-        ),
-        returnValue: _i3.Future<String?>.value(),
-      ) as _i3.Future<String?>);
+            Invocation.method(#saveFile, [], {
+              #dialogTitle: dialogTitle,
+              #fileName: fileName,
+              #initialDirectory: initialDirectory,
+              #type: type,
+              #allowedExtensions: allowedExtensions,
+              #bytes: bytes,
+              #lockParentWindow: lockParentWindow,
+            }),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
 }

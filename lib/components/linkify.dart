@@ -19,17 +19,14 @@ class Linkify extends StatelessWidget {
   ///   at new Linkify.fromString(linkify.dart:15)
   ///   at Tutorial.build(tutorial.dart:107)
   /// ```
-  factory Linkify.fromString(String text, {TextAlign textAlign = TextAlign.start}) {
+  factory Linkify.fromString(String text, {TextAlign textAlign = .start}) {
     return Linkify(_parseText(text), textAlign: textAlign);
   }
 
   @override
   Widget build(BuildContext context) {
     final bodyTheme = Theme.of(context).textTheme.bodyMedium;
-    final linkStyle = bodyTheme?.copyWith(
-      color: Colors.blueAccent,
-      decoration: TextDecoration.underline,
-    );
+    final linkStyle = bodyTheme?.copyWith(color: Colors.blueAccent, decoration: .underline);
 
     return SelectableText.rich(
       TextSpan(

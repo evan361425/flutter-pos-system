@@ -4,20 +4,17 @@ import 'package:possystem/constants/icons.dart';
 
 import 'dialog/delete_dialog.dart';
 
-Future<T?> showPositionedMenu<T>(
-  BuildContext context, {
-  required List<MenuAction<T>> actions,
-}) {
+Future<T?> showPositionedMenu<T>(BuildContext context, {required List<MenuAction<T>> actions}) {
   // copy from [flutter/src/material/popup_menu.dart]
   final widget = context.findRenderObject();
-  var position = const RelativeRect.fromLTRB(0, 0, 0, 0);
+  RelativeRect position = const .fromLTRB(0, 0, 0, 0);
   if (widget is RenderBox) {
     final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
     final Offset offset = Offset(0, widget.size.height);
-    position = RelativeRect.fromRect(
-      Rect.fromPoints(
+    position = .fromRect(
+      .fromPoints(
         widget.localToGlobal(offset, ancestor: overlay),
-        widget.localToGlobal(widget.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
+        widget.localToGlobal(widget.size.bottomRight(.zero) + offset, ancestor: overlay),
       ),
       Offset.zero & overlay.size,
     );
@@ -26,10 +23,8 @@ Future<T?> showPositionedMenu<T>(
   return showMenu(
     context: context,
     position: position,
-    clipBehavior: Clip.hardEdge,
-    items: [
-      for (final action in actions) action.toPopupMenuItem(context),
-    ],
+    clipBehavior: .hardEdge,
+    items: [for (final action in actions) action.toPopupMenuItem(context)],
   );
 }
 
@@ -69,11 +64,7 @@ class MenuAction<T> {
 
   Future<void> onTap(BuildContext context) async {
     if (route != null && context.mounted) {
-      await context.pushNamed(
-        route!,
-        pathParameters: routePathParameters,
-        queryParameters: routeQueryParameters,
-      );
+      await context.pushNamed(route!, pathParameters: routePathParameters, queryParameters: routeQueryParameters);
     }
   }
 }
@@ -94,16 +85,19 @@ class MenuActionGroup {
     required Future<void> Function() deleteCallback,
     bool popAfterDeleted = false,
   }) async {
-    final local = MaterialLocalizations.of(context);
-    final result = await showPositionedMenu<T>(context, actions: [
-      ...actions,
-      MenuAction(
-        key: const Key('btn.delete'),
-        title: Text(local.deleteButtonTooltip),
-        leading: const Icon(KIcons.delete),
-        returnValue: deleteValue,
-      ),
-    ]);
+    final MaterialLocalizations local = .of(context);
+    final result = await showPositionedMenu<T>(
+      context,
+      actions: [
+        ...actions,
+        MenuAction(
+          key: const Key('btn.delete'),
+          title: Text(local.deleteButtonTooltip),
+          leading: const Icon(KIcons.delete),
+          returnValue: deleteValue,
+        ),
+      ],
+    );
 
     if (result == deleteValue) {
       if (context.mounted) {

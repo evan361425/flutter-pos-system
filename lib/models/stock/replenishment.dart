@@ -11,56 +11,34 @@ class Replenishment extends Model<ReplenishmentObject> with ModelStorage<Repleni
   final Map<String, num> data;
 
   @override
-  final Stores storageStore = Stores.replenisher;
+  final Stores storageStore = .replenisher;
 
-  Replenishment({
-    super.id,
-    super.status = ModelStatus.normal,
-    super.name = 'replenishment',
-    Map<String, num>? data,
-  }) : data = data ?? {};
+  Replenishment({super.id, super.status = ModelStatus.normal, super.name = 'replenishment', Map<String, num>? data})
+    : data = data ?? {};
 
-  factory Replenishment.fromObject(ReplenishmentObject object) => Replenishment(
-        id: object.id,
-        name: object.name,
-        data: object.data,
-      );
+  factory Replenishment.fromObject(ReplenishmentObject object) =>
+      Replenishment(id: object.id, name: object.name, data: object.data);
 
-  factory Replenishment.fromRow(
-    Replenishment? ori,
-    List<String> row,
-    Map<String, num> data,
-  ) {
+  factory Replenishment.fromRow(Replenishment? ori, List<String> row, Map<String, num> data) {
     final status = ori == null
         ? ModelStatus.staged
         : (mapEquals<String, num>(data, ori.data) ? ModelStatus.normal : ModelStatus.updated);
 
-    return Replenishment(
-      id: ori?.id,
-      name: row[0],
-      status: status,
-      data: data,
-    );
+    return Replenishment(id: ori?.id, name: row[0], status: status, data: data);
   }
 
   @override
-  Replenisher get repository => Replenisher.instance;
+  Replenisher get repository => .instance;
 
   Map<Ingredient, num> get ingredientData => {
-        for (final entry in data.entries.where(
-          (entry) => Stock.instance.hasItem(entry.key),
-        ))
-          Stock.instance.getItem(entry.key)!: entry.value,
-      };
+    for (final entry in data.entries.where((entry) => Stock.instance.hasItem(entry.key)))
+      Stock.instance.getItem(entry.key)!: entry.value,
+  };
 
   Future<void> apply() => Stock.instance.applyAmounts(data);
 
   num? getNumOfId(String id) => data[id];
 
   @override
-  ReplenishmentObject toObject() => ReplenishmentObject(
-        id: id,
-        name: name,
-        data: data,
-      );
+  ReplenishmentObject toObject() => ReplenishmentObject(id: id, name: name, data: data);
 }

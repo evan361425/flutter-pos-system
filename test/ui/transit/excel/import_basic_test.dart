@@ -21,11 +21,7 @@ void main() {
   group('Transit - Excel - Import Basic', () {
     Widget buildApp() {
       return const MaterialApp(
-        home: TransitStation(
-          exporter: PlainTextExporter(),
-          catalog: TransitCatalog.importModel,
-          method: TransitMethod.excel,
-        ),
+        home: TransitStation(exporter: PlainTextExporter(), catalog: .importModel, method: .excel),
       );
     }
 

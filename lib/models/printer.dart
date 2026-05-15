@@ -27,7 +27,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   PrinterDensity density = PrinterDensity.normal;
 
   @override
-  final Stores storageStore = Stores.printers;
+  final Stores storageStore = .printers;
 
   Printers() {
     instance = this;
@@ -40,7 +40,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   List<Printer> get itemList => items.sorted((a, b) => a.compareTo(b));
 
   @override
-  RepositoryStorageType get repoType => RepositoryStorageType.repoProperties;
+  RepositoryStorageType get repoType => .repoProperties;
 
   bool get hasConnected => items.any((e) => e.connected);
 
@@ -52,12 +52,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
 
   @override
   Printer buildItem(String id, Map<String, Object?> value) {
-    return Printer.fromObject(
-      PrinterObject.build({
-        'id': id,
-        ...value,
-      }),
-    );
+    return Printer.fromObject(PrinterObject.build({'id': id, ...value}));
   }
 
   @override
@@ -73,9 +68,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     // to the storage.
     if (isEmpty && data.isEmpty) {
       await Future.wait([
-        Storage.instance.add(storageStore, 'setting', {
-          'density': density.index,
-        }),
+        Storage.instance.add(storageStore, 'setting', {'density': density.index}),
         Storage.instance.add(storageStore, 'printer', {}),
       ]);
     }
@@ -85,9 +78,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     Log.ger('update_printers', {'type': storageStore.name, 'density': density.index});
 
     await Storage.instance.set(storageStore, {
-      'setting': {
-        'density': density.index,
-      },
+      'setting': {'density': density.index},
     });
 
     notifyListeners();
@@ -97,10 +88,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   ///
   /// Separate the print action to another function, so we can first pop the
   /// dialog and then print the receipt in the background.
-  Future<List<ConvertibleImage>?> generateReceipts({
-    required BuildContext context,
-    required OrderObject order,
-  }) {
+  Future<List<ConvertibleImage>?> generateReceipts({required BuildContext context, required OrderObject order}) {
     if (!Printers.instance.hasConnected) {
       return Future.value(null);
     }
@@ -115,16 +103,20 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
 
     final printers = Printers.instance.items.where((e) => e.connected);
     final group = printers.groupListsBy<int>((e) => e.p.manufactory.widthBits);
-    final futures = group.entries.map((entry) {
-      final image = images.firstWhere((e) => e.width == entry.key);
+    final futures = group.entries
+        .map((entry) {
+          final image = images.firstWhere((e) => e.width == entry.key);
 
-      return entry.value.map((printer) => printer.draw(image.bytes).drain().onError((e, s) {
-            final msg = '${printer.name}: $e';
-            errors.add(msg);
-            stackTraces.add(s);
-            return 1;
-          }));
-    }).expand((e) => e);
+          return entry.value.map(
+            (printer) => printer.draw(image.bytes).drain().onError((e, s) {
+              final msg = '${printer.name}: $e';
+              errors.add(msg);
+              stackTraces.add(s);
+              return 1;
+            }),
+          );
+        })
+        .expand((e) => e);
 
     await Future.wait(futures);
 
@@ -147,10 +139,10 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   bt.Printer p;
 
   @override
-  final Stores storageStore = Stores.printers;
+  final Stores storageStore = .printers;
 
   @override
-  Printers get repository => Printers.instance;
+  Printers get repository => .instance;
 
   @override
   String get prefix => 'printer.$id';
@@ -170,22 +162,16 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   }
 
   factory Printer.fromObject(PrinterObject object) => Printer(
-        id: object.id,
-        name: object.name!,
-        address: object.address!,
-        autoConnect: object.autoConnect!,
-        provider: PrinterProvider.values[object.provider!],
-      );
+    id: object.id,
+    name: object.name!,
+    address: object.address!,
+    autoConnect: object.autoConnect!,
+    provider: PrinterProvider.values[object.provider!],
+  );
 
   @override
   PrinterObject toObject() {
-    return PrinterObject(
-      id: id,
-      name: name,
-      address: address,
-      autoConnect: autoConnect,
-      provider: provider.index,
-    );
+    return PrinterObject(id: id, name: name, address: address, autoConnect: autoConnect, provider: provider.index);
   }
 
   @override
@@ -249,22 +235,11 @@ class PrinterObject extends ModelObject<Printer> {
   final bool? autoConnect;
   final int? provider;
 
-  PrinterObject({
-    this.id,
-    this.name,
-    this.address,
-    this.autoConnect,
-    this.provider,
-  });
+  PrinterObject({this.id, this.name, this.address, this.autoConnect, this.provider});
 
   @override
   Map<String, Object> toMap() {
-    return {
-      'name': name!,
-      'address': address!,
-      'autoConnect': autoConnect!,
-      'provider': provider!,
-    };
+    return {'name': name!, 'address': address!, 'autoConnect': autoConnect!, 'provider': provider!};
   }
 
   @override
@@ -302,15 +277,13 @@ enum PrinterProvider {
   //   bt.EpsonPrinter(),
   //   link: 'https://epson.com/Support/Point-of-Sale/Thermal-Printers/sh/s530',
   // ),
-  xPrinter58(
-    bt.XPrinter(),
-    link: 'https://www.xprinter.net/',
-    markers: ['XP-58', 'XP-76', 'XP-80'],
-  ),
+  xPrinter58(bt.XPrinter(), link: 'https://www.xprinter.net/', markers: ['XP-58', 'XP-76', 'XP-80']),
   xPrinter76(bt.XPrinter(widthMM: 76, widthBits: 528)),
   xPrinter80(bt.XPrinter(widthMM: 80, widthBits: 560)),
-  yokoscan58(bt.YokoscanPrinter(widthMM: 58, widthBits: 384),
-      link: 'https://yokoscan.net/product/product.php?class2=184'),
+  yokoscan58(
+    bt.YokoscanPrinter(widthMM: 58, widthBits: 384),
+    link: 'https://yokoscan.net/product/product.php?class2=184',
+  ),
   yokoscan80(bt.YokoscanPrinter(widthMM: 80, widthBits: 560));
 
   final PrinterManufactory manufactory;

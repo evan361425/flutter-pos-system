@@ -18,10 +18,10 @@ class Catalog extends Model<CatalogObject>
   final DateTime createdAt;
 
   @override
-  final Stores storageStore = Stores.menu;
+  final Stores storageStore = .menu;
 
   @override
-  final RepositoryStorageType repoType = RepositoryStorageType.repoModel;
+  final RepositoryStorageType repoType = .repoModel;
 
   Catalog({
     super.id,
@@ -31,7 +31,7 @@ class Catalog extends Model<CatalogObject>
     String? imagePath,
     DateTime? createdAt,
     Map<String, Product>? products,
-  }) : createdAt = createdAt ?? DateTime.now() {
+  }) : createdAt = createdAt ?? .now() {
     this.index = index;
     this.imagePath = imagePath;
     if (products != null) replaceItems(products);
@@ -48,23 +48,14 @@ class Catalog extends Model<CatalogObject>
     )..prepareItem();
   }
 
-  factory Catalog.fromRow(
-    Catalog? ori,
-    List<String> row, {
-    required int index,
-  }) {
+  factory Catalog.fromRow(Catalog? ori, List<String> row, {required int index}) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.normal;
 
-    return Catalog(
-      id: ori?.id,
-      name: row[0],
-      index: index,
-      status: status,
-    );
+    return Catalog(id: ori?.id, name: row[0], index: index, status: status);
   }
 
   @override
-  Menu get repository => Menu.instance;
+  Menu get repository => .instance;
 
   @override
   Product buildItem(String id, Map<String, Object?> value) {
@@ -88,11 +79,11 @@ class Catalog extends Model<CatalogObject>
 
   @override
   CatalogObject toObject() => CatalogObject(
-        id: id,
-        index: index,
-        name: name,
-        createdAt: createdAt,
-        imagePath: imagePath,
-        products: items.map((e) => e.toObject()).toList(),
-      );
+    id: id,
+    index: index,
+    name: name,
+    createdAt: createdAt,
+    imagePath: imagePath,
+    products: items.map((e) => e.toObject()).toList(),
+  );
 }

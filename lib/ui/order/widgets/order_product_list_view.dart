@@ -13,34 +13,25 @@ class OrderProductListView extends StatelessWidget {
 
   final ProductListView view;
 
-  const OrderProductListView({
-    super.key,
-    required this.products,
-    required this.view,
-  });
+  const OrderProductListView({super.key, required this.products, required this.view});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: kTopSpacing, bottom: kFABSpacing),
+      padding: const .only(top: kTopSpacing, bottom: kFABSpacing),
       child: _buildView(context),
     );
   }
 
   Widget _buildView(BuildContext context) {
-    if (view == ProductListView.list) {
+    if (view == .list) {
       return _buildListView(context);
     }
 
     return LayoutBuilder(
       builder: (context, constraints) {
         // each width should between 200 and 320
-        return _buildGridView(Breakpoint.find(box: constraints).lookup(
-          compact: 2,
-          medium: 3,
-          expanded: 4,
-          large: 5,
-        ));
+        return _buildGridView(Breakpoint.find(box: constraints).lookup(compact: 2, medium: 3, expanded: 4, large: 5));
       },
     );
   }
@@ -58,26 +49,28 @@ class OrderProductListView extends StatelessWidget {
               image: product.image,
               title: product.name,
               onPressed: () => _onSelected(product),
-            )
+            ),
         ],
       ),
     );
   }
 
   Widget _buildListView(BuildContext context) {
-    return ListView(children: [
-      for (final product in products)
-        ListTile(
-          key: Key('order.product.${product.id}'),
-          title: Text(product.name),
-          subtitle: MetaBlock.withString(
-            context,
-            product.itemList.map((e) => e.name).toList(),
-            emptyText: S.orderProductListNoIngredient,
+    return ListView(
+      children: [
+        for (final product in products)
+          ListTile(
+            key: Key('order.product.${product.id}'),
+            title: Text(product.name),
+            subtitle: MetaBlock.withString(
+              context,
+              product.itemList.map((e) => e.name).toList(),
+              emptyText: S.orderProductListNoIngredient,
+            ),
+            onTap: () => _onSelected(product),
           ),
-          onTap: () => _onSelected(product),
-        ),
-    ]);
+      ],
+    );
   }
 
   void _onSelected(Product product) {

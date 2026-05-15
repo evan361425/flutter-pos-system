@@ -30,10 +30,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
     // stock changes.
     if (context.select<Stock, bool>((Stock stock) => stock.isEmpty)) {
       return Center(
-        child: EmptyBody(
-          content: S.stockIngredientEmptyBody,
-          routeName: Routes.stockIngrCreate,
-        ),
+        child: EmptyBody(content: S.stockIngredientEmptyBody, routeName: Routes.stockIngrCreate),
       );
     }
 
@@ -45,32 +42,39 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
           child: ListenableBuilder(
             listenable: Stock.instance,
             builder: (context, child) {
-              return ListView(padding: const EdgeInsets.only(bottom: kFABSpacing, top: kTopSpacing), children: [
-                Row(children: [
-                  Expanded(child: Center(child: _buildMeta())),
-                  _buildActions(),
-                  const SizedBox(width: kHorizontalSpacing),
-                ]),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    kHorizontalSpacing,
-                    kInternalSpacing,
-                    kHorizontalSpacing,
-                    kInternalSpacing,
+              return ListView(
+                padding: const .only(bottom: kFABSpacing, top: kTopSpacing),
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: Center(child: _buildMeta())),
+                      _buildActions(),
+                      const SizedBox(width: kHorizontalSpacing),
+                    ],
                   ),
-                  child: Row(children: [
-                    Expanded(
-                      child: RouteElevatedIconButton(
-                        key: const Key('stock.add'),
-                        icon: const Icon(KIcons.add),
-                        label: S.stockIngredientTitleCreate,
-                        route: Routes.stockIngrCreate,
-                      ),
+                  Padding(
+                    padding: const .fromLTRB(
+                      kHorizontalSpacing,
+                      kInternalSpacing,
+                      kHorizontalSpacing,
+                      kInternalSpacing,
                     ),
-                  ]),
-                ),
-                for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
-              ]);
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: RouteElevatedIconButton(
+                            key: const Key('stock.add'),
+                            icon: const Icon(KIcons.add),
+                            label: S.stockIngredientTitleCreate,
+                            route: Routes.stockIngrCreate,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
+                ],
+              );
             },
           ),
         ),
@@ -91,27 +95,31 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
       }
     }
 
-    return HintText([
-      latest == null ? S.stockReplenishmentNever : S.stockUpdatedAt(latest),
-      S.totalCount(Stock.instance.length),
-    ].join(MetaBlock.string));
+    return HintText(
+      [
+        latest == null ? S.stockReplenishmentNever : S.stockUpdatedAt(latest),
+        S.totalCount(Stock.instance.length),
+      ].join(MetaBlock.string),
+    );
   }
 
   Widget _buildActions() {
-    return ButtonGroup(buttons: [
-      Tutorial(
-        id: 'stock.replenishment',
-        title: S.stockReplenishmentTutorialTitle,
-        message: S.stockReplenishmentTutorialContent,
-        preferVertical: true,
-        child: RouteIconButton(
-          key: const Key('stock.replenisher'),
-          icon: const Icon(Icons.shopping_basket_outlined),
-          route: Routes.stockRepl,
-          popTrueShowSuccess: true,
-          label: S.stockReplenishmentButton,
+    return ButtonGroup(
+      buttons: [
+        Tutorial(
+          id: 'stock.replenishment',
+          title: S.stockReplenishmentTutorialTitle,
+          message: S.stockReplenishmentTutorialContent,
+          preferVertical: true,
+          child: RouteIconButton(
+            key: const Key('stock.replenisher'),
+            icon: const Icon(Icons.shopping_basket_outlined),
+            route: Routes.stockRepl,
+            popTrueShowSuccess: true,
+            label: S.stockReplenishmentButton,
+          ),
         ),
-      )
-    ]);
+      ],
+    );
   }
 }

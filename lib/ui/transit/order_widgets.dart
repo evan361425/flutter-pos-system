@@ -20,19 +20,12 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/formatter/order_formatter.dart';
 import 'package:possystem/ui/transit/widgets.dart';
 
-enum ExportMemoryLevel {
-  ok,
-  warning,
-  danger,
-}
+enum ExportMemoryLevel { ok, warning, danger }
 
 abstract class TransitOrderList extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
 
-  const TransitOrderList({
-    super.key,
-    required this.ranger,
-  });
+  const TransitOrderList({super.key, required this.ranger});
 
   /// Additional warning message to show in the memory info dialog.
   String? get warningMessage => null;
@@ -43,24 +36,28 @@ abstract class TransitOrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget leading = OrderRangeView(notifier: ranger);
     if (helpMessage != null) {
-      leading = Column(children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-          child: HintText(helpMessage!),
-        ),
-        leading,
-      ]);
+      leading = Column(
+        children: [
+          Padding(
+            padding: const .symmetric(horizontal: kHorizontalSpacing),
+            child: HintText(helpMessage!),
+          ),
+          leading,
+        ],
+      );
     }
 
     return OrderLoader(
       leading: leading,
       ranger: ranger,
       countingAll: true,
-      emptyChild: Column(children: [
-        leading,
-        const SizedBox(height: kInternalSpacing),
-        HintText(S.orderLoaderEmpty),
-      ]),
+      emptyChild: Column(
+        children: [
+          leading,
+          const SizedBox(height: kInternalSpacing),
+          HintText(S.orderLoaderEmpty),
+        ],
+      ),
       trailingBuilder: _buildMemoryInfo,
       builder: _buildOrder,
     );
@@ -78,27 +75,27 @@ abstract class TransitOrderList extends StatelessWidget {
   /// calculate the size as much as possible first.
   Widget _buildMemoryInfo(BuildContext context, OrderMetrics metrics) {
     final size = memoryPredictor(metrics);
-    final level = size < 500000 // 500KB
+    final level =
+        size <
+            500000 // 500KB
         ? 0
-        : size < 1000000 // 1MB
-            ? 1
-            : 2;
+        : size <
+              1000000 // 1MB
+        ? 1
+        : 2;
     showMemoryInfo() => showDialog(
-          context: context,
-          builder: (context) {
-            return _buildWarningDialog(context, size, level);
-          },
-        );
+      context: context,
+      builder: (context) {
+        return _buildWarningDialog(context, size, level);
+      },
+    );
 
     if (level == 0) {
       return IconButton(
         icon: const Icon(Icons.check_outlined),
         iconSize: 16.0,
         tooltip: S.transitOrderCapacityOk,
-        style: FilledButton.styleFrom(
-          backgroundColor: Colors.green[800],
-          foregroundColor: Colors.white,
-        ),
+        style: FilledButton.styleFrom(backgroundColor: Colors.green[800], foregroundColor: Colors.white),
         onPressed: showMemoryInfo,
       );
     }
@@ -108,10 +105,7 @@ abstract class TransitOrderList extends StatelessWidget {
         icon: const Icon(Icons.warning_amber_outlined),
         iconSize: 16.0,
         tooltip: S.transitOrderCapacityWarn,
-        style: FilledButton.styleFrom(
-          backgroundColor: Colors.yellow,
-          foregroundColor: Colors.black,
-        ),
+        style: FilledButton.styleFrom(backgroundColor: Colors.yellow, foregroundColor: Colors.black),
         onPressed: showMemoryInfo,
       );
     }
@@ -120,20 +114,14 @@ abstract class TransitOrderList extends StatelessWidget {
       icon: const Icon(Icons.dangerous_outlined),
       iconSize: 16.0,
       tooltip: S.transitOrderCapacityDanger,
-      style: FilledButton.styleFrom(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-      ),
+      style: FilledButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
       onPressed: showMemoryInfo,
     );
   }
 
   Widget _buildOrder(BuildContext context, OrderObject order) {
     return ListTile(
-      leading: Padding(
-        padding: const EdgeInsets.only(top: 4.0),
-        child: Text(order.createTimeString),
-      ),
+      leading: Padding(padding: const .only(top: 4.0), child: Text(order.createTimeString)),
       title: Text(order.createDateTimeString),
       subtitle: MetaBlock.withString(context, [
         S.transitOrderItemMetaProductCount(order.productsCount),
@@ -146,12 +134,10 @@ abstract class TransitOrderList extends StatelessWidget {
           await showDialog(
             context: context,
             builder: (context) {
-              return SimpleDialog(title: Text(S.transitOrderItemDialogTitle), children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: buildOrderView(context, detailedOrder),
-                ),
-              ]);
+              return SimpleDialog(
+                title: Text(S.transitOrderItemDialogTitle),
+                children: [Padding(padding: const .all(8.0), child: buildOrderView(context, detailedOrder))],
+              );
             },
           );
         }
@@ -160,42 +146,41 @@ abstract class TransitOrderList extends StatelessWidget {
   }
 
   Widget _buildWarningDialog(BuildContext context, int size, int level) {
-    const style = TextStyle(fontWeight: FontWeight.bold);
+    const style = TextStyle(fontWeight: .bold);
     return AlertDialog(
-      actions: [
-        PopButton(title: MaterialLocalizations.of(context).okButtonLabel),
-      ],
+      actions: [PopButton(title: MaterialLocalizations.of(context).okButtonLabel)],
       scrollable: true,
       content: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 600),
-        child: Column(children: [
-          Text(S.transitOrderCapacityTitle(getMemoryWithUnit(size))),
-          const SizedBox(height: 8.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Icon(Icons.check_outlined, weight: level == 0 ? 24.0 : null),
-              Icon(Icons.warning_amber_outlined, weight: level == 1 ? 24.0 : null),
-              Icon(Icons.dangerous_outlined, weight: level == 2 ? 24.0 : null),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text('<500KB', style: level == 0 ? style : null),
-              Text('<1MB', style: level == 1 ? style : null),
-              Text('≥1MB', style: level == 2 ? style : null),
-            ],
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-            child: Linkify.fromString([
-              S.transitOrderCapacityContent,
-              if (warningMessage != null) '\n$warningMessage',
-            ].join('')),
-          )
-        ]),
+        child: Column(
+          children: [
+            Text(S.transitOrderCapacityTitle(getMemoryWithUnit(size))),
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: .spaceAround,
+              children: [
+                Icon(Icons.check_outlined, weight: level == 0 ? 24.0 : null),
+                Icon(Icons.warning_amber_outlined, weight: level == 1 ? 24.0 : null),
+                Icon(Icons.dangerous_outlined, weight: level == 2 ? 24.0 : null),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: .spaceAround,
+              children: [
+                Text('<500KB', style: level == 0 ? style : null),
+                Text('<1MB', style: level == 1 ? style : null),
+                Text('≥1MB', style: level == 2 ? style : null),
+              ],
+            ),
+            const Divider(),
+            Padding(
+              padding: const .symmetric(horizontal: kHorizontalSpacing),
+              child: Linkify.fromString(
+                [S.transitOrderCapacityContent, if (warningMessage != null) '\n$warningMessage'].join(''),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -224,12 +209,7 @@ abstract class TransitOrderHeader extends StatelessWidget {
   final ValueNotifier<DateTimeRange> ranger;
   final ValueNotifier<TransitOrderSettings>? settings;
 
-  const TransitOrderHeader({
-    super.key,
-    required this.stateNotifier,
-    required this.ranger,
-    this.settings,
-  });
+  const TransitOrderHeader({super.key, required this.stateNotifier, required this.ranger, this.settings});
 
   String get title;
 
@@ -248,14 +228,11 @@ abstract class TransitOrderHeader extends StatelessWidget {
         },
       );
 
-      trailing = IconButton(
-        icon: const Icon(Icons.settings_sharp),
-        onPressed: () => _showMetaSetting(context),
-      );
+      trailing = IconButton(icon: const Icon(Icons.settings_sharp), onPressed: () => _showMetaSetting(context));
     }
 
     return Card(
-      margin: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
+      margin: const .only(left: 8.0, right: 8.0, bottom: 4.0),
       child: ListTile(
         key: const Key('transit.order_export'),
         title: Text(title),
@@ -270,10 +247,7 @@ abstract class TransitOrderHeader extends StatelessWidget {
 
   void _onExport(BuildContext context) {
     stateNotifier.exec(() async {
-      final orders = await Seller.instance.getDetailedOrders(
-        ranger.value.start,
-        ranger.value.end,
-      );
+      final orders = await Seller.instance.getDetailedOrders(ranger.value.start, ranger.value.end);
 
       return showSnackbarWhenFutureError(
         // ignore: use_build_context_synchronously
@@ -304,10 +278,7 @@ class TransitOrderSettings {
   /// Whether the form name is prefixed with the date, default is true
   final bool withPrefix;
 
-  const TransitOrderSettings({
-    this.isOverwrite = true,
-    this.withPrefix = true,
-  });
+  const TransitOrderSettings({this.isOverwrite = true, this.withPrefix = true});
 
   factory TransitOrderSettings.fromCache() {
     return TransitOrderSettings(
@@ -319,9 +290,7 @@ class TransitOrderSettings {
   Map<FormattableOrder, String> parseTitles(DateTimeRange range) {
     final prefix = withPrefix ? '${range.formatCompact(S.localeName)} ' : '';
 
-    return {
-      for (final e in FormattableOrder.values) e: '$prefix${e.l10nName}',
-    };
+    return {for (final e in FormattableOrder.values) e: '$prefix${e.l10nName}'};
   }
 
   Future<void> cache() async {
@@ -381,32 +350,26 @@ class _OrderTableState extends State<_OrderTable> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _SimpleTable(
-          headers: OrderFormatter.basicHeaders,
-          data: OrderFormatter.formatBasic(widget.order),
-          expandableIndexes: const [
-            OrderFormatter.attrPosition,
-            OrderFormatter.productPosition,
-          ],
-        ),
-        TextDivider(label: S.transitFormatFieldOrderAttributeTitle),
-        _SimpleTable(
-          headers: OrderFormatter.attrHeaders,
-          data: OrderFormatter.formatAttr(widget.order),
-        ),
-        TextDivider(label: S.transitFormatFieldOrderProductTitle),
-        _SimpleTable(
-          headers: OrderFormatter.productHeaders,
-          data: OrderFormatter.formatProduct(widget.order),
-          expandableIndexes: const [OrderFormatter.ingredientPosition],
-        ),
-        TextDivider(label: S.transitFormatFieldOrderIngredientTitle),
-        _SimpleTable(
-          headers: OrderFormatter.ingredientHeaders,
-          data: OrderFormatter.formatIngredient(widget.order),
-        ),
-      ]),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          _SimpleTable(
+            headers: OrderFormatter.basicHeaders,
+            data: OrderFormatter.formatBasic(widget.order),
+            expandableIndexes: const [OrderFormatter.attrPosition, OrderFormatter.productPosition],
+          ),
+          TextDivider(label: S.transitFormatFieldOrderAttributeTitle),
+          _SimpleTable(headers: OrderFormatter.attrHeaders, data: OrderFormatter.formatAttr(widget.order)),
+          TextDivider(label: S.transitFormatFieldOrderProductTitle),
+          _SimpleTable(
+            headers: OrderFormatter.productHeaders,
+            data: OrderFormatter.formatProduct(widget.order),
+            expandableIndexes: const [OrderFormatter.ingredientPosition],
+          ),
+          TextDivider(label: S.transitFormatFieldOrderIngredientTitle),
+          _SimpleTable(headers: OrderFormatter.ingredientHeaders, data: OrderFormatter.formatIngredient(widget.order)),
+        ],
+      ),
     );
   }
 }
@@ -418,35 +381,27 @@ class _SimpleTable extends StatelessWidget {
 
   final List<int> expandableIndexes;
 
-  const _SimpleTable({
-    required this.headers,
-    required this.data,
-    this.expandableIndexes = const [],
-  });
+  const _SimpleTable({required this.headers, required this.data, this.expandableIndexes = const []});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: .horizontal,
       child: Table(
         defaultColumnWidth: const IntrinsicColumnWidth(),
-        border: TableBorder.all(borderRadius: BorderRadius.circular(4.0)),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        border: TableBorder.all(borderRadius: .circular(4.0)),
+        defaultVerticalAlignment: .middle,
         children: [
-          TableRow(children: [
-            for (final header in headers)
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  header.toString(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+          TableRow(
+            children: [
+              for (final header in headers)
+                Padding(
+                  padding: const .all(4.0),
+                  child: Text(header.toString(), style: const TextStyle(fontWeight: .bold)),
                 ),
-              ),
-          ]),
-          for (final row in data)
-            TableRow(
-              children: _rowWidgets(row).toList(),
-            ),
+            ],
+          ),
+          for (final row in data) TableRow(children: _rowWidgets(row).toList()),
         ],
       ),
     );
@@ -457,13 +412,13 @@ class _SimpleTable extends StatelessWidget {
     for (final cell in row) {
       final idxOf = expandableIndexes.indexOf(index++);
       yield Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const .all(4.0),
         child: idxOf != -1
             ? HintText(S.transitFormatFieldOrderExpandableHint)
             : Text(
                 cell.toString(),
-                textAlign: cell is String ? TextAlign.end : TextAlign.start,
-                style: const TextStyle(fontStyle: FontStyle.italic),
+                textAlign: cell is String ? .end : .start,
+                style: const TextStyle(fontStyle: .italic),
               ),
       );
     }
@@ -532,10 +487,7 @@ class _OrderSettingPageState extends State<_OrderSettingPage> with ItemModal<_Or
 
   @override
   Future<void> updateItem() async {
-    final properties = TransitOrderSettings(
-      isOverwrite: isOverwrite,
-      withPrefix: withPrefix,
-    );
+    final properties = TransitOrderSettings(isOverwrite: isOverwrite, withPrefix: withPrefix);
     await properties.cache();
 
     if (mounted) {

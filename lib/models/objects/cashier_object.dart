@@ -7,11 +7,11 @@ class CashierChangeBatchObject {
 
   factory CashierChangeBatchObject.fromMap(Map<String, Object?> map) {
     return CashierChangeBatchObject(
-        source: CashierChangeEntryObject.fromMap(map['source'] as Map<String, Object?>),
-        targets: [
-          for (var target in map['targets'] as Iterable)
-            CashierChangeEntryObject.fromMap(target as Map<String, Object?>)
-        ]);
+      source: CashierChangeEntryObject.fromMap(map['source'] as Map<String, Object?>),
+      targets: [
+        for (var target in map['targets'] as Iterable) CashierChangeEntryObject.fromMap(target as Map<String, Object?>),
+      ],
+    );
   }
 
   Map<String, Object> toMap() {
@@ -30,10 +30,7 @@ class CashierChangeEntryObject {
   CashierChangeEntryObject({this.unit, this.count});
 
   factory CashierChangeEntryObject.fromMap(Map<String, Object?> map) {
-    return CashierChangeEntryObject(
-      count: map['count'] as int,
-      unit: map['unit'] as num,
-    );
+    return CashierChangeEntryObject(count: map['count'] as int, unit: map['unit'] as num);
   }
 
   bool get isEmpty => unit == null || count == null;
@@ -43,10 +40,7 @@ class CashierChangeEntryObject {
   }
 
   Map<String, num> toMap() {
-    return {
-      'unit': unit!,
-      'count': count!,
-    };
+    return {'unit': unit!, 'count': count!};
   }
 
   @override
@@ -66,10 +60,7 @@ class CashierUnitObject {
     final unit = map['unit'];
     assert(unit != null && unit != 0);
 
-    return CashierUnitObject(
-      unit: unit!,
-      count: map['count']?.toInt() ?? 0,
-    );
+    return CashierUnitObject(unit: unit!, count: map['count']?.toInt() ?? 0);
   }
 
   num get total => unit * count;

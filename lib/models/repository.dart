@@ -70,7 +70,7 @@ mixin Repository<T extends Model> on ChangeNotifier {
       if (save) {
         await saveItem(item);
       }
-      item.status = ModelStatus.normal;
+      item.status = .normal;
       _items[item.id] = item;
     }
 
@@ -185,7 +185,7 @@ mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
 mixin RepositoryStorage<T extends Model> on Repository<T> {
   bool versionChanged = false;
 
-  RepositoryStorageType get repoType => RepositoryStorageType.pureRepo;
+  RepositoryStorageType get repoType => .pureRepo;
 
   Stores get storageStore;
 
@@ -219,9 +219,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveBatch(Iterable<RepositoryBatchData> data) {
-    return Storage.instance.set(storageStore, {
-      for (final item in data) '${item.id}.${item.key}': item.value,
-    });
+    return Storage.instance.set(storageStore, {for (final item in data) '${item.id}.${item.key}': item.value});
   }
 
   @override
@@ -229,24 +227,20 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
     Log.ger('add_item', {'type': storageStore.name, 'name': item.toString()});
 
     final data = item.toObject().toMap();
-    return repoType == RepositoryStorageType.pureRepo
+    return repoType == .pureRepo
         ? Storage.instance.add(storageStore, item.id, data)
         : Storage.instance.set(storageStore, {item.prefix: data});
   }
 
   @override
   Future<void> dropItems() {
-    if (repoType == RepositoryStorageType.repoModel) return Future.value();
+    if (repoType == .repoModel) return Future.value();
 
     return Storage.instance.reset(storageStore);
   }
 }
 
-enum RepositoryStorageType {
-  pureRepo,
-  repoModel,
-  repoProperties,
-}
+enum RepositoryStorageType { pureRepo, repoModel, repoProperties }
 
 class RepositoryBatchData {
   final String id;

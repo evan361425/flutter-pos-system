@@ -33,20 +33,20 @@ void main() {
     Widget buildApp([CustomMockSheetsApi? sheetsApi]) {
       notifier = TransitStateNotifier();
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => TransitStation(
-              catalog: TransitCatalog.importModel,
-              method: TransitMethod.googleSheet,
-              notifier: notifier,
-              exporter: GoogleSheetExporter(
-                sheetsApi: sheetsApi,
-                scopes: gsExporterScopes,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => TransitStation(
+                catalog: .importModel,
+                method: .googleSheet,
+                notifier: notifier,
+                exporter: GoogleSheetExporter(sheetsApi: sheetsApi, scopes: gsExporterScopes),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
@@ -75,11 +75,9 @@ void main() {
 
     testWidgets('prepare spreadsheet failed', (tester) async {
       final sheetsApi = getMockSheetsApi();
-      when(sheetsApi.spreadsheets.get(
-        any,
-        includeGridData: anyNamed('includeGridData'),
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet()));
+      when(
+        sheetsApi.spreadsheets.get(any, includeGridData: anyNamed('includeGridData'), $fields: anyNamed('\$fields')),
+      ).thenAnswer((_) => Future.value(gs.Spreadsheet()));
 
       await tester.pumpWidget(buildApp(sheetsApi));
       await start(tester);
@@ -89,29 +87,30 @@ void main() {
     });
 
     prepareSpreadsheet(CustomMockSheetsApi sheetsApi) {
-      when(sheetsApi.spreadsheets.get(
-        any,
-        includeGridData: anyNamed('includeGridData'),
-        $fields: anyNamed('\$fields'),
-      )).thenAnswer((_) => Future.value(gs.Spreadsheet(sheets: [
-            gs.Sheet(
-              properties: gs.SheetProperties(
-                sheetId: 1,
-                title: FormattableModel.menu.l10nName,
-              ),
-            ),
-          ])));
+      when(
+        sheetsApi.spreadsheets.get(any, includeGridData: anyNamed('includeGridData'), $fields: anyNamed('\$fields')),
+      ).thenAnswer(
+        (_) => Future.value(
+          gs.Spreadsheet(
+            sheets: [gs.Sheet(properties: gs.SheetProperties(sheetId: 1, title: FormattableModel.menu.l10nName))],
+          ),
+        ),
+      );
     }
 
     prepareSheetData(CustomMockSheetsApi sheetsApi, String title, List<List<Object?>>? data) {
-      when(sheetsApi.spreadsheets.values.get(
-        any,
-        argThat(predicate<String>((n) {
-          return n.startsWith("'$title'");
-        })),
-        majorDimension: anyNamed('majorDimension'),
-        $fields: 'values',
-      )).thenAnswer((_) => Future.value(gs.ValueRange(values: data)));
+      when(
+        sheetsApi.spreadsheets.values.get(
+          any,
+          argThat(
+            predicate<String>((n) {
+              return n.startsWith("'$title'");
+            }),
+          ),
+          majorDimension: anyNamed('majorDimension'),
+          $fields: 'values',
+        ),
+      ).thenAnswer((_) => Future.value(gs.ValueRange(values: data)));
     }
 
     testWidgets('import spreadsheet but missing data', (tester) async {

@@ -8,24 +8,16 @@ import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
 
 class ExportOrderHeader extends TransitOrderHeader {
-  const ExportOrderHeader({
-    super.key,
-    required super.stateNotifier,
-    required super.ranger,
-    super.settings,
-  });
+  const ExportOrderHeader({super.key, required super.stateNotifier, required super.ranger, super.settings});
 
   @override
   String get title => S.transitExportOrderTitlePlainText;
 
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
-    await const PlainTextExporter().exportToClipboard(orders
-        .map((o) => [
-              o.createDateTimeString,
-              ExportOrderView.formatOrder(o),
-            ].join('\n'))
-        .join('\n\n'));
+    await const PlainTextExporter().exportToClipboard(
+      orders.map((o) => [o.createDateTimeString, ExportOrderView.formatOrder(o)].join('\n')).join('\n\n'),
+    );
 
     if (context.mounted) {
       showSnackBar(S.transitExportOrderSuccessPlainText, context: context);
@@ -34,10 +26,7 @@ class ExportOrderHeader extends TransitOrderHeader {
 }
 
 class ExportOrderView extends TransitOrderList {
-  const ExportOrderView({
-    super.key,
-    required super.ranger,
-  });
+  const ExportOrderView({super.key, required super.ranger});
 
   @override
   String get helpMessage => S.transitExportOrderSubtitlePlainText;
@@ -62,26 +51,32 @@ class ExportOrderView extends TransitOrderList {
   }
 
   static String formatOrder(OrderObject order) {
-    final attributes = order.attributes.map((a) {
-      return S.transitFormatTextOrderOrderAttributeItem(a.name, a.optionName);
-    }).join('、');
-    final products = order.products.map((p) {
-      final ing = p.ingredients.map((i) {
-        return S.transitFormatTextOrderIngredient(
-          i.amount,
-          i.ingredientName,
-          i.quantityName ?? S.transitFormatTextOrderNoQuantity,
-        );
-      }).join('、');
-      return S.transitFormatTextOrderProduct(
-        p.ingredients.length,
-        p.productName,
-        p.catalogName,
-        p.count,
-        p.totalPrice.toCurrency(),
-        ing,
-      );
-    }).join('；\n');
+    final attributes = order.attributes
+        .map((a) {
+          return S.transitFormatTextOrderOrderAttributeItem(a.name, a.optionName);
+        })
+        .join('、');
+    final products = order.products
+        .map((p) {
+          final ing = p.ingredients
+              .map((i) {
+                return S.transitFormatTextOrderIngredient(
+                  i.amount,
+                  i.ingredientName,
+                  i.quantityName ?? S.transitFormatTextOrderNoQuantity,
+                );
+              })
+              .join('、');
+          return S.transitFormatTextOrderProduct(
+            p.ingredients.length,
+            p.productName,
+            p.catalogName,
+            p.count,
+            p.totalPrice.toCurrency(),
+            ing,
+          );
+        })
+        .join('；\n');
     final setCount = order.products.length;
     final totalCount = order.productsCount;
 
@@ -93,7 +88,7 @@ class ExportOrderView extends TransitOrderList {
       ),
       S.transitFormatTextOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
       if (attributes != '') S.transitFormatTextOrderOrderAttribute(attributes),
-      S.transitFormatTextOrderProductCount(totalCount, setCount, products)
+      S.transitFormatTextOrderProductCount(totalCount, setCount, products),
     ].join('\n');
   }
 }

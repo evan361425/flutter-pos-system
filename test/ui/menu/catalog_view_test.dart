@@ -24,30 +24,31 @@ void main() {
       providers: [
         ChangeNotifierProvider<Stock>.value(value: Stock()),
         ChangeNotifierProvider<Quantities>.value(value: Quantities()),
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance)
+        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
       ],
       child: MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const MenuPage(),
-            routes: [
-              GoRoute(
-                name: Routes.imageGallery,
-                path: 'image_gallery',
-                builder: (context, __) => TextButton(
-                  onPressed: () => context.pop(popImage),
-                  child: const Text('tap me'),
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const MenuPage(),
+              routes: [
+                GoRoute(
+                  name: Routes.imageGallery,
+                  path: 'image_gallery',
+                  builder: (context, __) =>
+                      TextButton(onPressed: () => context.pop(popImage), child: const Text('tap me')),
                 ),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: baseRoute.path,
-            redirect: baseRoute.redirect,
-            routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
-          ),
-        ]),
+              ],
+            ),
+            GoRoute(
+              path: baseRoute.path,
+              redirect: baseRoute.redirect,
+              routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.imageGallery).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -73,7 +74,7 @@ void main() {
       await tester.enterText(find.byKey(const Key('product.name')), 'name');
       await tester.enterText(find.byKey(const Key('product.price')), '1');
       await tester.enterText(find.byKey(const Key('product.cost')), '1');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.testTextInput.receiveAction(.done);
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
@@ -86,16 +87,25 @@ void main() {
       expect(product.cost, equals(1));
       expect(product.price, equals(1));
 
-      verify(storage.set(any, argThat(predicate((data) {
-        final map = (data as Map).values.first;
-        return map is Map && map['price'] == 1 && map['cost'] == 1 && map['name'] == 'name' && map['index'] == 1;
-      }))));
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((data) {
+              final map = (data as Map).values.first;
+              return map is Map && map['price'] == 1 && map['cost'] == 1 && map['name'] == 'name' && map['index'] == 1;
+            }),
+          ),
+        ),
+      );
     });
 
     testWidgets('Navigate to product', (WidgetTester tester) async {
-      final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
-        'p-1': Product(id: 'p-1', name: 'p-1'),
-      });
+      final catalog = Catalog(
+        id: 'c-1',
+        name: 'c-1',
+        products: {'p-1': Product(id: 'p-1', name: 'p-1')},
+      );
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
       await tester.pumpWidget(buildApp());
@@ -114,10 +124,14 @@ void main() {
       final oldAvator = await createImage('old-avator');
       final newImage = await createImage('test-image');
       final product = Product(id: 'p-1', name: 'p-1', imagePath: oldImage);
-      final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
-        'p-1': product,
-        'p-2': Product(id: 'p-2', name: 'p-2'),
-      });
+      final catalog = Catalog(
+        id: 'c-1',
+        name: 'c-1',
+        products: {
+          'p-1': product,
+          'p-2': Product(id: 'p-2', name: 'p-2'),
+        },
+      );
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
       await tester.pumpWidget(buildApp(popImage: newImage));
@@ -143,7 +157,7 @@ void main() {
       await tester.enterText(find.byKey(const Key('product.name')), 'new-name');
       await tester.enterText(find.byKey(const Key('product.price')), '1');
       await tester.enterText(find.byKey(const Key('product.cost')), '1');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.testTextInput.receiveAction(.done);
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
@@ -155,13 +169,20 @@ void main() {
       expect(product.imagePath, newImage);
 
       final prefix = product.prefix;
-      verify(storage.set(any, argThat(predicate((data) {
-        return data is Map &&
-            data['$prefix.price'] == 1 &&
-            data['$prefix.cost'] == 1 &&
-            data['$prefix.name'] == 'new-name' &&
-            data['$prefix.imagePath'] == newImage;
-      }))));
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((data) {
+              return data is Map &&
+                  data['$prefix.price'] == 1 &&
+                  data['$prefix.cost'] == 1 &&
+                  data['$prefix.name'] == 'new-name' &&
+                  data['$prefix.imagePath'] == newImage;
+            }),
+          ),
+        ),
+      );
       expect(XFile(oldImage).file.existsSync(), isTrue);
       expect(XFile(oldAvator).file.existsSync(), isTrue);
     });
@@ -169,11 +190,14 @@ void main() {
     testWidgets('Reorder product', (WidgetTester tester) async {
       final p1 = Product(id: 'p-1', name: 'p-1', index: 1);
       final p2 = Product(id: 'p-2', name: 'p-2', index: 2);
-      final catalog = Catalog(id: 'c-1', products: {
-        'p-1': p1,
-        'p-2': p2,
-        'p-3': Product(id: 'p-3', name: 'p-3', index: 3),
-      });
+      final catalog = Catalog(
+        id: 'c-1',
+        products: {
+          'p-1': p1,
+          'p-2': p2,
+          'p-3': Product(id: 'p-3', name: 'p-3', index: 3),
+        },
+      );
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
       await tester.pumpWidget(buildApp());
@@ -197,17 +221,12 @@ void main() {
       expect(itemList[1].id, equals('p-1'));
       expect(itemList[2].id, equals('p-3'));
 
-      verify(storage.set(
-        any,
-        argThat(equals({'${p1.prefix}.index': 2, '${p2.prefix}.index': 1})),
-      ));
+      verify(storage.set(any, argThat(equals({'${p1.prefix}.index': 2, '${p2.prefix}.index': 1}))));
     });
 
     testWidgets('Delete product', (WidgetTester tester) async {
       final product = Product(id: 'p-1');
-      final catalog = Catalog(id: 'c-1', name: 'c-1', products: {
-        'p-1': product,
-      });
+      final catalog = Catalog(id: 'c-1', name: 'c-1', products: {'p-1': product});
       Menu().replaceItems({'c-1': catalog..prepareItem()});
 
       await tester.pumpWidget(buildApp());

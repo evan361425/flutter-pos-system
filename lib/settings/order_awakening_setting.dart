@@ -1,7 +1,7 @@
 import 'package:possystem/settings/setting.dart';
 
 class OrderAwakeningSetting extends Setting<bool> {
-  static final instance = OrderAwakeningSetting._();
+  static final OrderAwakeningSetting instance = ._();
 
   static const defaultValue = true;
 

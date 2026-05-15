@@ -18,21 +18,22 @@ void main() {
       // setup currency and cashier relation
       when(cache.get(any)).thenReturn(null);
       // disable tutorial
-      when(cache.get(
-        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-      )).thenReturn(true);
+      when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
       when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
 
       return ChangeNotifierProvider.value(
         value: Cashier.instance,
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const Scaffold(body: CashierView()),
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const Scaffold(body: CashierView()),
+              ),
+              ...Routes.getDesiredRoute(0).routes,
+            ],
+          ),
         ),
       );
     }
@@ -118,11 +119,7 @@ void main() {
       ]);
       await tester.pumpWidget(buildApp());
 
-      action(
-        String unit,
-        String number, [
-        String action = 'confirm',
-      ]) async {
+      action(String unit, String number, [String action = 'confirm']) async {
         await tester.tap(find.text(S.cashierUnitLabel(unit)));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextFormField), number);

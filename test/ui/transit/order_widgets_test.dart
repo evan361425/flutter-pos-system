@@ -74,26 +74,25 @@ void main() {
       OrderSetter.setMetrics([], countingAll: true);
       OrderSetter.setOrders([]);
 
-      final ranger = ValueNotifier(DateTimeRange(
-        start: DateTime(2023, DateTime.june, 10),
-        end: DateTime(2023, DateTime.june, 11),
-      ));
+      final ranger = ValueNotifier(
+        DateTimeRange(start: DateTime(2023, DateTime.june, 10), end: DateTime(2023, DateTime.june, 11)),
+      );
       final settings = ValueNotifier(const TransitOrderSettings());
       final list = _TestOrderList(ranger: ranger);
 
       expect(list.warningMessage, isNull);
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: Column(children: [
-            _TestOrderHeader(
-              stateNotifier: TransitStateNotifier(),
-              ranger: ranger,
-              settings: settings,
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                _TestOrderHeader(stateNotifier: TransitStateNotifier(), ranger: ranger, settings: settings),
+                list,
+              ],
             ),
-            list,
-          ]),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.date_range_outlined));
@@ -106,11 +105,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-          ranger.value.toString(),
-          equals(DateTimeRange(
-            start: DateTime(2023, DateTime.june, 1),
-            end: DateTime(2023, DateTime.june, 6),
-          ).toString()));
+        ranger.value.toString(),
+        equals(
+          DateTimeRange(start: DateTime(2023, DateTime.june, 1), end: DateTime(2023, DateTime.june, 6)).toString(),
+        ),
+      );
 
       await tester.tap(find.byIcon(Icons.settings_sharp));
       await tester.pumpAndSettle();
@@ -151,11 +150,7 @@ class _TestOrderList extends TransitOrderList {
 }
 
 class _TestOrderHeader extends TransitOrderHeader {
-  const _TestOrderHeader({
-    required super.stateNotifier,
-    required super.ranger,
-    super.settings,
-  });
+  const _TestOrderHeader({required super.stateNotifier, required super.ranger, super.settings});
 
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {

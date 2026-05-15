@@ -71,7 +71,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
   /// Padding widget
   Widget p(Widget child) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+      padding: const .symmetric(horizontal: kHorizontalSpacing),
       child: child,
     );
   }

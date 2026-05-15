@@ -27,11 +27,13 @@ MockCrashlytics setupFirebaseCrashlyticsMocks() {
   final crashlytics = MockCrashlytics();
   TestFirebaseCoreHostApi.setUp(crashlytics);
 
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(MethodChannelFirebaseCrashlytics.channel, (c) async {
-    crashlytics.methodCalls.add(c.method);
-    return null;
-  });
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    MethodChannelFirebaseCrashlytics.channel,
+    (c) async {
+      crashlytics.methodCalls.add(c.method);
+      return null;
+    },
+  );
 
   return crashlytics;
 }
@@ -64,20 +66,12 @@ class MockCrashlytics implements TestFirebaseCoreHostApi {
   List<String> methodCalls = [];
 
   @override
-  Future<CoreInitializeResponse> initializeApp(
-    String appName,
-    CoreFirebaseOptions initializeAppRequest,
-  ) async {
+  Future<CoreInitializeResponse> initializeApp(String appName, CoreFirebaseOptions initializeAppRequest) async {
     return CoreInitializeResponse(
       name: appName,
-      options: CoreFirebaseOptions(
-        apiKey: '123',
-        projectId: '123',
-        appId: '123',
-        messagingSenderId: '123',
-      ),
+      options: CoreFirebaseOptions(apiKey: '123', projectId: '123', appId: '123', messagingSenderId: '123'),
       pluginConstants: {
-        'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false}
+        'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false},
       },
     );
   }
@@ -87,26 +81,16 @@ class MockCrashlytics implements TestFirebaseCoreHostApi {
     return [
       CoreInitializeResponse(
         name: defaultFirebaseAppName,
-        options: CoreFirebaseOptions(
-          apiKey: '123',
-          projectId: '123',
-          appId: '123',
-          messagingSenderId: '123',
-        ),
+        options: CoreFirebaseOptions(apiKey: '123', projectId: '123', appId: '123', messagingSenderId: '123'),
         pluginConstants: {
-          'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false}
+          'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false},
         },
-      )
+      ),
     ];
   }
 
   @override
   Future<CoreFirebaseOptions> optionsFromResource() async {
-    return CoreFirebaseOptions(
-      apiKey: '123',
-      projectId: '123',
-      appId: '123',
-      messagingSenderId: '123',
-    );
+    return CoreFirebaseOptions(apiKey: '123', projectId: '123', appId: '123', messagingSenderId: '123');
   }
 }

@@ -38,28 +38,26 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
             return Center(child: Text(S.analysisHistoryOrderNotFound));
           }
 
-          createdAt = S.analysisHistoryOrderListMetaNo(order.periodSeq.toString()) +
+          createdAt =
+              S.analysisHistoryOrderListMetaNo(order.periodSeq.toString()) +
               MetaBlock.string +
               DateFormat.MMMEd(S.localeName).format(order.createdAt) +
               MetaBlock.string +
               DateFormat.Hms(S.localeName).format(order.createdAt);
-          return Column(children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
-              child: Row(
-                children: [
-                  Expanded(child: Center(child: HintText(createdAt!))),
-                  MoreButton(
-                    key: const Key('order_modal.more'),
-                    onPressed: _showActions,
-                  ),
-                ],
+          return Column(
+            children: [
+              Padding(
+                padding: const .fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
+                child: Row(
+                  children: [
+                    Expanded(child: Center(child: HintText(createdAt!))),
+                    MoreButton(key: const Key('order_modal.more'), onPressed: _showActions),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: OrderObjectView(order: order),
-            ),
-          ]);
+              Expanded(child: OrderObjectView(order: order)),
+            ],
+          );
         }),
       ),
     );
@@ -71,17 +69,12 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
         context,
         deleteValue: _Action.delete,
         popAfterDeleted: true,
-        deleteCallback: () => showSnackbarWhenFutureError(
-          Seller.instance.delete(widget.orderId),
-          'analysis_deletion',
-          context: context,
-        ),
+        deleteCallback: () =>
+            showSnackbarWhenFutureError(Seller.instance.delete(widget.orderId), 'analysis_deletion', context: context),
         warningContent: S.analysisHistoryOrderDeleteDialog(createdAt!),
       );
     }
   }
 }
 
-enum _Action {
-  delete,
-}
+enum _Action { delete }

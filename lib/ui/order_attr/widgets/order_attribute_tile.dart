@@ -20,29 +20,29 @@ class OrderAttributeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: attr,
-      builder: (context, child) => _buildTile(context),
-    );
+    return ListenableBuilder(listenable: attr, builder: (context, child) => _buildTile(context));
   }
 
   Widget _buildTile(BuildContext context) {
     final key = 'order_attributes.${attr.id}';
     final theme = Theme.of(context);
     final subtitle = RichText(
-      overflow: TextOverflow.ellipsis,
+      overflow: .ellipsis,
       text: TextSpan(
         children: [
           TextSpan(text: S.orderAttributeMetaMode(S.orderAttributeModeName(attr.mode.name))),
           MetaBlock.span(),
           attr.defaultOption?.name != null
               ? TextSpan(text: S.orderAttributeMetaDefault(attr.defaultOption!.name))
-              : TextSpan(text: S.orderAttributeMetaDefault(''), children: [
-                  TextSpan(
-                    text: S.orderAttributeMetaNoDefault,
-                    style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
-                  ),
-                ]),
+              : TextSpan(
+                  text: S.orderAttributeMetaDefault(''),
+                  children: [
+                    TextSpan(
+                      text: S.orderAttributeMetaNoDefault,
+                      style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+                    ),
+                  ],
+                ),
         ],
         // disable parent text style
         style: theme.textTheme.bodyMedium,
@@ -53,7 +53,7 @@ class OrderAttributeTile extends StatelessWidget {
       key: Key(key),
       title: Text(attr.name),
       subtitle: subtitle,
-      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      expandedCrossAxisAlignment: .stretch,
       children: <Widget>[
         _buildActions(context),
         const SizedBox(height: kInternalLargeSpacing),
@@ -63,25 +63,21 @@ class OrderAttributeTile extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context) {
-    return Row(children: [
-      const SizedBox(width: kHorizontalSpacing),
-      Expanded(
-        child: ElevatedButton.icon(
-          key: Key('order_attributes.${attr.id}.add'),
-          onPressed: () => context.pushNamed(
-            Routes.orderAttrCreate,
-            queryParameters: {'id': attr.id},
+    return Row(
+      children: [
+        const SizedBox(width: kHorizontalSpacing),
+        Expanded(
+          child: ElevatedButton.icon(
+            key: Key('order_attributes.${attr.id}.add'),
+            onPressed: () => context.pushNamed(Routes.orderAttrCreate, queryParameters: {'id': attr.id}),
+            label: Text(S.orderAttributeOptionTitleCreate),
+            icon: const Icon(KIcons.add),
           ),
-          label: Text(S.orderAttributeOptionTitleCreate),
-          icon: const Icon(KIcons.add),
         ),
-      ),
-      EntryMoreButton(
-        key: Key('order_attributes.${attr.id}.more'),
-        onPressed: _showActions,
-      ),
-      const SizedBox(width: kHorizontalSpacing),
-    ]);
+        EntryMoreButton(key: Key('order_attributes.${attr.id}.more'), onPressed: _showActions),
+        const SizedBox(width: kHorizontalSpacing),
+      ],
+    );
   }
 
   void _showActions(BuildContext context) async {

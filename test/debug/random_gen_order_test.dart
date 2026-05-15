@@ -6,7 +6,6 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
@@ -25,23 +24,15 @@ import '../mocks/mock_database.mocks.dart';
 void main() {
   group('Random Generate Order', () {
     test('no gen if same date', () {
-      final now = DateTime.now();
-      final result = generateOrders(
-        orderCount: 10,
-        startFrom: now,
-        endTo: now,
-      );
+      final DateTime now = .now();
+      final result = generateOrders(orderCount: 10, startFrom: now, endTo: now);
 
       expect(result, isEmpty);
     });
 
     test('default setting', () {
-      final end = DateTime.now();
-      final result = generateOrders(
-        orderCount: 10,
-        startFrom: end.subtract(const Duration(days: 1)),
-        endTo: end,
-      );
+      final DateTime end = .now();
+      final result = generateOrders(orderCount: 10, startFrom: end.subtract(const Duration(days: 1)), endTo: end);
 
       expect(result.length, equals(10));
       expect(result.map((e) => e.productsCount).reduce((a, b) => a + b), greaterThanOrEqualTo(10));
@@ -60,16 +51,18 @@ void main() {
       when(batch.commit(noResult: anyNamed('noResult'))).thenAnswer((_) => Future.value([]));
 
       const btn = Key('test');
-      await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: Seller.instance,
-        child: MaterialApp(home: Builder(builder: (context) {
-          return TextButton(
-            key: btn,
-            onPressed: goGenerateRandomOrders(context),
-            child: const Text('test'),
-          );
-        })),
-      ));
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: Seller.instance,
+          child: MaterialApp(
+            home: Builder(
+              builder: (context) {
+                return TextButton(key: btn, onPressed: goGenerateRandomOrders(context), child: const Text('test'));
+              },
+            ),
+          ),
+        ),
+      );
 
       await tester.tap(find.byKey(btn));
       await tester.pumpAndSettle();
@@ -109,19 +102,23 @@ void main() {
     final attrs = OrderAttributes();
     attrs.replaceItems({
       'at-1': OrderAttribute(id: 'at-1', name: 'at-1'),
-      'at-2': OrderAttribute(id: 'at-2', name: 'at-2', mode: OrderAttributeMode.changePrice, options: {
-        'o1': OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1),
-        'o2': OrderAttributeOption(id: 'o2', name: 'o2', modeValue: 2),
-        'o3': OrderAttributeOption(id: 'o3', name: 'o3', modeValue: 3),
-        'o4': OrderAttributeOption(id: 'o4', name: 'o4', modeValue: 4),
-        'o5': OrderAttributeOption(id: 'o5', name: 'o5', modeValue: 5.0),
-        'o6': OrderAttributeOption(id: 'o6', name: 'o6', modeValue: 6.1),
-        'o7': OrderAttributeOption(id: 'o7', name: 'o7', modeValue: 7.2),
-        'o8': OrderAttributeOption(id: 'o8', name: 'o8', modeValue: 8),
-        'o9': OrderAttributeOption(id: 'o9', name: 'o9', modeValue: null),
-        'o0': OrderAttributeOption(id: 'o0', name: 'o0', modeValue: null),
-      })
-        ..prepareItem(),
+      'at-2': OrderAttribute(
+        id: 'at-2',
+        name: 'at-2',
+        mode: .changePrice,
+        options: {
+          'o1': OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1),
+          'o2': OrderAttributeOption(id: 'o2', name: 'o2', modeValue: 2),
+          'o3': OrderAttributeOption(id: 'o3', name: 'o3', modeValue: 3),
+          'o4': OrderAttributeOption(id: 'o4', name: 'o4', modeValue: 4),
+          'o5': OrderAttributeOption(id: 'o5', name: 'o5', modeValue: 5.0),
+          'o6': OrderAttributeOption(id: 'o6', name: 'o6', modeValue: 6.1),
+          'o7': OrderAttributeOption(id: 'o7', name: 'o7', modeValue: 7.2),
+          'o8': OrderAttributeOption(id: 'o8', name: 'o8', modeValue: 8),
+          'o9': OrderAttributeOption(id: 'o9', name: 'o9', modeValue: null),
+          'o0': OrderAttributeOption(id: 'o0', name: 'o0', modeValue: null),
+        },
+      )..prepareItem(),
     });
     // Menu
     final q1 = ProductQuantity(
@@ -151,34 +148,15 @@ void main() {
       amount: 11,
       quantities: {'pq-1': q1, 'p1-2': q2},
     )..prepareItem();
-    final i2 = ProductIngredient(
-      id: 'pi-2',
-      ingredient: stock.getItem('i-2'),
-      amount: 13,
-      quantities: {'pq-3': q3},
-    )..prepareItem();
-    final i3 = ProductIngredient(
-      id: 'pi-3',
-      ingredient: stock.getItem('i-3'),
-      amount: 13,
-    );
-    final p1 = Product(
-      id: 'p-1',
-      name: 'p-1',
-      cost: 17,
-      price: 23,
-      ingredients: {'pi-1': i1, 'pi-2': i2},
-    )..prepareItem();
-    final p2 = Product(
-      id: 'p-2',
-      name: 'p-2',
-      cost: 29,
-      price: 31,
-      ingredients: {'pi-3': i3},
-    )..prepareItem();
+    final i2 = ProductIngredient(id: 'pi-2', ingredient: stock.getItem('i-2'), amount: 13, quantities: {'pq-3': q3})
+      ..prepareItem();
+    final i3 = ProductIngredient(id: 'pi-3', ingredient: stock.getItem('i-3'), amount: 13);
+    final p1 = Product(id: 'p-1', name: 'p-1', cost: 17, price: 23, ingredients: {'pi-1': i1, 'pi-2': i2})
+      ..prepareItem();
+    final p2 = Product(id: 'p-2', name: 'p-2', cost: 29, price: 31, ingredients: {'pi-3': i3})..prepareItem();
     final p3 = Product(id: 'p-3', name: 'p-3', cost: 37, price: 41);
     Menu().replaceItems({
-      'c-1': Catalog(id: 'c-1', products: {'p-1': p1, 'p-2': p2, 'p-3': p3})..prepareItem()
+      'c-1': Catalog(id: 'c-1', products: {'p-1': p1, 'p-2': p2, 'p-3': p3})..prepareItem(),
     });
 
     initializeDatabase();

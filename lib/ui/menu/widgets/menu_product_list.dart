@@ -17,11 +17,7 @@ class MenuProductList extends StatelessWidget {
 
   final Widget? leading;
 
-  const MenuProductList({
-    super.key,
-    required this.catalog,
-    this.leading,
-  });
+  const MenuProductList({super.key, required this.catalog, this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +79,7 @@ class _Tile extends StatelessWidget {
         emptyText: S.menuProductEmptyIngredients,
       ),
       onLongPress: actor,
-      onTap: () => context.pushNamed(
-        Routes.menuProduct,
-        pathParameters: {'id': product.id},
-      ),
+      onTap: () => context.pushNamed(Routes.menuProduct, pathParameters: {'id': product.id}),
     );
   }
 }

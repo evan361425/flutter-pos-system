@@ -20,7 +20,8 @@ class ScrollableDraggableSheet extends StatefulWidget {
     ScrollableDraggableController controller,
     ScrollController scroll,
     ValueNotifier<bool> scrollable,
-  ) builder;
+  )
+  builder;
 
   const ScrollableDraggableSheet({
     super.key,
@@ -28,7 +29,7 @@ class ScrollableDraggableSheet extends StatefulWidget {
     this.snapSizes,
     this.controller,
     this.onSnapIndexChanged,
-    this.margin = const EdgeInsets.symmetric(horizontal: 8),
+    this.margin = const .symmetric(horizontal: 8),
     this.indicator = const DraggableIndicator(),
     required this.builder,
   }) : assert(snapSizes != null || controller != null);
@@ -48,10 +49,7 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        controller.transferSnapSizes(
-          constraints.biggest.height,
-          widget.margin.vertical,
-        );
+        controller.transferSnapSizes(constraints.biggest.height, widget.margin.vertical);
 
         return DraggableScrollableSheet(
           controller: controller,
@@ -126,25 +124,18 @@ class _ScrollableDraggableSheetState extends State<ScrollableDraggableSheet> {
             },
             child: Card(
               shape: value == 1.0
-                  ? const RoundedRectangleBorder(borderRadius: BorderRadius.zero)
-                  : const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16.0),
-                      ),
-                    ),
-              clipBehavior: Clip.hardEdge,
+                  ? const RoundedRectangleBorder(borderRadius: .zero)
+                  : const RoundedRectangleBorder(borderRadius: .vertical(top: .circular(16.0))),
+              clipBehavior: .hardEdge,
               elevation: 2.0,
-              margin: value == 1.0 ? const EdgeInsets.all(0) : widget.margin,
+              margin: value == 1.0 ? const .all(0) : widget.margin,
               child: child,
             ),
           );
         },
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            widget.indicator,
-            ...widget.builder(controller, scroll, scrollable),
-          ],
+          crossAxisAlignment: .stretch,
+          children: [widget.indicator, ...widget.builder(controller, scroll, scrollable)],
         ),
       ),
     );
@@ -165,8 +156,9 @@ class ScrollableDraggableController extends DraggableScrollableController implem
   transferSnapSizes(double pixels, double offset) {
     final last = pixelsSnapSizes[pixelsSnapSizes.length - 1];
     availablePixels = last > 1 ? last : last * pixels;
-    snapSizes =
-        pixelsSnapSizes.map((e) => e > 1.0 ? min((e + DraggableIndicator.height + offset) / pixels, 1.0) : e).toList();
+    snapSizes = pixelsSnapSizes
+        .map((e) => e > 1.0 ? min((e + DraggableIndicator.height + offset) / pixels, 1.0) : e)
+        .toList();
     snapIndex.value = 0;
   }
 
@@ -176,11 +168,7 @@ class ScrollableDraggableController extends DraggableScrollableController implem
   Future<void> animateToClosestSnap(double velocity) async {
     if (isAttached) {
       final index = getNextSnapIndex(velocity);
-      await animateTo(
-        snapSizes[index],
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.bounceOut,
-      );
+      await animateTo(snapSizes[index], duration: const Duration(milliseconds: 120), curve: Curves.bounceOut);
       // only update the value after correctly move to target
       isDrag = false;
       snapIndex.value = index;
@@ -216,7 +204,7 @@ class ScrollableDraggableController extends DraggableScrollableController implem
 
     // find closest
     final i = snapSizes.indexWhere((e) => e >= size);
-    final prev = i == 0 ? double.infinity : (snapSizes[i - 1] - size).abs();
+    final double prev = i == 0 ? .infinity : (snapSizes[i - 1] - size).abs();
     return prev < (snapSizes[i] - size).abs() ? i - 1 : i;
   }
 
@@ -241,11 +229,8 @@ class DraggableIndicator extends StatelessWidget {
       child: Container(
         height: 4.0,
         width: 36.0,
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        decoration: BoxDecoration(
-          color: Theme.of(context).highlightColor,
-          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        ),
+        margin: const .symmetric(vertical: 8.0),
+        decoration: BoxDecoration(color: Theme.of(context).highlightColor, borderRadius: const .all(.circular(8.0))),
       ),
     );
   }
@@ -284,20 +269,15 @@ class FixedHeightClipper extends StatelessWidget {
       builder: (context, value, child) {
         final h = ((valueScalar * value - baselineSize) * controller.availablePixels - baseline) * exposeFraction;
 
-        return Stack(clipBehavior: Clip.hardEdge, children: [
-          SizedBox(height: clampDouble(h, 0, height)),
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            child: child!,
-          ),
-        ]);
+        return Stack(
+          clipBehavior: .hardEdge,
+          children: [
+            SizedBox(height: clampDouble(h, 0, height)),
+            Positioned(left: 0, right: 0, top: 0, child: child!),
+          ],
+        );
       },
-      child: SizedBox(
-        height: height,
-        child: child,
-      ),
+      child: SizedBox(height: height, child: child),
     );
   }
 }

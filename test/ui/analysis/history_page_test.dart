@@ -21,9 +21,7 @@ void main() {
   group('History Page', () {
     Widget buildApp({themeMode = ThemeMode.light}) {
       // disable tutorial
-      when(cache.get(
-        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-      )).thenReturn(true);
+      when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: Seller.instance),
@@ -33,36 +31,39 @@ void main() {
           themeMode: themeMode,
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) {
-                return const HistoryPage();
-              },
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) {
+                  return const HistoryPage();
+                },
+              ),
+              ...Routes.getDesiredRoute(0).routes,
+            ],
+          ),
         ),
       );
     }
 
     void mockGetCountPerDay(List<Map<String, Object?>> count) {
-      when(database.query(
-        any,
-        columns: argThat(
-          equals(['day', 'COUNT(price) count']),
-          named: 'columns',
+      when(
+        database.query(
+          any,
+          columns: argThat(equals(['day', 'COUNT(price) count']), named: 'columns'),
+          groupBy: argThat(equals('day'), named: 'groupBy'),
+          orderBy: anyNamed('orderBy'),
+          escapeTable: false,
         ),
-        groupBy: argThat(equals('day'), named: 'groupBy'),
-        orderBy: anyNamed('orderBy'),
-        escapeTable: false,
-      )).thenAnswer((_) => Future.value(count));
+      ).thenAnswer((_) => Future.value(count));
     }
 
     testWidgets('select date and show order list in mobile', (tester) async {
-      final now = DateTime.now();
+      final DateTime now = .now();
       final nowD = DateTime(now.year, now.month, now.day);
-      final nowS = (nowD.millisecondsSinceEpoch -
+      final nowS =
+          (nowD.millisecondsSinceEpoch -
               DateTime(now.year, now.month).subtract(const Duration(days: 7)).millisecondsSinceEpoch) ~/
           86400000; // get days
 
@@ -75,7 +76,7 @@ void main() {
         {'day': nowS - 1, 'count': 50},
       ]);
 
-      deviceAs(Device.mobile, tester);
+      deviceAs(.mobile, tester);
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -94,18 +95,21 @@ void main() {
       Seller.instance.notifyListeners();
       await tester.pumpAndSettle();
 
-      verify(database.query(
-        Seller.orderTable,
-        columns: argThat(contains('COUNT(*) count'), named: 'columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).called(2);
+      verify(
+        database.query(
+          Seller.orderTable,
+          columns: argThat(contains('COUNT(*) count'), named: 'columns'),
+          where: anyNamed('where'),
+          whereArgs: anyNamed('whereArgs'),
+        ),
+      ).called(2);
     });
 
     testWidgets('load count when page changed in landscape', (tester) async {
-      final now = DateTime.now();
+      final DateTime now = .now();
       final nowD = DateTime(now.year, now.month, now.day);
-      final nowS = (nowD.millisecondsSinceEpoch -
+      final nowS =
+          (nowD.millisecondsSinceEpoch -
               DateTime(now.year, now.month).subtract(const Duration(days: 7)).millisecondsSinceEpoch) ~/
           86400000; // get days
       OrderSetter.setOrders([]);
@@ -116,7 +120,7 @@ void main() {
         {'day': nowS - now.day - 7, 'count': 60},
       ]);
 
-      deviceAs(Device.landscape, tester);
+      deviceAs(.landscape, tester);
 
       await tester.pumpWidget(buildApp(themeMode: ThemeMode.dark));
       await tester.pumpAndSettle();
@@ -161,7 +165,7 @@ void main() {
       });
 
       testWidgets('clear orders history', (tester) async {
-        final now = DateTime.now();
+        final DateTime now = .now();
         final firstOfThisMonth = DateTime(now.year, now.month, 1);
         mockGetCountPerDay([]);
         OrderSetter.setOrders([]);

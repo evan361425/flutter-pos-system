@@ -24,15 +24,15 @@ void main() {
   group('Transit - Excel - Export Basic', () {
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const TransitStation(
-              catalog: TransitCatalog.exportModel,
-              method: TransitMethod.excel,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const TransitStation(catalog: .exportModel, method: .excel),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
@@ -50,30 +50,34 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitExportBasicSuccessExcel), findsOneWidget);
-      verify(picker.saveFile(
-        dialogTitle: anyNamed('dialogTitle'),
-        fileName: '${S.transitExportBasicFileName}.xlsx',
-        bytes: anyNamed('bytes'),
-      ));
+      verify(
+        picker.saveFile(
+          dialogTitle: anyNamed('dialogTitle'),
+          fileName: '${S.transitExportBasicFileName}.xlsx',
+          bytes: anyNamed('bytes'),
+        ),
+      );
 
       final excel = Excel.decodeBytes(XFile('$path/${S.transitExportBasicFileName}.xlsx').file.readAsBytesSync());
       expect(excel.sheets.keys.toList(), equals(FormattableModel.allL10nNames));
 
-      final header = findFieldFormatter(FormattableModel.quantities).getHeader().map((e) => e.toString()).join(',');
+      final header = findFieldFormatter(.quantities).getHeader().map((e) => e.toString()).join(',');
       expect(
-          excel[FormattableModel.quantities.l10nName]
-              .row(0)
-              .where((e) => e != null)
-              .map((cell) => cell!.value.toString())
-              .join(','),
-          header);
+        excel[FormattableModel.quantities.l10nName]
+            .row(0)
+            .where((e) => e != null)
+            .map((cell) => cell!.value.toString())
+            .join(','),
+        header,
+      );
       expect(
-          excel[FormattableModel.quantities.l10nName]
-              .row(1)
-              .where((e) => e != null)
-              .map((cell) => cell!.value.toString())
-              .join(','),
-          'q1,1');
+        excel[FormattableModel.quantities.l10nName]
+            .row(1)
+            .where((e) => e != null)
+            .map((cell) => cell!.value.toString())
+            .join(','),
+        'q1,1',
+      );
     });
 
     setUpAll(() {

@@ -8,12 +8,7 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
 
 class ExportOrderHeader extends TransitOrderHeader {
-  const ExportOrderHeader({
-    super.key,
-    required super.stateNotifier,
-    required super.ranger,
-    required super.settings,
-  });
+  const ExportOrderHeader({super.key, required super.stateNotifier, required super.ranger, required super.settings});
 
   @override
   String get title => S.transitExportOrderTitleExcel;
@@ -37,10 +32,7 @@ class ExportOrderHeader extends TransitOrderHeader {
 }
 
 class ExportOrderView extends TransitOrderList {
-  const ExportOrderView({
-    super.key,
-    required super.ranger,
-  });
+  const ExportOrderView({super.key, required super.ranger});
 
   @override
   String get helpMessage => S.transitExportOrderSubtitleExcel;

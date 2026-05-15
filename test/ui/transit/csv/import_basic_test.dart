@@ -22,11 +22,7 @@ void main() {
   group('Transit - CSV - Import Basic', () {
     Widget buildApp() {
       return const MaterialApp(
-        home: TransitStation(
-          exporter: PlainTextExporter(),
-          catalog: TransitCatalog.importModel,
-          method: TransitMethod.csv,
-        ),
+        home: TransitStation(exporter: PlainTextExporter(), catalog: .importModel, method: .csv),
       );
     }
 
@@ -56,14 +52,16 @@ void main() {
     });
 
     testWidgets('import all', (tester) async {
-      final qh = getAllFormattedFieldHeaders(FormattableModel.quantities).first.join(',');
-      final data = getAllFormattedFieldHeaders(null).map((h) {
-        final header = h.join(',');
-        if (header == qh) {
-          return '$header\nq1,1';
-        }
-        return header;
-      }).join('\n\n');
+      final qh = getAllFormattedFieldHeaders(.quantities).first.join(',');
+      final data = getAllFormattedFieldHeaders(null)
+          .map((h) {
+            final header = h.join(',');
+            if (header == qh) {
+              return '$header\nq1,1';
+            }
+            return header;
+          })
+          .join('\n\n');
 
       final picker = mockFilePicker();
       mockFilePick(picker, bytes: utf8.encode(data));

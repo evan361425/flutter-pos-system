@@ -24,19 +24,21 @@ class ReplenishmentPreviewPage extends StatelessWidget {
         },
         child: Text(S.stockReplenishmentApplyConfirmButton),
       ),
-      content: Column(children: [
-        CardInfoText(child: Text(S.stockReplenishmentApplyConfirmHint)),
-        DataTable(columns: [
-          DataColumn(label: Text(S.stockReplenishmentApplyConfirmColumn('name'))),
-          DataColumn(numeric: true, label: Text(S.stockReplenishmentApplyConfirmColumn('amount')))
-        ], rows: <DataRow>[
-          for (final entry in item.ingredientData.entries)
-            DataRow(cells: [
-              DataCell(Text(entry.key.name)),
-              DataCell(Text(entry.value.toString())),
-            ]),
-        ]),
-      ]),
+      content: Column(
+        children: [
+          CardInfoText(child: Text(S.stockReplenishmentApplyConfirmHint)),
+          DataTable(
+            columns: [
+              DataColumn(label: Text(S.stockReplenishmentApplyConfirmColumn('name'))),
+              DataColumn(numeric: true, label: Text(S.stockReplenishmentApplyConfirmColumn('amount'))),
+            ],
+            rows: <DataRow>[
+              for (final entry in item.ingredientData.entries)
+                DataRow(cells: [DataCell(Text(entry.key.name)), DataCell(Text(entry.value.toString()))]),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

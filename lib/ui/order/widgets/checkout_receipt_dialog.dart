@@ -11,10 +11,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
 
   final List<int> widths;
 
-  const CheckoutReceiptDialog._({
-    required this.order,
-    required this.widths,
-  });
+  const CheckoutReceiptDialog._({required this.order, required this.widths});
 
   /// Show the dialog and return the image list.
   ///
@@ -50,32 +47,24 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      contentPadding: const EdgeInsets.all(0),
-      content: Stack(alignment: Alignment.center, children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 24.0,
-            top: 16,
-            right: 24.0,
-            bottom: 24.0,
+      contentPadding: const .all(0),
+      content: Stack(
+        alignment: Alignment.center,
+        children: [
+          Padding(
+            padding: const .only(left: 24.0, top: 16, right: 24.0, bottom: 24.0),
+            child: PrinterReceiptView(controller: controller, order: widget.order),
           ),
-          child: PrinterReceiptView(
-            controller: controller,
-            order: widget.order,
-          ),
-        ),
-        Positioned.fill(
-          child: AbsorbPointer(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.black.withAlpha(89),
-                borderRadius: BorderRadius.circular(28),
+          Positioned.fill(
+            child: AbsorbPointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: Colors.black.withAlpha(89), borderRadius: .circular(28)),
+                child: const Center(child: CircularProgressIndicator.adaptive()),
               ),
-              child: const Center(child: CircularProgressIndicator.adaptive()),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 

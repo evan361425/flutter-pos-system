@@ -43,19 +43,19 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
       id: object.id,
       name: object.name ?? 'chart',
       index: object.index ?? 0,
-      type: object.type ?? AnalysisChartType.cartesian,
+      type: object.type ?? .cartesian,
       ignoreEmpty: object.ignoreEmpty ?? false,
-      target: object.target ?? OrderMetricTarget.order,
+      target: object.target ?? .order,
       metrics: object.metrics ?? const [OrderMetricType.revenue],
       targetItems: object.targetItems ?? const <String>[],
     );
   }
 
   @override
-  Stores get storageStore => Stores.analysis;
+  Stores get storageStore => .analysis;
 
   @override
-  Analysis get repository => Analysis.instance;
+  Analysis get repository => .instance;
 
   @override
   ChartObject toObject() {
@@ -77,7 +77,7 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
 
   /// Get the name and unit of each metric in the chart.
   Iterable<MapEntry<String, OrderMetricUnit>> keyUnits() {
-    if (target == OrderMetricTarget.order) {
+    if (target == .order) {
       return metrics.map((e) => MapEntry(e.name, e.unit));
     }
 
@@ -90,13 +90,13 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
 
   Future<List> load(DateTimeRange range) {
     return switch (type) {
-      AnalysisChartType.cartesian => _loadCartesian(range),
-      AnalysisChartType.circular => _loadCircular(range),
+      .cartesian => _loadCartesian(range),
+      .circular => _loadCircular(range),
     };
   }
 
   Future<List<OrderSummary>> _loadCartesian(DateTimeRange range) {
-    return target == OrderMetricTarget.order
+    return target == .order
         ? Seller.instance.getMetricsInPeriod(
             range.start,
             range.end,

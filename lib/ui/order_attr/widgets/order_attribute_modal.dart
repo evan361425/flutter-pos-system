@@ -31,29 +31,31 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
   @override
   List<Widget> buildFormFields() {
     return [
-      p(TextFormField(
-        key: const Key('order_attribute.name'),
-        controller: _nameController,
-        textInputAction: TextInputAction.send,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          labelText: S.orderAttributeNameLabel,
-          hintText: widget.attribute?.name ?? S.orderAttributeNameHint,
-          filled: false,
+      p(
+        TextFormField(
+          key: const Key('order_attribute.name'),
+          controller: _nameController,
+          textInputAction: .send,
+          textCapitalization: .words,
+          decoration: InputDecoration(
+            labelText: S.orderAttributeNameLabel,
+            hintText: widget.attribute?.name ?? S.orderAttributeNameHint,
+            filled: false,
+          ),
+          onFieldSubmitted: handleFieldSubmit,
+          maxLength: 30,
+          validator: Validator.textLimit(
+            S.orderAttributeNameLabel,
+            30,
+            focusNode: _nameFocusNode,
+            validator: (name) {
+              return widget.attribute?.name != name && OrderAttributes.instance.hasName(name)
+                  ? S.orderAttributeNameErrorRepeat
+                  : null;
+            },
+          ),
         ),
-        onFieldSubmitted: handleFieldSubmit,
-        maxLength: 30,
-        validator: Validator.textLimit(
-          S.orderAttributeNameLabel,
-          30,
-          focusNode: _nameFocusNode,
-          validator: (name) {
-            return widget.attribute?.name != name && OrderAttributes.instance.hasName(name)
-                ? S.orderAttributeNameErrorRepeat
-                : null;
-          },
-        ),
-      )),
+      ),
       TextDivider(label: S.orderAttributeModeDivider),
       ChoiceChipWithHelp(
         key: modeSelector,
@@ -82,15 +84,13 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
   Future<void> updateItem() async {
     final object = OrderAttributeObject(
       name: _nameController.text,
-      mode: modeSelector.currentState?.selected ?? OrderAttributeMode.statOnly,
+      mode: modeSelector.currentState?.selected ?? .statOnly,
     );
 
     if (widget.isNew) {
-      await OrderAttributes.instance.addItem(OrderAttribute(
-        name: object.name!,
-        mode: object.mode!,
-        index: OrderAttributes.instance.newIndex,
-      ));
+      await OrderAttributes.instance.addItem(
+        OrderAttribute(name: object.name!, mode: object.mode!, index: OrderAttributes.instance.newIndex),
+      );
     } else {
       await widget.attribute!.update(object);
     }

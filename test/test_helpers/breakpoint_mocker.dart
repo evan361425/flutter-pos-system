@@ -18,7 +18,7 @@ enum Device {
   final double height;
 
   const Device(double width, double height)
-      // devicePixelRatio = 3.0
-      : width = width * 3.0,
-        height = height * 3.0;
+    // devicePixelRatio = 3.0
+    : width = width * 3.0,
+      height = height * 3.0;
 }

@@ -41,7 +41,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final local = MaterialLocalizations.of(context);
+    final MaterialLocalizations local = .of(context);
     final textField = TextFormField(
       key: const Key('text_dialog.text'),
       controller: textController,
@@ -53,24 +53,20 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       validator: widget.validator,
       decoration: widget.decoration,
       maxLength: widget.maxLength,
-      textInputAction: TextInputAction.done,
+      textInputAction: .done,
     );
 
     return AlertDialog(
       title: widget.title,
       scrollable: true,
-      content: Column(children: [
-        if (widget.header != null) widget.header!,
-        Form(
-          key: form,
-          child: textField,
-        )
-      ]),
+      content: Column(
+        children: [
+          if (widget.header != null) widget.header!,
+          Form(key: form, child: textField),
+        ],
+      ),
       actions: [
-        PopButton(
-          key: const Key('text_dialog.cancel'),
-          title: local.cancelButtonLabel,
-        ),
+        PopButton(key: const Key('text_dialog.cancel'), title: local.cancelButtonLabel),
         FilledButton(
           key: const Key('text_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),
@@ -91,10 +87,7 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
     super.initState();
     textController = TextEditingController(text: widget.initialValue);
     if (widget.selectAll && widget.initialValue != null) {
-      textController.selection = TextSelection(
-        baseOffset: 0,
-        extentOffset: widget.initialValue!.length,
-      );
+      textController.selection = TextSelection(baseOffset: 0, extentOffset: widget.initialValue!.length);
     }
   }
 }

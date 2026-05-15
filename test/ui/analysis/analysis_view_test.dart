@@ -25,63 +25,70 @@ void main() {
     Widget buildApp({themeMode = ThemeMode.light}) {
       when(cache.get(any)).thenReturn(null);
       // disable tutorial
-      when(cache.get(
-        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-      )).thenReturn(true);
+      when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
       return ChangeNotifierProvider.value(
         value: Seller.instance,
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) {
-                return const Scaffold(body: AnalysisView());
-              },
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) {
+                  return const Scaffold(body: AnalysisView());
+                },
+              ),
+              ...Routes.getDesiredRoute(0).routes,
+            ],
+          ),
         ),
       );
     }
 
     void mockGetChart() {
-      when(database.query(
-        any,
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        columns: argThat(contains('SUM(price) revenue'), named: 'columns'),
-        orderBy: anyNamed('orderBy'),
-        escapeTable: anyNamed('escapeTable'),
-        groupBy: anyNamed('groupBy'),
-        limit: anyNamed('limit'),
-        offset: anyNamed('offset'),
-      )).thenAnswer((_) => Future.value([{}]));
+      when(
+        database.query(
+          any,
+          where: anyNamed('where'),
+          whereArgs: anyNamed('whereArgs'),
+          columns: argThat(contains('SUM(price) revenue'), named: 'columns'),
+          orderBy: anyNamed('orderBy'),
+          escapeTable: anyNamed('escapeTable'),
+          groupBy: anyNamed('groupBy'),
+          limit: anyNamed('limit'),
+          offset: anyNamed('offset'),
+        ),
+      ).thenAnswer((_) => Future.value([{}]));
     }
 
     void mockGetOrder() {
-      when(database.query(
-        Seller.orderTable,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        orderBy: anyNamed('orderBy'),
-        limit: argThat(equals(10), named: 'limit'),
-        offset: anyNamed('offset'),
-        join: anyNamed('join'),
-        groupBy: anyNamed('groupBy'),
-      )).thenAnswer((_) => Future.value([]));
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        groupBy: argThat(equals('day'), named: 'groupBy'),
-        orderBy: anyNamed('orderBy'),
-        whereArgs: anyNamed('whereArgs'),
-        escapeTable: false,
-      )).thenAnswer((_) => Future.value([]));
+      when(
+        database.query(
+          Seller.orderTable,
+          columns: anyNamed('columns'),
+          where: anyNamed('where'),
+          whereArgs: anyNamed('whereArgs'),
+          orderBy: anyNamed('orderBy'),
+          limit: argThat(equals(10), named: 'limit'),
+          offset: anyNamed('offset'),
+          join: anyNamed('join'),
+          groupBy: anyNamed('groupBy'),
+        ),
+      ).thenAnswer((_) => Future.value([]));
+      when(
+        database.query(
+          any,
+          columns: anyNamed('columns'),
+          groupBy: argThat(equals('day'), named: 'groupBy'),
+          orderBy: anyNamed('orderBy'),
+          whereArgs: anyNamed('whereArgs'),
+          escapeTable: false,
+        ),
+      ).thenAnswer((_) => Future.value([]));
     }
 
     testWidgets('navigate to history', (tester) async {
-      deviceAs(Device.compact, tester);
+      deviceAs(.compact, tester);
 
       mockGetChart();
       mockGetOrder();
@@ -103,9 +110,9 @@ void main() {
           id: 'origin',
           name: 'origin',
           index: 1,
-          type: AnalysisChartType.cartesian,
+          type: .cartesian,
           ignoreEmpty: false,
-          target: OrderMetricTarget.order,
+          target: .order,
           metrics: const [OrderMetricType.revenue],
           targetItems: [],
         ),
@@ -128,11 +135,13 @@ void main() {
       await tester.pumpAndSettle();
 
       final chart = Analysis.instance.items.last;
-      verify(storage.add(
-        any,
-        argThat(equals(chart.id)),
-        argThat(predicate((data) => data is Map && data['name'] == 'test')),
-      ));
+      verify(
+        storage.add(
+          any,
+          argThat(equals(chart.id)),
+          argThat(predicate((data) => data is Map && data['name'] == 'test')),
+        ),
+      );
 
       expect(find.text('test'), findsOneWidget);
       expect(find.byKey(Key('chart.${chart.id}.more')), findsOneWidget);
@@ -157,28 +166,19 @@ void main() {
       await tester.pumpAndSettle();
 
       // slide date range
-      DateTimeRange range = Util.getDateRange(
-        now: DateTime.now().subtract(const Duration(days: 7)),
-        days: 7,
-      );
+      DateTimeRange range = Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 7)), days: 7);
       expect(find.text(range.format('en')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_back_ios_new_outlined));
       await tester.pump(const Duration(milliseconds: 50));
 
-      range = Util.getDateRange(
-        now: DateTime.now().subtract(const Duration(days: 14)),
-        days: 7,
-      );
+      range = Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 14)), days: 7);
       expect(find.text(range.format('en')), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_forward_ios_outlined));
       await tester.pump(const Duration(milliseconds: 50));
 
-      range = Util.getDateRange(
-        now: DateTime.now().subtract(const Duration(days: 7)),
-        days: 7,
-      );
+      range = Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 7)), days: 7);
       expect(find.text(range.format('en')), findsOneWidget);
 
       // select date range
@@ -194,7 +194,7 @@ void main() {
       initializeDatabase();
       initializeStorage();
       initializeTranslator();
-      VisibilityDetectorController.instance.updateInterval = Duration.zero;
+      VisibilityDetectorController.instance.updateInterval = .zero;
     });
   });
 }

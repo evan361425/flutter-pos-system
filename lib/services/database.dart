@@ -11,23 +11,24 @@ import 'package:sqflite/sqlite_api.dart';
 // ignore: depend_on_referenced_packages
 import 'package:sqflite_common/sqflite_logger.dart';
 
-typedef DbOpener = Future<sqflite.Database> Function(
-  String path, {
-  int? version,
-  FutureOr<void> Function(sqflite.Database)? onConfigure,
-  FutureOr<void> Function(sqflite.Database, int)? onCreate,
-  FutureOr<void> Function(sqflite.Database, int, int)? onUpgrade,
-  FutureOr<void> Function(sqflite.Database, int, int)? onDowngrade,
-  FutureOr<void> Function(sqflite.Database)? onOpen,
-  bool readOnly,
-  bool singleInstance,
-});
+typedef DbOpener =
+    Future<sqflite.Database> Function(
+      String path, {
+      int? version,
+      FutureOr<void> Function(sqflite.Database)? onConfigure,
+      FutureOr<void> Function(sqflite.Database, int)? onCreate,
+      FutureOr<void> Function(sqflite.Database, int, int)? onUpgrade,
+      FutureOr<void> Function(sqflite.Database, int, int)? onDowngrade,
+      FutureOr<void> Function(sqflite.Database)? onOpen,
+      bool readOnly,
+      bool singleInstance,
+    });
 
 class Database {
   static Database instance = Database();
 
   /// delimiter: https://stackoverflow.com/a/29811033/12089368
-  static final delimiter = String.fromCharCode(29);
+  static final String delimiter = .fromCharCode(29);
 
   /// delimiter for blob.
   static const queryDelimiter = 'char(29)';
@@ -55,10 +56,7 @@ class Database {
     return batch.commit();
   }
 
-  Future<void> reset(
-    String? table, [
-    Future<void> Function(String path) del = sqflite.deleteDatabase,
-  ]) async {
+  Future<void> reset(String? table, [Future<void> Function(String path) del = sqflite.deleteDatabase]) async {
     if (table == null) {
       return del(await getRootPath());
     }
@@ -66,45 +64,24 @@ class Database {
     await db.delete(table);
   }
 
-  Future<int?> count(
-    String table, {
-    String? where,
-    List<Object>? whereArgs,
-  }) async {
-    final result = await db.query(
-      table,
-      columns: ['COUNT(*)'],
-      where: where,
-      whereArgs: whereArgs,
-    );
+  Future<int?> count(String table, {String? where, List<Object>? whereArgs}) async {
+    final result = await db.query(table, columns: ['COUNT(*)'], where: where, whereArgs: whereArgs);
 
     return sqflite.Sqflite.firstIntValue(result);
   }
 
-  Future<void> delete(
-    String table,
-    Object? id, {
-    String keyName = 'id',
-  }) {
+  Future<void> delete(String table, Object? id, {String keyName = 'id'}) {
     return db.delete(table, where: '$keyName = ?', whereArgs: [id]);
   }
 
-  Future<void> initialize({
-    String? path,
-    sqflite.DatabaseFactory? factory,
-    bool logWhenQuery = false,
-  }) async {
+  Future<void> initialize({String? path, sqflite.DatabaseFactory? factory, bool logWhenQuery = false}) async {
     if (_initialized) return;
     _initialized = true;
 
     factory ??= sqflite.databaseFactory;
     if (logWhenQuery) {
-      factory = SqfliteDatabaseFactoryLogger(
-        factory,
-        options: SqfliteLoggerOptions(
-          type: SqfliteDatabaseFactoryLoggerType.all,
-        ),
-      );
+      // ignore: experimental_member_use
+      factory = SqfliteDatabaseFactoryLogger(factory, options: SqfliteLoggerOptions(type: .all));
     }
 
     final databasePath = path ?? await getRootPath();
@@ -161,27 +138,17 @@ class Database {
 
     return db
         .rawQuery(
-      'SELECT $selectQuery FROM $table $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
-      whereArgs,
-    )
+          'SELECT $selectQuery FROM $table $joinQuery $whereQuery $groupByQuery $orderByQuery $limitQuery',
+          whereArgs,
+        )
         .catchError((e, stack) {
-      Log.err(e, 'db_query_error', stack);
-      return <Map<String, Object?>>[];
-    });
+          Log.err(e, 'db_query_error', stack);
+          return <Map<String, Object?>>[];
+        });
   }
 
-  Future<int> update(
-    String table,
-    Object? key,
-    Map<String, Object?> data, {
-    keyName = 'id',
-  }) {
-    return db.update(
-      table,
-      data,
-      where: '$keyName = ?',
-      whereArgs: [key],
-    );
+  Future<int> update(String table, Object? key, Map<String, Object?> data, {keyName = 'id'}) {
+    return db.update(table, data, where: '$keyName = ?', whereArgs: [key]);
   }
 
   static Future<void> execMigration(sqflite.Database db, int version) async {

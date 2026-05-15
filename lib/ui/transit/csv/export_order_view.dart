@@ -25,9 +25,11 @@ class ExportOrderHeader extends TransitOrderHeader {
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     final headers = FormattableOrder.values.map((e) => e.formatHeader()).toList();
     final data = FormattableOrder.values
-        .map((formatter) => orders.expand((o) {
-              return formatter.formatRows(o).map((r) => r.map((v) => v.toString()));
-            }))
+        .map(
+          (formatter) => orders.expand((o) {
+            return formatter.formatRows(o).map((r) => r.map((v) => v.toString()));
+          }),
+        )
         .toList();
 
     final ok = await exporter.export(name: S.transitExportOrderFileName, data: data, headers: headers);
@@ -38,10 +40,7 @@ class ExportOrderHeader extends TransitOrderHeader {
 }
 
 class ExportOrderView extends TransitOrderList {
-  const ExportOrderView({
-    super.key,
-    required super.ranger,
-  });
+  const ExportOrderView({super.key, required super.ranger});
 
   @override
   String get helpMessage => S.transitExportOrderSubtitleCsv;

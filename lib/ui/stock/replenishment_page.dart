@@ -26,35 +26,31 @@ class ReplenishmentPage extends StatelessWidget {
           handleCreate() => context.pushNamed(Routes.stockReplCreate);
           if (Replenisher.instance.isEmpty) {
             return Center(
-              child: EmptyBody(
-                onPressed: handleCreate,
-                content: S.stockReplenishmentEmptyBody,
-              ),
+              child: EmptyBody(onPressed: handleCreate, content: S.stockReplenishmentEmptyBody),
             );
           }
 
           return buildList(
             (Replenishment a, ReplenishActions b) => handleActions(context, a, b),
-            Row(children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  key: const Key('replenisher.add'),
-                  onPressed: handleCreate,
-                  label: Text(S.stockReplenishmentTitleCreate),
-                  icon: const Icon(KIcons.add),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    key: const Key('replenisher.add'),
+                    onPressed: handleCreate,
+                    label: Text(S.stockReplenishmentTitleCreate),
+                    icon: const Icon(KIcons.add),
+                  ),
                 ),
-              ),
-            ]),
+              ],
+            ),
           );
         },
       ),
     );
   }
 
-  Widget buildList(
-    void Function(Replenishment a, ReplenishActions b) actionHandler,
-    Widget leading,
-  ) {
+  Widget buildList(void Function(Replenishment a, ReplenishActions b) actionHandler, Widget leading) {
     return SlidableItemList<Replenishment, ReplenishActions>(
       leading: leading,
       delegate: SlidableItemDelegate(
@@ -76,21 +72,15 @@ class ReplenishmentPage extends StatelessWidget {
           ),
         ],
         handleAction: actionHandler,
-        tileBuilder: (item, index, actorBuilder) => _Tile(
-          item: item,
-          actorBuilder: actorBuilder,
-          onTap: () => actionHandler(item, ReplenishActions.preview),
-        ),
+        tileBuilder: (item, index, actorBuilder) =>
+            _Tile(item: item, actorBuilder: actorBuilder, onTap: () => actionHandler(item, .preview)),
       ),
     );
   }
 
   void handleActions(BuildContext context, Replenishment item, ReplenishActions action) async {
-    if (action == ReplenishActions.preview) {
-      final confirmed = await context.pushNamed<bool>(
-        Routes.stockReplPreview,
-        pathParameters: {'id': item.id},
-      );
+    if (action == .preview) {
+      final confirmed = await context.pushNamed<bool>(Routes.stockReplPreview, pathParameters: {'id': item.id});
 
       if (confirmed == true && context.mounted) {
         PopButton.safePop(context, value: true);
@@ -104,11 +94,7 @@ class _Tile extends StatelessWidget {
   final ActorBuilder actorBuilder;
   final VoidCallback onTap;
 
-  const _Tile({
-    required this.item,
-    required this.actorBuilder,
-    required this.onTap,
-  });
+  const _Tile({required this.item, required this.actorBuilder, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +110,4 @@ class _Tile extends StatelessWidget {
   }
 }
 
-enum ReplenishActions {
-  delete,
-  preview,
-}
+enum ReplenishActions { delete, preview }

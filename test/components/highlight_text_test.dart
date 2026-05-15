@@ -8,10 +8,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: HighlightText(
-              text: 'Hello World',
-              pattern: '',
-            ),
+            body: HighlightText(text: 'Hello World', pattern: ''),
           ),
         ),
       );
@@ -23,10 +20,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: HighlightText(
-              text: 'Hello World',
-              pattern: 'Hello',
-            ),
+            body: HighlightText(text: 'Hello World', pattern: 'Hello'),
           ),
         ),
       );
@@ -45,10 +39,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: HighlightText(
-              text: 'Hello Beautiful World',
-              pattern: 'Hello World',
-            ),
+            body: HighlightText(text: 'Hello Beautiful World', pattern: 'Hello World'),
           ),
         ),
       );
@@ -67,10 +58,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: HighlightText(
-              text: 'Hello World',
-              pattern: 'hello',
-            ),
+            body: HighlightText(text: 'Hello World', pattern: 'hello'),
           ),
         ),
       );
@@ -88,10 +76,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: HighlightText(
-              text: 'banana',
-              pattern: 'an ana',
-            ),
+            body: HighlightText(text: 'banana', pattern: 'an ana'),
           ),
         ),
       );

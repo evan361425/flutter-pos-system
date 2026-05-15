@@ -78,32 +78,19 @@ void main() {
           ),
         },
       );
-      final ingredient3 = ProductIngredient(
-        id: 'pi-3',
-        ingredient: Stock.instance.getItem('i-3'),
-        amount: 1,
+      final ingredient3 = ProductIngredient(id: 'pi-3', ingredient: Stock.instance.getItem('i-3'), amount: 1);
+      final product1 = Product(
+        id: 'p-1',
+        name: 'p-1',
+        price: 17,
+        ingredients: {'pi-1': ingredient1..prepareItem(), 'pi-2': ingredient2..prepareItem()},
       );
-      final product1 = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
-        'pi-1': ingredient1..prepareItem(),
-        'pi-2': ingredient2..prepareItem(),
-      });
       final product2 = Product(id: 'p-2', name: 'p-2', price: 11);
-      final product3 = Product(id: 'p-3', name: 'p-3', price: 0, ingredients: {
-        'pi-3': ingredient3,
-      });
+      final product3 = Product(id: 'p-3', name: 'p-3', price: 0, ingredients: {'pi-3': ingredient3});
       Menu().replaceItems({
-        'c-1': Catalog(
-          id: 'c-1',
-          name: 'c-1',
-          index: 1,
-          products: {'p-1': product1..prepareItem(), 'p-3': product3},
-        )..prepareItem(),
-        'c-2': Catalog(
-          name: 'c-2',
-          id: 'c-2',
-          index: 2,
-          products: {'p-2': product2},
-        )..prepareItem(),
+        'c-1': Catalog(id: 'c-1', name: 'c-1', index: 1, products: {'p-1': product1..prepareItem(), 'p-3': product3})
+          ..prepareItem(),
+        'c-2': Catalog(name: 'c-2', id: 'c-2', index: 2, products: {'p-2': product2})..prepareItem(),
       });
 
       // setup model
@@ -118,40 +105,41 @@ void main() {
           ChangeNotifierProvider.value(value: Cart.instance),
         ],
         child: MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const OrderPage(),
-              routes: [
-                GoRoute(
-                  name: Routes.orderCheckout,
-                  path: 'test',
-                  builder: (context, __) {
-                    return Scaffold(
-                      body: TextButton(
-                        onPressed: () => context.pop(popResult?.call()),
-                        child: const Text('hi', key: Key('test')),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            GoRoute(
-              path: baseRoute.path,
-              redirect: baseRoute.redirect,
-              routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.order).toList(),
-            ),
-          ]),
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const OrderPage(),
+                routes: [
+                  GoRoute(
+                    name: Routes.orderCheckout,
+                    path: 'test',
+                    builder: (context, __) {
+                      return Scaffold(
+                        body: TextButton(
+                          onPressed: () => context.pop(popResult?.call()),
+                          child: const Text('hi', key: Key('test')),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: baseRoute.path,
+                redirect: baseRoute.redirect,
+                routes: baseRoute.routes.where((e) => e is! GoRoute || e.name != Routes.order).toList(),
+              ),
+            ],
+          ),
         ),
       );
     }
 
     group('Draggable Sheet', () {
       testWidgets('Selecting change state', (tester) async {
-        await tester.pumpWidget(buildApp(
-          popResult: () => CheckoutStatus.nothingHappened,
-        ));
+        await tester.pumpWidget(buildApp(popResult: () => CheckoutStatus.nothingHappened));
 
         await tester.tap(find.byKey(const Key('order.product.p-1')));
         await tester.tap(find.byKey(const Key('order.catalog.c-2')));
@@ -165,16 +153,10 @@ void main() {
         await tester.tap(find.byKey(const Key('order.product.p-2')));
         await tester.pumpAndSettle();
         // swipe left and right
-        await tester.drag(
-          find.byKey(const Key('order.product.p-2')),
-          const Offset(500.0, 0.0),
-        );
+        await tester.drag(find.byKey(const Key('order.product.p-2')), const Offset(500.0, 0.0));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('order.product.p-1')), findsOneWidget);
-        await tester.drag(
-          find.byKey(const Key('order.product.p-1')),
-          const Offset(-500.0, 0.0),
-        );
+        await tester.drag(find.byKey(const Key('order.product.p-1')), const Offset(-500.0, 0.0));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('order.product.p-2')), findsOneWidget);
 
@@ -191,14 +173,7 @@ void main() {
           expect(w.data, equals(price.toString()));
         }
 
-        verifyProductList(
-          int index, {
-          String? title,
-          String? subtitle,
-          bool? selected,
-          int? count,
-          num? price,
-        }) {
+        verifyProductList(int index, {String? title, String? subtitle, bool? selected, int? count, num? price}) {
           final key = 'cart.product.$index';
           final w = tester.widget<ListTile>(find.byKey(Key(key)));
           if (title != null) {
@@ -216,8 +191,10 @@ void main() {
             expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
           }
           if (price != null) {
-            expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
-                equals(S.orderCartProductPrice(price.toCurrency())));
+            expect(
+              tester.widget<Text>(find.byKey(Key('$key.price'))).data,
+              equals(S.orderCartProductPrice(price.toCurrency())),
+            );
           }
         }
 
@@ -247,10 +224,7 @@ void main() {
         expect(find.byKey(const Key('order.ingredient.noNeedIngredient')), findsOneWidget);
 
         // full screen the panel
-        await tester.dragFrom(
-          tester.getCenter(find.byKey(const Key('cart.product_list'))),
-          const Offset(0, -200),
-        );
+        await tester.dragFrom(tester.getCenter(find.byKey(const Key('cart.product_list'))), const Offset(0, -200));
         await tester.pumpAndSettle();
 
         // select product
@@ -310,10 +284,7 @@ void main() {
         verifyProductList(1, selected: true);
 
         // close panel and verify snapshot state
-        await tester.drag(
-          find.byKey(const Key('order.ds')),
-          const Offset(0, 300),
-        );
+        await tester.drag(find.byKey(const Key('order.ds')), const Offset(0, 300));
         await tester.pumpAndSettle();
         final bg = tester.getTopLeft(find.byKey(const Key('order.bg')));
         await tester.tapAt(bg.translate(1, 1));
@@ -335,7 +306,7 @@ void main() {
     group('All in one page', () {
       testWidgets('scroll to bottom', (tester) async {
         OrderAwakeningSetting.instance.value = false;
-        deviceAs(Device.landscape, tester);
+        deviceAs(.landscape, tester);
 
         try {
           prepareData();
@@ -377,7 +348,7 @@ void main() {
           expect(scrollController.position.maxScrollExtent, isNonZero);
 
           // setup portrait env
-          deviceAs(Device.mobile, tester);
+          deviceAs(.mobile, tester);
 
           // change the view should not happen any error
           await tester.pumpAndSettle();
@@ -388,26 +359,22 @@ void main() {
     });
 
     testWidgets('Cart actions', (tester) async {
-      deviceAs(Device.mobile, tester);
-      Cart.instance.replaceAll(products: [
-        CartProduct(Menu.instance.getProduct('p-1')!, count: 1),
-        CartProduct(Menu.instance.getProduct('p-1')!, count: 8),
-        CartProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
-      ]);
+      deviceAs(.mobile, tester);
+      Cart.instance.replaceAll(
+        products: [
+          CartProduct(Menu.instance.getProduct('p-1')!, count: 1),
+          CartProduct(Menu.instance.getProduct('p-1')!, count: 8),
+          CartProduct(Menu.instance.getProduct('p-2')!, isSelected: true),
+        ],
+      );
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
-      await tester.drag(
-        find.byKey(const Key('order.ds')),
-        const Offset(0, -800),
-      );
+      await tester.drag(find.byKey(const Key('order.ds')), const Offset(0, -800));
       await tester.pumpAndSettle();
 
       // remove it
-      await tester.drag(
-        find.byKey(const Key('cart.product.0')),
-        const Offset(-1200, 0),
-      );
+      await tester.drag(find.byKey(const Key('cart.product.0')), const Offset(-1200, 0));
       await tester.pumpAndSettle();
 
       // after remove, selection should not be changed.
@@ -440,8 +407,10 @@ void main() {
           expect(tester.widget<Text>(find.byKey(Key('$key.count'))).data, equals(count.toString()));
         }
         if (price != null) {
-          expect(tester.widget<Text>(find.byKey(Key('$key.price'))).data,
-              equals(S.orderCartProductPrice(price.toCurrency())));
+          expect(
+            tester.widget<Text>(find.byKey(Key('$key.price'))).data,
+            equals(S.orderCartProductPrice(price.toCurrency())),
+          );
         }
       }
 
@@ -483,7 +452,7 @@ void main() {
     });
 
     testWidgets('Ingredient should selected by product', (tester) async {
-      deviceAs(Device.mobile, tester);
+      deviceAs(.mobile, tester);
       await tester.pumpWidget(buildApp());
 
       await tester.tap(find.byKey(const Key('order.product.p-1')));
@@ -510,10 +479,7 @@ void main() {
       OrderAttributes();
 
       await tester.pumpWidget(buildApp(popResult: () => status));
-      Future<void> tapWithCheck(
-        CheckoutStatus value, [
-        String? expectValue,
-      ]) async {
+      Future<void> tapWithCheck(CheckoutStatus value, [String? expectValue]) async {
         status = value;
         await tester.tap(find.byKey(const Key('order.checkout')));
         await tester.pumpAndSettle();
@@ -527,28 +493,22 @@ void main() {
       }
 
       // hide all
-      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.hideAll;
-      await tapWithCheck(CheckoutStatus.ok, S.actSuccess);
-      await tapWithCheck(CheckoutStatus.restore, S.actSuccess);
-      await tapWithCheck(CheckoutStatus.stash, S.actSuccess);
-      await tapWithCheck(
-        CheckoutStatus.fromCashier(CashierUpdateStatus.notEnough),
-        S.actSuccess,
-      );
-      await tapWithCheck(
-        CheckoutStatus.fromCashier(CashierUpdateStatus.usingSmall),
-        S.actSuccess,
-      );
-      await tapWithCheck(CheckoutStatus.nothingHappened);
+      CheckoutWarningSetting.instance.value = .hideAll;
+      await tapWithCheck(.ok, S.actSuccess);
+      await tapWithCheck(.restore, S.actSuccess);
+      await tapWithCheck(.stash, S.actSuccess);
+      await tapWithCheck(.fromCashier(.notEnough), S.actSuccess);
+      await tapWithCheck(.fromCashier(.usingSmall), S.actSuccess);
+      await tapWithCheck(.nothingHappened);
 
       // only not enough
-      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.onlyNotEnough;
-      await tapWithCheck(CheckoutStatus.cashierNotEnough, S.orderSnackbarCashierNotEnough);
-      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.actSuccess);
+      CheckoutWarningSetting.instance.value = .onlyNotEnough;
+      await tapWithCheck(.cashierNotEnough, S.orderSnackbarCashierNotEnough);
+      await tapWithCheck(.cashierUsingSmall, S.actSuccess);
 
       // show all
-      CheckoutWarningSetting.instance.value = CheckoutWarningTypes.showAll;
-      await tapWithCheck(CheckoutStatus.cashierUsingSmall, S.orderSnackbarCashierUsingSmallMoney);
+      CheckoutWarningSetting.instance.value = .showAll;
+      await tapWithCheck(.cashierUsingSmall, S.orderSnackbarCashierUsingSmallMoney);
     });
 
     setUp(() {
@@ -556,9 +516,7 @@ void main() {
       // disable any features
       when(cache.get(any)).thenReturn(null);
       // disable tutorial
-      when(cache.get(
-        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-      )).thenReturn(true);
+      when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
 
       prepareData();
       Cashier().setCurrent(null);

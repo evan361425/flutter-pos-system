@@ -24,15 +24,15 @@ void main() {
   group('Transit - CSV - Export Basic', () {
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const TransitStation(
-              catalog: TransitCatalog.exportModel,
-              method: TransitMethod.csv,
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const TransitStation(catalog: .exportModel, method: .csv),
             ),
-          ),
-        ]),
+          ],
+        ),
       );
     }
 
@@ -49,13 +49,15 @@ void main() {
       await tester.tap(find.byKey(const Key('transit.model_export')));
       await tester.pumpAndSettle();
 
-      final header1 = findFieldFormatter(FormattableModel.stock).getHeader().map((e) => e.toString()).join(',');
-      final header2 = findFieldFormatter(FormattableModel.quantities).getHeader().map((e) => e.toString()).join(',');
-      verify(picker.saveFile(
-        dialogTitle: anyNamed('dialogTitle'),
-        fileName: '${S.transitExportBasicFileName}.csv',
-        bytes: utf8.encode('$header1\ni1,0.0,100,,1.0\n\n$header2\nq1,1'),
-      ));
+      final header1 = findFieldFormatter(.stock).getHeader().map((e) => e.toString()).join(',');
+      final header2 = findFieldFormatter(.quantities).getHeader().map((e) => e.toString()).join(',');
+      verify(
+        picker.saveFile(
+          dialogTitle: anyNamed('dialogTitle'),
+          fileName: '${S.transitExportBasicFileName}.csv',
+          bytes: utf8.encode('$header1\ni1,0.0,100,,1.0\n\n$header2\nq1,1'),
+        ),
+      );
     });
 
     testWidgets('abort saving', (tester) async {

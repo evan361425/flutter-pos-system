@@ -7,10 +7,7 @@ class DraggableSheetView extends StatefulWidget {
   final Widget row1;
   final Widget row2;
   final Widget row3_1;
-  final Widget Function(
-    ScrollController scroll,
-    ValueNotifier<bool> scrollable,
-  ) row3_2Builder;
+  final Widget Function(ScrollController scroll, ValueNotifier<bool> scrollable) row3_2Builder;
   final Widget row3_3;
   final Widget row4;
   final ChangeNotifier? resetNotifier;
@@ -40,68 +37,64 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Positioned.fill(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ColoredBox(
-              color: Theme.of(context).colorScheme.surface,
-              child: widget.row1,
-            ),
-            Expanded(
-              key: const Key('order.bg'),
-              child: GestureDetector(
-                onTap: () => controller.reset(),
-                child: widget.row2,
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              ColoredBox(color: Theme.of(context).colorScheme.surface, child: widget.row1),
+              Expanded(
+                key: const Key('order.bg'),
+                child: GestureDetector(onTap: () => controller.reset(), child: widget.row2),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      Positioned.fill(
-        child: ScrollableDraggableSheet(
-          controller: controller,
-          indicator: const DraggableIndicator(key: Key('order.ds')),
-          onSnapIndexChanged: (index, scroll) {
-            if (index == 1 && Cart.instance.selectedIndex != -1) {
-              // if only one item can show, the selected item should be it.
-              scroll.jumpTo(Cart.instance.selectedIndex * itemHeight);
-            }
-          },
-          builder: (controller, scroll, scrollable) => [
-            FixedHeightClipper(
-              controller: controller,
-              height: snapshotHeight,
-              baselineSize: -2 * controller.snapSizes[0],
-              valueScalar: -1,
-              child: CartSnapshot(controller: controller),
-            ),
-            FixedHeightClipper(
-              controller: controller,
-              height: buttonHeight,
-              exposeFraction: 0.5,
-              baselineSize: controller.snapSizes[1],
-              child: widget.row3_1,
-            ),
-            widget.row3_2Builder(scroll, scrollable),
-            FixedHeightClipper(
-              controller: controller,
-              height: buttonHeight,
-              exposeFraction: 0.5,
-              baselineSize: controller.snapSizes[1],
-              child: widget.row3_3,
-            ),
-            FixedHeightClipper(
-              controller: controller,
-              height: stateSelectorHeight * 2,
-              baselineSize: controller.snapSizes[0],
-              child: widget.row4,
-            ),
-          ],
+        Positioned.fill(
+          child: ScrollableDraggableSheet(
+            controller: controller,
+            indicator: const DraggableIndicator(key: Key('order.ds')),
+            onSnapIndexChanged: (index, scroll) {
+              if (index == 1 && Cart.instance.selectedIndex != -1) {
+                // if only one item can show, the selected item should be it.
+                scroll.jumpTo(Cart.instance.selectedIndex * itemHeight);
+              }
+            },
+            builder: (controller, scroll, scrollable) => [
+              FixedHeightClipper(
+                controller: controller,
+                height: snapshotHeight,
+                baselineSize: -2 * controller.snapSizes[0],
+                valueScalar: -1,
+                child: CartSnapshot(controller: controller),
+              ),
+              FixedHeightClipper(
+                controller: controller,
+                height: buttonHeight,
+                exposeFraction: 0.5,
+                baselineSize: controller.snapSizes[1],
+                child: widget.row3_1,
+              ),
+              widget.row3_2Builder(scroll, scrollable),
+              FixedHeightClipper(
+                controller: controller,
+                height: buttonHeight,
+                exposeFraction: 0.5,
+                baselineSize: controller.snapSizes[1],
+                child: widget.row3_3,
+              ),
+              FixedHeightClipper(
+                controller: controller,
+                height: stateSelectorHeight * 2,
+                baselineSize: controller.snapSizes[0],
+                child: widget.row4,
+              ),
+            ],
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   @override
@@ -109,11 +102,7 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
     super.initState();
 
     const base = stateSelectorHeight * 2 + itemHeight;
-    controller = ScrollableDraggableController(const [
-      snapshotHeight,
-      base,
-      1.0,
-    ]);
+    controller = ScrollableDraggableController(const [snapshotHeight, base, 1.0]);
 
     Cart.instance.addListener(_showStateSelectorIfStartOrder);
     widget.resetNotifier?.addListener(_reset);

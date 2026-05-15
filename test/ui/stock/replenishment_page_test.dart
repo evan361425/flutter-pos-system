@@ -23,30 +23,24 @@ void main() {
           ChangeNotifierProvider<Replenisher>.value(value: replenisher),
         ],
         builder: (_, __) => MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const ReplenishmentPage(),
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(path: '/', builder: (_, __) => const ReplenishmentPage()),
+              ...Routes.getDesiredRoute(0).routes,
+            ],
+          ),
         ),
       );
     }
 
     testWidgets('Edit replenishment', (tester) async {
-      final replenishment = Replenishment(id: 'r-1', name: 'r-1', data: {
-        'i-1': 1,
-        'i-2': 2,
-      });
+      final replenishment = Replenishment(id: 'r-1', name: 'r-1', data: {'i-1': 1, 'i-2': 2});
       final ing1 = Ingredient(id: 'i-1', name: 'i-1');
       final ing2 = Ingredient(id: 'i-2', name: 'i-2');
       final stock = Stock()..replaceItems({'i-1': ing1, 'i-2': ing2});
       final replenisher = Replenisher()
-        ..replaceItems({
-          'r-1': replenishment,
-          'r-2': Replenishment(id: 'r-2', name: 'r-2'),
-        });
+        ..replaceItems({'r-1': replenishment, 'r-2': Replenishment(id: 'r-2', name: 'r-2')});
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
       await tester.pumpWidget(buildApp(stock, replenisher));

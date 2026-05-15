@@ -14,7 +14,7 @@ class Menu extends ChangeNotifier with Repository<Catalog>, RepositoryStorage<Ca
   static late Menu instance;
 
   @override
-  final Stores storageStore = Stores.menu;
+  final Stores storageStore = .menu;
 
   Menu() {
     instance = this;
@@ -39,12 +39,7 @@ class Menu extends ChangeNotifier with Repository<Catalog>, RepositoryStorage<Ca
 
   @override
   Catalog buildItem(String id, Map<String, Object?> value) {
-    return Catalog.fromObject(
-      CatalogObject.build({
-        'id': id,
-        ...value,
-      }),
-    );
+    return Catalog.fromObject(CatalogObject.build({'id': id, ...value}));
   }
 
   @override
@@ -161,9 +156,7 @@ class Menu extends ChangeNotifier with Repository<Catalog>, RepositoryStorage<Ca
   Future<void> _removeBatch(List<Model> items) async {
     if (items.isEmpty) return;
 
-    await Storage.instance.set(storageStore, {
-      for (final item in items) item.prefix: null,
-    });
+    await Storage.instance.set(storageStore, {for (final item in items) item.prefix: null});
 
     for (var item in items) {
       item.repository.removeItem(item.id);

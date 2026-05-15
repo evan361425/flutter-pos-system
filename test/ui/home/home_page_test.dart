@@ -35,34 +35,34 @@ void main() {
         testWidgets('should navigate correctly', (tester) async {
           deviceAs(device, tester);
           // disable tutorial
-          when(cache.get(
-            argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-          )).thenReturn(true);
+          when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
 
-          await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider.value(value: SettingsProvider.instance),
-              ChangeNotifierProvider.value(value: Seller.instance),
-              ChangeNotifierProvider.value(value: Menu()),
-              ChangeNotifierProvider.value(value: Stock()..replaceItems({'i1': Ingredient(id: 'i1')})),
-              ChangeNotifierProvider.value(value: Quantities()),
-              ChangeNotifierProvider.value(value: OrderAttributes()),
-              ChangeNotifierProvider.value(value: Analysis()),
-              ChangeNotifierProvider.value(value: Cart()),
-              ChangeNotifierProvider.value(value: Cashier()),
-              ChangeNotifierProvider.value(value: Printers()),
-            ],
-            child: MaterialApp.router(
-              routerConfig: GoRouter(
-                navigatorKey: Routes.rootNavigatorKey,
-                observers: [App.routeObserver],
-                initialLocation: device == Device.mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
-                routes: Routes.getDesiredRoute(device.width / tester.view.devicePixelRatio).routes,
+          await tester.pumpWidget(
+            MultiProvider(
+              providers: [
+                ChangeNotifierProvider.value(value: SettingsProvider.instance),
+                ChangeNotifierProvider.value(value: Seller.instance),
+                ChangeNotifierProvider.value(value: Menu()),
+                ChangeNotifierProvider.value(value: Stock()..replaceItems({'i1': Ingredient(id: 'i1')})),
+                ChangeNotifierProvider.value(value: Quantities()),
+                ChangeNotifierProvider.value(value: OrderAttributes()),
+                ChangeNotifierProvider.value(value: Analysis()),
+                ChangeNotifierProvider.value(value: Cart()),
+                ChangeNotifierProvider.value(value: Cashier()),
+                ChangeNotifierProvider.value(value: Printers()),
+              ],
+              child: MaterialApp.router(
+                routerConfig: GoRouter(
+                  navigatorKey: Routes.rootNavigatorKey,
+                  observers: [App.routeObserver],
+                  initialLocation: device == .mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
+                  routes: Routes.getDesiredRoute(device.width / tester.view.devicePixelRatio).routes,
+                ),
+                theme: AppThemes.lightTheme,
+                darkTheme: AppThemes.darkTheme,
               ),
-              theme: AppThemes.lightTheme,
-              darkTheme: AppThemes.darkTheme,
             ),
-          ));
+          );
 
           Future<void> navAndCheck(
             String key,
@@ -77,7 +77,7 @@ void main() {
               return;
             }
 
-            if (device == Device.landscape && openMenu) {
+            if (device == .landscape && openMenu) {
               await tester.tap(find.byIcon(Icons.menu));
               await tester.pumpAndSettle();
             }
@@ -87,7 +87,7 @@ void main() {
               await tester.pumpAndSettle();
             }
 
-            if (device == Device.desktop && icon != null) {
+            if (device == .desktop && icon != null) {
               await tester.tap(find.byIcon(icon));
             } else {
               await tester.tap(find.byKey(Key(key)));
@@ -96,20 +96,20 @@ void main() {
 
             expect(find.byKey(Key(check)), findsOneWidget);
 
-            if (device == Device.mobile && pop) {
+            if (device == .mobile && pop) {
               await tester.tap(find.byKey(const Key('pop')));
               await tester.pumpAndSettle();
             }
           }
 
-          if (device == Device.desktop) {
+          if (device == .desktop) {
             await tester.tap(find.byIcon(Icons.menu));
             await tester.pumpAndSettle();
           }
 
-          await navAndCheck('more_header.products', 'menu_page', only: Device.mobile);
-          await navAndCheck('more_header.printers', 'printers_page', only: Device.mobile);
-          await navAndCheck('more_header.order_attrs', 'order_attributes_page', only: Device.mobile);
+          await navAndCheck('more_header.products', 'menu_page', only: .mobile);
+          await navAndCheck('more_header.printers', 'printers_page', only: .mobile);
+          await navAndCheck('more_header.order_attrs', 'order_attributes_page', only: .mobile);
           await navAndCheck('home.debug', 'debug.list', icon: Icons.bug_report_outlined);
           await navAndCheck('home.menu', 'menu_page', icon: Icons.collections_outlined);
           await navAndCheck('home.printers', 'printers_page', drag: true, icon: Icons.print_outlined);
@@ -119,7 +119,7 @@ void main() {
           await navAndCheck('home.elf', 'elf_page', icon: Icons.lightbulb_outlined);
           await navAndCheck('home.settings', 'feature.theme', drag: true, icon: Icons.settings_outlined);
 
-          if (device == Device.desktop) {
+          if (device == .desktop) {
             await tester.tap(find.byIcon(Icons.close));
             await tester.pumpAndSettle();
           }
@@ -138,7 +138,7 @@ void main() {
         when(cache.set(any, any)).thenAnswer((_) => Future.value(true));
       });
 
-      Widget buildApp(WidgetTester tester, {Device device = Device.mobile}) {
+      Widget buildApp(WidgetTester tester, {Device device = .mobile}) {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider.value(value: SettingsProvider.instance),
@@ -153,7 +153,7 @@ void main() {
             routerConfig: GoRouter(
               navigatorKey: Routes.rootNavigatorKey,
               observers: [App.routeObserver],
-              initialLocation: device == Device.mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
+              initialLocation: device == .mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
               routes: Routes.getDesiredRoute(device.width / tester.view.devicePixelRatio).routes,
             ),
             theme: AppThemes.lightTheme,
@@ -170,7 +170,7 @@ void main() {
       }
 
       Future<void> goNext(WidgetTester tester) async {
-        await tester.tapAt(Offset.zero);
+        await tester.tapAt(.zero);
         await tester.pump(const Duration(milliseconds: 5));
         await tester.pump(const Duration(milliseconds: 5));
       }
@@ -226,24 +226,25 @@ void main() {
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
 
       // setup seller
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenAnswer((_) => Future.value([
-            {'totalPrice': 20, 'count': 10},
-          ]));
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        groupBy: anyNamed('groupBy'),
-        orderBy: anyNamed('orderBy'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        escapeTable: anyNamed('escapeTable'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([]));
+      when(
+        database.query(any, columns: anyNamed('columns'), where: anyNamed('where'), whereArgs: anyNamed('whereArgs')),
+      ).thenAnswer(
+        (_) => Future.value([
+          {'totalPrice': 20, 'count': 10},
+        ]),
+      );
+      when(
+        database.query(
+          any,
+          columns: anyNamed('columns'),
+          groupBy: anyNamed('groupBy'),
+          orderBy: anyNamed('orderBy'),
+          where: anyNamed('where'),
+          whereArgs: anyNamed('whereArgs'),
+          escapeTable: anyNamed('escapeTable'),
+          limit: anyNamed('limit'),
+        ),
+      ).thenAnswer((_) => Future.value([]));
     });
 
     setUpAll(() {

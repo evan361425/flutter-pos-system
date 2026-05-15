@@ -9,7 +9,6 @@ import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/models/objects/order_attribute_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/order/order_attribute.dart';
@@ -26,7 +25,6 @@ import 'package:possystem/models/stock/ingredient.dart';
 import 'package:possystem/models/stock/quantity.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
-import 'package:possystem/services/storage.dart';
 import 'package:possystem/settings/currency_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/order_page.dart';
@@ -86,17 +84,14 @@ void main() {
           ),
         },
       );
-      final product = Product(id: 'p-1', name: 'p-1', price: 17, ingredients: {
-        'pi-1': ingredient1..prepareItem(),
-        'pi-2': ingredient2..prepareItem(),
-      });
+      final product = Product(
+        id: 'p-1',
+        name: 'p-1',
+        price: 17,
+        ingredients: {'pi-1': ingredient1..prepareItem(), 'pi-2': ingredient2..prepareItem()},
+      );
       Menu().replaceItems({
-        'c-1': Catalog(
-          id: 'c-1',
-          name: 'c-1',
-          index: 1,
-          products: {'p-1': product..prepareItem()},
-        )..prepareItem(),
+        'c-1': Catalog(id: 'c-1', name: 'c-1', index: 1, products: {'p-1': product..prepareItem()})..prepareItem(),
         'c-2': Catalog(
           name: 'c-2',
           id: 'c-2',
@@ -108,62 +103,38 @@ void main() {
       OrderAttributes();
 
       Cart.instance = Cart();
-      Cart.instance.replaceAll(products: [
-        CartProduct(Menu.instance.getProduct('p-1')!, quantities: {'pi-1': 'pq-1'}),
-        CartProduct(Menu.instance.getProduct('p-2')!),
-      ], attributes: {
-        'oa-1': 'oao-1',
-        'oa-2': 'oao-2'
-      });
+      Cart.instance.replaceAll(
+        products: [
+          CartProduct(Menu.instance.getProduct('p-1')!, quantities: {'pi-1': 'pq-1'}),
+          CartProduct(Menu.instance.getProduct('p-2')!),
+        ],
+        attributes: {'oa-1': 'oao-1', 'oa-2': 'oao-2'},
+      );
     }
 
     void prepareOrderAttributes() {
       final s1 = OrderAttribute(
         id: 'oa-1',
         name: 'oa-1',
-        mode: OrderAttributeMode.changeDiscount,
+        mode: .changeDiscount,
         options: {
-          'oao-1': OrderAttributeOption(
-            id: 'oao-1',
-            name: 'oao-1',
-            isDefault: true,
-            modeValue: 10,
-          ),
-          'oao-2': OrderAttributeOption(
-            id: 'oao-2',
-            name: 'oao-2',
-            modeValue: 50,
-          ),
+          'oao-1': OrderAttributeOption(id: 'oao-1', name: 'oao-1', isDefault: true, modeValue: 10),
+          'oao-2': OrderAttributeOption(id: 'oao-2', name: 'oao-2', modeValue: 50),
         },
       );
       final s2 = OrderAttribute(
         id: 'oa-2',
         name: 'oa-2',
-        mode: OrderAttributeMode.changePrice,
+        mode: .changePrice,
         options: {
-          'oao-3': OrderAttributeOption(
-            id: 'oao-3',
-            name: 'oao-3',
-            modeValue: 10,
-          ),
-          'oao-4': OrderAttributeOption(
-            id: 'oao-4',
-            name: 'oao-4',
-            isDefault: true,
-            modeValue: -10,
-          ),
+          'oao-3': OrderAttributeOption(id: 'oao-3', name: 'oao-3', modeValue: 10),
+          'oao-4': OrderAttributeOption(id: 'oao-4', name: 'oao-4', isDefault: true, modeValue: -10),
         },
       );
       final s3 = OrderAttribute(
         id: 'oa-3',
         name: 'oa-3',
-        options: {
-          'oao-5': OrderAttributeOption(
-            id: 'oao-5',
-            name: 'oao-5',
-            isDefault: true,
-          )
-        },
+        options: {'oao-5': OrderAttributeOption(id: 'oao-5', name: 'oao-5', isDefault: true)},
       );
       final s4 = OrderAttribute(
         id: 'oa-4',
@@ -188,13 +159,13 @@ void main() {
       return ChangeNotifierProvider.value(
         value: Cart.instance,
         child: MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const OrderPage(),
-            ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(path: '/', builder: (_, __) => const OrderPage()),
+              ...Routes.getDesiredRoute(0).routes,
+            ],
+          ),
         ),
       );
     }
@@ -224,9 +195,7 @@ void main() {
           deviceAs(device, tester);
           prepareImageable(Future.value([ConvertibleImage(Uint8List(32), width: 8)]));
           CurrencySetting.instance.isInt = false;
-          Printers.instance.replaceItems({
-            '1': Printer(id: '1', name: '1')..p = printer,
-          });
+          Printers.instance.replaceItems({'1': Printer(id: '1', name: '1')..p = printer});
           when(printer.connected).thenReturn(true);
           when(printer.manufactory).thenReturn(manufactory);
           when(printer.statusStream).thenAnswer((_) => Stream.value(PrinterStatus.good));
@@ -256,12 +225,9 @@ void main() {
           await tester.pumpAndSettle();
 
           // only mobile has this change text and allow to drag
-          if (device == Device.mobile) {
+          if (device == .mobile) {
             expect(find.text(S.orderCheckoutDetailsSnapshotLabelChange('2')), findsOneWidget);
-            await tester.drag(
-              find.byKey(const Key('order.details.ds')),
-              const Offset(0, -408),
-            );
+            await tester.drag(find.byKey(const Key('order.details.ds')), const Offset(0, -408));
             await tester.pumpAndSettle();
           }
 
@@ -299,7 +265,7 @@ void main() {
           verifyText('change', '62');
 
           // tap outside to close draggable
-          if (device == Device.mobile) {
+          if (device == .mobile) {
             await tester.tapAt(const Offset(400, 161));
             await tester.pumpAndSettle();
 
@@ -310,55 +276,57 @@ void main() {
 
           await Cashier.instance.setCurrentByUnit(1, 5);
 
-          final now = DateTime.now();
+          final DateTime now = .now();
           Cart.timer = () => now;
-          final checker = OrderSetter.setPushed(OrderObject(
-            id: 1,
-            paid: 90,
-            price: 28,
-            cost: 5,
-            productsPrice: 28,
-            productsCount: 2,
-            createdAt: now,
-            products: const [
-              OrderProductObject(
-                id: 1,
-                productName: "p-1",
-                catalogName: "c-1",
-                count: 1,
-                singleCost: 5,
-                singlePrice: 17,
-                originalPrice: 17,
-                isDiscount: false,
-                ingredients: [
-                  OrderIngredientObject(
-                    ingredientName: 'i-1',
-                    quantityName: 'q-1',
-                    additionalPrice: 10,
-                    additionalCost: 5,
-                    amount: 5,
-                  ),
-                  OrderIngredientObject(
-                    ingredientName: 'i-2',
-                    quantityName: null,
-                    additionalPrice: 0,
-                    additionalCost: 0,
-                    amount: 3,
-                  ),
-                ],
-              ),
-              OrderProductObject(
-                id: 1,
-                productName: "p-2",
-                catalogName: "c-2",
-                count: 1,
-                singleCost: 0,
-                singlePrice: 11,
-                originalPrice: 11,
-                isDiscount: false,
-              ),
-            ],
-          ));
+          final checker = OrderSetter.setPushed(
+            OrderObject(
+              id: 1,
+              paid: 90,
+              price: 28,
+              cost: 5,
+              productsPrice: 28,
+              productsCount: 2,
+              createdAt: now,
+              products: const [
+                OrderProductObject(
+                  id: 1,
+                  productName: "p-1",
+                  catalogName: "c-1",
+                  count: 1,
+                  singleCost: 5,
+                  singlePrice: 17,
+                  originalPrice: 17,
+                  isDiscount: false,
+                  ingredients: [
+                    OrderIngredientObject(
+                      ingredientName: 'i-1',
+                      quantityName: 'q-1',
+                      additionalPrice: 10,
+                      additionalCost: 5,
+                      amount: 5,
+                    ),
+                    OrderIngredientObject(
+                      ingredientName: 'i-2',
+                      quantityName: null,
+                      additionalPrice: 0,
+                      additionalCost: 0,
+                      amount: 3,
+                    ),
+                  ],
+                ),
+                OrderProductObject(
+                  id: 1,
+                  productName: "p-2",
+                  catalogName: "c-2",
+                  count: 1,
+                  singleCost: 0,
+                  singlePrice: 11,
+                  originalPrice: 11,
+                  isDiscount: false,
+                ),
+              ],
+            ),
+          );
           await tester.tap(find.byKey(const Key('order.details.confirm')));
           await tester.pumpAndSettle();
           expect(find.text(S.actSuccess), findsOneWidget);
@@ -369,20 +337,34 @@ void main() {
 
           checker();
 
-          verify(storage.set(Stores.cashier, argThat(predicate((data) {
-            // 95 - 62
-            return data is Map && data['.current'][2]['count'] == 3 && data['.current'][0]['count'] == 3;
-          }))));
-          verify(storage.set(Stores.stock, argThat(predicate((data) {
-            return data is Map &&
-                data['i-1.currentAmount'] == 95 &&
-                !data.containsKey('i-1.updatedAt') &&
-                data['i-2.currentAmount'] == 97 &&
-                !data.containsKey('i-2.updatedAt');
-          }))));
+          verify(
+            storage.set(
+              .cashier,
+              argThat(
+                predicate((data) {
+                  // 95 - 62
+                  return data is Map && data['.current'][2]['count'] == 3 && data['.current'][0]['count'] == 3;
+                }),
+              ),
+            ),
+          );
+          verify(
+            storage.set(
+              .stock,
+              argThat(
+                predicate((data) {
+                  return data is Map &&
+                      data['i-1.currentAmount'] == 95 &&
+                      !data.containsKey('i-1.updatedAt') &&
+                      data['i-2.currentAmount'] == 97 &&
+                      !data.containsKey('i-2.updatedAt');
+                }),
+              ),
+            ),
+          );
           verify(printer.draw(any, density: anyNamed('density'))).called(1);
 
-          if (device == Device.desktop) {
+          if (device == .desktop) {
             // FIXME: I've no idea why this error happened
             expect('${tester.binding.takeException()}', 'A RenderFlex overflowed by 299 pixels on the right.');
           }
@@ -411,66 +393,56 @@ void main() {
           await tester.tap(find.text(S.orderCheckoutDetailsTab));
           await tester.pumpAndSettle();
 
-          final now = DateTime.now();
+          final DateTime now = .now();
           Cart.timer = () => now;
-          final checker = OrderSetter.setPushed(OrderObject(
-            id: 1,
-            paid: 38,
-            price: 38,
-            cost: 5,
-            productsPrice: 28,
-            productsCount: 2,
-            note: 'new note',
-            createdAt: now,
-            products: const [
-              OrderProductObject(
-                id: 1,
-                productName: "p-1",
-                catalogName: "c-1",
-                count: 1,
-                singleCost: 5,
-                singlePrice: 17,
-                originalPrice: 17,
-                isDiscount: false,
-                ingredients: [
-                  OrderIngredientObject(
-                    ingredientName: "i-1",
-                    quantityName: "q-1",
-                    additionalPrice: 10,
-                    additionalCost: 5,
-                    amount: 5,
-                  ),
-                  OrderIngredientObject(
-                    ingredientName: "i-2",
-                    amount: 3,
-                  ),
-                ],
-              ),
-              OrderProductObject(
-                id: 2,
-                productName: "p-2",
-                catalogName: "c-2",
-                count: 1,
-                singleCost: 0,
-                singlePrice: 11,
-                originalPrice: 11,
-                isDiscount: false,
-              ),
-            ],
-            attributes: const [
-              OrderSelectedAttributeObject(
-                name: 'oa-2',
-                optionName: 'oao-3',
-                mode: OrderAttributeMode.changePrice,
-                modeValue: 10,
-              ),
-              OrderSelectedAttributeObject(
-                name: 'oa-3',
-                optionName: 'oao-5',
-                mode: OrderAttributeMode.statOnly,
-              ),
-            ],
-          ));
+          final checker = OrderSetter.setPushed(
+            OrderObject(
+              id: 1,
+              paid: 38,
+              price: 38,
+              cost: 5,
+              productsPrice: 28,
+              productsCount: 2,
+              note: 'new note',
+              createdAt: now,
+              products: const [
+                OrderProductObject(
+                  id: 1,
+                  productName: "p-1",
+                  catalogName: "c-1",
+                  count: 1,
+                  singleCost: 5,
+                  singlePrice: 17,
+                  originalPrice: 17,
+                  isDiscount: false,
+                  ingredients: [
+                    OrderIngredientObject(
+                      ingredientName: "i-1",
+                      quantityName: "q-1",
+                      additionalPrice: 10,
+                      additionalCost: 5,
+                      amount: 5,
+                    ),
+                    OrderIngredientObject(ingredientName: "i-2", amount: 3),
+                  ],
+                ),
+                OrderProductObject(
+                  id: 2,
+                  productName: "p-2",
+                  catalogName: "c-2",
+                  count: 1,
+                  singleCost: 0,
+                  singlePrice: 11,
+                  originalPrice: 11,
+                  isDiscount: false,
+                ),
+              ],
+              attributes: const [
+                OrderSelectedAttributeObject(name: 'oa-2', optionName: 'oao-3', mode: .changePrice, modeValue: 10),
+                OrderSelectedAttributeObject(name: 'oa-3', optionName: 'oao-5', mode: .statOnly),
+              ],
+            ),
+          );
 
           await tester.tap(find.byKey(const Key('order.details.confirm')));
           await tester.pumpAndSettle();
@@ -478,20 +450,34 @@ void main() {
 
           checker();
 
-          verify(storage.set(Stores.cashier, argThat(predicate((data) {
-            // 30 + 5 + 3
-            return data is Map &&
-                data['.current'][2]['count'] == 3 &&
-                data['.current'][1]['count'] == 1 &&
-                data['.current'][0]['count'] == 3;
-          }))));
-          verify(storage.set(Stores.stock, argThat(predicate((data) {
-            return data is Map &&
-                data['i-1.currentAmount'] == 95 &&
-                !data.containsKey('i-1.updatedAt') &&
-                data['i-2.currentAmount'] == 97 &&
-                !data.containsKey('i-2.updatedAt');
-          }))));
+          verify(
+            storage.set(
+              .cashier,
+              argThat(
+                predicate((data) {
+                  // 30 + 5 + 3
+                  return data is Map &&
+                      data['.current'][2]['count'] == 3 &&
+                      data['.current'][1]['count'] == 1 &&
+                      data['.current'][0]['count'] == 3;
+                }),
+              ),
+            ),
+          );
+          verify(
+            storage.set(
+              .stock,
+              argThat(
+                predicate((data) {
+                  return data is Map &&
+                      data['i-1.currentAmount'] == 95 &&
+                      !data.containsKey('i-1.updatedAt') &&
+                      data['i-2.currentAmount'] == 97 &&
+                      !data.containsKey('i-2.updatedAt');
+                }),
+              ),
+            ),
+          );
           resetPeriodVerifier();
 
           expect(find.text(S.actSuccess), findsOneWidget);
@@ -519,7 +505,7 @@ void main() {
 
     testWidgets('Play with calculator', (tester) async {
       CurrencySetting.instance.isInt = false;
-      deviceAs(Device.mobile, tester);
+      deviceAs(.mobile, tester);
 
       await tester.pumpWidget(buildApp());
 
@@ -528,10 +514,7 @@ void main() {
       await tester.tap(find.byKey(const Key('order.details.order')));
       await tester.pumpAndSettle();
 
-      await tester.drag(
-        find.byKey(const Key('order.details.ds')),
-        const Offset(0, -408),
-      );
+      await tester.drag(find.byKey(const Key('order.details.ds')), const Offset(0, -408));
       await tester.pumpAndSettle();
 
       // Start testing calculator
@@ -621,9 +604,7 @@ void main() {
       // disable any features
       when(cache.get(any)).thenReturn(null);
       // disable tutorial
-      when(cache.get(
-        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-      )).thenReturn(true);
+      when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
 
       prepareData();
       Cashier().setCurrent(null);

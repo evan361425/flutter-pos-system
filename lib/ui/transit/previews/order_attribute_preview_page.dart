@@ -22,15 +22,12 @@ class OrderAttributePreviewPage extends PreviewPage<OrderAttribute> {
     final defaultName = item.defaultOption?.name ?? S.orderAttributeMetaNoDefault;
     return ExpansionTile(
       key: Key('transit_preview.order_attr.${item.id}'),
-      title: ImporterColumnStatus(
-        name: item.name,
-        status: item.statusName,
-      ),
+      title: ImporterColumnStatus(name: item.name, status: item.statusName),
       subtitle: MetaBlock.withString(context, [
         S.orderAttributeMetaMode(mode),
         S.orderAttributeMetaDefault(defaultName),
       ]),
-      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      expandedCrossAxisAlignment: .stretch,
       children: <Widget>[
         for (final option in item.items)
           ListTile(

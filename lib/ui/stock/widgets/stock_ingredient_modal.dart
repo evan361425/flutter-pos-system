@@ -35,65 +35,64 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
 
   @override
   List<Widget> buildFormFields() => <Widget>[
-        p(TextFormField(
-          key: const Key('stock.ingredient.name'),
-          controller: nameController,
+    p(
+      TextFormField(
+        key: const Key('stock.ingredient.name'),
+        controller: nameController,
+        focusNode: _nameFocusNode,
+        textInputAction: .next,
+        textCapitalization: .words,
+        decoration: InputDecoration(
+          labelText: S.stockIngredientNameLabel,
+          hintText: widget.ingredient?.name ?? S.stockIngredientNameHint,
+          filled: false,
+        ),
+        maxLength: 30,
+        validator: Validator.textLimit(
+          S.stockIngredientNameLabel,
+          30,
           focusNode: _nameFocusNode,
-          textInputAction: TextInputAction.next,
-          textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(
-            labelText: S.stockIngredientNameLabel,
-            hintText: widget.ingredient?.name ?? S.stockIngredientNameHint,
-            filled: false,
-          ),
-          maxLength: 30,
-          validator: Validator.textLimit(
-            S.stockIngredientNameLabel,
-            30,
-            focusNode: _nameFocusNode,
-            validator: (name) {
-              return widget.ingredient?.name != name && Stock.instance.hasName(name)
-                  ? S.stockIngredientNameErrorRepeat
-                  : null;
-            },
-          ),
-        )),
-        p(TextFormField(
-          key: const Key('stock.ingredient.amount'),
-          controller: amountController,
-          focusNode: _amountFocusNode,
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: S.stockIngredientAmountLabel,
-            filled: false,
-          ),
-          validator: Validator.positiveNumber(
-            S.stockIngredientAmountLabel,
-            allowNull: true,
-            focusNode: _amountFocusNode,
-          ),
-        )),
-        p(TextFormField(
-          key: const Key('stock.ingredient.totalAmount'),
-          controller: totalAmountController,
+          validator: (name) {
+            return widget.ingredient?.name != name && Stock.instance.hasName(name)
+                ? S.stockIngredientNameErrorRepeat
+                : null;
+          },
+        ),
+      ),
+    ),
+    p(
+      TextFormField(
+        key: const Key('stock.ingredient.amount'),
+        controller: amountController,
+        focusNode: _amountFocusNode,
+        textInputAction: .next,
+        keyboardType: .number,
+        decoration: InputDecoration(labelText: S.stockIngredientAmountLabel, filled: false),
+        validator: Validator.positiveNumber(S.stockIngredientAmountLabel, allowNull: true, focusNode: _amountFocusNode),
+      ),
+    ),
+    p(
+      TextFormField(
+        key: const Key('stock.ingredient.totalAmount'),
+        controller: totalAmountController,
+        focusNode: _totalAmountFocusNode,
+        textInputAction: .next,
+        keyboardType: .number,
+        decoration: InputDecoration(
+          labelText: S.stockIngredientAmountMaxLabel,
+          helperText: S.stockIngredientAmountMaxHelper,
+          helperMaxLines: 6,
+          filled: false,
+        ),
+        validator: Validator.positiveNumber(
+          S.stockIngredientAmountMaxLabel,
+          allowNull: true,
           focusNode: _totalAmountFocusNode,
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: S.stockIngredientAmountMaxLabel,
-            helperText: S.stockIngredientAmountMaxHelper,
-            helperMaxLines: 6,
-            filled: false,
-          ),
-          validator: Validator.positiveNumber(
-            S.stockIngredientAmountMaxLabel,
-            allowNull: true,
-            focusNode: _totalAmountFocusNode,
-          ),
-        )),
-        if (!widget.isNew) ..._buildProducts(),
-      ];
+        ),
+      ),
+    ),
+    if (!widget.isNew) ..._buildProducts(),
+  ];
 
   Iterable<Widget> _buildProducts() sync* {
     final pi = Menu.instance.getIngredients(widget.ingredient!.id);
@@ -103,10 +102,7 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
       yield ListTile(
         key: Key('stock.ingredient.${product.id}'),
         title: Text('${product.catalog.name} - ${product.name}'),
-        onTap: () => context.pushNamed(
-          Routes.menuProductUpdate,
-          pathParameters: {'id': product.id},
-        ),
+        onTap: () => context.pushNamed(Routes.menuProductUpdate, pathParameters: {'id': product.id}),
       );
     }
   }
@@ -139,11 +135,9 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
     final object = parseObject();
 
     if (widget.isNew) {
-      await Stock.instance.addItem(Ingredient(
-        name: object.name!,
-        currentAmount: object.currentAmount!,
-        totalAmount: object.totalAmount,
-      ));
+      await Stock.instance.addItem(
+        Ingredient(name: object.name!, currentAmount: object.currentAmount!, totalAmount: object.totalAmount),
+      );
     } else {
       await widget.ingredient!.update(object);
     }

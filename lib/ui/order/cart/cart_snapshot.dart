@@ -21,39 +21,41 @@ class CartSnapshot extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Row(children: <Widget>[
-        Expanded(
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(right: 16),
-            itemCount: cart.products.length,
-            itemBuilder: (context, index) {
-              final product = cart.products[index];
-              return GestureDetector(
-                onTap: () {
-                  cart.toggleAll(false, except: product);
-                  if (controller.isAttached) {
-                    controller.jumpTo(controller.snapSizes[1]);
-                  }
-                },
-                child: OutlinedText(
-                  product.name,
-                  key: Key('cart_snapshot.$index'),
-                  margin: const EdgeInsets.only(right: 8),
-                  badge: product.count > 9 ? '9+' : product.count.toString(),
-                ),
-              );
-            },
+      padding: const .symmetric(horizontal: 12.0),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              scrollDirection: .horizontal,
+              padding: const .only(right: 16),
+              itemCount: cart.products.length,
+              itemBuilder: (context, index) {
+                final product = cart.products[index];
+                return GestureDetector(
+                  onTap: () {
+                    cart.toggleAll(false, except: product);
+                    if (controller.isAttached) {
+                      controller.jumpTo(controller.snapSizes[1]);
+                    }
+                  },
+                  child: OutlinedText(
+                    product.name,
+                    key: Key('cart_snapshot.$index'),
+                    margin: const .only(right: 8),
+                    badge: product.count > 9 ? '9+' : product.count.toString(),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        const SizedBox(width: 16.0),
-        Text(
-          cart.productsPrice.toCurrency(),
-          key: const Key('cart_snapshot.price'),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ]),
+          const SizedBox(width: 16.0),
+          Text(
+            cart.productsPrice.toCurrency(),
+            key: const Key('cart_snapshot.price'),
+            style: const TextStyle(fontWeight: .bold),
+          ),
+        ],
+      ),
     );
   }
 }

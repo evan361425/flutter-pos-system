@@ -27,23 +27,31 @@ void main() {
   group('Stock View', () {
     Widget buildApp() {
       return MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const Scaffold(body: StockView()),
-          ),
-          ...Routes.getDesiredRoute(0).routes,
-        ]),
+        routerConfig: GoRouter(
+          navigatorKey: Routes.rootNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, __) => const Scaffold(body: StockView()),
+            ),
+            ...Routes.getDesiredRoute(0).routes,
+          ],
+        ),
       );
     }
 
     testWidgets('add ingredient', (tester) async {
       final stock = Stock()..replaceItems({});
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Stock>.value(value: stock),
-        ChangeNotifierProvider<Replenisher>.value(value: Replenisher()..replaceItems({})),
-        ChangeNotifierProvider<Menu>.value(value: Menu()..replaceItems({})),
-      ], child: buildApp()));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: stock),
+            ChangeNotifierProvider<Replenisher>.value(value: Replenisher()..replaceItems({})),
+            ChangeNotifierProvider<Menu>.value(value: Menu()..replaceItems({})),
+          ],
+          child: buildApp(),
+        ),
+      );
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
 
@@ -63,28 +71,21 @@ void main() {
     });
 
     testWidgets('replenishment apply successfully', (tester) async {
-      final replenishment = Replenishment(id: 'r-1', data: {
-        'i-1': 10,
-        'i-2': -5,
-      });
-      final ing1 = Ingredient(
-        id: 'i-1',
-        name: 'i-1',
-        updatedAt: DateTime(2020, 10, 10),
-      );
-      final ing2 = Ingredient(
-        id: 'i-2',
-        name: 'i-2',
-        currentAmount: 4,
-        updatedAt: DateTime(2020, 10, 11),
-      );
+      final replenishment = Replenishment(id: 'r-1', data: {'i-1': 10, 'i-2': -5});
+      final ing1 = Ingredient(id: 'i-1', name: 'i-1', updatedAt: DateTime(2020, 10, 10));
+      final ing2 = Ingredient(id: 'i-2', name: 'i-2', currentAmount: 4, updatedAt: DateTime(2020, 10, 11));
       final stock = Stock()..replaceItems({'i-1': ing1, 'i-2': ing2});
       final repl = Replenisher()..replaceItems({'r-1': replenishment});
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Stock>.value(value: stock),
-        ChangeNotifierProvider<Replenisher>.value(value: repl),
-      ], child: buildApp()));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: stock),
+            ChangeNotifierProvider<Replenisher>.value(value: repl),
+          ],
+          child: buildApp(),
+        ),
+      );
 
       void verifyLastUpdated(DateTime dt) {
         final s = S.stockUpdatedAt(dt);
@@ -104,21 +105,21 @@ void main() {
       expect(ing1.lastAmount, equals(10));
       expect(ing2.currentAmount, equals(0));
 
-      verifyLastUpdated(DateTime.now());
+      verifyLastUpdated(.now());
     });
 
     Future<void> buildAppWithIngredients([WidgetTester? tester]) async {
       final ingredient = Ingredient(id: 'i-1', name: 'i-1');
-      final stock = Stock()
-        ..replaceItems({
-          'i-1': ingredient,
-          'i-2': Ingredient(id: 'i-2', name: 'i-2'),
-        });
-      final catalog = Catalog(id: 'c-1', products: {
-        'p-1': Product(id: 'p-1', ingredients: {
-          'pi-1': ProductIngredient(id: 'pi-1', ingredient: ingredient),
-        }),
-      });
+      final stock = Stock()..replaceItems({'i-1': ingredient, 'i-2': Ingredient(id: 'i-2', name: 'i-2')});
+      final catalog = Catalog(
+        id: 'c-1',
+        products: {
+          'p-1': Product(
+            id: 'p-1',
+            ingredients: {'pi-1': ProductIngredient(id: 'pi-1', ingredient: ingredient)},
+          ),
+        },
+      );
       final menu = Menu()..replaceItems({'c-1': catalog});
       final quantities = Quantities()..replaceItems({});
 
@@ -131,22 +132,32 @@ void main() {
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
       if (tester == null) return;
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Stock>.value(value: stock),
-        ChangeNotifierProvider<Menu>.value(value: menu),
-        ChangeNotifierProvider<Quantities>.value(value: quantities),
-      ], child: buildApp()));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: stock),
+            ChangeNotifierProvider<Menu>.value(value: menu),
+            ChangeNotifierProvider<Quantities>.value(value: quantities),
+          ],
+          child: buildApp(),
+        ),
+      );
     }
 
     testWidgets('edit amount by quantity', (tester) async {
       await buildAppWithIngredients();
       Stock.instance.getItem('i-1')!.totalAmount = 54321;
       Stock.instance.getItem('i-2')!.lastAmount = 900.56;
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-        ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
-      ], child: buildApp()));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+            ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
+          ],
+          child: buildApp(),
+        ),
+      );
 
       // correctly transform string
       expect(find.text('0／${54321.toCurrency()}'), findsOneWidget);
@@ -187,11 +198,16 @@ void main() {
       ing.restockLastPrice = 4;
       when(cache.set('stock.replenishBy', 1)).thenAnswer((_) => Future.value(true));
 
-      await tester.pumpWidget(MultiProvider(providers: [
-        ChangeNotifierProvider<Stock>.value(value: Stock.instance),
-        ChangeNotifierProvider<Menu>.value(value: Menu.instance),
-        ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
-      ], child: buildApp()));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Stock>.value(value: Stock.instance),
+            ChangeNotifierProvider<Menu>.value(value: Menu.instance),
+            ChangeNotifierProvider<Quantities>.value(value: Quantities.instance),
+          ],
+          child: buildApp(),
+        ),
+      );
 
       await tester.tap(find.byKey(const Key('stock.i-1')));
       await tester.pumpAndSettle();
@@ -301,9 +317,7 @@ void main() {
     setUp(() {
       when(cache.get(any)).thenReturn(null);
       // disable tutorial
-      when(cache.get(
-        argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-      )).thenReturn(true);
+      when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
     });
 
     setUpAll(() {

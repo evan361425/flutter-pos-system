@@ -14,7 +14,7 @@ abstract class Setting<T> extends ChangeNotifier {
   /// e.g. theme, language
   bool get registryForApp => false;
 
-  Cache get service => Cache.instance;
+  Cache get service => .instance;
 
   void initialize();
 

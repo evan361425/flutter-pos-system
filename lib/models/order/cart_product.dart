@@ -24,15 +24,10 @@ class CartProduct extends ChangeNotifier {
 
   /// [product] will set the default [singlePrice] and [quantities] is default
   /// to empty map.
-  CartProduct(
-    this.product, {
-    int count = 1,
-    num? singlePrice,
-    this.isSelected = false,
-    Map<String, String>? quantities,
-  })  : _singlePrice = singlePrice ?? product.price,
-        _count = count,
-        _quantities = quantities ?? <String, String>{};
+  CartProduct(this.product, {int count = 1, num? singlePrice, this.isSelected = false, Map<String, String>? quantities})
+    : _singlePrice = singlePrice ?? product.price,
+      _count = count,
+      _quantities = quantities ?? <String, String>{};
 
   /// product's ID
   String get id => product.id;

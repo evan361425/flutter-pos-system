@@ -37,10 +37,7 @@ class CatalogObject extends ModelObject<Catalog> {
       imagePath: data['imagePath'] as String?,
       createdAt: Util.fromUTC(data['createdAt'] as int),
       products: products.entries
-          .map<ProductObject>((e) => ProductObject.build({
-                'id': e.key,
-                ...e.value as Map<String, Object?>,
-              }))
+          .map<ProductObject>((e) => ProductObject.build({'id': e.key, ...e.value as Map<String, Object?>}))
           .toList(),
     );
   }
@@ -67,7 +64,7 @@ class CatalogObject extends ModelObject<Catalog> {
       'name': name,
       'createdAt': Util.toUTC(now: createdAt),
       'imagePath': imagePath,
-      'products': {for (var product in products) product.id: product.toMap()}
+      'products': {for (var product in products) product.id: product.toMap()},
     };
   }
 }
@@ -110,10 +107,7 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
       amount: data['amount'] as num,
       version: version,
       quantities: quantities.entries
-          .map((e) => ProductQuantityObject.build({
-                'id': e.key,
-                ...e.value as Map<String, Object?>,
-              }))
+          .map((e) => ProductQuantityObject.build({'id': e.key, ...e.value as Map<String, Object?>}))
           .toList(),
     );
   }
@@ -185,10 +179,9 @@ class ProductObject extends ModelObject<Product> {
       createdAt: Util.fromUTC(data['createdAt'] as int),
       searchedAt: searchedAt == null ? null : Util.fromUTC(searchedAt),
       ingredients: ingredients.entries
-          .map<ProductIngredientObject>((e) => ProductIngredientObject.build({
-                'id': e.key,
-                ...e.value as Map<String, Object?>,
-              }))
+          .map<ProductIngredientObject>(
+            (e) => ProductIngredientObject.build({'id': e.key, ...e.value as Map<String, Object?>}),
+          )
           .toList(),
     );
   }
@@ -230,7 +223,7 @@ class ProductObject extends ModelObject<Product> {
       'imagePath': imagePath,
       'createdAt': Util.toUTC(now: createdAt),
       if (searchedAt != null) 'searchedAt': Util.toUTC(now: searchedAt),
-      'ingredients': {for (var ingredient in ingredients) ingredient.id: ingredient.toMap()}
+      'ingredients': {for (var ingredient in ingredients) ingredient.id: ingredient.toMap()},
     };
   }
 }

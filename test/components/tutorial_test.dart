@@ -12,19 +12,14 @@ void main() {
       when(cache.set(any, true)).thenAnswer((_) => Future.value(true));
 
       const widgets = Column(
-        children: <Widget>[
-          Tutorial(
-            id: '1',
-            title: 'title1',
-            message: 'message1',
-            child: Text('1'),
-          ),
-        ],
+        children: <Widget>[Tutorial(id: '1', title: 'title1', message: 'message1', child: Text('1'))],
       );
 
-      await tester.pumpWidget(const MaterialApp(
-        home: TutorialWrapper(child: Scaffold(body: widgets)),
-      ));
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: TutorialWrapper(child: Scaffold(body: widgets)),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // show spotlight

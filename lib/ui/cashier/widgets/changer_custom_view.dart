@@ -12,10 +12,7 @@ import 'package:possystem/translator.dart';
 class ChangerCustomView extends StatefulWidget {
   final VoidCallback afterFavoriteAdded;
 
-  const ChangerCustomView({
-    super.key,
-    required this.afterFavoriteAdded,
-  });
+  const ChangerCustomView({super.key, required this.afterFavoriteAdded});
 
   @override
   State<ChangerCustomView> createState() => ChangerCustomViewState();
@@ -43,19 +40,22 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final actions = Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      FilledButton(
-        key: const Key('changer.custom.add_favorite'),
-        onPressed: handleAddFavorite,
-        child: Text(S.cashierChangerCustomAddBtn),
-      ),
-    ]);
+    final actions = Row(
+      mainAxisAlignment: .end,
+      children: [
+        FilledButton(
+          key: const Key('changer.custom.add_favorite'),
+          onPressed: handleAddFavorite,
+          child: Text(S.cashierChangerCustomAddBtn),
+        ),
+      ],
+    );
 
     final sourceEntry = _wrapInRow(
       TextFormField(
         key: const Key('changer.custom.source.count'),
         controller: sourceCount,
-        keyboardType: TextInputType.number,
+        keyboardType: .number,
         onChanged: handleCountChanged,
         decoration: InputDecoration(labelText: S.cashierChangerCustomCountLabel),
         validator: Validator.positiveInt(S.cashierChangerCustomCountLabel, minimum: 1),
@@ -73,66 +73,67 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     final targetEntries = <Widget>[
       for (var entry in targets.asMap().entries)
         Padding(
-          padding: const EdgeInsets.only(top: kInternalSpacing),
+          padding: const .only(top: kInternalSpacing),
           child: _wrapInRow(
-              TextFormField(
-                key: Key('changer.custom.target.${entry.key}.count'),
-                controller: entry.key == 0 ? targetController : null,
-                initialValue: entry.key == 0 ? null : entry.value.count?.toString(),
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: S.cashierChangerCustomCountLabel),
-                validator: Validator.positiveInt('', allowNull: true),
-                onSaved: (value) => entry.value.count = int.tryParse(value ?? ''),
-              ),
-              DropdownButtonFormField<num>(
-                key: Key('changer.custom.target.${entry.key}.unit'),
-                initialValue: entry.value.unit,
-                hint: Text(S.cashierChangerCustomCountLabel),
-                style: Theme.of(context).textTheme.bodyMedium,
-                onChanged: (value) => setState(() => entry.value.unit = value),
-                onSaved: (value) => entry.value.unit = value,
-                items: _unitDropdownMenuItems(),
-              ),
-              entry.key == 0
-                  ? null
-                  : IconButton(
-                      onPressed: () => setState(() {
-                        targets.removeAt(entry.key);
-                      }),
-                      color: theme.colorScheme.error,
-                      icon: const Icon(KIcons.entryRemove),
-                      tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
-                    )),
-        )
+            TextFormField(
+              key: Key('changer.custom.target.${entry.key}.count'),
+              controller: entry.key == 0 ? targetController : null,
+              initialValue: entry.key == 0 ? null : entry.value.count?.toString(),
+              keyboardType: .number,
+              decoration: InputDecoration(labelText: S.cashierChangerCustomCountLabel),
+              validator: Validator.positiveInt('', allowNull: true),
+              onSaved: (value) => entry.value.count = int.tryParse(value ?? ''),
+            ),
+            DropdownButtonFormField<num>(
+              key: Key('changer.custom.target.${entry.key}.unit'),
+              initialValue: entry.value.unit,
+              hint: Text(S.cashierChangerCustomCountLabel),
+              style: Theme.of(context).textTheme.bodyMedium,
+              onChanged: (value) => setState(() => entry.value.unit = value),
+              onSaved: (value) => entry.value.unit = value,
+              items: _unitDropdownMenuItems(),
+            ),
+            entry.key == 0
+                ? null
+                : IconButton(
+                    onPressed: () => setState(() {
+                      targets.removeAt(entry.key);
+                    }),
+                    color: theme.colorScheme.error,
+                    icon: const Icon(KIcons.entryRemove),
+                    tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                  ),
+          ),
+        ),
     ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+      padding: const .symmetric(horizontal: kHorizontalSpacing),
       child: Form(
         key: formKey,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          actions,
-          if (errorMessage.isNotEmpty)
-            Center(
-              child: Text(
-                errorMessage,
-                style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.error),
+        child: Column(
+          crossAxisAlignment: .stretch,
+          children: [
+            actions,
+            if (errorMessage.isNotEmpty)
+              Center(
+                child: Text(errorMessage, style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.error)),
               ),
+            TextDivider(label: S.cashierChangerCustomDividerFrom),
+            sourceEntry,
+            TextDivider(label: S.cashierChangerCustomDividerTo),
+            ...targetEntries,
+            // add bottom
+            const SizedBox(height: kInternalSpacing),
+            OutlinedButton.icon(
+              onPressed: () => setState(() {
+                targets.add(CashierChangeEntryObject());
+              }),
+              icon: const Icon(KIcons.add),
+              label: Text(S.cashierChangerCustomUnitAddBtn),
             ),
-          TextDivider(label: S.cashierChangerCustomDividerFrom),
-          sourceEntry,
-          TextDivider(label: S.cashierChangerCustomDividerTo),
-          ...targetEntries,
-          // add bottom
-          const SizedBox(height: kInternalSpacing),
-          OutlinedButton.icon(
-            onPressed: () => setState(() {
-              targets.add(CashierChangeEntryObject());
-            }),
-            icon: const Icon(KIcons.add),
-            label: Text(S.cashierChangerCustomUnitAddBtn),
-          )
-        ]),
+          ],
+        ),
       ),
     );
   }
@@ -154,14 +155,14 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   void handleAddFavorite() async {
     if (!validate()) return;
 
-    await Cashier.instance.addFavorite(CashierChangeBatchObject(
-        source: CashierChangeEntryObject(
-          count: int.parse(sourceCount.text),
-          unit: sourceUnit!,
-        ),
+    await Cashier.instance.addFavorite(
+      CashierChangeBatchObject(
+        source: CashierChangeEntryObject(count: .parse(sourceCount.text), unit: sourceUnit!),
         targets: [
-          for (var target in _mergedTargets().entries) CashierChangeEntryObject(count: target.value, unit: target.key)
-        ]));
+          for (var target in _mergedTargets().entries) CashierChangeEntryObject(count: target.value, unit: target.key),
+        ],
+      ),
+    );
 
     // close keyboard
     if (mounted) {
@@ -175,7 +176,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     if (!validate()) return false;
 
     final index = Cashier.instance.indexOf(sourceUnit!);
-    final count = int.parse(sourceCount.text);
+    final int count = .parse(sourceCount.text);
 
     if (Cashier.instance.validate(index, count)) {
       await Cashier.instance.update({
@@ -214,7 +215,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     // this will trigger onSaved and set up the value
     formKey.currentState?.save();
 
-    final count = int.parse(sourceCount.text);
+    final int count = .parse(sourceCount.text);
     var total = count * sourceUnit!;
 
     for (var target in targets) {
@@ -261,11 +262,15 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
   }
 
   Widget _wrapInRow(Widget a, Widget b, [Widget? c]) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.end, spacing: kInternalSpacing, children: [
-      Flexible(flex: 1, child: a),
-      Flexible(flex: 1, child: b),
-      if (c != null) c,
-    ]);
+    return Row(
+      crossAxisAlignment: .end,
+      spacing: kInternalSpacing,
+      children: [
+        Flexible(flex: 1, child: a),
+        Flexible(flex: 1, child: b),
+        if (c != null) c,
+      ],
+    );
   }
 
   void _setError(String msg) {

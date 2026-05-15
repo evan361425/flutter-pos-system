@@ -30,19 +30,19 @@ class SlideToDelete<T> extends StatelessWidget {
         alignment: AlignmentDirectional.centerEnd,
         color: const Color(0xFFC62828),
         child: const Padding(
-          padding: EdgeInsets.only(right: 10.0),
+          padding: .only(right: 10.0),
           child: Icon(KIcons.delete, color: Colors.white),
         ),
       ),
-      direction: DismissDirection.endToStart,
+      direction: .endToStart,
       onDismissed: (direction) => deleteCallback(),
       confirmDismiss: warningContent == null && warningContentBuilder == null
           ? null
           : (direction) => DeleteDialog.show(
-                context,
-                deleteCallback: deleteCallback,
-                content: warningContent ?? warningContentBuilder!(context),
-              ),
+              context,
+              deleteCallback: deleteCallback,
+              content: warningContent ?? warningContentBuilder!(context),
+            ),
       child: child,
     );
   }

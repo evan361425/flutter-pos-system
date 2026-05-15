@@ -21,7 +21,7 @@ class Util {
   }
 
   static DateTime getNow({int? hour}) {
-    final now = DateTime.now();
+    final DateTime now = .now();
     if (hour != null) {
       return DateTime(now.year, now.month, now.day, hour);
     }
@@ -30,17 +30,14 @@ class Util {
   }
 
   static DateTimeRange getDateRange({DateTime? now, int days = 1}) {
-    now ??= DateTime.now();
+    now ??= .now();
     final start = DateTime(now.year, now.month, now.day);
     final end = start.add(Duration(days: days));
 
     return DateTimeRange(start: start, end: end);
   }
 
-  static Widget Function(
-    BuildContext context,
-    AsyncSnapshot<T> snapshot,
-  ) handleSnapshot<T>(
+  static Widget Function(BuildContext context, AsyncSnapshot<T> snapshot) handleSnapshot<T>(
     Widget Function(BuildContext context, T? data) builder, {
     void Function(Object)? onError,
   }) {
@@ -51,14 +48,12 @@ class Util {
         return Center(child: Text(error.toString()));
       }
 
-      if (snapshot.connectionState == ConnectionState.waiting) {
+      if (snapshot.connectionState == .waiting) {
         return const Center(
           child: SizedBox(
             height: 20,
             width: 20,
-            child: Center(
-              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-            ),
+            child: Center(child: CircularProgressIndicator.adaptive(strokeWidth: 2)),
           ),
         );
       }

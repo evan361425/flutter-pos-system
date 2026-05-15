@@ -3,13 +3,13 @@ import 'package:possystem/settings/language_setting.dart';
 import 'package:possystem/settings/setting.dart';
 
 class CurrencySetting extends Setting<CurrencyTypes> {
-  static CurrencySetting instance = CurrencySetting._();
+  static CurrencySetting instance = ._();
 
-  static const defaultValue = CurrencyTypes.twd;
+  static const CurrencyTypes defaultValue = .twd;
 
   static const supports = <CurrencyTypes, List<num>>{
-    CurrencyTypes.twd: [1, 5, 10, 50, 100, 500, 1000],
-    CurrencyTypes.usd: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
+    .twd: [1, 5, 10, 50, 100, 500, 1000],
+    .usd: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
   };
 
   /// Current available unit of money
@@ -105,7 +105,4 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   }
 }
 
-enum CurrencyTypes {
-  twd,
-  usd,
-}
+enum CurrencyTypes { twd, usd }

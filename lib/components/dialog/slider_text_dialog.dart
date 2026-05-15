@@ -39,7 +39,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final local = MaterialLocalizations.of(context);
+    final MaterialLocalizations local = .of(context);
 
     Widget child = buildTextWithSlider();
     if (widget.builder != null) {
@@ -51,10 +51,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
       scrollable: true,
       content: Form(key: form, child: child),
       actions: [
-        PopButton(
-          key: const Key('slider_dialog.cancel'),
-          title: local.cancelButtonLabel,
-        ),
+        PopButton(key: const Key('slider_dialog.cancel'), title: local.cancelButtonLabel),
         FilledButton(
           key: const Key('slider_dialog.confirm'),
           onPressed: () {
@@ -73,31 +70,33 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   Widget buildTextWithSlider() {
     return ListenableBuilder(
       listenable: sliderValue,
-      builder: (_, __) => Column(children: [
-        TextFormField(
-          key: const Key('slider_dialog.text'),
-          controller: textController,
-          onSaved: onSubmit,
-          onFieldSubmitted: onSubmit,
-          autofocus: !withSlider,
-          keyboardType: TextInputType.number,
-          validator: widget.validator,
-          decoration: widget.decoration,
-          textInputAction: TextInputAction.done,
-        ),
-        if (withSlider)
-          Slider.adaptive(
-            value: sliderValue.value,
-            max: sliderMax,
-            min: widget.min,
-            label: sliderValue.value.round().toString(),
-            onChanged: (double value) {
-              textController.text = value.round().toString();
-              widget.currentValue?.value = textController.text;
-              sliderValue.value = value;
-            },
+      builder: (_, __) => Column(
+        children: [
+          TextFormField(
+            key: const Key('slider_dialog.text'),
+            controller: textController,
+            onSaved: onSubmit,
+            onFieldSubmitted: onSubmit,
+            autofocus: !withSlider,
+            keyboardType: .number,
+            validator: widget.validator,
+            decoration: widget.decoration,
+            textInputAction: .done,
           ),
-      ]),
+          if (withSlider)
+            Slider.adaptive(
+              value: sliderValue.value,
+              max: sliderMax,
+              min: widget.min,
+              label: sliderValue.value.round().toString(),
+              onChanged: (double value) {
+                textController.text = value.round().toString();
+                widget.currentValue?.value = textController.text;
+                sliderValue.value = value;
+              },
+            ),
+        ],
+      ),
     );
   }
 
@@ -115,10 +114,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
     sliderMax = max(widget.max, sliderValue.value);
     withSlider = widget.max > 0;
     if (!withSlider) {
-      textController.selection = TextSelection(
-        baseOffset: 0,
-        extentOffset: textController.text.length,
-      );
+      textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
     }
 
     textController.addListener(() {

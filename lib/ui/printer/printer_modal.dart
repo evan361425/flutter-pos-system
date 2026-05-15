@@ -50,11 +50,15 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
     if (printer == null) {
       if (searched.isEmpty) {
         return [
-          p(Column(children: [
-            Text(S.printerScanIng),
-            const SizedBox(height: kInternalSpacing),
-            const LinearProgressIndicator(),
-          ])),
+          p(
+            Column(
+              children: [
+                Text(S.printerScanIng),
+                const SizedBox(height: kInternalSpacing),
+                const LinearProgressIndicator(),
+              ],
+            ),
+          ),
         ];
       }
 
@@ -64,44 +68,46 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
         const SizedBox(height: kInternalSpacing),
         scanStream != null
             ? const CircularProgressIndicator.adaptive()
-            : TextButton(
-                onPressed: scan,
-                child: Text(S.printerScanRetry),
-              ),
+            : TextButton(onPressed: scan, child: Text(S.printerScanRetry)),
       ];
     }
 
     // Selected printer
     return [
       if (widget.isNew)
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          TextButton(onPressed: scan, child: Text(S.printerScanRetry)),
-        ]),
+        Row(
+          mainAxisAlignment: .end,
+          children: [TextButton(onPressed: scan, child: Text(S.printerScanRetry))],
+        ),
       PrinterView(printer: printer!),
       // Add printer type change button
-      p(ListTile(
-        title: Text(S.printerTypeSelectLabel),
-        subtitle: Text(S.printerTypeSelectName(printer!.provider.name)),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: changeProvider,
-      )),
-      p(TextFormField(
-        key: const Key('printer.name'),
-        controller: nameController,
-        focusNode: nameFocusNode,
-        textInputAction: TextInputAction.next,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          labelText: S.printerNameLabel,
-          hintText: widget.printer?.name ?? S.printerNameHint,
-          helperText: S.printerNameHelper(printer!.address),
-          filled: false,
+      p(
+        ListTile(
+          title: Text(S.printerTypeSelectLabel),
+          subtitle: Text(S.printerTypeSelectName(printer!.provider.name)),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: changeProvider,
         ),
-        maxLength: 30,
-        validator: Validator.textLimit(S.printerNameLabel, 30, focusNode: nameFocusNode),
-      )),
+      ),
+      p(
+        TextFormField(
+          key: const Key('printer.name'),
+          controller: nameController,
+          focusNode: nameFocusNode,
+          textInputAction: .next,
+          textCapitalization: .words,
+          decoration: InputDecoration(
+            labelText: S.printerNameLabel,
+            hintText: widget.printer?.name ?? S.printerNameHint,
+            helperText: S.printerNameHelper(printer!.address),
+            filled: false,
+          ),
+          maxLength: 30,
+          validator: Validator.textLimit(S.printerNameLabel, 30, focusNode: nameFocusNode),
+        ),
+      ),
       CheckboxListTile(
-        controlAffinity: ListTileControlAffinity.leading,
+        controlAffinity: .leading,
         value: autoConnect,
         selected: autoConnect,
         onChanged: (value) => setState(() => autoConnect = value!),
@@ -132,11 +138,13 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       builder: (context, child) {
         if (notFoundFAB.value) {
           return FloatingActionButton.extended(
-            onPressed: () => showMoreInfoDialog(
-              context,
-              S.printerScanNotFound,
-              Text(S.printerErrorTimeoutMore, textAlign: TextAlign.start),
-            ),
+            onPressed: () {
+              return showMoreInfoDialog(
+                context,
+                S.printerScanNotFound,
+                Text(S.printerErrorTimeoutMore, textAlign: .start),
+              );
+            },
             label: Text(S.printerScanNotFound),
           );
         }
@@ -168,18 +176,23 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   }
 
   void scan() {
-    scanStream = showSnackbarWhenStreamError(
-      Bluetooth.instance.startScan(),
-      'printer_modal_scan',
-      key: scaffoldMessengerKey,
-    ).listen((devices) {
-      if (mounted) {
-        setState(() {
-          searched = devices;
-          _makeSureDebugHasDemo();
-        });
-      }
-    }, onDone: scanDone, cancelOnError: true);
+    scanStream =
+        showSnackbarWhenStreamError(
+          Bluetooth.instance.startScan(),
+          'printer_modal_scan',
+          key: scaffoldMessengerKey,
+        ).listen(
+          (devices) {
+            if (mounted) {
+              setState(() {
+                searched = devices;
+                _makeSureDebugHasDemo();
+              });
+            }
+          },
+          onDone: scanDone,
+          cancelOnError: true,
+        );
 
     notFoundFuture = Future.delayed(btSearchWarningTime, () {
       Log.out('not found delayed hit', 'printer_modal_scan');
@@ -217,11 +230,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
 
       // advertise name is the default name
       nameController.text = device.name;
-      printer = Printer(
-        name: device.name,
-        address: device.address,
-        provider: provider,
-      );
+      printer = Printer(name: device.name, address: device.address, provider: provider);
 
       scanDone();
       Bluetooth.instance.stopScan();
@@ -235,12 +244,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
       Log.ger('printer_modal_change_type', {'from': printer?.provider.name, 'to': provider.name});
 
       setState(() {
-        printer = Printer(
-          name: printer!.name,
-          address: printer!.address,
-          provider: provider,
-          other: printer!.p,
-        );
+        printer = Printer(name: printer!.name, address: printer!.address, provider: provider, other: printer!.p);
       });
     }
   }
@@ -274,10 +278,7 @@ class _PrinterModalState extends State<PrinterModal> with ItemModal<PrinterModal
   }
 
   PrinterObject parseObject() {
-    return PrinterObject(
-      name: nameController.text,
-      autoConnect: autoConnect,
-    );
+    return PrinterObject(name: nameController.text, autoConnect: autoConnect);
   }
 
   void _makeSureDebugHasDemo() {
@@ -300,13 +301,15 @@ class _ManualTypeSelection extends StatefulWidget {
       builder: (context) => AlertDialog(
         title: Text(S.printerTypeSelectTitle),
         scrollable: true,
-        content: Column(children: [
-          HintText(S.printerTypeSelectHint),
-          const SizedBox(height: kInternalSpacing),
-          _ManualTypeSelection(key: key, initial: initial),
-          const SizedBox(height: kInternalSpacing),
-          Linkify.fromString(S.printerTypeSelectFooter),
-        ]),
+        content: Column(
+          children: [
+            HintText(S.printerTypeSelectHint),
+            const SizedBox(height: kInternalSpacing),
+            _ManualTypeSelection(key: key, initial: initial),
+            const SizedBox(height: kInternalSpacing),
+            Linkify.fromString(S.printerTypeSelectFooter),
+          ],
+        ),
         actions: [
           PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
           TextButton(
@@ -336,13 +339,12 @@ class _ManualTypeSelectionState extends State<_ManualTypeSelection> {
           });
         }
       },
-      child: Column(children: [
-        for (final provider in PrinterProvider.values)
-          RadioListTile(
-            value: provider,
-            title: Text(S.printerTypeSelectName(provider.name)),
-          ),
-      ]),
+      child: Column(
+        children: [
+          for (final provider in PrinterProvider.values)
+            RadioListTile(value: provider, title: Text(S.printerTypeSelectName(provider.name))),
+        ],
+      ),
     );
   }
 

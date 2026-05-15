@@ -39,25 +39,24 @@ class _OrderLoaderState extends State<OrderLoader> {
   Widget build(BuildContext context) {
     return ItemLoader<OrderObject, OrderMetrics>(
       leading: widget.leading,
-      prototypeItem: widget.builder(
-        context,
-        OrderObject(createdAt: DateTime.now()),
-      ),
+      prototypeItem: widget.builder(context, OrderObject(createdAt: .now())),
       notifier: widget.ranger,
       loader: _loadOrders,
       metricsLoader: _loadMetrics,
       builder: widget.builder,
-      padding: const EdgeInsets.all(0),
+      padding: const .all(0),
       metricsBuilder: (metrics) {
         final meta = MetaBlock.withString(context, [
           S.orderLoaderMetaTotalRevenue(metrics.revenue.toCurrency()),
           S.orderLoaderMetaTotalCost(metrics.cost.toCurrency()),
           S.orderLoaderMetaTotalCount(metrics.count),
         ])!;
-        return Row(children: [
-          Expanded(child: Center(child: meta)),
-          if (widget.trailingBuilder != null) buildTrailing(metrics),
-        ]);
+        return Row(
+          children: [
+            Expanded(child: Center(child: meta)),
+            if (widget.trailingBuilder != null) buildTrailing(metrics),
+          ],
+        );
       },
       emptyChild: widget.emptyChild ?? HintText(S.orderLoaderEmpty),
     );
@@ -76,10 +75,7 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   Widget buildTrailing(OrderMetrics metrics) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: widget.trailingBuilder!(context, metrics),
-    );
+    return Padding(padding: const .only(right: 8.0), child: widget.trailingBuilder!(context, metrics));
   }
 
   void _reloadOrders() {
@@ -100,10 +96,6 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   Future<List<OrderObject>> _loadOrders(int offset) {
-    return Seller.instance.getOrders(
-      widget.ranger.value.start,
-      widget.ranger.value.end,
-      offset: offset,
-    );
+    return Seller.instance.getOrders(widget.ranger.value.start, widget.ranger.value.end, offset: offset);
   }
 }

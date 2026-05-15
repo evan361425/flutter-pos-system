@@ -15,21 +15,14 @@ class ChangerFavoriteView extends StatelessWidget {
   final VoidCallback emptyAction;
   final ValueNotifier<FavoriteItem?> selectedItem;
 
-  const ChangerFavoriteView({
-    super.key,
-    required this.emptyAction,
-    required this.selectedItem,
-  });
+  const ChangerFavoriteView({super.key, required this.emptyAction, required this.selectedItem});
 
   @override
   Widget build(BuildContext context) {
     context.watch<Cashier>();
 
     if (Cashier.instance.favoriteIsEmpty) {
-      return EmptyBody(
-        content: S.cashierChangerFavoriteEmptyBody,
-        onPressed: emptyAction,
-      );
+      return EmptyBody(content: S.cashierChangerFavoriteEmptyBody, onPressed: emptyAction);
     }
 
     final delegate = SlidableItemDelegate<FavoriteItem, int>(
@@ -46,13 +39,15 @@ class ChangerFavoriteView extends StatelessWidget {
         //   groupValue: value,
         //   onChanged: (selected) => selectedItem.value = selected,
         //   child: Column(children: [
-        return Column(children: [
-          const SizedBox(height: kTopSpacing),
-          HintText(S.cashierChangerFavoriteHint),
-          const SizedBox(height: kInternalSpacing),
-          for (final item in delegate.items) delegate.build(item, item.index),
-          const SizedBox(height: kFABSpacing),
-        ]);
+        return Column(
+          children: [
+            const SizedBox(height: kTopSpacing),
+            HintText(S.cashierChangerFavoriteHint),
+            const SizedBox(height: kInternalSpacing),
+            for (final item in delegate.items) delegate.build(item, item.index),
+            const SizedBox(height: kFABSpacing),
+          ],
+        );
         //   ]),
         // );
       },
@@ -91,7 +86,7 @@ class _Tile extends StatelessWidget {
         subtitle: MetaBlock.withString(
           context,
           item.targets.map<String>((e) => S.cashierChangerFavoriteItemTo(e.count!, e.unit!.toCurrency())),
-          textOverflow: TextOverflow.visible,
+          textOverflow: .visible,
         ),
         secondary: EntryMoreButton(onPressed: actor),
       ),

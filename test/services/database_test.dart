@@ -18,19 +18,14 @@ void main() {
     group('#initialize', () {
       test('onCreate', () async {
         sqflite.databaseFactoryOrNull = databaseFactoryFfi;
-        await Database.instance.initialize(
-          path: sqflite.inMemoryDatabasePath,
-          logWhenQuery: true,
-        );
+        await Database.instance.initialize(path: sqflite.inMemoryDatabasePath, logWhenQuery: true);
 
         final dbVersion = await Database.instance.db.getVersion();
         expect(dbVersion, equals(Database.latestVersion));
       });
 
       test('onUpgrade should not failed', () async {
-        final db = await databaseFactoryFfi.openDatabase(
-          sqflite.inMemoryDatabasePath,
-        );
+        final db = await databaseFactoryFfi.openDatabase(sqflite.inMemoryDatabasePath);
         await Database.instance.initialize(
           factory: MockDatabaseFactory(db, (path, options) async {
             expect(path, equals('databases/pos_system.sqlite'));
@@ -41,9 +36,7 @@ void main() {
 
       test('onUpgrade should catch the error', () async {
         Log.errorCount = 0;
-        final db = await databaseFactoryFfi.openDatabase(
-          sqflite.inMemoryDatabasePath,
-        );
+        final db = await databaseFactoryFfi.openDatabase(sqflite.inMemoryDatabasePath);
 
         await Database.instance.initialize(
           factory: MockDatabaseFactory(db, (path, options) async {
@@ -73,12 +66,7 @@ void main() {
     test('#batchUpdate', () async {
       final batch = MockBatch();
       when(Database.instance.db.batch()).thenReturn(batch);
-      when(batch.update(
-        any,
-        any,
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenReturn(null);
+      when(batch.update(any, any, where: anyNamed('where'), whereArgs: anyNamed('whereArgs'))).thenReturn(null);
       when(batch.commit()).thenAnswer((realInvocation) => Future.value([]));
 
       await Database.instance.batchUpdate(
@@ -94,61 +82,67 @@ void main() {
         ],
       );
 
-      verify(batch.update(
-        'table',
-        argThat(equals({'1': 1})),
-        where: argThat(equals('where'), named: 'where'),
-        whereArgs: argThat(equals([1]), named: 'whereArgs'),
-      ));
-      verify(batch.update(
-        'table',
-        argThat(equals({'2': 2})),
-        where: argThat(equals('where'), named: 'where'),
-        whereArgs: argThat(equals([2]), named: 'whereArgs'),
-      ));
+      verify(
+        batch.update(
+          'table',
+          argThat(equals({'1': 1})),
+          where: argThat(equals('where'), named: 'where'),
+          whereArgs: argThat(equals([1]), named: 'whereArgs'),
+        ),
+      );
+      verify(
+        batch.update(
+          'table',
+          argThat(equals({'2': 2})),
+          where: argThat(equals('where'), named: 'where'),
+          whereArgs: argThat(equals([2]), named: 'whereArgs'),
+        ),
+      );
       verify(batch.commit());
     });
 
     test('#count', () async {
-      when(Database.instance.db.query(
-        'table',
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenAnswer((_) => Future.value([
-            {'count': 1}
-          ]));
-
-      final result = await Database.instance.count(
-        'table',
-        where: 'a',
-        whereArgs: ['b'],
+      when(
+        Database.instance.db.query(
+          'table',
+          columns: anyNamed('columns'),
+          where: anyNamed('where'),
+          whereArgs: anyNamed('whereArgs'),
+        ),
+      ).thenAnswer(
+        (_) => Future.value([
+          {'count': 1},
+        ]),
       );
+
+      final result = await Database.instance.count('table', where: 'a', whereArgs: ['b']);
 
       expect(result, equals(1));
 
-      verify(Database.instance.db.query(
-        'table',
-        columns: argThat(equals(['COUNT(*)']), named: 'columns'),
-        where: argThat(equals('a'), named: 'where'),
-        whereArgs: argThat(equals(['b']), named: 'whereArgs'),
-      ));
+      verify(
+        Database.instance.db.query(
+          'table',
+          columns: argThat(equals(['COUNT(*)']), named: 'columns'),
+          where: argThat(equals('a'), named: 'where'),
+          whereArgs: argThat(equals(['b']), named: 'whereArgs'),
+        ),
+      );
     });
 
     test('#delete', () async {
-      when(Database.instance.db.delete(
-        'table',
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenAnswer((_) => Future.value(1));
+      when(
+        Database.instance.db.delete('table', where: anyNamed('where'), whereArgs: anyNamed('whereArgs')),
+      ).thenAnswer((_) => Future.value(1));
 
       await Database.instance.delete('table', '1', keyName: 'a');
 
-      verify(Database.instance.db.delete(
-        'table',
-        where: argThat(equals('a = ?'), named: 'where'),
-        whereArgs: argThat(equals(['1']), named: 'whereArgs'),
-      ));
+      verify(
+        Database.instance.db.delete(
+          'table',
+          where: argThat(equals('a = ?'), named: 'where'),
+          whereArgs: argThat(equals(['1']), named: 'whereArgs'),
+        ),
+      );
     });
 
     test('#push', () async {
@@ -177,40 +171,46 @@ void main() {
         groupBy: 'b',
         orderBy: 'a desc',
         join: const JoinQuery(
-            hostTable: 'hostTable',
-            guestTable: 'guestTable',
-            hostKey: 'hostKey',
-            guestKey: 'guestKey',
-            joinType: 'LEFT'),
+          hostTable: 'hostTable',
+          guestTable: 'guestTable',
+          hostKey: 'hostKey',
+          guestKey: 'guestKey',
+          joinType: 'LEFT',
+        ),
         limit: 5,
         offset: 3,
       );
 
-      verify(db.rawQuery(
-        argThat(equals('SELECT a,b FROM `table` '
-            'LEFT JOIN `guestTable`  ON `hostTable`.hostKey = `guestTable`.guestKey '
-            'WHERE a = ? GROUP BY b ORDER BY a desc LIMIT 3, 5')),
-        argThat(equals([1])),
-      ));
+      verify(
+        db.rawQuery(
+          argThat(
+            equals(
+              'SELECT a,b FROM `table` '
+              'LEFT JOIN `guestTable`  ON `hostTable`.hostKey = `guestTable`.guestKey '
+              'WHERE a = ? GROUP BY b ORDER BY a desc LIMIT 3, 5',
+            ),
+          ),
+          argThat(equals([1])),
+        ),
+      );
     });
 
     test('#update', () async {
       final db = Database.instance.db as MockDatabase;
-      when(db.update(
-        any,
-        any,
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenAnswer((_) => Future.value(1));
+      when(
+        db.update(any, any, where: anyNamed('where'), whereArgs: anyNamed('whereArgs')),
+      ).thenAnswer((_) => Future.value(1));
 
       await Database.instance.update('table', 1, {'a': 'b'}, keyName: 'c');
 
-      verify(db.update(
-        'table',
-        argThat(equals({'a': 'b'})),
-        where: argThat(equals('c = ?'), named: 'where'),
-        whereArgs: argThat(equals([1]), named: 'whereArgs'),
-      ));
+      verify(
+        db.update(
+          'table',
+          argThat(equals({'a': 'b'})),
+          where: argThat(equals('c = ?'), named: 'where'),
+          whereArgs: argThat(equals([1]), named: 'whereArgs'),
+        ),
+      );
     });
 
     test('#reset', () async {
@@ -269,10 +269,7 @@ class MockDatabaseFactory extends sqflite.DatabaseFactory {
   }
 
   @override
-  Future<sqflite.Database> openDatabase(
-    String path, {
-    sqflite.OpenDatabaseOptions? options,
-  }) async {
+  Future<sqflite.Database> openDatabase(String path, {sqflite.OpenDatabaseOptions? options}) async {
     await hook(path, options!);
     return db;
   }

@@ -25,15 +25,20 @@ void main() {
 
       when(cache.get(any)).thenReturn(null);
 
-      await tester.pumpWidget(MaterialApp.router(
-        routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, __) => const Scaffold(body: TransitPage()),
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routerConfig: GoRouter(
+            navigatorKey: Routes.rootNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const Scaffold(body: TransitPage()),
+              ),
+              ...Routes.getDesiredRoute(0).routes,
+            ],
           ),
-          ...Routes.getDesiredRoute(0).routes,
-        ]),
-      ));
+        ),
+      );
 
       for (var key in keys) {
         await tester.tap(find.byKey(Key('transit.$key')));
@@ -53,18 +58,15 @@ void main() {
         allowAll: true,
         formatter: ValueNotifier<PreviewFormatter?>(null),
       );
-      final view = _ExportView(
-        stateNotifier: header.stateNotifier,
-        selected: header.selected,
-      );
+      final view = _ExportView(stateNotifier: header.stateNotifier, selected: header.selected);
 
       try {
-        await header.onExport(_MyContext(), FormattableModel.menu);
+        await header.onExport(_MyContext(), .menu);
       } catch (e) {
         expect(e, isA<UnimplementedError>());
       }
 
-      expect(() => view.getSourceAndHeaders(FormattableModel.menu), throwsUnimplementedError);
+      expect(() => view.getSourceAndHeaders(.menu), throwsUnimplementedError);
     });
 
     setUp(() {
