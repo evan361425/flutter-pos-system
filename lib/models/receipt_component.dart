@@ -14,11 +14,7 @@ abstract class ReceiptComponent {
   final Widget leading;
   EdgeInsets padding;
 
-  ReceiptComponent({
-    required this.type,
-    required this.leading,
-    this.padding = const EdgeInsets.all(0),
-  });
+  ReceiptComponent({required this.type, required this.leading, this.padding = const EdgeInsets.all(0)});
 
   /// Convert to JSON for storage
   Map<String, Object?> toJson() {
@@ -38,44 +34,36 @@ abstract class ReceiptComponent {
 
   factory ReceiptComponent.fromJson(Map<String, Object?> json) {
     final typeIdx = json['type'] as int? ?? 0;
-    final type = ReceiptComponentType.values.elementAtOrNull(typeIdx) ?? ReceiptComponentType.orderTable;
+    final type = ReceiptComponentType.values.elementAtOrNull(typeIdx) ?? .orderTable;
     final paddingValues =
         (json['padding'] as String?)?.split(',').map((e) => double.tryParse(e) ?? 0).toList().cast<double>() ??
-            [0, 0, 0, 0];
-    final padding = EdgeInsets.fromLTRB(
+        [0, 0, 0, 0];
+    final EdgeInsets padding = .fromLTRB(
       paddingValues.elementAtOrNull(0) ?? 0,
       paddingValues.elementAtOrNull(1) ?? 0,
       paddingValues.elementAtOrNull(2) ?? 0,
       paddingValues.elementAtOrNull(3) ?? 0,
     );
     switch (type) {
-      case ReceiptComponentType.orderTable:
+      case .orderTable:
         return OrderTableComponent.fromJson(json, padding: padding);
-      case ReceiptComponentType.attributeTable:
+      case .attributeTable:
         return AttributeTableComponent.fromJson(json, padding: padding);
-      case ReceiptComponentType.discountTable:
+      case .discountTable:
         return DiscountTableComponent.fromJson(json, padding: padding);
-      case ReceiptComponentType.priceTable:
+      case .priceTable:
         return PriceTableComponent.fromJson(json, padding: padding);
-      case ReceiptComponentType.textField:
+      case .textField:
         return TextFieldComponent.fromJson(json, padding: padding);
-      case ReceiptComponentType.image:
+      case .image:
         return ImageComponent.fromJson(json, padding: padding);
-      case ReceiptComponentType.divider:
+      case .divider:
         return DividerComponent.fromJson(json, padding: padding);
     }
   }
 }
 
-enum ReceiptComponentType {
-  orderTable,
-  discountTable,
-  attributeTable,
-  priceTable,
-  textField,
-  image,
-  divider,
-}
+enum ReceiptComponentType { orderTable, discountTable, attributeTable, priceTable, textField, image, divider }
 
 /// Order table component with customizable columns
 class OrderTableComponent extends ReceiptComponent {
@@ -92,12 +80,9 @@ class OrderTableComponent extends ReceiptComponent {
     this.showQuantity = true,
     this.showSinglePrice = true,
     this.showTotalPrice = true,
-  }) : super(type: ReceiptComponentType.orderTable, leading: const Icon(Icons.receipt_long_outlined));
+  }) : super(type: .orderTable, leading: const Icon(Icons.receipt_long_outlined));
 
-  factory OrderTableComponent.fromJson(
-    Map<String, Object?> json, {
-    required EdgeInsets padding,
-  }) {
+  factory OrderTableComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
     return OrderTableComponent(
       padding: padding,
       showProductName: json['showProductName'] as bool? ?? true,
@@ -110,16 +95,17 @@ class OrderTableComponent extends ReceiptComponent {
 
   @override
   Widget buildDescription(BuildContext context) => MetaBlock.withString(
-      context,
-      [
-        if (showProductName) S.printerReceiptComponentLabelProductName,
-        if (showCatalogName) S.printerReceiptComponentLabelCatalogName,
-        if (showQuantity) S.printerReceiptComponentLabelQuantity,
-        if (showSinglePrice) S.printerReceiptComponentLabelSinglePrice,
-        if (showTotalPrice) S.printerReceiptComponentLabelTotalPrice,
-      ],
-      maxLines: 1,
-      emptyText: '')!;
+    context,
+    [
+      if (showProductName) S.printerReceiptComponentLabelProductName,
+      if (showCatalogName) S.printerReceiptComponentLabelCatalogName,
+      if (showQuantity) S.printerReceiptComponentLabelQuantity,
+      if (showSinglePrice) S.printerReceiptComponentLabelSinglePrice,
+      if (showTotalPrice) S.printerReceiptComponentLabelTotalPrice,
+    ],
+    maxLines: 1,
+    emptyText: '',
+  )!;
 
   @override
   Map<String, Object?> toJson() {
@@ -150,12 +136,9 @@ class DiscountTableComponent extends ReceiptComponent {
     this.showTotalPrice = false,
     this.showSinglePrice = false,
     this.showOriginPrice = true,
-  }) : super(type: ReceiptComponentType.discountTable, leading: const Icon(Icons.discount_outlined));
+  }) : super(type: .discountTable, leading: const Icon(Icons.discount_outlined));
 
-  factory DiscountTableComponent.fromJson(
-    Map<String, Object?> json, {
-    required EdgeInsets padding,
-  }) {
+  factory DiscountTableComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
     return DiscountTableComponent(
       padding: padding,
       showProductName: json['showProductName'] as bool? ?? true,
@@ -169,17 +152,18 @@ class DiscountTableComponent extends ReceiptComponent {
 
   @override
   Widget buildDescription(BuildContext context) => MetaBlock.withString(
-      context,
-      [
-        if (showProductName) S.printerReceiptComponentLabelProductName,
-        if (showCatalogName) S.printerReceiptComponentLabelCatalogName,
-        if (showQuantity) S.printerReceiptComponentLabelQuantity,
-        if (showSinglePrice) S.printerReceiptComponentLabelSinglePrice,
-        if (showTotalPrice) S.printerReceiptComponentLabelTotalPrice,
-        if (showOriginPrice) S.printerReceiptComponentLabelOriginPrice,
-      ],
-      maxLines: 1,
-      emptyText: '')!;
+    context,
+    [
+      if (showProductName) S.printerReceiptComponentLabelProductName,
+      if (showCatalogName) S.printerReceiptComponentLabelCatalogName,
+      if (showQuantity) S.printerReceiptComponentLabelQuantity,
+      if (showSinglePrice) S.printerReceiptComponentLabelSinglePrice,
+      if (showTotalPrice) S.printerReceiptComponentLabelTotalPrice,
+      if (showOriginPrice) S.printerReceiptComponentLabelOriginPrice,
+    ],
+    maxLines: 1,
+    emptyText: '',
+  )!;
 
   @override
   Map<String, Object?> toJson() {
@@ -205,12 +189,9 @@ class AttributeTableComponent extends ReceiptComponent {
     this.showName = false,
     this.showOptionName = true,
     this.showAdjustment = true,
-  }) : super(type: ReceiptComponentType.attributeTable, leading: const Icon(Icons.attribution_outlined));
+  }) : super(type: .attributeTable, leading: const Icon(Icons.attribution_outlined));
 
-  factory AttributeTableComponent.fromJson(
-    Map<String, Object?> json, {
-    required EdgeInsets padding,
-  }) {
+  factory AttributeTableComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
     return AttributeTableComponent(
       padding: padding,
       showName: json['showName'] as bool? ?? false,
@@ -221,14 +202,15 @@ class AttributeTableComponent extends ReceiptComponent {
 
   @override
   Widget buildDescription(BuildContext context) => MetaBlock.withString(
-      context,
-      [
-        if (showName) S.printerReceiptComponentLabelAttributeName,
-        if (showOptionName) S.printerReceiptComponentLabelAttributeOption,
-        if (showAdjustment) S.printerReceiptComponentLabelAttributeAdjustment,
-      ],
-      maxLines: 1,
-      emptyText: '')!;
+    context,
+    [
+      if (showName) S.printerReceiptComponentLabelAttributeName,
+      if (showOptionName) S.printerReceiptComponentLabelAttributeOption,
+      if (showAdjustment) S.printerReceiptComponentLabelAttributeAdjustment,
+    ],
+    maxLines: 1,
+    emptyText: '',
+  )!;
 
   @override
   Map<String, Object?> toJson() {
@@ -255,12 +237,9 @@ class PriceTableComponent extends ReceiptComponent {
     this.showChange = true,
     this.showProductsQuantity = false,
     this.showProductsPrice = false,
-  }) : super(type: ReceiptComponentType.priceTable, leading: const Icon(Icons.price_change_outlined));
+  }) : super(type: .priceTable, leading: const Icon(Icons.price_change_outlined));
 
-  factory PriceTableComponent.fromJson(
-    Map<String, Object?> json, {
-    required EdgeInsets padding,
-  }) {
+  factory PriceTableComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
     return PriceTableComponent(
       padding: padding,
       showPaid: json['showPaid'] as bool? ?? true,
@@ -273,16 +252,17 @@ class PriceTableComponent extends ReceiptComponent {
 
   @override
   Widget buildDescription(BuildContext context) => MetaBlock.withString(
-      context,
-      [
-        if (showPaid) S.printerReceiptComponentLabelPaid,
-        if (showPrice) S.printerReceiptComponentLabelPrice,
-        if (showChange) S.printerReceiptComponentLabelChange,
-        if (showProductsQuantity) S.printerReceiptComponentLabelProductsQuantity,
-        if (showProductsPrice) S.printerReceiptComponentLabelProductsPrice,
-      ],
-      maxLines: 1,
-      emptyText: '')!;
+    context,
+    [
+      if (showPaid) S.printerReceiptComponentLabelPaid,
+      if (showPrice) S.printerReceiptComponentLabelPrice,
+      if (showChange) S.printerReceiptComponentLabelChange,
+      if (showProductsQuantity) S.printerReceiptComponentLabelProductsQuantity,
+      if (showProductsPrice) S.printerReceiptComponentLabelProductsPrice,
+    ],
+    maxLines: 1,
+    emptyText: '',
+  )!;
 
   @override
   Map<String, Object?> toJson() {
@@ -301,16 +281,10 @@ class TextFieldComponent extends ReceiptComponent {
   List<TextFieldObject> texts;
   TextAlign textAlign;
 
-  TextFieldComponent({
-    super.padding,
-    this.texts = const [],
-    this.textAlign = TextAlign.center,
-  }) : super(type: ReceiptComponentType.textField, leading: const Icon(Icons.text_fields));
+  TextFieldComponent({super.padding, this.texts = const [], this.textAlign = TextAlign.center})
+    : super(type: .textField, leading: const Icon(Icons.text_fields));
 
-  factory TextFieldComponent.fromJson(
-    Map<String, Object?> json, {
-    required EdgeInsets padding,
-  }) {
+  factory TextFieldComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
     final texts = (json['texts'] as List<Object?>?)
         ?.whereType<Map<String, Object?>>()
         .map((e) {
@@ -326,27 +300,21 @@ class TextFieldComponent extends ReceiptComponent {
     return TextFieldComponent(
       padding: padding,
       texts: texts ?? [],
-      textAlign: TextAlign.values.elementAtOrNull(textAlign) ?? TextAlign.center,
+      textAlign: TextAlign.values.elementAtOrNull(textAlign) ?? .center,
     );
   }
 
   @override
   Map<String, Object?> toJson() {
-    return {
-      ...super.toJson(),
-      'texts': texts.map((e) => e.toJson()).toList(),
-      'textAlign': textAlign.index,
-    };
+    return {...super.toJson(), 'texts': texts.map((e) => e.toJson()).toList(), 'textAlign': textAlign.index};
   }
 
   @override
   Widget buildDescription(BuildContext context) => RichText(
-        text: TextSpan(
-          children: texts.map((e) => e.buildDescription()).toList(),
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      );
+    text: TextSpan(children: texts.map((e) => e.buildDescription()).toList()),
+    overflow: .ellipsis,
+    maxLines: 1,
+  );
 
   void updateFromParts(List<StyledPart> parts) {
     texts = parts
@@ -371,19 +339,11 @@ class TextFieldComponent extends ReceiptComponent {
 class DividerComponent extends ReceiptComponent {
   double height;
 
-  DividerComponent({
-    super.padding,
-    this.height = 4.0,
-  }) : super(type: ReceiptComponentType.divider, leading: const Icon(Icons.horizontal_rule));
+  DividerComponent({super.padding, this.height = 4.0})
+    : super(type: .divider, leading: const Icon(Icons.horizontal_rule));
 
-  factory DividerComponent.fromJson(
-    Map<String, Object?> json, {
-    required EdgeInsets padding,
-  }) {
-    return DividerComponent(
-      padding: padding,
-      height: json['height'] as double? ?? 4.0,
-    );
+  factory DividerComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
+    return DividerComponent(padding: padding, height: json['height'] as double? ?? 4.0);
   }
 
   @override
@@ -391,10 +351,7 @@ class DividerComponent extends ReceiptComponent {
 
   @override
   Map<String, Object?> toJson() {
-    return {
-      ...super.toJson(),
-      'height': height,
-    };
+    return {...super.toJson(), 'height': height};
   }
 }
 
@@ -402,16 +359,10 @@ class ImageComponent extends ReceiptComponent {
   String imagePath;
   double widthRatio;
 
-  ImageComponent({
-    super.padding,
-    this.imagePath = '',
-    this.widthRatio = 1.0,
-  }) : super(type: ReceiptComponentType.image, leading: const Icon(Icons.image));
+  ImageComponent({super.padding, this.imagePath = '', this.widthRatio = 1.0})
+    : super(type: .image, leading: const Icon(Icons.image));
 
-  factory ImageComponent.fromJson(
-    Map<String, Object?> json, {
-    required EdgeInsets padding,
-  }) {
+  factory ImageComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
     return ImageComponent(
       padding: padding,
       imagePath: json['imagePath'] as String? ?? '',
@@ -426,11 +377,7 @@ class ImageComponent extends ReceiptComponent {
 
   @override
   Map<String, Object?> toJson() {
-    return {
-      ...super.toJson(),
-      'imagePath': imagePath,
-      'widthRatio': widthRatio,
-    };
+    return {...super.toJson(), 'imagePath': imagePath, 'widthRatio': widthRatio};
   }
 }
 
@@ -459,9 +406,7 @@ class StyledTextObject extends TextFieldObject<StyledPart> {
 
   @override
   Map<String, Object?> toJson() {
-    return {
-      '_part': part.toJson(),
-    };
+    return {'_part': part.toJson()};
   }
 
   @override
@@ -471,10 +416,7 @@ class StyledTextObject extends TextFieldObject<StyledPart> {
 
   @override
   InlineSpan buildSpan({OrderObject? order}) {
-    return TextSpan(
-      text: part.text,
-      style: part.style?.toTextStyle(),
-    );
+    return TextSpan(text: part.text, style: part.style?.toTextStyle());
   }
 }
 
@@ -483,11 +425,9 @@ class StyledPlaceholderObject extends TextFieldObject<PlaceholderPart> {
 
   final String? meta;
 
-  StyledPlaceholderObject({
-    super.part = const PlaceholderPart(text: '', style: null),
-  })  : meta = part is MenuPlaceholderPart ? part.meta : null,
-        type = TextFieldPlaceholderType.values.firstWhereOrNull((e) => e.name == part.text) ??
-            TextFieldPlaceholderType.title;
+  StyledPlaceholderObject({super.part = const PlaceholderPart(text: '', style: null)})
+    : meta = part is MenuPlaceholderPart ? part.meta : null,
+      type = TextFieldPlaceholderType.values.firstWhereOrNull((e) => e.name == part.text) ?? .title;
 
   factory StyledPlaceholderObject.fromJson(PlaceholderPart part, Map<String, Object?> json) {
     return StyledPlaceholderObject(part: part);
@@ -520,9 +460,7 @@ class StyledPlaceholderObject extends TextFieldObject<PlaceholderPart> {
 
   @override
   Map<String, Object?> toJson() {
-    return {
-      '_part': part.toJson(),
-    };
+    return {'_part': part.toJson()};
   }
 
   @override
@@ -543,18 +481,18 @@ class StyledPlaceholderObject extends TextFieldObject<PlaceholderPart> {
 
   String formatText({required OrderObject order}) {
     return switch (type) {
-      TextFieldPlaceholderType.title => S.printerReceiptTitle,
-      TextFieldPlaceholderType.now => TextFieldComponent._formatWithDateTime(meta ?? '', DateTime.now()),
-      TextFieldPlaceholderType.seq => order.periodSeq?.toString() ?? '',
-      TextFieldPlaceholderType.productCount => order.productsCount.toString(),
-      TextFieldPlaceholderType.paid => order.paid.toCurrency(),
-      TextFieldPlaceholderType.change => order.change.toCurrency(),
-      TextFieldPlaceholderType.price => order.price.toCurrency(),
-      TextFieldPlaceholderType.cost => order.cost.toCurrency(),
-      TextFieldPlaceholderType.revenue => order.profit.toCurrency(),
-      TextFieldPlaceholderType.productPrice => order.productsPrice.toCurrency(),
-      TextFieldPlaceholderType.attributePrice => order.attributesPrice.toCurrency(),
-      TextFieldPlaceholderType.orderedAt => TextFieldComponent._formatWithDateTime(meta ?? '', order.createdAt),
+      .title => S.printerReceiptTitle,
+      .now => TextFieldComponent._formatWithDateTime(meta ?? '', .now()),
+      .seq => order.periodSeq?.toString() ?? '',
+      .productCount => order.productsCount.toString(),
+      .paid => order.paid.toCurrency(),
+      .change => order.change.toCurrency(),
+      .price => order.price.toCurrency(),
+      .cost => order.cost.toCurrency(),
+      .revenue => order.profit.toCurrency(),
+      .productPrice => order.productsPrice.toCurrency(),
+      .attributePrice => order.attributesPrice.toCurrency(),
+      .orderedAt => TextFieldComponent._formatWithDateTime(meta ?? '', order.createdAt),
     };
   }
 }
@@ -577,9 +515,7 @@ enum TextFieldPlaceholderType {
 
   const TextFieldPlaceholderType({this.isDate = false});
 
-  TextPlaceholder buildPlaceholder({
-    Future<String?> Function(MenuPlaceholder<String>)? onMenuSelected,
-  }) {
+  TextPlaceholder buildPlaceholder({Future<String?> Function(MenuPlaceholder<String>)? onMenuSelected}) {
     if (!isDate) {
       return TextPlaceholder(id: name, text: S.printerReceiptComponentLabelTextPlaceholders(name));
     }

@@ -252,14 +252,14 @@ class PrinterReceiptView extends StatelessWidget {
   }
 
   Widget _buildPaymentSection(TextTheme theme, Color text) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    return Row(mainAxisAlignment: .spaceBetween, children: [
       DefaultTextStyle(
         style: theme.bodyMedium!.copyWith(fontSize: theme.labelMedium!.fontSize, color: text),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(mainAxisSize: .min, crossAxisAlignment: .start, children: [
           Text(S.printerReceiptPaid),
           Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            padding: const .only(left: 8),
+            child: Column(crossAxisAlignment: .start, children: [
               Text(S.printerReceiptPrice),
               Text(S.printerReceiptChange),
             ]),
@@ -269,8 +269,8 @@ class PrinterReceiptView extends StatelessWidget {
       DefaultTextStyle(
         style: theme.labelMedium!.copyWith(color: text),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: .min,
+          crossAxisAlignment: .end,
           children: [
             Text('\$${order.paid.toCurrency()}'),
             Text('\$${order.price.toCurrency()}'),

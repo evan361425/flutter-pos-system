@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/objects/receipt_template_object.dart';
 import 'package:possystem/models/receipt_component.dart';
@@ -9,10 +8,10 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
   List<ReceiptComponent> components;
 
   @override
-  final Stores storageStore = Stores.receiptTemplates;
+  final Stores storageStore = .receiptTemplates;
 
   @override
-  ReceiptTemplates get repository => ReceiptTemplates.instance;
+  ReceiptTemplates get repository => .instance;
 
   @override
   String get prefix => 'template.$id';
@@ -27,38 +26,31 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
     List<ReceiptComponent>? components,
   }) : components = components ?? const [];
 
-  factory ReceiptTemplate.fromObject(ReceiptTemplateObject object) => ReceiptTemplate(
-        id: object.id,
-        name: object.name!,
-        components: object.components,
-      );
+  factory ReceiptTemplate.fromObject(ReceiptTemplateObject object) =>
+      ReceiptTemplate(id: object.id, name: object.name!, components: object.components);
 
   /// Get default receipt components matching the current hardcoded layout
   static List<ReceiptComponent> getDefaultComponents() {
     return [
       TextFieldComponent(
         texts: [
-          StyledPlaceholderObject.fromType(TextFieldPlaceholderType.title, fontSize: 28),
+          StyledPlaceholderObject.fromType(.title, fontSize: 28),
           StyledTextObject.fromText('\n'),
-          StyledPlaceholderObject.fromType(TextFieldPlaceholderType.orderedAt, meta: ''),
+          StyledPlaceholderObject.fromType(.orderedAt, meta: ''),
         ],
-        textAlign: TextAlign.center,
-        padding: const EdgeInsets.only(bottom: 4),
+        textAlign: .center,
+        padding: const .only(bottom: 4),
       ),
-      OrderTableComponent(padding: const EdgeInsets.only(bottom: 4)),
-      DiscountTableComponent(padding: const EdgeInsets.only(bottom: 4)),
-      AttributeTableComponent(padding: const EdgeInsets.only(bottom: 4)),
-      PriceTableComponent(padding: const EdgeInsets.only(bottom: 4))
+      OrderTableComponent(padding: const .only(bottom: 4)),
+      DiscountTableComponent(padding: const .only(bottom: 4)),
+      AttributeTableComponent(padding: const .only(bottom: 4)),
+      PriceTableComponent(padding: const .only(bottom: 4)),
     ];
   }
 
   @override
   ReceiptTemplateObject toObject() {
-    return ReceiptTemplateObject(
-      id: id,
-      name: name,
-      components: components,
-    );
+    return ReceiptTemplateObject(id: id, name: name, components: components);
   }
 
   @override

@@ -11,10 +11,10 @@ class ReceiptTemplates extends ChangeNotifier with Repository<ReceiptTemplate>, 
   static late ReceiptTemplates instance;
 
   @override
-  final Stores storageStore = Stores.receiptTemplates;
+  final Stores storageStore = .receiptTemplates;
 
   @override
-  RepositoryStorageType get repoType => RepositoryStorageType.repoModel;
+  RepositoryStorageType get repoType => .repoModel;
 
   String? selectedId;
 
@@ -30,11 +30,7 @@ class ReceiptTemplates extends ChangeNotifier with Repository<ReceiptTemplate>, 
     selectedId = data['selectedId'] as String?;
 
     await addItem(
-      ReceiptTemplate(
-        id: _defaultId,
-        name: '',
-        components: ReceiptTemplate.getDefaultComponents(),
-      ),
+      ReceiptTemplate(id: _defaultId, name: '', components: ReceiptTemplate.getDefaultComponents()),
       save: false,
     );
   }
@@ -44,12 +40,7 @@ class ReceiptTemplates extends ChangeNotifier with Repository<ReceiptTemplate>, 
 
   @override
   ReceiptTemplate buildItem(String id, Map<String, Object?> value) {
-    return ReceiptTemplate.fromObject(
-      ReceiptTemplateObject.build({
-        'id': id,
-        ...value,
-      }),
-    );
+    return ReceiptTemplate.fromObject(ReceiptTemplateObject.build({'id': id, ...value}));
   }
 
   Future<void> changeSelected(String id) async {
@@ -61,9 +52,7 @@ class ReceiptTemplates extends ChangeNotifier with Repository<ReceiptTemplate>, 
     Log.ger('update_repo', {'type': storageStore.name});
 
     await Storage.instance.set(storageStore, {
-      'setting': {
-        'selectedId': selectedId,
-      },
+      'setting': {'selectedId': selectedId},
     });
 
     notifyListeners();

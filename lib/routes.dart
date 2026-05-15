@@ -533,6 +533,30 @@ class Routes {
         path: 'settings',
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsModal(), state)),
+        routes: [
+          GoRoute(
+            name: printerSettingsTemplateCreate,
+            path: 'create',
+            parentNavigatorKey: rootNavigatorKey,
+            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ReceiptTemplateModal(), state)),
+          ),
+          GoRoute(
+            path: 't/:id',
+            parentNavigatorKey: rootNavigatorKey,
+            redirect: _redirectIfMissed(path: 'printer', hasItem: (id) => ReceiptTemplates.instance.hasItem(id)),
+            routes: [
+              GoRoute(
+                name: printerSettingsTemplateUpdate,
+                path: 'update',
+                parentNavigatorKey: rootNavigatorKey,
+                pageBuilder: (ctx, state) {
+                  final template = ReceiptTemplates.instance.getItem(state.pathParameters['id']!)!;
+                  return MaterialDialogPage(child: _l(ReceiptTemplateModal(template: template), state));
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: 'a/:id',
@@ -547,52 +571,6 @@ class Routes {
               final p = Printers.instance.getItem(state.pathParameters['id']!)!;
               return MaterialDialogPage(child: _l(PrinterModal(printer: p), state));
             },
-          ),
-          GoRoute(
-            name: printerSettings,
-            path: 'settings',
-            parentNavigatorKey: rootNavigatorKey,
-            pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const PrinterSettingsPage(), state)),
-            routes: [
-              GoRoute(
-                name: printerSettingsTemplateCreate,
-                path: 'create',
-                parentNavigatorKey: rootNavigatorKey,
-                pageBuilder: (ctx, state) => MaterialDialogPage(child: _l(const ReceiptTemplateModal(), state)),
-              ),
-              GoRoute(
-                path: 't/:id',
-                parentNavigatorKey: rootNavigatorKey,
-                redirect: _redirectIfMissed(path: 'printer', hasItem: (id) => ReceiptTemplates.instance.hasItem(id)),
-                routes: [
-                  GoRoute(
-                    name: printerSettingsTemplateUpdate,
-                    path: 'update',
-                    parentNavigatorKey: rootNavigatorKey,
-                    pageBuilder: (ctx, state) {
-                      final template = ReceiptTemplates.instance.getItem(state.pathParameters['id']!)!;
-                      return MaterialDialogPage(child: _l(ReceiptTemplateModal(template: template), state));
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-          GoRoute(
-            path: 'a/:id',
-            parentNavigatorKey: rootNavigatorKey,
-            redirect: _redirectIfMissed(path: 'printer', hasItem: (id) => Printers.instance.hasItem(id)),
-            routes: [
-              GoRoute(
-                name: printerUpdate,
-                path: 'update',
-                parentNavigatorKey: rootNavigatorKey,
-                pageBuilder: (ctx, state) {
-                  final p = Printers.instance.getItem(state.pathParameters['id']!)!;
-                  return MaterialDialogPage(child: _l(PrinterModal(printer: p), state));
-                },
-              ),
-            ],
           ),
         ],
       ),

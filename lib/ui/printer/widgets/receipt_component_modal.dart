@@ -14,10 +14,7 @@ import 'package:possystem/translator.dart';
 class ReceiptComponentModal extends StatefulWidget {
   final ReceiptComponent component;
 
-  const ReceiptComponentModal({
-    super.key,
-    required this.component,
-  });
+  const ReceiptComponentModal({super.key, required this.component});
 
   @override
   State<ReceiptComponentModal> createState() => _ReceiptComponentModalState();
@@ -51,11 +48,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
                   children: [
-                    _buildPaddingEditor(
-                      topCtrl,
-                      S.printerReceiptComponentLabelPaddingTop,
-                      Icons.vertical_align_top,
-                    ),
+                    _buildPaddingEditor(topCtrl, S.printerReceiptComponentLabelPaddingTop, Icons.vertical_align_top),
                     _buildPaddingEditor(
                       rightCtrl,
                       S.printerReceiptComponentLabelPaddingRight,
@@ -82,8 +75,9 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
                 trailing: IconButton(
                   icon: Icon(isSplit ? Icons.unfold_more : Icons.unfold_less),
                   onPressed: () => setState(() => paddingSplit.value = !paddingSplit.value),
-                  tooltip:
-                      isSplit ? S.printerReceiptComponentLabelPaddingAll : S.printerReceiptComponentLabelPaddingSplit,
+                  tooltip: isSplit
+                      ? S.printerReceiptComponentLabelPaddingAll
+                      : S.printerReceiptComponentLabelPaddingSplit,
                 ),
               ),
               editor,
@@ -99,7 +93,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
   @override
   Future<void> updateItem() async {
     await onUpdate?.call();
-    component.padding = EdgeInsets.fromLTRB(
+    component.padding = .fromLTRB(
       (int.tryParse(leftCtrl.text) ?? 0).toDouble(),
       (int.tryParse(topCtrl.text) ?? 0).toDouble(),
       (int.tryParse(rightCtrl.text) ?? 0).toDouble(),
@@ -118,9 +112,11 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
     rightCtrl = TextEditingController(text: component.padding.right.toInt().toString());
     bottomCtrl = TextEditingController(text: component.padding.bottom.toInt().toString());
     leftCtrl = TextEditingController(text: component.padding.left.toInt().toString());
-    paddingSplit = ValueNotifier<bool>(component.padding.top != component.padding.right ||
-        component.padding.top != component.padding.bottom ||
-        component.padding.top != component.padding.left);
+    paddingSplit = ValueNotifier<bool>(
+      component.padding.top != component.padding.right ||
+          component.padding.top != component.padding.bottom ||
+          component.padding.top != component.padding.left,
+    );
     super.initState();
   }
 
@@ -134,12 +130,8 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
     return TextFormField(
       controller: ctrl,
       initialValue: ctrl == null ? topCtrl.text : null,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon),
-        labelText: label,
-        border: const OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.number,
+      decoration: InputDecoration(prefixIcon: Icon(icon), labelText: label, border: const OutlineInputBorder()),
+      keyboardType: .number,
       validator: Validator.positiveInt(label),
       onChanged: ctrl == null
           ? (value) {
@@ -154,19 +146,19 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
 
   List<Widget> _buildComponentListTiles() {
     switch (component.type) {
-      case ReceiptComponentType.orderTable:
+      case .orderTable:
         return _buildOrderTableEditor();
-      case ReceiptComponentType.discountTable:
+      case .discountTable:
         return _buildDiscountTableEditor();
-      case ReceiptComponentType.attributeTable:
+      case .attributeTable:
         return _buildAttributeTableEditor();
-      case ReceiptComponentType.priceTable:
+      case .priceTable:
         return _buildPriceTableEditor();
-      case ReceiptComponentType.textField:
+      case .textField:
         return _buildTextFieldEditor();
-      case ReceiptComponentType.image:
+      case .image:
         return _buildImageEditor();
-      case ReceiptComponentType.divider:
+      case .divider:
         return _buildDividerEditor();
     }
   }
@@ -296,12 +288,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
   }
 
   List<Widget> _buildTextFieldEditor() {
-    return [
-      _TextEditorView(
-        component: component as TextFieldComponent,
-        hooker: (v) => onUpdate = v,
-      )
-    ];
+    return [_TextEditorView(component: component as TextFieldComponent, hooker: (v) => onUpdate = v)];
   }
 
   List<Widget> _buildDividerEditor() {
@@ -311,14 +298,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
       _notifier!.addListener(() => c.height = _notifier!.value);
     }
 
-    return [
-      _buildSliderWithTitle(
-        title: S.printerReceiptComponentLabelDivider,
-        min: 1,
-        max: 4,
-        divisions: 29,
-      )
-    ];
+    return [_buildSliderWithTitle(title: S.printerReceiptComponentLabelDivider, min: 1, max: 4, divisions: 29)];
   }
 
   List<Widget> _buildImageEditor() {
@@ -350,21 +330,23 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
     required double max,
     required int divisions,
   }) {
-    return Column(children: [
-      Text(title, style: Theme.of(context).textTheme.titleMedium),
-      if (helper != null) Text(helper),
-      ValueListenableBuilder(
-        valueListenable: _notifier!,
-        builder: (context, value, child) => Slider(
-          value: value,
-          min: min,
-          max: max,
-          divisions: divisions,
-          label: value.toShortString(),
-          onChanged: (value) => _notifier!.value = value,
+    return Column(
+      children: [
+        Text(title, style: Theme.of(context).textTheme.titleMedium),
+        if (helper != null) Text(helper),
+        ValueListenableBuilder(
+          valueListenable: _notifier!,
+          builder: (context, value, child) => Slider(
+            value: value,
+            min: min,
+            max: max,
+            divisions: divisions,
+            label: value.toShortString(),
+            onChanged: (value) => _notifier!.value = value,
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
@@ -387,7 +369,7 @@ class _TextEditorViewState extends State<_TextEditorView> {
   late final MenuController _colorController;
   late final MenuController _placeholderController;
 
-  final ValueNotifier<TextAlign> _textAlign = ValueNotifier(TextAlign.left);
+  final ValueNotifier<TextAlign> _textAlign = ValueNotifier(.left);
   final MenuController _textAlignController = MenuController();
 
   @override
@@ -401,27 +383,22 @@ class _TextEditorViewState extends State<_TextEditorView> {
         children: [
           // Toolbar
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const .symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHigh,
               border: Border(bottom: BorderSide(color: colorScheme.outlineVariant)),
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+              borderRadius: const .only(topLeft: .circular(8), topRight: .circular(8)),
             ),
             height: 49,
-            width: double.infinity,
+            width: .infinity,
             child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: .horizontal,
               child: Row(spacing: 2.0, children: _buildToolbarButtons()),
             ),
           ),
           // Editor
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              width: double.infinity,
-              height: double.infinity,
-              child: _buildTextField(),
-            ),
+            child: Container(padding: const .all(16), width: .infinity, height: .infinity, child: _buildTextField()),
           ),
         ],
       ),
@@ -439,11 +416,7 @@ class _TextEditorViewState extends State<_TextEditorView> {
       ),
       // Font Styles
       const VerticalDivider(width: 1, thickness: 1, indent: 6, endIndent: 6),
-      FontSizeField(
-        key: const Key('editor_ant.font_size_field'),
-        controller: _fontSizeController,
-        maximum: 40,
-      ),
+      FontSizeField(key: const Key('editor_ant.font_size_field'), controller: _fontSizeController, maximum: 40),
       ColorSelector(
         tooltip: S.printerReceiptComponentLabelTextColor,
         controller: _colorController,
@@ -487,7 +460,7 @@ class _TextEditorViewState extends State<_TextEditorView> {
           autofocus: true,
           maxLines: null,
           minLines: null,
-          decoration: InputDecoration.collapsed(hintText: S.printerReceiptComponentLabelTextValue),
+          decoration: .collapsed(hintText: S.printerReceiptComponentLabelTextValue),
         );
       },
     );
@@ -542,7 +515,7 @@ class _TextEditorViewState extends State<_TextEditorView> {
         return SingleTextDialog(
           initialValue: ph.meta,
           validator: Validator.textLimit('日期格式', 1000),
-          keyboardType: TextInputType.text,
+          keyboardType: .text,
           title: const Text('日期格式'),
           hints: const [
             'yy/M/d',
@@ -554,10 +527,7 @@ class _TextEditorViewState extends State<_TextEditorView> {
             'MMMM dd, yyyy',
             'yyyy-MM-dd HH:mm:ss',
           ],
-          decoration: const InputDecoration(
-            hintText: '例如 yyyy/MM/dd',
-            border: OutlineInputBorder(),
-          ),
+          decoration: const InputDecoration(hintText: '例如 yyyy/MM/dd', border: OutlineInputBorder()),
           footers: [
             const SizedBox(height: 8),
             RichText(
@@ -569,12 +539,12 @@ class _TextEditorViewState extends State<_TextEditorView> {
                     text: '說明文件',
                     style: TextStyle(
                       color: Colors.blue,
-                      decoration: TextDecoration.underline,
+                      decoration: .underline,
                       fontSize: theme.textTheme.bodySmall?.fontSize,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap =
-                          () => Launcher.launch('https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html'),
+                      ..onTap = () =>
+                          Launcher.launch('https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html'),
                   ),
                 ],
               ),

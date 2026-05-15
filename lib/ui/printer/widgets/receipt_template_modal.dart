@@ -17,10 +17,7 @@ class ReceiptTemplateModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ReceiptTemplateModal({
-    super.key,
-    this.template,
-  }) : isNew = template == null;
+  const ReceiptTemplateModal({super.key, this.template}) : isNew = template == null;
 
   @override
   State<ReceiptTemplateModal> createState() => _ReceiptTemplateModalState();
@@ -44,8 +41,8 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
       TextFormField(
         key: const Key('receipt_tpl.name'),
         controller: _nameController,
-        textInputAction: TextInputAction.done,
-        textCapitalization: TextCapitalization.words,
+        textInputAction: .done,
+        textCapitalization: .words,
         focusNode: _nameFocusNode,
         decoration: InputDecoration(
           labelText: S.printerReceiptTemplateNameLabel,
@@ -127,14 +124,17 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
   }
 
   void _onAddComponent() async {
-    final wanted = await showPositionedMenu<ReceiptComponentType>(context, actions: [
-      for (final type in ReceiptComponentType.values)
-        MenuAction(
-          title: Text(S.printerReceiptComponentType(type.name)),
-          leading: ReceiptComponent.fromType(type).leading,
-          returnValue: type,
-        ),
-    ]);
+    final wanted = await showPositionedMenu<ReceiptComponentType>(
+      context,
+      actions: [
+        for (final type in ReceiptComponentType.values)
+          MenuAction(
+            title: Text(S.printerReceiptComponentType(type.name)),
+            leading: ReceiptComponent.fromType(type).leading,
+            returnValue: type,
+          ),
+      ],
+    );
 
     if (wanted != null && mounted) {
       final saved = await _routeToComponentEditor(ReceiptComponent.fromType(wanted));
@@ -157,16 +157,10 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
 
   @override
   Future<void> updateItem() async {
-    final object = ReceiptTemplateObject(
-      name: _nameController.text,
-      components: _components,
-    );
+    final object = ReceiptTemplateObject(name: _nameController.text, components: _components);
 
     if (widget.isNew) {
-      await ReceiptTemplates.instance.addItem(ReceiptTemplate(
-        name: object.name!,
-        components: object.components,
-      ));
+      await ReceiptTemplates.instance.addItem(ReceiptTemplate(name: object.name!, components: object.components));
     } else {
       await widget.template!.update(object);
     }

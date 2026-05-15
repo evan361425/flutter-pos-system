@@ -15,8 +15,8 @@ import 'package:possystem/routes.dart';
 import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 
-class PrinterSettingsPage extends StatelessWidget {
-  const PrinterSettingsPage({super.key});
+class PrinterSettingsModal extends StatelessWidget {
+  const PrinterSettingsModal({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +26,17 @@ class PrinterSettingsPage extends StatelessWidget {
       content: ListenableBuilder(
         listenable: ReceiptTemplates.instance,
         builder: _buildList,
-        child: ButtonGroup(buttons: [
-          RouteIconButton(
-            key: const Key('printer.settings.template_create'),
-            route: Routes.printerSettingsTemplateCreate,
-            icon: const Icon(KIcons.add),
-            label: S.printerSettingsTitleTemplateCreate,
-          ),
-          const _DensitySwitch(key: Key('printer.settings.density_switch')),
-        ]),
+        child: ButtonGroup(
+          buttons: [
+            RouteIconButton(
+              key: const Key('printer.settings.template_create'),
+              route: Routes.printerSettingsTemplateCreate,
+              icon: const Icon(KIcons.add),
+              label: S.printerSettingsTitleTemplateCreate,
+            ),
+            const _DensitySwitch(key: Key('printer.settings.density_switch')),
+          ],
+        ),
       ),
     );
   }
@@ -45,10 +47,7 @@ class PrinterSettingsPage extends StatelessWidget {
       delegate: SlidableItemDelegate(
         handleDelete: (item) async {
           if (item.isDefault) {
-            return showSnackBar(
-              S.printerReceiptTemplateDefaultReadonlyWarning,
-              context: context,
-            );
+            return showSnackBar(S.printerReceiptTemplateDefaultReadonlyWarning, context: context);
           }
           return item.remove();
         },
@@ -70,14 +69,11 @@ class PrinterSettingsPage extends StatelessWidget {
           ),
         ],
         handleAction: (item, action) async {
-          if (action == _Actions.select) {
+          if (action == .select) {
             await ReceiptTemplates.instance.changeSelected(item.id);
           }
         },
-        tileBuilder: (item, index, actorBuilder) => _TemplateTile(
-          template: item,
-          actorBuilder: actorBuilder,
-        ),
+        tileBuilder: (item, index, actorBuilder) => _TemplateTile(template: item, actorBuilder: actorBuilder),
       ),
     );
   }
@@ -87,10 +83,7 @@ class _TemplateTile extends StatelessWidget {
   final ReceiptTemplate template;
   final ActorBuilder actorBuilder;
 
-  const _TemplateTile({
-    required this.template,
-    required this.actorBuilder,
-  });
+  const _TemplateTile({required this.template, required this.actorBuilder});
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +101,7 @@ class _TemplateTile extends StatelessWidget {
       trailing: EntryMoreButton(onPressed: actor),
       onTap: () {
         if (!template.isDefault) {
-          context.pushNamed(
-            Routes.printerSettingsTemplateUpdate,
-            pathParameters: {'id': template.id},
-          );
+          context.pushNamed(Routes.printerSettingsTemplateUpdate, pathParameters: {'id': template.id});
         }
       },
       onLongPress: actor,
@@ -132,13 +122,19 @@ class _DensitySwitchState extends State<_DensitySwitch> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(spacing: 4.0, children: [
-      Switch(value: density == PrinterDensity.tight, onChanged: _onChanged),
-      Row(spacing: 4.0, children: [
-        Text(S.printerSettingsPaddingLabel),
-        InfoPopup(S.printerSettingsPaddingHelper, margin: const EdgeInsets.all(0)),
-      ]),
-    ]);
+    return Column(
+      spacing: 4.0,
+      children: [
+        Switch(value: density == PrinterDensity.tight, onChanged: _onChanged),
+        Row(
+          spacing: 4.0,
+          children: [
+            Text(S.printerSettingsPaddingLabel),
+            InfoPopup(S.printerSettingsPaddingHelper, margin: const .all(0)),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
@@ -162,7 +158,4 @@ class _DensitySwitchState extends State<_DensitySwitch> {
   }
 }
 
-enum _Actions {
-  delete,
-  select,
-}
+enum _Actions { delete, select }
