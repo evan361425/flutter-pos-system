@@ -10,6 +10,8 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
 
   String get title;
 
+  bool get scrollable => true;
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveDialog(
@@ -19,6 +21,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         onPressed: () => handleSubmit(),
         child: Text(MaterialLocalizations.of(context).saveButtonLabel),
       ),
+      scrollable: scrollable,
       scaffoldMessengerKey: scaffoldMessengerKey,
       floatingActionButton: buildFloatingActionButton(),
       content: Form(

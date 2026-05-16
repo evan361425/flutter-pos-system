@@ -7,6 +7,7 @@ headerInfo:
 _title:
   $prefix: title
   create: Add Printer
+  supported: Supported List
   update: Edit Printer
   settings: Format Settings
 btn:
@@ -90,28 +91,125 @@ meta:
   helper: Enable Bluetooth and keep the printer nearby
 settings:
   title: Printer Format Settings
+  _title:
+    $prefix: title
+    template:
+      create: Create Template
+      update: Update Template
   padding:
     label: Narrow Spacing
     helper: Reduces paper between receipts; need caution when tearing
-  more: More Settings Coming Soon!
 receipt:
   title: Receipt
-  column:
+  productTable:
     name: Item
     price: U/P
     count: QTY
     total: TOT
     time: Time
-  discount:
-    label: Discount
+  discountTable:
+    title: Discount
+    price: U/P
+    count: QTY
+    total: TOT
     origin: Origin
-  addOns:
-    label: Add-Ons
+  attributeTable:
+    title: Add-Ons
     adjustment: Adj
-  total: Total
-  paid: Paid
-  price: Price
-  change: Change
+  priceTable:
+    total: Total
+    paid: Paid
+    price: Price
+    change: Change
+    productsPrice: Prod. Price
+    productsQuantity: Prod. Quantity
+  template:
+    meta:
+      componentsCount:
+      - =1: '{count} component'
+        other: '{count} components'
+      - count: {type: int, mode: plural, format: compactLong}
+    name:
+      label: Template Name
+      errorRepeat: Template name already exists
+    select:
+      label: Enable This Template
+    default:
+      name: Default Template
+      readonlyWarning: Default template cannot be edited or deleted
+  component:
+    title:
+      add: Add Component
+    type:
+    - orderTable: Order Table
+      discountTable: Discount Products Table
+      attributeTable: Adds-on Table
+      priceTable: Price Table
+      textField: Text Field
+      image: Image
+      divider: Divider
+    label:
+      productName: Product Name
+      catalogName: Catalog Name
+      quantity: Quantity
+      singlePrice: Unit Price
+      totalPrice: Total Price
+      originPrice: Origin Price
+      attribute:
+        name: Type
+        option: Option
+        adjustment: Adjustment
+      paid: Paid
+      change: Change
+      price: Price
+      productsQuantity: Products Quantity
+      productsPrice: Products Price
+      text:
+        value: Start typing...
+        color: Color
+        align: Alignment
+        alignLeft: Left
+        alignCenter: Center
+        alignRight: Right
+        alignJustify: Justify
+        bold: Bold
+        italic: Italic
+        strikeThrough: Strike Through
+        underline: Underline
+        placeholder: Insert Placeholder
+        placeholders:
+        - now: now
+          seq: order sequence
+          productCount: product count
+          paid: paid amount
+          change: change amount
+          price: order price
+          cost: order cost
+          revenue: revenue
+          productPrice: product price
+          attributePrice: attribute price
+          createdAt: created time
+      padding:
+        label: Padding
+        helper: 'Padding around text in pixels'
+        all: Link All Directions
+        split: Set Directions Separately
+        top: Top
+        bottom: Bottom
+        left: Left
+        right: Right
+      image: Image
+      _image:
+        $prefix: image
+        widthRatio: Width Ratio
+        widthRatioHelper: 'Width ratio compared to receipt width, e.g., 0.5 = 50%'
+      divider: Divider
+      _divider:
+        $prefix: divider
+        meta:
+        - 'Height: {height}'
+        - height: {type: double, format: 'compact'}
+
 info:
   title: Printer Information
   name: Name
@@ -119,7 +217,6 @@ info:
   signal: Signal
   status: Status
 supported:
-  title: Supported Printers
   name:
   - xPrinter58: XPrinter
     catPrinter: Portable Mini Printer
