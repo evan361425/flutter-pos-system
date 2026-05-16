@@ -92,22 +92,28 @@ settings:
     helper: 單子跟單子之間的空白會變少，較省紙張，但是撕紙時要小心
 receipt:
   title: 交易明細
-  column:
+  productTable:
     name: 品項
     price: 單價
     count: 數量
     total: 小計
     time: 時間
-  discount:
-    label: 折扣
+  discountTable:
+    title: 折扣
+    price: 單價
+    count: 數量
+    total: 小計
     origin: 原單價
-  addOns:
-    label: 附加
+  attributeTable:
+    title: 附加
     adjustment: 調整金額
-  total: 總價
-  paid: 付額
-  price: 總價
-  change: 找錢
+  priceTable:
+    total: 總價
+    paid: 付額
+    price: 總價
+    change: 找錢
+    productsPrice: 產品總價
+    productsQuantity: 產品總數
   template:
     meta:
       componentsCount:

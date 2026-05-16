@@ -101,22 +101,28 @@ settings:
     helper: Reduces paper between receipts; need caution when tearing
 receipt:
   title: Receipt
-  column:
+  productTable:
     name: Item
     price: U/P
     count: QTY
     total: TOT
     time: Time
-  discount:
-    label: Discount
+  discountTable:
+    title: Discount
+    price: U/P
+    count: QTY
+    total: TOT
     origin: Origin
-  addOns:
-    label: Add-Ons
+  attributeTable:
+    title: Add-Ons
     adjustment: Adj
-  total: Total
-  paid: Paid
-  price: Price
-  change: Change
+  priceTable:
+    total: Total
+    paid: Paid
+    price: Price
+    change: Change
+    productsPrice: Prod. Price
+    productsQuantity: Prod. Quantity
   template:
     meta:
       componentsCount:
