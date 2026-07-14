@@ -6,6 +6,7 @@ output-localization-file: app_localizations.dart
 preferred-supported-locales:
 - "en"
 - "zh"
+- "ar"
 # - "zh_TW"
 # - "zh_Hant"
 # - "zh_Hant_TW"
