@@ -17,17 +17,72 @@ Future<void> setupExampleMenu() async {
 
   log('setting stock', name: 'example menu');
   for (final e in [
-    Ingredient(id: 'cheese', name: '🧀 ${S.menuExampleIngredientCheese}', currentAmount: 30, totalAmount: 30),
-    Ingredient(id: 'lettuce', name: '🥬 ${S.menuExampleIngredientLettuce}', currentAmount: 70, totalAmount: 70),
-    Ingredient(id: 'tomato', name: '🍅 ${S.menuExampleIngredientTomato}', currentAmount: 100, totalAmount: 100),
-    Ingredient(id: 'bun', name: '🍞 ${S.menuExampleIngredientBun}', currentAmount: 50, totalAmount: 50),
-    Ingredient(id: 'chili', name: '🌶 ${S.menuExampleIngredientChili}', currentAmount: 500, totalAmount: 500),
-    Ingredient(id: 'ham', name: '🍖 ${S.menuExampleIngredientHam}', currentAmount: 5, totalAmount: 5),
-    Ingredient(id: 'cola', name: '🥤 ${S.menuExampleIngredientCola}', currentAmount: 20, totalAmount: 20),
-    Ingredient(id: 'coffee', name: '☕️ ${S.menuExampleIngredientCoffee}', currentAmount: 50, totalAmount: 50),
-    Ingredient(id: 'fries', name: '🍟 ${S.menuExampleIngredientFries}', currentAmount: 3, totalAmount: 3),
-    Ingredient(id: 'straw', name: S.menuExampleIngredientStraw, currentAmount: 50, totalAmount: 50),
-    Ingredient(id: 'plasticBag', name: S.menuExampleIngredientPlasticBag, currentAmount: 50, totalAmount: 50),
+    Ingredient(
+      id: 'cheese',
+      name: '🧀 ${S.menuExampleIngredientCheese}',
+      currentAmount: 30,
+      totalAmount: 30,
+    ),
+    Ingredient(
+      id: 'lettuce',
+      name: '🥬 ${S.menuExampleIngredientLettuce}',
+      currentAmount: 70,
+      totalAmount: 70,
+    ),
+    Ingredient(
+      id: 'tomato',
+      name: '🍅 ${S.menuExampleIngredientTomato}',
+      currentAmount: 100,
+      totalAmount: 100,
+    ),
+    Ingredient(
+      id: 'bun',
+      name: '🍞 ${S.menuExampleIngredientBun}',
+      currentAmount: 50,
+      totalAmount: 50,
+    ),
+    Ingredient(
+      id: 'chili',
+      name: '🌶 ${S.menuExampleIngredientChili}',
+      currentAmount: 500,
+      totalAmount: 500,
+    ),
+    Ingredient(
+      id: 'ham',
+      name: '🍖 ${S.menuExampleIngredientHam}',
+      currentAmount: 5,
+      totalAmount: 5,
+    ),
+    Ingredient(
+      id: 'cola',
+      name: '🥤 ${S.menuExampleIngredientCola}',
+      currentAmount: 20,
+      totalAmount: 20,
+    ),
+    Ingredient(
+      id: 'coffee',
+      name: '☕️ ${S.menuExampleIngredientCoffee}',
+      currentAmount: 50,
+      totalAmount: 50,
+    ),
+    Ingredient(
+      id: 'fries',
+      name: '🍟 ${S.menuExampleIngredientFries}',
+      currentAmount: 3,
+      totalAmount: 3,
+    ),
+    Ingredient(
+      id: 'straw',
+      name: S.menuExampleIngredientStraw,
+      currentAmount: 50,
+      totalAmount: 50,
+    ),
+    Ingredient(
+      id: 'plasticBag',
+      name: S.menuExampleIngredientPlasticBag,
+      currentAmount: 50,
+      totalAmount: 50,
+    ),
   ]) {
     await Stock.instance.addItem(e);
   }
@@ -35,8 +90,16 @@ Future<void> setupExampleMenu() async {
   log('setting quantities', name: 'example menu');
   for (final e in [
     Quantity(id: 'none', name: S.menuExampleQuantityNone, defaultProportion: 0),
-    Quantity(id: 'small', name: S.menuExampleQuantitySmall, defaultProportion: 0.5),
-    Quantity(id: 'large', name: S.menuExampleQuantityLarge, defaultProportion: 1.5),
+    Quantity(
+      id: 'small',
+      name: S.menuExampleQuantitySmall,
+      defaultProportion: 0.5,
+    ),
+    Quantity(
+      id: 'large',
+      name: S.menuExampleQuantityLarge,
+      defaultProportion: 1.5,
+    ),
   ]) {
     await Quantities.instance.addItem(e);
   }
@@ -62,7 +125,12 @@ Future<void> setupExampleMenu() async {
                 "ingredientId": "cheese",
                 "amount": 0.3,
                 "quantities": <String, Object?>{
-                  "cb1-quantity1": {"quantityId": "large", "amount": 0.5, "additionalCost": 5, "additionalPrice": 10},
+                  "cb1-quantity1": {
+                    "quantityId": "large",
+                    "amount": 0.5,
+                    "additionalCost": 5,
+                    "additionalPrice": 10,
+                  },
                   "cb1-quantity2": {"quantityId": "small", "amount": 0.1},
                 },
               },
@@ -87,7 +155,12 @@ Future<void> setupExampleMenu() async {
                 "ingredientId": "tomato",
                 "amount": 0.2,
                 "quantities": <String, Object?>{
-                  "vb1-quantity1": {"quantityId": "more", "amount": 0.5, "additionalCost": 2, "additionalPrice": 5},
+                  "vb1-quantity1": {
+                    "quantityId": "more",
+                    "amount": 0.5,
+                    "additionalCost": 2,
+                    "additionalPrice": 5,
+                  },
                   "vb1-quantity2": {"quantityId": "less", "amount": 0.1},
                 },
               },
@@ -112,7 +185,12 @@ Future<void> setupExampleMenu() async {
                 "ingredientId": "ham",
                 "amount": 0.3,
                 "quantities": <String, Object?>{
-                  "hb1-quantity1": {"quantityId": "more", "amount": 0.6, "additionalCost": 10, "additionalPrice": 30},
+                  "hb1-quantity1": {
+                    "quantityId": "more",
+                    "amount": 0.6,
+                    "additionalCost": 10,
+                    "additionalPrice": 30,
+                  },
                 },
               },
               "hb-ingredient2": {"ingredientId": "bun", "amount": 1},
@@ -177,7 +255,12 @@ Future<void> setupExampleMenu() async {
                 "ingredientId": "fries",
                 "amount": 0.1,
                 "quantities": <String, Object?>{
-                  "fries1-quantity1": {"quantityId": "more", "amount": 0.2, "additionalCost": 5, "additionalPrice": 10},
+                  "fries1-quantity1": {
+                    "quantityId": "more",
+                    "amount": 0.2,
+                    "additionalCost": 5,
+                    "additionalPrice": 10,
+                  },
                 },
               },
             },
@@ -199,7 +282,10 @@ Future<void> setupExampleMenu() async {
             "name": S.menuExampleProductPlasticBag,
             "createdAt": now,
             "ingredients": {
-              "plastic-bag-ingredient1": {"ingredientId": "plasticBag", "amount": 1},
+              "plastic-bag-ingredient1": {
+                "ingredientId": "plasticBag",
+                "amount": 1,
+              },
             },
           },
           "straw": {
@@ -231,14 +317,22 @@ Future<void> setupExampleOrderAttrs() async {
       index: 1,
       mode: .statOnly,
       options: {
-        'child': OrderAttributeOption(id: 'child', name: '${S.orderAttributeExampleAgeChild} (0-12)', index: 1),
+        'child': OrderAttributeOption(
+          id: 'child',
+          name: '${S.orderAttributeExampleAgeChild} (0-12)',
+          index: 1,
+        ),
         'adult': OrderAttributeOption(
           id: 'adult',
           name: '${S.orderAttributeExampleAgeAdult} (13-60)',
           index: 2,
           isDefault: true,
         ),
-        'senior': OrderAttributeOption(id: 'senior', name: '${S.orderAttributeExampleAgeSenior} (60+)', index: 3),
+        'senior': OrderAttributeOption(
+          id: 'senior',
+          name: '${S.orderAttributeExampleAgeSenior} (60+)',
+          index: 3,
+        ),
       },
     )..prepareItem(),
     OrderAttribute(

@@ -21,7 +21,8 @@ import 'package:possystem/ui/order/widgets/checkout_receipt_dialog.dart';
 typedef BluetoothDevice = bt.BluetoothDevice;
 typedef PrinterManufactory = bt.PrinterManufactory;
 
-class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorage<Printer> {
+class Printers extends ChangeNotifier
+    with Repository<Printer>, RepositoryStorage<Printer> {
   static late Printers instance;
 
   PrinterDensity density = PrinterDensity.normal;
@@ -45,8 +46,11 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   bool get hasConnected => items.any((e) => e.connected);
 
   /// Get all the width of the connected printer, and remove the duplicate.
-  List<int> get wantedPixelsWidths =>
-      items.where((e) => e.connected).map((e) => e.p.manufactory.widthBits).toSet().toList();
+  List<int> get wantedPixelsWidths => items
+      .where((e) => e.connected)
+      .map((e) => e.p.manufactory.widthBits)
+      .toSet()
+      .toList();
 
   bool hasAddress(String address) => items.any((e) => e.address == address);
 
@@ -68,14 +72,19 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     // to the storage.
     if (isEmpty && data.isEmpty) {
       await Future.wait([
-        Storage.instance.add(storageStore, 'setting', {'density': density.index}),
+        Storage.instance.add(storageStore, 'setting', {
+          'density': density.index,
+        }),
         Storage.instance.add(storageStore, 'printer', {}),
       ]);
     }
   }
 
   Future<void> saveProperties() async {
-    Log.ger('update_printers', {'type': storageStore.name, 'density': density.index});
+    Log.ger('update_printers', {
+      'type': storageStore.name,
+      'density': density.index,
+    });
 
     await Storage.instance.set(storageStore, {
       'setting': {'density': density.index},
@@ -88,7 +97,10 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   ///
   /// Separate the print action to another function, so we can first pop the
   /// dialog and then print the receipt in the background.
-  Future<List<ConvertibleImage>?> generateReceipts({required BuildContext context, required OrderObject order}) {
+  Future<List<ConvertibleImage>?> generateReceipts({
+    required BuildContext context,
+    required OrderObject order,
+  }) {
     if (!Printers.instance.hasConnected) {
       return Future.value(null);
     }
@@ -121,12 +133,18 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     await Future.wait(futures);
 
     if (errors.isNotEmpty) {
-      showSnackbarWhenFutureError(Future.error(errors.join('\n')), 'printer_draw', key: App.scaffoldMessengerKey);
+      showSnackbarWhenFutureError(
+        Future.error(errors.join('\n')),
+        'printer_draw',
+        key: App.scaffoldMessengerKey,
+      );
     }
   }
 }
 
-class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> implements Comparable<Printer> {
+class Printer extends Model<PrinterObject>
+    with ModelStorage<PrinterObject>
+    implements Comparable<Printer> {
   String address;
 
   bool autoConnect;
@@ -157,7 +175,11 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
     this.autoConnect = false,
     this.provider = PrinterProvider.catPrinter,
     bt.Printer? other,
-  }) : p = bt.Printer(address: address, manufactory: provider.manufactory, other: other) {
+  }) : p = bt.Printer(
+         address: address,
+         manufactory: provider.manufactory,
+         other: other,
+       ) {
     p.addListener(notifyItem);
   }
 
@@ -171,7 +193,13 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
 
   @override
   PrinterObject toObject() {
-    return PrinterObject(id: id, name: name, address: address, autoConnect: autoConnect, provider: provider.index);
+    return PrinterObject(
+      id: id,
+      name: name,
+      address: address,
+      autoConnect: autoConnect,
+      provider: provider.index,
+    );
   }
 
   @override
@@ -235,11 +263,22 @@ class PrinterObject extends ModelObject<Printer> {
   final bool? autoConnect;
   final int? provider;
 
-  PrinterObject({this.id, this.name, this.address, this.autoConnect, this.provider});
+  PrinterObject({
+    this.id,
+    this.name,
+    this.address,
+    this.autoConnect,
+    this.provider,
+  });
 
   @override
   Map<String, Object> toMap() {
-    return {'name': name!, 'address': address!, 'autoConnect': autoConnect!, 'provider': provider!};
+    return {
+      'name': name!,
+      'address': address!,
+      'autoConnect': autoConnect!,
+      'provider': provider!,
+    };
   }
 
   @override
@@ -277,7 +316,11 @@ enum PrinterProvider {
   //   bt.EpsonPrinter(),
   //   link: 'https://epson.com/Support/Point-of-Sale/Thermal-Printers/sh/s530',
   // ),
-  xPrinter58(bt.XPrinter(), link: 'https://www.xprinter.net/', markers: ['XP-58', 'XP-76', 'XP-80']),
+  xPrinter58(
+    bt.XPrinter(),
+    link: 'https://www.xprinter.net/',
+    markers: ['XP-58', 'XP-76', 'XP-80'],
+  ),
   xPrinter76(bt.XPrinter(widthMM: 76, widthBits: 528)),
   xPrinter80(bt.XPrinter(widthMM: 80, widthBits: 560)),
   yokoscan58(
@@ -297,12 +340,16 @@ enum PrinterProvider {
     final v = (PrinterManufactory.tryGuess(name)).toString();
     Log.out('guessed printer manufactory: $v', 'printer');
 
-    return PrinterProvider.values.firstWhereOrNull((e) => e.manufactory.toString() == v);
+    return PrinterProvider.values.firstWhereOrNull(
+      (e) => e.manufactory.toString() == v,
+    );
   }
 
   void launchUrl() {
     if (link == null) {
-      Launcher.launch('https://www.google.com/search?q=${S.printerSupportedName(name)}').ignore();
+      Launcher.launch(
+        'https://www.google.com/search?q=${S.printerSupportedName(name)}',
+      ).ignore();
     } else {
       Launcher.launch(link!).ignore();
     }

@@ -8,7 +8,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/history_actions.dart';
 import 'package:possystem/ui/transit/transit_station.dart';
@@ -29,7 +29,8 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final singleView = MediaQuery.sizeOf(context).width <= Breakpoint.medium.max;
+    final singleView =
+        MediaQuery.sizeOf(context).width <= Breakpoint.medium.max;
     return TutorialWrapper(
       child: Scaffold(
         appBar: AppBar(
@@ -51,7 +52,12 @@ class _HistoryPageState extends State<HistoryPage> {
                   SubmenuButton(
                     key: const Key('history.action.export'),
                     menuChildren: TransitMethod.values
-                        .map((e) => MenuItemButton(onPressed: () => _onExport(e), child: Text(e.l10nName)))
+                        .map(
+                          (e) => MenuItemButton(
+                            onPressed: () => _onExport(e),
+                            child: Text(e.l10nName),
+                          ),
+                        )
                         .toList(),
                     child: Text(S.analysisHistoryActionExport),
                   ),
@@ -122,7 +128,10 @@ class _HistoryPageState extends State<HistoryPage> {
       title: S.analysisHistoryCalendarTutorialTitle,
       message: S.analysisHistoryCalendarTutorialContent,
       spotlightBuilder: const SpotlightRectBuilder(),
-      child: HistoryCalendarView(shouldFillViewport: shouldFillViewport, notifier: notifier),
+      child: HistoryCalendarView(
+        shouldFillViewport: shouldFillViewport,
+        notifier: notifier,
+      ),
     );
   }
 
@@ -132,7 +141,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void _onExport(TransitMethod method) async {
     await context.pushNamed(
-      Routes.transitStation,
+      AppRouteNames.transitStation,
       pathParameters: {'method': method.name, 'catalog': 'order'},
       queryParameters: {'range': serializeRange(notifier.value)},
     );

@@ -9,7 +9,8 @@ class CartProductStateSelector extends StatefulWidget {
   const CartProductStateSelector({super.key});
 
   @override
-  State<CartProductStateSelector> createState() => _CartProductStateSelectorState();
+  State<CartProductStateSelector> createState() =>
+      _CartProductStateSelectorState();
 }
 
 class _CartProductStateSelectorState extends State<CartProductStateSelector> {
@@ -27,11 +28,21 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
           SingleRowWrap(
             key: Key('order.ingredient.${status.name}'),
             color: Colors.transparent,
-            children: <Widget>[ChoiceChip(selected: false, label: Text(S.orderCartIngredientStatus(status.name)))],
+            children: <Widget>[
+              ChoiceChip(
+                selected: false,
+                label: Text(S.orderCartIngredientStatus(status.name)),
+              ),
+            ],
           ),
           SingleRowWrap(
             color: Colors.transparent,
-            children: <Widget>[ChoiceChip(selected: false, label: Text(S.orderCartQuantityNotAble))],
+            children: <Widget>[
+              ChoiceChip(
+                selected: false,
+                label: Text(S.orderCartQuantityNotAble),
+              ),
+            ],
           ),
         ],
       );

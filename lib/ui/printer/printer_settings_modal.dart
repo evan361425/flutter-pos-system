@@ -14,7 +14,8 @@ class PrinterSettingsModal extends StatefulWidget {
   State<PrinterSettingsModal> createState() => _PrinterSettingsModalState();
 }
 
-class _PrinterSettingsModalState extends State<PrinterSettingsModal> with ItemModal<PrinterSettingsModal> {
+class _PrinterSettingsModalState extends State<PrinterSettingsModal>
+    with ItemModal<PrinterSettingsModal> {
   late PrinterDensity density;
 
   @override
@@ -27,7 +28,9 @@ class _PrinterSettingsModalState extends State<PrinterSettingsModal> with ItemMo
         title: Text(S.printerSettingsPaddingLabel),
         subtitle: Text(S.printerSettingsPaddingHelper),
         value: density == PrinterDensity.tight,
-        onChanged: (value) => setState(() => density = value ? PrinterDensity.tight : PrinterDensity.normal),
+        onChanged: (value) => setState(
+          () => density = value ? PrinterDensity.tight : PrinterDensity.normal,
+        ),
       ),
       const SizedBox(height: kInternalLargeSpacing),
       Center(child: HintText(S.printerSettingsMore)),

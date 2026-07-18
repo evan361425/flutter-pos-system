@@ -36,7 +36,10 @@ class Storage {
     db = await (opener ?? databaseFactoryIo.openDatabase)(path);
   }
 
-  Future<void> reset(Stores? storeId, [Future<void> Function(String path)? del]) async {
+  Future<void> reset(
+    Stores? storeId, [
+    Future<void> Function(String path)? del,
+  ]) async {
     if (storeId == null) {
       return (del ?? databaseFactoryIo.deleteDatabase)(await getRootPath());
     }
@@ -47,7 +50,9 @@ class Storage {
 
   StorageSanitizedData sanitize(Map<String, Object?> data) {
     final sanitizedData = StorageSanitizedData();
-    data.forEach((key, value) => sanitizedData.add(StorageSanitizedValue(key, value)));
+    data.forEach(
+      (key, value) => sanitizedData.add(StorageSanitizedValue(key, value)),
+    );
     return sanitizedData;
   }
 
@@ -71,7 +76,11 @@ class Storage {
     final store = getStore(storeId);
 
     return db.transaction(
-      (txn) => Future.wait(data.entries.map((e) => store.record(e.key).put(txn, e.value, merge: true))),
+      (txn) => Future.wait(
+        data.entries.map(
+          (e) => store.record(e.key).put(txn, e.value, merge: true),
+        ),
+      ),
     );
   }
 
@@ -85,7 +94,8 @@ class Storage {
   /// Get string map Store
   ///
   /// variable to make it easy to test
-  static StoreRef getStore(Stores storeId) => stringMapStoreFactory.store(storeId.toString());
+  static StoreRef getStore(Stores storeId) =>
+      stringMapStoreFactory.store(storeId.toString());
 }
 
 class StorageSanitizedData {
@@ -144,7 +154,16 @@ class StorageSanitizedData {
   }
 }
 
-enum Stores { menu, stock, replenisher, quantities, cashier, orderAttributes, analysis, printers }
+enum Stores {
+  menu,
+  stock,
+  replenisher,
+  quantities,
+  cashier,
+  orderAttributes,
+  analysis,
+  printers,
+}
 
 class StorageSanitizedValue {
   late final String id;

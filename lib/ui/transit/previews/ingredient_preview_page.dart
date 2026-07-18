@@ -6,7 +6,13 @@ import 'package:possystem/translator.dart';
 import 'preview_page.dart';
 
 class IngredientPreviewPage extends PreviewPage<Ingredient> {
-  const IngredientPreviewPage({super.key, required super.model, required super.items, super.progress, super.physics});
+  const IngredientPreviewPage({
+    super.key,
+    required super.model,
+    required super.items,
+    super.progress,
+    super.physics,
+  });
 
   @override
   Widget buildItem(BuildContext context, Ingredient item) {
@@ -15,7 +21,10 @@ class IngredientPreviewPage extends PreviewPage<Ingredient> {
       title: ImporterColumnStatus(name: item.name, status: item.statusName),
       subtitle: MetaBlock.withString(context, <String>[
         S.transitImportPreviewIngredientMetaAmount(item.currentAmount),
-        S.transitImportPreviewIngredientMetaMaxAmount(item.totalAmount == null ? 0 : 1, item.totalAmount ?? 0),
+        S.transitImportPreviewIngredientMetaMaxAmount(
+          item.totalAmount == null ? 0 : 1,
+          item.totalAmount ?? 0,
+        ),
       ]),
     );
   }

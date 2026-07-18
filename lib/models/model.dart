@@ -20,7 +20,8 @@ abstract class Model<T extends ModelObject> extends ChangeNotifier {
   /// This is used to import/export data.
   ModelStatus status;
 
-  Model({String? id, required this.name, required this.status}) : id = id ?? Util.uuidV4();
+  Model({String? id, required this.name, required this.status})
+    : id = id ?? Util.uuidV4();
 
   String get logName;
 
@@ -129,7 +130,8 @@ mixin ModelSearchable<T extends ModelObject> on Model<T> {
     pattern.split(' ');
 
     int score = 0;
-    for (final p in pattern.split(' ').map((e) => e.trim()).where((e) => e.isNotEmpty)) {
+    for (final p
+        in pattern.split(' ').map((e) => e.trim()).where((e) => e.isNotEmpty)) {
       score += name.split(' ').fold<int>(0, (value, e) {
         final addition = e.startsWith(p)
             ? 2

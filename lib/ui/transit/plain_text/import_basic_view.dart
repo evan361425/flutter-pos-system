@@ -11,7 +11,11 @@ class ImportBasicHeader extends StatefulWidget {
   final ValueNotifier<FormattableModel?> selected;
   final ValueNotifier<PreviewFormatter?> formatter;
 
-  const ImportBasicHeader({super.key, required this.selected, required this.formatter});
+  const ImportBasicHeader({
+    super.key,
+    required this.selected,
+    required this.formatter,
+  });
 
   @override
   State<ImportBasicHeader> createState() => _ImportBasicHeaderState();
@@ -46,13 +50,17 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
             minLines: 3,
             maxLines: 5,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(borderSide: BorderSide(width: 5.0)),
+              border: const OutlineInputBorder(
+                borderSide: BorderSide(width: 5.0),
+              ),
               hintText: S.transitImportBtnPlainTextHint,
               helperMaxLines: 2,
             ),
           ),
           actions: [
-            PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
+            PopButton(
+              title: MaterialLocalizations.of(context).cancelButtonLabel,
+            ),
             TextButton(
               key: const Key('transit.pt_preview'),
               onPressed: () => Navigator.of(context).pop(true),
@@ -82,6 +90,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
     }
 
     widget.selected.value = able;
-    widget.formatter.value = (FormattableModel _) => findPlainTextFormatter(able).format([lines]);
+    widget.formatter.value = (FormattableModel _) =>
+        findPlainTextFormatter(able).format([lines]);
   }
 }

@@ -23,16 +23,24 @@ class ExportOrderHeader extends TransitOrderHeader {
 
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
-    final headers = FormattableOrder.values.map((e) => e.formatHeader()).toList();
+    final headers = FormattableOrder.values
+        .map((e) => e.formatHeader())
+        .toList();
     final data = FormattableOrder.values
         .map(
           (formatter) => orders.expand((o) {
-            return formatter.formatRows(o).map((r) => r.map((v) => v.toString()));
+            return formatter
+                .formatRows(o)
+                .map((r) => r.map((v) => v.toString()));
           }),
         )
         .toList();
 
-    final ok = await exporter.export(name: S.transitExportOrderFileName, data: data, headers: headers);
+    final ok = await exporter.export(
+      name: S.transitExportOrderFileName,
+      data: data,
+      headers: headers,
+    );
     if (context.mounted && ok) {
       showSnackBar(S.transitExportOrderSuccessCsv, context: context);
     }
@@ -51,6 +59,11 @@ class ExportOrderView extends TransitOrderList {
   /// Offset are headers
   static int _memoryPredictor(OrderMetrics m) {
     const offset = 60 + 15 + 40 + 20; // headers
-    return (offset + m.count * 40 + m.attrCount! * 20 + m.productCount! * 30 + m.ingredientCount! * 20).toInt();
+    return (offset +
+            m.count * 40 +
+            m.attrCount! * 20 +
+            m.productCount! * 30 +
+            m.ingredientCount! * 20)
+        .toInt();
   }
 }

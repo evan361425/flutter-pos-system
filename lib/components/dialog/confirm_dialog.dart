@@ -7,11 +7,19 @@ class ConfirmDialog extends StatelessWidget {
   final String title;
   final Widget? content;
 
-  static Future<bool> show(BuildContext context, {required String title, String? content, Widget? body}) async {
+  static Future<bool> show(
+    BuildContext context, {
+    required String title,
+    String? content,
+    Widget? body,
+  }) async {
     final result = await showAdaptiveDialog<bool?>(
       context: context,
       barrierDismissible: true,
-      builder: (_) => ConfirmDialog(title: title, content: body ?? (content == null ? null : Text(content))),
+      builder: (_) => ConfirmDialog(
+        title: title,
+        content: body ?? (content == null ? null : Text(content)),
+      ),
     );
 
     return result ?? false;
@@ -24,7 +32,10 @@ class ConfirmDialog extends StatelessWidget {
       title: Text(title),
       content: content == null ? null : SingleChildScrollView(child: content),
       actions: <Widget>[
-        PopButton(key: const Key('confirm_dialog.cancel'), title: local.cancelButtonLabel),
+        PopButton(
+          key: const Key('confirm_dialog.cancel'),
+          title: local.cancelButtonLabel,
+        ),
         TextButton(
           key: const Key('confirm_dialog.confirm'),
           onPressed: () => Navigator.of(context).pop(true),

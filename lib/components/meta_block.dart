@@ -20,7 +20,9 @@ class MetaBlock {
     TextOverflow textOverflow = .ellipsis,
   }) {
     if (data.isNotEmpty) {
-      final children = data.expand((value) => [TextSpan(text: value), MetaBlock.span()]).toList();
+      final children = data
+          .expand((value) => [TextSpan(text: value), MetaBlock.span()])
+          .toList();
       // remove last block
       children.removeLast();
 

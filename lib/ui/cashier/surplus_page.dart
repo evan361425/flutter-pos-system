@@ -19,10 +19,19 @@ class CashierSurplus extends StatelessWidget {
     final cashier = context.watch<Cashier>();
 
     final columns = <DataColumn>[
-      DataColumn(label: Text(S.cashierSurplusColumnName('unit')), numeric: true),
-      DataColumn(label: Text(S.cashierSurplusColumnName('currentCount')), numeric: true),
+      DataColumn(
+        label: Text(S.cashierSurplusColumnName('unit')),
+        numeric: true,
+      ),
+      DataColumn(
+        label: Text(S.cashierSurplusColumnName('currentCount')),
+        numeric: true,
+      ),
       DataColumn(label: Text(S.cashierSurplusColumnName('diffCount'))),
-      DataColumn(label: Text(S.cashierSurplusColumnName('defaultCount')), numeric: true),
+      DataColumn(
+        label: Text(S.cashierSurplusColumnName('defaultCount')),
+        numeric: true,
+      ),
     ];
 
     final rows = <DataRow>[
@@ -60,7 +69,8 @@ class CashierSurplus extends StatelessWidget {
                 helper: S.cashierSurplusCurrentTotalHelper,
               ),
               _DataWithLabel(
-                data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
+                data: (cashier.currentTotal - cashier.defaultTotal)
+                    .toCurrency(),
                 label: S.cashierSurplusDiffTotalLabel,
                 helper: S.cashierSurplusDiffTotalHelper,
               ),
@@ -78,9 +88,16 @@ class CashierSurplus extends StatelessWidget {
     );
   }
 
-  DataCell generateCell(int value, {bool withSign = false, VoidCallback? onTap}) {
+  DataCell generateCell(
+    int value, {
+    bool withSign = false,
+    VoidCallback? onTap,
+  }) {
     return DataCell(
-      Text(withSign ? '${value > 0 ? '+' : ''}$value' : value.toString(), textAlign: withSign ? .left : .right),
+      Text(
+        withSign ? '${value > 0 ? '+' : ''}$value' : value.toString(),
+        textAlign: withSign ? .left : .right,
+      ),
       showEditIcon: onTap != null,
       onTap: onTap,
     );
@@ -123,7 +140,10 @@ class _DataWithLabel extends StatelessWidget {
       child: Column(
         children: [
           Text(data, style: theme.textTheme.headlineSmall),
-          Row(mainAxisAlignment: .center, children: [Text(label), if (helper != null) InfoPopup(helper!)]),
+          Row(
+            mainAxisAlignment: .center,
+            children: [Text(label), if (helper != null) InfoPopup(helper!)],
+          ),
         ],
       ),
     );

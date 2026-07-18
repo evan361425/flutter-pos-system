@@ -8,11 +8,12 @@ import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/analysis/chart.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/chart_card_view.dart';
 import 'package:possystem/ui/analysis/widgets/chart_range_page.dart';
 import 'package:possystem/ui/analysis/widgets/goals_card_view.dart';
+import 'package:possystem/services/staff/employee_manager_service.dart';
 
 class AnalysisView extends StatefulWidget {
   const AnalysisView({super.key});
@@ -21,7 +22,8 @@ class AnalysisView extends StatefulWidget {
   State<AnalysisView> createState() => _AnalysisViewState();
 }
 
-class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClientMixin {
+class _AnalysisViewState extends State<AnalysisView>
+    with AutomaticKeepAliveClientMixin {
   /// Range of the data to show in charts, it can updated by the user
   late ValueNotifier<DateTimeRange> range;
 
@@ -41,7 +43,8 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
                   child!,
                   SliverAppBar(
                     primary: false,
-                    automaticallyImplyLeading: false, // avoid giving drawer's menu icon
+                    automaticallyImplyLeading:
+                        false, // avoid giving drawer's menu icon
                     title: Text(S.analysisChartTitle),
                     actions: const [_MoreButton()],
                   ),
@@ -55,11 +58,30 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
         child: SliverList.list(
           children: [
             GoalsCardView(
-              action: RouteIconButton(
-                key: const Key('anal.history'),
-                route: Routes.history,
-                icon: const Icon(Icons.calendar_month_outlined),
-                label: S.analysisHistoryBtn,
+              action: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListenableBuilder(
+                    listenable: EmployeeManagerService.instance,
+                    builder: (context, _) {
+                      if (!EmployeeManagerService.instance.isManager) {
+                        return const SizedBox.shrink();
+                      }
+                      return RouteIconButton(
+                        key: const Key('anal.dashboard'),
+                        route: AppRouteNames.managerDashboard,
+                        icon: const Icon(Icons.dashboard_outlined),
+                        label: 'Dashboard',
+                      );
+                    },
+                  ),
+                  RouteIconButton(
+                    key: const Key('anal.history'),
+                    route: AppRouteNames.history,
+                    icon: const Icon(Icons.calendar_month_outlined),
+                    label: S.analysisHistoryBtn,
+                  ),
+                ],
               ),
             ),
           ],
@@ -102,7 +124,10 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
     return SliverPadding(
       padding: const .only(bottom: kFABSpacing),
       sliver: SliverGrid.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: col, mainAxisExtent: 376),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: col,
+          mainAxisExtent: 376,
+        ),
         itemCount: items.length + 1,
         itemBuilder: (context, index) {
           if (index == items.length) {
@@ -119,7 +144,7 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
                   child: RouteElevatedIconButton(
                     key: const Key('anal.add_chart'),
                     icon: const Icon(KIcons.add),
-                    route: Routes.chartCreate,
+                    route: AppRouteNames.chartCreate,
                     label: S.analysisChartTitleCreate,
                   ),
                 ),
@@ -142,7 +167,12 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
 
   @override
   void initState() {
-    range = ValueNotifier(Util.getDateRange(now: DateTime.now().subtract(const Duration(days: 7)), days: 7));
+    range = ValueNotifier(
+      Util.getDateRange(
+        now: DateTime.now().subtract(const Duration(days: 7)),
+        days: 7,
+      ),
+    );
 
     super.initState();
   }
@@ -159,7 +189,10 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   }
 
   void _updateRange(Duration dur) {
-    range.value = Util.getDateRange(now: range.value.start.add(dur), days: interval);
+    range.value = Util.getDateRange(
+      now: range.value.start.add(dur),
+      days: interval,
+    );
   }
 }
 
@@ -176,12 +209,12 @@ class _MoreButton extends StatelessWidget {
           MenuAction(
             title: Text(S.analysisChartTitleReorder),
             leading: const Icon(KIcons.reorder),
-            route: Routes.chartReorder,
+            route: AppRouteNames.chartReorder,
           ),
           MenuAction(
             title: Text(S.analysisChartTitleCreate),
             leading: const Icon(KIcons.add),
-            route: Routes.chartCreate,
+            route: AppRouteNames.chartCreate,
           ),
         ],
       ),

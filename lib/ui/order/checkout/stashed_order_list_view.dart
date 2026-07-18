@@ -10,6 +10,7 @@ import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/repository/cart.dart';
+import 'package:possystem/models/order/payment_intent.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/translator.dart';
@@ -69,8 +70,14 @@ class StashedOrderListView extends StatelessWidget {
       child: ListTile(
         key: Key('stashed_order.${order.id}'),
         title: Text(title),
-        subtitle: MetaBlock.withString(context, products, emptyText: S.orderCheckoutStashNoProducts),
-        trailing: MoreButton(onPressed: (context) => _showActions(context, order)),
+        subtitle: MetaBlock.withString(
+          context,
+          products,
+          emptyText: S.orderCheckoutStashNoProducts,
+        ),
+        trailing: MoreButton(
+          onPressed: (context) => _showActions(context, order),
+        ),
         onTap: () => _act(.checkout, context, order),
         onLongPress: () => _showActions(context, order),
       ),
@@ -81,7 +88,10 @@ class StashedOrderListView extends StatelessWidget {
     final action = await MenuActionGroup.withDelete<_Action>(
       context,
       deleteValue: .delete,
-      warningContent: S.dialogDeletionContent(S.orderCheckoutStashDialogDeleteName, ''),
+      warningContent: S.dialogDeletionContent(
+        S.orderCheckoutStashDialogDeleteName,
+        '',
+      ),
       deleteCallback: () => _act(.delete, context, order),
       actions: [
         MenuAction<_Action>(
@@ -104,7 +114,11 @@ class StashedOrderListView extends StatelessWidget {
     }
   }
 
-  Future<bool?> _act(_Action act, BuildContext context, OrderObject order) async {
+  Future<bool?> _act(
+    _Action act,
+    BuildContext context,
+    OrderObject order,
+  ) async {
     switch (act) {
       case .restore:
         bool ok = true;
@@ -151,15 +165,28 @@ class StashedOrderListView extends StatelessWidget {
         children: [
           SizedBox(
             height: 360.0,
-            child: CheckoutCashierCalculator(onSubmit: () => Navigator.of(context).pop(true), price: price, paid: paid),
+            child: CheckoutCashierCalculator(
+              onSubmit: () => Navigator.of(context).pop(true),
+              price: price,
+              paid: paid,
+            ),
           ),
         ],
       ),
     );
 
     if (confirmed == true && context.mounted) {
-      final future = cart.checkout(paid: paid.value, context: context);
-      final status = await showSnackbarWhenFutureError(future, 'stashed_order_checkout', context: context);
+      final future = cart.checkout(
+        payments: [
+          PaymentIntent(amount: paid.value, method: PaymentMethod.cash),
+        ],
+        context: context,
+      );
+      final status = await showSnackbarWhenFutureError(
+        future,
+        'stashed_order_checkout',
+        context: context,
+      );
 
       if (status == .paidNotEnough || status == null) {
         if (context.mounted && status != null) {

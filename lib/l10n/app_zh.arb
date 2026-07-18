@@ -937,7 +937,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} printers{出單機} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} floorPlan{座位圖} settings{設定} menu{菜單} printers{出單機} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
   "@title": {
     "placeholders": {
       "name": {
@@ -1520,7 +1520,25 @@
   },
   "orderActionExchange": "換錢",
   "orderActionStash": "暫存本次點餐",
+  "orderActionSendToKitchen": "送廚",
   "orderActionReview": "訂單記錄",
+  "orderActionSplitBill": "分帳",
+  "orderCartProductNoteTitle": "廚房備註",
+  "orderCartProductNoteHint": "例如：不要洋蔥、過敏…",
+  "orderCartProductNoteSave": "儲存",
+  "orderSplitBillTitle": "分帳",
+  "orderSplitBillRemaining": "桌上剩餘",
+  "orderSplitBillSelected": "本次付款",
+  "orderSplitBillSubtotal": "應付小計：{price}",
+  "@orderSplitBillSubtotal": {
+    "placeholders": {
+      "price": {"type": "String"}
+    }
+  },
+  "orderSplitBillPaySelected": "支付所選",
+  "orderSplitBillEmptySelection": "請至少選擇一項商品付款。",
+  "orderSplitBillFailed": "分帳失敗，桌次訂單未變更。",
+  "orderSplitBillCheckoutTitle": "支付所選商品",
   "orderLoaderMetaTotalRevenue": "總營收：{revenue}",
   "@orderLoaderMetaTotalRevenue": {
     "description": "Total revenue from orders in the order list",
@@ -1686,6 +1704,14 @@
     }
   },
   "orderCheckoutSnackbarPaidFailed": "付額小於訂單總價，無法結帳。",
+  "orderCheckoutSubtotal": "小計",
+  "orderCheckoutTotalTax": "稅額",
+  "orderCheckoutGrandTotal": "總計",
+  "orderCheckoutPaymentCash": "現金",
+  "orderCheckoutPaymentCard": "刷卡",
+  "orderCheckoutPaymentMixed": "混合",
+  "orderCheckoutPaymentCashAmount": "現金",
+  "orderCheckoutPaymentCardAmount": "刷卡",
   "orderObjectViewEmpty": "查無點餐紀錄",
   "orderObjectViewChange": "找錢",
   "orderObjectViewPriceTotal": "訂單總價：{price}",
@@ -1699,6 +1725,8 @@
   },
   "orderObjectViewPriceProducts": "產品總價",
   "orderObjectViewPriceAttributes": "顧客設定總價",
+  "orderObjectViewTotalTax": "稅額",
+  "orderObjectViewSubtotal": "小計",
   "orderObjectViewCost": "成本",
   "orderObjectViewProfit": "淨利",
   "orderObjectViewPaid": "付額",

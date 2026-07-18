@@ -86,7 +86,9 @@ class _TransitStationState extends State<TransitStation> {
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                    context,
+                  ),
                   sliver: SliverAppBar(
                     title: Text(widget.method.l10nName),
                     leading: const PopButton(),
@@ -94,7 +96,10 @@ class _TransitStationState extends State<TransitStation> {
                     floating: true,
                     snap: true,
                     forceElevated: innerBoxIsScrolled,
-                    bottom: PreferredSize(preferredSize: const .fromHeight(56.0), child: _buildHeader()),
+                    bottom: PreferredSize(
+                      preferredSize: const .fromHeight(56.0),
+                      child: _buildHeader(),
+                    ),
                   ),
                 ),
               ];
@@ -128,7 +133,9 @@ class _TransitStationState extends State<TransitStation> {
   }
 
   ValueNotifier<TransitOrderSettings> get _settings {
-    return ValueNotifier<TransitOrderSettings>(TransitOrderSettings.fromCache());
+    return ValueNotifier<TransitOrderSettings>(
+      TransitOrderSettings.fromCache(),
+    );
   }
 
   ValueNotifier<DateTimeRange> get ranger {
@@ -156,9 +163,20 @@ class _TransitStationState extends State<TransitStation> {
           formatter: formatter,
           exporter: _googleSheetExporter,
         ),
-        .excel => excel.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
-        .csv => csv.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
-        .plainText => pt.ImportBasicHeader(selected: model, formatter: formatter),
+        .excel => excel.ImportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+          formatter: formatter,
+        ),
+        .csv => csv.ImportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+          formatter: formatter,
+        ),
+        .plainText => pt.ImportBasicHeader(
+          selected: model,
+          formatter: formatter,
+        ),
       };
     }
 
@@ -169,9 +187,18 @@ class _TransitStationState extends State<TransitStation> {
           stateNotifier: stateNotifier,
           exporter: _googleSheetExporter,
         ),
-        .excel => excel.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
-        .csv => csv.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
-        .plainText => pt.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
+        .excel => excel.ExportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+        ),
+        .csv => csv.ExportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+        ),
+        .plainText => pt.ExportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+        ),
       };
     }
 
@@ -182,9 +209,19 @@ class _TransitStationState extends State<TransitStation> {
         ranger: ranger,
         settings: _settings,
       ),
-      .excel => excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger, settings: _settings),
-      .csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
-      .plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
+      .excel => excel.ExportOrderHeader(
+        stateNotifier: stateNotifier,
+        ranger: ranger,
+        settings: _settings,
+      ),
+      .csv => csv.ExportOrderHeader(
+        stateNotifier: stateNotifier,
+        ranger: ranger,
+      ),
+      .plainText => pt.ExportOrderHeader(
+        stateNotifier: stateNotifier,
+        ranger: ranger,
+      ),
     };
   }
 
@@ -202,10 +239,22 @@ class _TransitStationState extends State<TransitStation> {
 
     if (widget.catalog == .exportModel) {
       return switch (widget.method) {
-        .googleSheet => gs.ExportBasicView(selected: model, stateNotifier: stateNotifier),
-        .excel => excel.ExportBasicView(selected: model, stateNotifier: stateNotifier),
-        .csv => csv.ExportBasicView(selected: model, stateNotifier: stateNotifier),
-        .plainText => pt.ExportBasicView(selected: model, stateNotifier: stateNotifier),
+        .googleSheet => gs.ExportBasicView(
+          selected: model,
+          stateNotifier: stateNotifier,
+        ),
+        .excel => excel.ExportBasicView(
+          selected: model,
+          stateNotifier: stateNotifier,
+        ),
+        .csv => csv.ExportBasicView(
+          selected: model,
+          stateNotifier: stateNotifier,
+        ),
+        .plainText => pt.ExportBasicView(
+          selected: model,
+          stateNotifier: stateNotifier,
+        ),
       };
     }
 

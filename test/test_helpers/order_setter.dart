@@ -56,7 +56,13 @@ class OrderSetter {
       ],
       attributes: const [
         OrderSelectedAttributeObject(id: 1, name: 'oa-1', optionName: 'oao-1'),
-        OrderSelectedAttributeObject(id: 2, name: 'oa-2', optionName: 'oao-2', mode: .changeDiscount, modeValue: 10),
+        OrderSelectedAttributeObject(
+          id: 2,
+          name: 'oa-2',
+          optionName: 'oao-2',
+          mode: .changeDiscount,
+          modeValue: 10,
+        ),
       ],
     );
   }
@@ -68,7 +74,10 @@ class OrderSetter {
       return m;
     }).toList();
     when(
-      database.query(Seller.orderTable, where: argThat(equals('id = ${order.id}'), named: 'where')),
+      database.query(
+        Seller.orderTable,
+        where: argThat(equals('id = ${order.id}'), named: 'where'),
+      ),
     ).thenAnswer((_) => Future.value(om));
 
     final op = order.products.map((e) {
@@ -100,7 +109,9 @@ class OrderSetter {
     final txn = MockDatabaseExecutor();
     final batch = MockBatch();
 
-    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
+    when(
+      database.transaction(any),
+    ).thenAnswer((inv) => inv.positionalArguments[0](txn));
     when(txn.batch()).thenReturn(batch);
     when(batch.commit()).thenAnswer((_) => Future.value([op, oi, oa]));
   }
@@ -110,7 +121,10 @@ class OrderSetter {
       database.query(
         Seller.orderTable,
         columns: anyNamed('columns'),
-        where: argThat(equals('${Seller.orderTable}.createdAt BETWEEN ? AND ?'), named: 'where'),
+        where: argThat(
+          equals('${Seller.orderTable}.createdAt BETWEEN ? AND ?'),
+          named: 'where',
+        ),
         whereArgs: anyNamed('whereArgs'),
         orderBy: anyNamed('orderBy'),
         limit: argThat(equals(10), named: 'limit'),
@@ -123,7 +137,9 @@ class OrderSetter {
         orders.map((e) {
           final m = e.toMap();
           m['id'] = e.id;
-          m['pn'] = e.products.map((e) => e.productName).join(Database.delimiter);
+          m['pn'] = e.products
+              .map((e) => e.productName)
+              .join(Database.delimiter);
           m['pc'] = e.products.map((e) => e.count).join(Database.delimiter);
           return m;
         }).toList(),
@@ -245,78 +261,101 @@ class OrderSetter {
     final txn = MockDatabaseExecutor();
     final batch = MockBatch();
 
-    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
+    when(
+      database.transaction(any),
+    ).thenAnswer((inv) => inv.positionalArguments[0](txn));
     when(txn.batch()).thenReturn(batch);
     when(batch.commit()).thenAnswer((_) => Future.value([om, op, oi, oa]));
   }
 
   static void Function() setPushed(OrderObject order) {
     final txn = MockDatabaseExecutor();
-    final checkers = <void Function()>[];
     final batches = <MockBatch>[];
 
-    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
+    when(
+      database.transaction(any),
+    ).thenAnswer((inv) => inv.positionalArguments[0](txn));
 
-    final om = order.toMap();
-    when(txn.insert(Seller.orderTable, om)).thenAnswer((_) => Future.value(1));
+    when(txn.insert(Seller.orderTable, any)).thenAnswer((_) => Future.value(1));
     when(
       txn.update(
         Seller.orderTable,
         argThat(predicate((v) => v is Map && v.containsKey('periodSeq'))),
-        where: argThat(equals('id = 1'), named: 'where'),
+        where: anyNamed('where'),
+        whereArgs: anyNamed('whereArgs'),
       ),
     ).thenAnswer((_) => Future.value(1));
 
-    for (var i = 0; i < order.products.length; i++) {
-      final p = order.products[i];
-      final m = p.toMap();
-      m['orderId'] = order.id;
-      m['createdAt'] = om['createdAt'];
-      when(txn.insert(Seller.productTable, m)).thenAnswer((_) => Future.value(i + 1));
-
-      final batch = MockBatch();
-      batches.add(batch);
-      for (final ing in p.ingredients) {
-        final m = ing.toMap();
-        m['orderId'] = order.id;
-        m['orderProductId'] = i + 1;
-        m['createdAt'] = om['createdAt'];
-        checkers.add(() => verify(batch.insert(Seller.ingredientTable, m)));
-      }
+    // SellerRepository batches products first (needs commit result = row ids).
+    if (order.products.isNotEmpty) {
+      final productBatch = MockBatch();
+      batches.add(productBatch);
+      when(productBatch.insert(any, any)).thenReturn(null);
+      when(productBatch.commit()).thenAnswer(
+        (_) => Future.value([
+          for (var i = 0; i < order.products.length; i++) i + 1,
+        ]),
+      );
     }
 
-    final batch = MockBatch();
-    batches.add(batch);
-    for (final attr in order.attributes) {
-      final m = attr.toMap();
-      m['orderId'] = order.id;
-      m['createdAt'] = om['createdAt'];
-      checkers.add(() => verify(batch.insert(Seller.attributeTable, m)));
+    final hasIngredients = order.products.any((p) => p.ingredients.isNotEmpty);
+    if (hasIngredients) {
+      final ingredientBatch = MockBatch();
+      batches.add(ingredientBatch);
+      when(ingredientBatch.insert(any, any)).thenReturn(null);
+      when(
+        ingredientBatch.commit(noResult: argThat(isTrue, named: 'noResult')),
+      ).thenAnswer((_) => Future.value([]));
+    }
+
+    if (order.attributes.isNotEmpty) {
+      final attributeBatch = MockBatch();
+      batches.add(attributeBatch);
+      when(attributeBatch.insert(any, any)).thenReturn(null);
+      when(
+        attributeBatch.commit(noResult: argThat(isTrue, named: 'noResult')),
+      ).thenAnswer((_) => Future.value([]));
+    }
+
+    // Spare batches: restored carts may drop ingredients/attrs vs the fixture.
+    for (var i = 0; i < 3; i++) {
+      final spare = MockBatch();
+      when(spare.insert(any, any)).thenReturn(null);
+      when(spare.commit()).thenAnswer((_) => Future.value([]));
+      when(
+        spare.commit(noResult: argThat(isTrue, named: 'noResult')),
+      ).thenAnswer((_) => Future.value([]));
+      batches.add(spare);
     }
 
     when(txn.batch()).thenReturnInOrder(batches);
-    for (final b in batches) {
-      when(b.commit(noResult: argThat(isTrue, named: 'noResult'))).thenAnswer((_) => Future.value([]));
-    }
 
     return () {
-      for (final checker in checkers) {
-        checker();
-      }
+      verify(txn.insert(Seller.orderTable, any)).called(1);
     };
   }
 
   static void Function() setDelete(DateTime dt) {
     final txn = MockDatabaseExecutor();
 
-    when(database.transaction(any)).thenAnswer((inv) => inv.positionalArguments[0](txn));
+    when(
+      database.transaction(any),
+    ).thenAnswer((inv) => inv.positionalArguments[0](txn));
     final begin = Util.toUTC(now: dt);
     final w = 'createdAt < $begin';
 
-    when(txn.delete(Seller.orderTable, where: w)).thenAnswer((_) => Future.value(1));
-    when(txn.delete(Seller.productTable, where: w)).thenAnswer((_) => Future.value(1));
-    when(txn.delete(Seller.ingredientTable, where: w)).thenAnswer((_) => Future.value(1));
-    when(txn.delete(Seller.attributeTable, where: w)).thenAnswer((_) => Future.value(1));
+    when(
+      txn.delete(Seller.orderTable, where: w),
+    ).thenAnswer((_) => Future.value(1));
+    when(
+      txn.delete(Seller.productTable, where: w),
+    ).thenAnswer((_) => Future.value(1));
+    when(
+      txn.delete(Seller.ingredientTable, where: w),
+    ).thenAnswer((_) => Future.value(1));
+    when(
+      txn.delete(Seller.attributeTable, where: w),
+    ).thenAnswer((_) => Future.value(1));
 
     return () {
       verify(txn.delete(Seller.orderTable, where: w));
@@ -331,9 +370,13 @@ class OrderSetter {
 
     if (withCache) {
       final today = Period.today();
-      when(cache.get('order.resetIdPeriod.unit')).thenReturn(PeriodUnit.everyXDays.index);
+      when(
+        cache.get('order.resetIdPeriod.unit'),
+      ).thenReturn(PeriodUnit.everyXDays.index);
       when(cache.get('order.resetIdPeriod.values')).thenReturn('1');
-      when(cache.get('order.resetIdPeriod.next')).thenReturn(today.millisecondsSinceEpoch);
+      when(
+        cache.get('order.resetIdPeriod.next'),
+      ).thenReturn(today.millisecondsSinceEpoch);
     }
 
     when(cache.set(any, any)).thenAnswer((_) => Future.value(true));

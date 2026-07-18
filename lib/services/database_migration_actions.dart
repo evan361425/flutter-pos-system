@@ -4,7 +4,10 @@ import 'package:possystem/helpers/logger.dart';
 import 'package:sqflite/sqflite.dart' show Database;
 
 /// Helper to migrate DB schema from legacy.
-final dbMigrationActions = <int, Future<void> Function(Database)>{8: _makeOrderMoreEasyToAnalysis};
+final dbMigrationActions = <int, Future<void> Function(Database)>{
+  8: _makeOrderMoreEasyToAnalysis,
+  12: _backfillOrderPayments,
+};
 
 /// Formatting order structure and make it easy to analysis.
 Future<void> _makeOrderMoreEasyToAnalysis(Database db, {limit = 100}) async {
@@ -78,12 +81,49 @@ Future<void> _makeOrderMoreEasyToAnalysis(Database db, {limit = 100}) async {
   List<Map<String, Object?>> rows;
   int step = 0;
   do {
-    rows = await db.query('order', orderBy: 'createdAt ASC', limit: limit, offset: limit * step++);
+    rows = await db.query(
+      'order',
+      orderBy: 'createdAt ASC',
+      limit: limit,
+      offset: limit * step++,
+    );
     for (final row in rows) {
       await exec(row).catchError((e) {
         Log.err(e, 'db_migration_action_8');
       });
     }
+  } while (rows.isNotEmpty);
+}
+
+/// Backfill legacy `paid` into a single cash [PaymentIntent] JSON column.
+///
+/// Idempotent: only rows with `payments IS NULL` are updated. Never mutates
+/// `paid`, `price`, or other historical columns.
+Future<void> _backfillOrderPayments(Database db, {int limit = 500}) async {
+  List<Map<String, Object?>> rows;
+  do {
+    rows = await db.query(
+      'order_records',
+      columns: ['id', 'paid'],
+      where: 'payments IS NULL',
+      limit: limit,
+    );
+    if (rows.isEmpty) break;
+
+    final batch = db.batch();
+    for (final row in rows) {
+      final paid = row['paid'] as num? ?? 0;
+      final paymentsJson = jsonEncode([
+        {'amount': paid, 'method': 'cash'},
+      ]);
+      batch.update(
+        'order_records',
+        {'payments': paymentsJson},
+        where: 'id = ?',
+        whereArgs: [row['id']],
+      );
+    }
+    await batch.commit(noResult: true);
   } while (rows.isNotEmpty);
 }
 

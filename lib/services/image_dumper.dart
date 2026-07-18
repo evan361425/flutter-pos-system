@@ -29,13 +29,20 @@ class ImageDumper {
     return result == null ? null : XFile(result.path);
   }
 
-  Future<XFile?> resize(XFile image, String destination, {int? width, int? height}) async {
+  Future<XFile?> resize(
+    XFile image,
+    String destination, {
+    int? width,
+    int? height,
+  }) async {
     final decodedImage = decodeImage(await image.file.readAsBytes());
     if (decodedImage == null) return null;
 
     final dst = XFile(destination);
 
-    await dst.file.writeAsBytes(encodeJpg(copyResize(decodedImage, width: width, height: height)));
+    await dst.file.writeAsBytes(
+      encodeJpg(copyResize(decodedImage, width: width, height: height)),
+    );
 
     return dst;
   }

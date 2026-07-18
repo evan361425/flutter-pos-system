@@ -31,10 +31,16 @@ dependencies:
   sembast: ^3.8.5  # 25, 05-23
   shared_preferences: ^2.5.3
   http: ^1.5.0
+  connectivity_plus: ^6.1.0
   packages:
-    git:
-      url: https://github.com/evan361425/flutter-pos-packages
-      ref: 2026.05.03-04
+    path: vendor/packages
+
+  # thermal printer (LAN / USB) - isolated from legacy Bluetooth stack
+  esc_pos_utils_plus: ^2.0.4
+  ping_discover_network_plus: ^0.0.5
+  # USB serial transport (Android). flutter_pos_printer_platform* conflict with
+  # this project's image ^4.5.4 constraint.
+  usb_serial: ^0.5.0
 
   # google services
   googleapis: ^14.0.0

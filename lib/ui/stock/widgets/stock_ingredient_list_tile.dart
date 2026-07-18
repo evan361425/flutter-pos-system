@@ -11,7 +11,7 @@ import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/stock/ingredient.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/services/cache.dart';
 import 'package:possystem/translator.dart';
 
@@ -38,7 +38,7 @@ class StockIngredientListTile extends StatelessWidget {
   }
 
   void editIngredient(BuildContext context) {
-    context.pushNamed(Routes.stockIngrUpdate, pathParameters: {'id': item.id});
+    context.pushNamed(AppRouteNames.stockIngrUpdate, pathParameters: {'id': item.id});
   }
 
   void showActions(BuildContext context) async {
@@ -60,7 +60,7 @@ class StockIngredientListTile extends StatelessWidget {
           key: const Key('btn.edit'),
           title: Text(S.stockIngredientTitleUpdate),
           leading: const Icon(KIcons.edit),
-          route: Routes.stockIngrUpdate,
+          route: AppRouteNames.stockIngrUpdate,
           routePathParameters: {'id': item.id},
         ),
       ],
@@ -85,15 +85,21 @@ class StockIngredientListTile extends StatelessWidget {
           title: Text(item.name),
           value: item.currentAmount.toDouble(),
           max: item.maxAmount,
-          builder: (child, onSubmit) =>
-              _RestockDialog(ingredient: item, quantityTab: child, onSubmit: onSubmit, currentValue: currentValue),
+          builder: (child, onSubmit) => _RestockDialog(
+            ingredient: item,
+            quantityTab: child,
+            onSubmit: onSubmit,
+            currentValue: currentValue,
+          ),
           currentValue: currentValue,
           decoration: InputDecoration(
             label: Text(S.stockIngredientRestockDialogQuantityLabel),
             helperText: S.stockIngredientRestockDialogQuantityHelper,
             helperMaxLines: 3,
           ),
-          validator: Validator.positiveNumber(S.stockIngredientRestockDialogQuantityLabel),
+          validator: Validator.positiveNumber(
+            S.stockIngredientRestockDialogQuantityLabel,
+          ),
         );
       },
     );
@@ -159,7 +165,7 @@ class _RestockDialogState extends State<_RestockDialog> {
       return Center(
         child: EmptyBody(
           content: S.stockIngredientRestockDialogPriceEmptyBody,
-          routeName: Routes.stockIngrRestock,
+          routeName: AppRouteNames.stockIngrRestock,
           pathParameters: {'id': widget.ingredient.id},
         ),
       );
@@ -173,7 +179,9 @@ class _RestockDialogState extends State<_RestockDialog> {
           if (popped && widget.currentValue.value != null) {
             final price = num.tryParse(controller.text);
             if (price != null) {
-              await widget.ingredient.update(IngredientObject(restockLastPrice: price));
+              await widget.ingredient.update(
+                IngredientObject(restockLastPrice: price),
+              );
             }
           }
         },
@@ -197,7 +205,10 @@ class _RestockDialogState extends State<_RestockDialog> {
           subtitle: Text(S.stockIngredientRestockDialogSubtitle),
           trailing: IconButton(
             icon: const Icon(KIcons.edit),
-            onPressed: () => context.pushNamed(Routes.stockIngrRestock, pathParameters: {'id': widget.ingredient.id}),
+            onPressed: () => context.pushNamed(
+              AppRouteNames.stockIngrRestock,
+              pathParameters: {'id': widget.ingredient.id},
+            ),
           ),
         ),
         TextFormField(
@@ -208,15 +219,23 @@ class _RestockDialogState extends State<_RestockDialog> {
           autofocus: true,
           keyboardType: .number,
           textAlign: .end,
-          decoration: InputDecoration(label: Text(S.stockIngredientRestockDialogPriceLabel), prefix: const Text(r'$')),
-          validator: Validator.positiveNumber(S.stockIngredientRestockDialogPriceLabel),
+          decoration: InputDecoration(
+            label: Text(S.stockIngredientRestockDialogPriceLabel),
+            prefix: const Text(r'$'),
+          ),
+          validator: Validator.positiveNumber(
+            S.stockIngredientRestockDialogPriceLabel,
+          ),
           textInputAction: .done,
         ),
         const SizedBox(height: 8.0),
         Row(
           mainAxisAlignment: .spaceBetween,
           children: [
-            const Text('÷', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
+            const Text(
+              '÷',
+              style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true),
+            ),
             // this money is independent to currency, so we don't need use
             // currency to format it.
             Text('\$${widget.ingredient.restockPrice!.toShortString()}'),
@@ -226,7 +245,10 @@ class _RestockDialogState extends State<_RestockDialog> {
         Row(
           mainAxisAlignment: .spaceBetween,
           children: [
-            const Text('*', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
+            const Text(
+              '*',
+              style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true),
+            ),
             Text(widget.ingredient.restockQuantity.toShortString()),
           ],
         ),
@@ -236,7 +258,11 @@ class _RestockDialogState extends State<_RestockDialog> {
           children: [
             Text(
               '+ (${S.stockIngredientRestockDialogPriceOldAmount})',
-              style: const TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true),
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 14.0,
+                inherit: true,
+              ),
             ),
             Text(widget.ingredient.currentAmount.toShortString()),
           ],
@@ -245,7 +271,14 @@ class _RestockDialogState extends State<_RestockDialog> {
         Row(
           mainAxisAlignment: .spaceBetween,
           children: [
-            const Text('=', style: TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true)),
+            const Text(
+              '=',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14.0,
+                inherit: true,
+              ),
+            ),
             ListenableBuilder(
               listenable: controller,
               builder: (context, _) {
@@ -255,8 +288,12 @@ class _RestockDialogState extends State<_RestockDialog> {
                   return Text(widget.ingredient.currentAmount.toShortString());
                 }
 
-                final quantity = price / widget.ingredient.restockPrice! * widget.ingredient.restockQuantity;
-                final value = (quantity + widget.ingredient.currentAmount).toShortString();
+                final quantity =
+                    price /
+                    widget.ingredient.restockPrice! *
+                    widget.ingredient.restockQuantity;
+                final value = (quantity + widget.ingredient.currentAmount)
+                    .toShortString();
                 widget.currentValue.value = value;
                 return Text(value);
               },
@@ -271,7 +308,9 @@ class _RestockDialogState extends State<_RestockDialog> {
   void initState() {
     final index = Cache.instance.get<int>('stock.replenishBy') ?? 0;
     replenishBy = ReplenishBy.values.elementAtOrNull(index) ?? .quantity;
-    controller = TextEditingController(text: widget.ingredient.restockLastPrice?.toShortString() ?? '');
+    controller = TextEditingController(
+      text: widget.ingredient.restockLastPrice?.toShortString() ?? '',
+    );
     super.initState();
   }
 
@@ -282,7 +321,9 @@ class _RestockDialogState extends State<_RestockDialog> {
   }
 
   void switchMethod() async {
-    final other = replenishBy == .quantity ? ReplenishBy.price : ReplenishBy.quantity;
+    final other = replenishBy == .quantity
+        ? ReplenishBy.price
+        : ReplenishBy.quantity;
     setState(() {
       replenishBy = other;
     });

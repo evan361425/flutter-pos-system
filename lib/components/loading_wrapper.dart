@@ -5,7 +5,11 @@ class LoadingWrapper extends StatefulWidget {
 
   final bool isLoading;
 
-  const LoadingWrapper({super.key, required this.child, this.isLoading = false});
+  const LoadingWrapper({
+    super.key,
+    required this.child,
+    this.isLoading = false,
+  });
 
   @override
   State<LoadingWrapper> createState() => LoadingWrapperState();
@@ -30,7 +34,11 @@ class LoadingWrapperState extends State<LoadingWrapper> {
                 mainAxisAlignment: .center,
                 children: [
                   const CircularProgressIndicator.adaptive(),
-                  if (_status != null) DefaultTextStyle(style: theme.textTheme.headlineSmall!, child: Text(_status!)),
+                  if (_status != null)
+                    DefaultTextStyle(
+                      style: theme.textTheme.headlineSmall!,
+                      child: Text(_status!),
+                    ),
                 ],
               ),
             ),

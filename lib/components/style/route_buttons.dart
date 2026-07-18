@@ -33,7 +33,11 @@ class RouteElevatedIconButton extends StatelessWidget {
       icon: icon,
       label: Text(label),
       style: style,
-      onPressed: () => context.pushNamed(route!, pathParameters: pathParameters, queryParameters: queryParameters),
+      onPressed: () => context.pushNamed(
+        route!,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+      ),
     );
   }
 }
@@ -65,7 +69,10 @@ class RouteIconButton extends StatelessWidget {
       onPressed:
           onPressed ??
           () async {
-            final result = await context.pushNamed(route!, pathParameters: pathParameters);
+            final result = await context.pushNamed(
+              route!,
+              pathParameters: pathParameters,
+            );
             if (result == true && popTrueShowSuccess) {
               if (context.mounted) {
                 showSnackBar(S.actSuccess, context: context);

@@ -6,7 +6,7 @@ import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 class MenuCatalogList extends StatelessWidget {
@@ -15,7 +15,12 @@ class MenuCatalogList extends StatelessWidget {
   final Widget leading;
   final void Function(Catalog) onSelected;
 
-  const MenuCatalogList(this.catalogs, {super.key, required this.onSelected, required this.leading});
+  const MenuCatalogList(
+    this.catalogs, {
+    super.key,
+    required this.onSelected,
+    required this.leading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,25 +29,26 @@ class MenuCatalogList extends StatelessWidget {
       action: RouteIconButton(
         label: S.menuCatalogTitleReorder,
         icon: const Icon(KIcons.reorder),
-        route: Routes.menuCatalogReorder,
+        route: AppRouteNames.menuCatalogReorder,
         hideLabel: true,
       ),
       delegate: SlidableItemDelegate(
         items: catalogs,
         deleteValue: _Action.delete,
-        tileBuilder: (catalog, _, actorBuilder) => _Tile(catalog, actorBuilder, onSelected),
+        tileBuilder: (catalog, _, actorBuilder) =>
+            _Tile(catalog, actorBuilder, onSelected),
         warningContentBuilder: _warningContentBuilder,
         actionBuilder: (Catalog catalog) => <MenuAction<_Action>>[
           MenuAction(
             title: Text(S.menuCatalogTitleUpdate),
             leading: const Icon(KIcons.modal),
             routePathParameters: {'id': catalog.id},
-            route: Routes.menuCatalogUpdate,
+            route: AppRouteNames.menuCatalogUpdate,
           ),
           MenuAction(
             title: Text(S.menuProductTitleReorder),
             leading: const Icon(KIcons.reorder),
-            route: Routes.menuProductReorder,
+            route: AppRouteNames.menuProductReorder,
             routePathParameters: {'id': catalog.id},
           ),
         ],

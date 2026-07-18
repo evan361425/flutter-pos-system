@@ -1,0 +1,58 @@
+name: Flutter PR Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+# Fail the job (and thus the PR check) on any non-zero exit from format, analyze, or test.
+concurrency:
+  group: flutter-pr-check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Format, analyze & test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          # Keep in sync with .fvmrc / pubspec.yaml (flutter: ">=3.41.0 <3.42.0")
+          flutter-version: "3.41.x"
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        env:
+          # Private git dependency (vendor excel fork) — same pattern as existing test.yaml
+          GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
+        run: |
+          if [ -n "$GH_READ_PAT" ]; then
+            echo "https://oauth:${GH_READ_PAT}@github.com" > ~/.git-credentials
+            git config --global credential.helper store
+          fi
+          flutter pub get
+
+      # Generated Dart under lib/l10n/gen/ is gitignored — must regenerate before analyze/test.
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      # Project standard is 120 cols (see existing test.yaml). Format generated files
+      # first so --set-exit-if-changed does not fail on tooling output alone.
+      - name: Enforce formatting
+        run: |
+          dart format --line-length 120 lib/l10n/gen
+          dart format --output=none --set-exit-if-changed --line-length 120 .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test

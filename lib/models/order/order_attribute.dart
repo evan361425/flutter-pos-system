@@ -38,7 +38,10 @@ class OrderAttribute extends Model<OrderAttributeObject>
       name: object.name!,
       index: object.index!,
       mode: object.mode!,
-      options: {for (var option in object.options) option.id!: OrderAttributeOption.fromObject(option)},
+      options: {
+        for (var option in object.options)
+          option.id!: OrderAttributeOption.fromObject(option),
+      },
     )..prepareItem();
   }
 
@@ -48,9 +51,17 @@ class OrderAttribute extends Model<OrderAttributeObject>
     required int index,
     required OrderAttributeMode mode,
   }) {
-    final status = ori == null ? ModelStatus.staged : (mode == ori.mode ? ModelStatus.normal : ModelStatus.updated);
+    final status = ori == null
+        ? ModelStatus.staged
+        : (mode == ori.mode ? ModelStatus.normal : ModelStatus.updated);
 
-    return OrderAttribute(id: ori?.id, name: row[0], index: index, mode: mode, status: status);
+    return OrderAttribute(
+      id: ori?.id,
+      name: row[0],
+      index: index,
+      mode: mode,
+      status: status,
+    );
   }
 
   OrderAttributeOption? get defaultOption {
@@ -86,6 +97,11 @@ class OrderAttribute extends Model<OrderAttributeObject>
   }
 
   @override
-  OrderAttributeObject toObject() =>
-      OrderAttributeObject(id: id, name: name, index: index, mode: mode, options: items.map((e) => e.toObject()));
+  OrderAttributeObject toObject() => OrderAttributeObject(
+    id: id,
+    name: name,
+    index: index,
+    mode: mode,
+    options: items.map((e) => e.toObject()),
+  );
 }

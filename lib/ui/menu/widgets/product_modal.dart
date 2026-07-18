@@ -14,13 +14,15 @@ class ProductModal extends StatefulWidget {
   final Catalog catalog;
   final bool isNew;
 
-  const ProductModal({super.key, this.product, required this.catalog}) : isNew = product == null;
+  const ProductModal({super.key, this.product, required this.catalog})
+    : isNew = product == null;
 
   @override
   State<ProductModal> createState() => _ProductModalState();
 }
 
-class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal> {
+class _ProductModalState extends State<ProductModal>
+    with ItemModal<ProductModal> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
@@ -31,12 +33,16 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
   String? _image;
 
   @override
-  String get title => widget.isNew ? S.menuProductTitleCreate : S.menuProductTitleUpdate;
+  String get title =>
+      widget.isNew ? S.menuProductTitleCreate : S.menuProductTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
     return [
-      EditImageHolder(path: _image, onSelected: (image) => setState(() => _image = image)),
+      EditImageHolder(
+        path: _image,
+        onSelected: (image) => setState(() => _image = image),
+      ),
       p(
         TextFormField(
           key: const Key('product.name'),
@@ -55,7 +61,8 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.product?.name != name && Menu.instance.hasProductByName(name)
+              return widget.product?.name != name &&
+                      Menu.instance.hasProductByName(name)
                   ? S.menuProductNameErrorRepeat
                   : null;
             },
@@ -74,7 +81,10 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
             helperText: S.menuProductPriceHelper,
             filled: false,
           ),
-          validator: Validator.isNumber(S.menuProductPriceLabel, focusNode: _priceFocusNode),
+          validator: Validator.isNumber(
+            S.menuProductPriceLabel,
+            focusNode: _priceFocusNode,
+          ),
         ),
       ),
       p(
@@ -90,7 +100,10 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
             filled: false,
           ),
           onFieldSubmitted: handleFieldSubmit,
-          validator: Validator.positiveNumber(S.menuProductCostLabel, focusNode: _costFocusNode),
+          validator: Validator.positiveNumber(
+            S.menuProductCostLabel,
+            focusNode: _costFocusNode,
+          ),
         ),
       ),
     ];

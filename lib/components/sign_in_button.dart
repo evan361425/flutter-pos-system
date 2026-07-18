@@ -16,8 +16,12 @@ class SignInButton extends StatelessWidget {
   // if we are in local test it might be null, but it should be fine.
   final Widget Function(User? user)? signedInWidgetBuilder;
 
-  const SignInButton({super.key, this.padding = const .all(0), this.signedInWidget, this.signedInWidgetBuilder})
-    : assert(signedInWidget != null || signedInWidgetBuilder != null);
+  const SignInButton({
+    super.key,
+    this.padding = const .all(0),
+    this.signedInWidget,
+    this.signedInWidgetBuilder,
+  }) : assert(signedInWidget != null || signedInWidgetBuilder != null);
 
   @override
   Widget build(BuildContext context) {
@@ -94,13 +98,21 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                           SizedBox(
                             width: height,
                             height: height,
-                            child: SvgPicture.asset('assets/google_signin_button.svg', width: size, height: size),
+                            child: SvgPicture.asset(
+                              'assets/google_signin_button.svg',
+                              width: size,
+                              height: size,
+                            ),
                           ),
                           Expanded(
                             child: Text(
                               S.btnSignInWithGoogle,
                               textAlign: .center,
-                              style: TextStyle(height: 1.1, color: fontColor, fontSize: size),
+                              style: TextStyle(
+                                height: 1.1,
+                                color: fontColor,
+                                fontSize: size,
+                              ),
                             ),
                           ),
                         ],
@@ -112,7 +124,10 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
               Positioned.fill(
                 child: Material(
                   color: Colors.transparent,
-                  child: InkWell(borderRadius: .circular(borderRadius), onTap: isLoading ? null : signIn),
+                  child: InkWell(
+                    borderRadius: .circular(borderRadius),
+                    onTap: isLoading ? null : signIn,
+                  ),
                 ),
               ),
               if (isLoading)
@@ -121,7 +136,10 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                     child: SizedBox(
                       width: size,
                       height: size,
-                      child: CircularProgressIndicator.adaptive(value: size, strokeWidth: borderWidth * 2),
+                      child: CircularProgressIndicator.adaptive(
+                        value: size,
+                        strokeWidth: borderWidth * 2,
+                      ),
                     ),
                   ),
                 ),
@@ -131,7 +149,10 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
         if (error != null)
           Padding(
             padding: const .symmetric(vertical: 4),
-            child: Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            child: Text(
+              error!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
       ],
     );
@@ -147,7 +168,9 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
       Log.err(e, 'login', stack);
       if (mounted) {
         setState(() {
-          error = e is firebase.FirebaseAuthException ? e.message : e.toString();
+          error = e is firebase.FirebaseAuthException
+              ? e.message
+              : e.toString();
         });
       }
     } finally {

@@ -78,7 +78,10 @@ class ProductIngredient extends Model<ProductIngredientObject>
   }
 
   factory ProductIngredient.fromRow(ProductIngredient? ori, List<String> row) {
-    var ingredient = ori?.ingredient ?? Stock.instance.getItemByName(row[0]) ?? Stock.instance.getStagedByName(row[0]);
+    var ingredient =
+        ori?.ingredient ??
+        Stock.instance.getItemByName(row[0]) ??
+        Stock.instance.getStagedByName(row[0]);
     if (ingredient == null) {
       ingredient = Ingredient(name: row[0], status: .staged);
       Stock.instance.addStaged(ingredient);

@@ -16,13 +16,15 @@ class ReplenishmentModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ReplenishmentModal({super.key, this.replenishment}) : isNew = replenishment == null;
+  const ReplenishmentModal({super.key, this.replenishment})
+    : isNew = replenishment == null;
 
   @override
   State<ReplenishmentModal> createState() => _ReplenishmentModalState();
 }
 
-class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<ReplenishmentModal> {
+class _ReplenishmentModalState extends State<ReplenishmentModal>
+    with ItemModal<ReplenishmentModal> {
   final updateData = <String, num>{};
   final List<Ingredient> ingredients = Stock.instance.itemList;
 
@@ -30,7 +32,9 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
   late FocusNode _nameFocusNode;
 
   @override
-  String get title => widget.isNew ? S.stockReplenishmentTitleCreate : S.stockReplenishmentTitleUpdate;
+  String get title => widget.isNew
+      ? S.stockReplenishmentTitleCreate
+      : S.stockReplenishmentTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -46,7 +50,8 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
           focusNode: _nameFocusNode,
           decoration: InputDecoration(
             labelText: S.stockReplenishmentNameLabel,
-            hintText: widget.replenishment?.name ?? S.stockReplenishmentNameHint,
+            hintText:
+                widget.replenishment?.name ?? S.stockReplenishmentNameHint,
             filled: false,
           ),
           style: textTheme.titleLarge,
@@ -56,7 +61,8 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.replenishment?.name != name && Replenisher.instance.hasName(name)
+              return widget.replenishment?.name != name &&
+                      Replenisher.instance.hasName(name)
                   ? S.stockReplenishmentNameErrorRepeat
                   : null;
             },
@@ -90,7 +96,9 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
     final object = _parseObject();
 
     if (widget.isNew) {
-      await Replenisher.instance.addItem(Replenishment(name: object.name, data: object.data));
+      await Replenisher.instance.addItem(
+        Replenishment(name: object.name, data: object.data),
+      );
     } else {
       await widget.replenishment!.update(object);
     }
@@ -110,10 +118,15 @@ class _ReplenishmentModalState extends State<ReplenishmentModal> with ItemModal<
             updateData[ingredient.id] = numValue;
           }
         },
-        initialValue: widget.replenishment?.getNumOfId(ingredient.id)?.toString(),
+        initialValue: widget.replenishment
+            ?.getNumOfId(ingredient.id)
+            ?.toString(),
         textInputAction: .next,
         keyboardType: .number,
-        decoration: InputDecoration(labelText: ingredient.name, hintText: S.stockReplenishmentIngredientAmountHint),
+        decoration: InputDecoration(
+          labelText: ingredient.name,
+          hintText: S.stockReplenishmentIngredientAmountHint,
+        ),
       ),
     );
   }

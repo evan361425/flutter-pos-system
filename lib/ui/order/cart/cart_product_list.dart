@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/style/hint_text.dart';
-import 'package:possystem/components/style/slide_to_delete.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/order/cart/cart_quantity_swipe.dart';
+import 'package:possystem/ui/order/cart/order_line_note_sheet.dart';
 import 'package:provider/provider.dart';
-
-import 'cart_actions.dart';
 
 class CartProductList extends StatefulWidget {
   final ScrollController? scrollController;
@@ -48,9 +47,9 @@ class _CartProductListState extends State<CartProductList> {
                 subtitle: const Text(''),
               ),
             for (var i = 0; i < length; i++)
-              SlideToDelete(
-                item: Cart.instance.products[i],
-                deleteCallback: () async => Cart.instance.removeAt(i),
+              CartQuantitySwipe(
+                key: ObjectKey(Cart.instance.products[i]),
+                index: i,
                 child: ChangeNotifierProvider<CartProduct>.value(
                   value: Cart.instance.products[i],
                   child: _CartProductListTile(i),
@@ -107,7 +106,9 @@ class _CartProductListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = context.watch<CartProduct>();
-    final color = product.isSelected ? Theme.of(context).primaryColorLight : Colors.transparent;
+    final color = product.isSelected
+        ? Theme.of(context).primaryColorLight
+        : Colors.transparent;
 
     final leading = Checkbox(
       key: Key('cart.product.$index.select'),
@@ -132,11 +133,19 @@ class _CartProductListTile extends StatelessWidget {
             Cart.instance.priceChanged();
           },
         ),
-        Text(S.orderCartProductPrice(product.totalPrice.toCurrency()), key: Key('cart.product.$index.price')),
+        Text(
+          S.orderCartProductPrice(product.totalPrice.toCurrency()),
+          key: Key('cart.product.$index.price'),
+        ),
       ],
     );
 
-    final subtitle = product.quantities.map((e) => S.orderCartProductIngredient(e.ingredient.name, e.name));
+    final subtitleParts = <String>[
+      ...product.quantities.map(
+        (e) => S.orderCartProductIngredient(e.ingredient.name, e.name),
+      ),
+      if (product.note.trim().isNotEmpty) product.note.trim(),
+    ];
 
     return MergeSemantics(
       child: ListTileTheme.merge(
@@ -147,15 +156,16 @@ class _CartProductListTile extends StatelessWidget {
             key: Key('cart.product.$index'),
             leading: leading,
             title: Text(product.name, overflow: .ellipsis),
-            subtitle:
-                MetaBlock.withString(context, subtitle, textOverflow: .visible) ??
-                HintText(S.orderCartProductDefaultQuantity),
+            subtitle: subtitleParts.isEmpty
+                ? HintText(S.orderCartProductDefaultQuantity)
+                : MetaBlock.withString(
+                    context,
+                    subtitleParts,
+                    textOverflow: .visible,
+                  )!,
             trailing: trailing,
             onTap: () => Cart.instance.toggleAll(false, except: product),
-            onLongPress: () {
-              Cart.instance.toggleAll(false, except: product);
-              CartActions.showActions(context);
-            },
+            onLongPress: () => OrderLineNoteSheet.show(context, product),
             selected: product.isSelected,
             selectedTileColor: Colors.transparent,
           ),

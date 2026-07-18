@@ -9,7 +9,11 @@ class PopButton extends StatelessWidget {
 
   const PopButton({super.key, this.title, this.onPressed});
 
-  static safePop<T>(BuildContext context, {String path = Routes.base, T? value}) {
+  static safePop<T>(
+    BuildContext context, {
+    String path = Routes.base,
+    T? value,
+  }) {
     if (context.mounted) {
       final router = GoRouter.maybeOf(context);
       if (router != null) {

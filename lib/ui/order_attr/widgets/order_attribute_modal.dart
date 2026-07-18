@@ -13,20 +13,23 @@ class OrderAttributeModal extends StatefulWidget {
 
   final bool isNew;
 
-  const OrderAttributeModal({super.key, this.attribute}) : isNew = attribute == null;
+  const OrderAttributeModal({super.key, this.attribute})
+    : isNew = attribute == null;
 
   @override
   State<OrderAttributeModal> createState() => _OrderAttributeModalState();
 }
 
-class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModal<OrderAttributeModal> {
+class _OrderAttributeModalState extends State<OrderAttributeModal>
+    with ItemModal<OrderAttributeModal> {
   late final TextEditingController _nameController;
 
   final FocusNode _nameFocusNode = FocusNode();
   final modeSelector = GlobalKey<ChoiceChipWithHelpState<OrderAttributeMode>>();
 
   @override
-  String get title => widget.isNew ? S.orderAttributeTitleCreate : S.orderAttributeTitleUpdate;
+  String get title =>
+      widget.isNew ? S.orderAttributeTitleCreate : S.orderAttributeTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -49,7 +52,8 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.attribute?.name != name && OrderAttributes.instance.hasName(name)
+              return widget.attribute?.name != name &&
+                      OrderAttributes.instance.hasName(name)
                   ? S.orderAttributeNameErrorRepeat
                   : null;
             },
@@ -60,9 +64,15 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
       ChoiceChipWithHelp(
         key: modeSelector,
         values: OrderAttributeMode.values,
-        selected: widget.isNew ? OrderAttributeMode.statOnly : widget.attribute!.mode,
-        labels: OrderAttributeMode.values.map((e) => S.orderAttributeModeName(e.name)),
-        helpTexts: OrderAttributeMode.values.map((e) => S.orderAttributeModeHelper(e.name)).toList(),
+        selected: widget.isNew
+            ? OrderAttributeMode.statOnly
+            : widget.attribute!.mode,
+        labels: OrderAttributeMode.values.map(
+          (e) => S.orderAttributeModeName(e.name),
+        ),
+        helpTexts: OrderAttributeMode.values
+            .map((e) => S.orderAttributeModeHelper(e.name))
+            .toList(),
       ),
     ];
   }
@@ -89,7 +99,11 @@ class _OrderAttributeModalState extends State<OrderAttributeModal> with ItemModa
 
     if (widget.isNew) {
       await OrderAttributes.instance.addItem(
-        OrderAttribute(name: object.name!, mode: object.mode!, index: OrderAttributes.instance.newIndex),
+        OrderAttribute(
+          name: object.name!,
+          mode: object.mode!,
+          index: OrderAttributes.instance.newIndex,
+        ),
       );
     } else {
       await widget.attribute!.update(object);

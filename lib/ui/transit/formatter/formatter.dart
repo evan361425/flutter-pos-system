@@ -23,7 +23,8 @@ enum FormattableModel {
     }
   }
 
-  static List<String> get allL10nNames => FormattableModel.values.map((e) => e.l10nName).toList();
+  static List<String> get allL10nNames =>
+      FormattableModel.values.map((e) => e.l10nName).toList();
 
   String get l10nName => S.transitModelName(name);
 
@@ -120,7 +121,9 @@ abstract class ModelFormatter<T extends Repository, U> {
   List<List<U>> getRows();
 
   List<FormattedItem<M>> format<M extends Model>(List<List<Object?>> rows) {
-    final data = rows.map((row) => row.map((e) => e.toString().trim()).toList()).toList();
+    final data = rows
+        .map((row) => row.map((e) => e.toString().trim()).toList())
+        .toList();
     final transformed = transformRows(data);
 
     final result = <FormattedItem<M>>[];
@@ -138,7 +141,9 @@ abstract class ModelFormatter<T extends Repository, U> {
       }
 
       if (msg != null) {
-        result.add(FormattedItem<M>(error: FormatterValidateError(msg, row.join(' '))));
+        result.add(
+          FormattedItem<M>(error: FormatterValidateError(msg, row.join(' '))),
+        );
       } else {
         result.add(FormattedItem<M>(item: parser.parse(r, counter++) as M));
       }

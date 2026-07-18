@@ -23,7 +23,11 @@ class OrderFormatter {
   static List<List<CellData>> formatAttr(OrderObject order) {
     return [
       for (final attr in order.attributes)
-        [CellData(number: order.periodSeq), CellData(string: attr.name), CellData(string: attr.optionName)],
+        [
+          CellData(number: order.periodSeq),
+          CellData(string: attr.name),
+          CellData(string: attr.optionName),
+        ],
     ];
   }
 

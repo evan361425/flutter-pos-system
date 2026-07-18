@@ -5,7 +5,7 @@ import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order_attr/widgets/order_attribute_tile.dart';
 
@@ -23,7 +23,10 @@ class OrderAttributePage extends StatelessWidget {
 
   Widget _buildBody() {
     if (OrderAttributes.instance.isEmpty) {
-      return EmptyBody(content: S.orderAttributeEmptyBody, routeName: Routes.orderAttrCreate);
+      return EmptyBody(
+        content: S.orderAttributeEmptyBody,
+        routeName: AppRouteNames.orderAttrCreate,
+      );
     }
 
     return SafeArea(
@@ -39,7 +42,7 @@ class OrderAttributePage extends StatelessWidget {
                     key: const Key('order_attributes.add'),
                     icon: const Icon(KIcons.add),
                     label: S.orderAttributeTitleCreate,
-                    route: Routes.orderAttrCreate,
+                    route: AppRouteNames.orderAttrCreate,
                   ),
                 ),
               ),
@@ -47,11 +50,17 @@ class OrderAttributePage extends StatelessWidget {
           ),
           Row(
             children: [
-              Expanded(child: Center(child: HintText(S.totalCount(OrderAttributes.instance.length)))),
+              Expanded(
+                child: Center(
+                  child: HintText(
+                    S.totalCount(OrderAttributes.instance.length),
+                  ),
+                ),
+              ),
               RouteIconButton(
                 key: const Key('order_attributes.reorder'),
                 label: S.orderAttributeTitleReorder,
-                route: Routes.orderAttrReorder,
+                route: AppRouteNames.orderAttrReorder,
                 icon: const Icon(KIcons.reorder),
                 hideLabel: true,
               ),
@@ -59,7 +68,8 @@ class OrderAttributePage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: kInternalSpacing),
-          for (final attribute in OrderAttributes.instance.itemList) OrderAttributeTile(attr: attribute),
+          for (final attribute in OrderAttributes.instance.itemList)
+            OrderAttributeTile(attr: attribute),
         ],
       ),
     );

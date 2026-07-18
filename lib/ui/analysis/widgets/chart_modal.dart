@@ -30,7 +30,9 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
   final targetItems = <String>[];
 
   @override
-  String get title => widget.chart == null ? S.analysisChartTitleCreate : S.analysisChartTitleUpdate;
+  String get title => widget.chart == null
+      ? S.analysisChartTitleCreate
+      : S.analysisChartTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -48,7 +50,11 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
             filled: false,
           ),
           maxLength: 50,
-          validator: Validator.textLimit(S.analysisChartModalNameLabel, 50, focusNode: _nameFocusNode),
+          validator: Validator.textLimit(
+            S.analysisChartModalNameLabel,
+            50,
+            focusNode: _nameFocusNode,
+          ),
         ),
       ),
       CheckboxListTile(
@@ -141,7 +147,11 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
     ];
   }
 
-  Widget _buildWrappedChoices(String label, String description, Iterable<Widget> chips) {
+  Widget _buildWrappedChoices(
+    String label,
+    String description,
+    Iterable<Widget> chips,
+  ) {
     final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: .start,
@@ -181,7 +191,10 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
 
     yield const SizedBox(
       height: 44,
-      child: Padding(padding: .symmetric(vertical: 8.0), child: VerticalDivider()),
+      child: Padding(
+        padding: .symmetric(vertical: 8.0),
+        child: VerticalDivider(),
+      ),
     );
 
     yield* target.getItems().map(
@@ -211,7 +224,12 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
         enableAxisAnimation: false,
         selectionGesture: .none,
         primaryXAxis: const NumericAxis(labelFormat: ' '),
-        primaryYAxis: const NumericAxis(minimum: 0, maximum: 7, interval: 1, labelFormat: ' '),
+        primaryYAxis: const NumericAxis(
+          minimum: 0,
+          maximum: 7,
+          interval: 1,
+          labelFormat: ' ',
+        ),
         series: [
           LineSeries<int, int>(
             xValueMapper: (_, i) => i,
@@ -297,7 +315,9 @@ class _ChartModalState extends State<ChartModal> with ItemModal<ChartModal> {
 
   Iterable<OrderMetricType> get _allowedMetrics {
     return switch (target) {
-      OrderMetricTarget.order || OrderMetricTarget.catalog || .product => OrderMetricType.values,
+      OrderMetricTarget.order ||
+      OrderMetricTarget.catalog ||
+      .product => OrderMetricType.values,
       _ => [OrderMetricType.count],
     };
   }

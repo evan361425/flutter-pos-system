@@ -58,7 +58,10 @@ class Auth {
 
     Log.out('allow authentication', 'login');
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(accessToken: auth.accessToken, idToken: auth.idToken);
+    final credential = GoogleAuthProvider.credential(
+      accessToken: auth.accessToken,
+      idToken: auth.idToken,
+    );
 
     // Once signed in, return the UserCredential
     await _firebaseAuth.signInWithCredential(credential);

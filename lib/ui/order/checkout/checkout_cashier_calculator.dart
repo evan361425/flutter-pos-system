@@ -13,10 +13,16 @@ class CheckoutCashierCalculator extends StatefulWidget {
 
   final ValueNotifier<num> paid;
 
-  const CheckoutCashierCalculator({super.key, required this.onSubmit, required this.price, required this.paid});
+  const CheckoutCashierCalculator({
+    super.key,
+    required this.onSubmit,
+    required this.price,
+    required this.paid,
+  });
 
   @override
-  State<CheckoutCashierCalculator> createState() => _CheckoutCashierCalculatorState();
+  State<CheckoutCashierCalculator> createState() =>
+      _CheckoutCashierCalculatorState();
 }
 
 class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
@@ -67,27 +73,60 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
                     Column(
                       mainAxisSize: .min,
                       children: [
-                        _CalculatorPostfixAction(action: _execPostfix, text: '1'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '4'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '7'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '00'),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '1',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '4',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '7',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '00',
+                        ),
                       ],
                     ),
                     Column(
                       mainAxisSize: .min,
                       children: [
-                        _CalculatorPostfixAction(action: _execPostfix, text: '2'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '5'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '8'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '0'),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '2',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '5',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '8',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '0',
+                        ),
                       ],
                     ),
                     Column(
                       mainAxisSize: .min,
                       children: [
-                        _CalculatorPostfixAction(action: _execPostfix, text: '3'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '6'),
-                        _CalculatorPostfixAction(action: _execPostfix, text: '9'),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '3',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '6',
+                        ),
+                        _CalculatorPostfixAction(
+                          action: _execPostfix,
+                          text: '9',
+                        ),
                         _CalculatorAction(
                           key: const Key('cashier.calculator.dot'),
                           action: _execDot,
@@ -142,8 +181,10 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
                         _CalculatorAction(
                           key: const Key('cashier.calculator.submit'),
                           action: _execSubmit,
-                          height: 124,
-                          child: isOperating ? const Text('=') : const Icon(Icons.check_outlined, size: 24),
+                          height: 132,
+                          child: isOperating
+                              ? const Text('=')
+                              : const Icon(Icons.check_outlined, size: 24),
                         ),
                       ],
                     ),
@@ -249,7 +290,11 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
     final fallback = num.tryParse(val) ?? other;
     try {
       final op = _operators.firstWhere((o) => val.contains(o));
-      final parts = val.split(op).map((e) => num.tryParse(e)).map((e) => e ?? (op == 'x' ? 1 : 0)).toList();
+      final parts = val
+          .split(op)
+          .map((e) => num.tryParse(e))
+          .map((e) => e ?? (op == 'x' ? 1 : 0))
+          .toList();
 
       return switch (op) {
         '+' => parts[0] + parts[1],
@@ -275,17 +320,28 @@ class _CalculatorAction extends StatelessWidget {
 
   final Widget child;
 
-  const _CalculatorAction({super.key, required this.action, required this.child, this.height = 60, this.color});
+  const _CalculatorAction({
+    super.key,
+    required this.action,
+    required this.child,
+    this.height = 64,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const .all(2),
       child: SizedBox(
-        width: 60,
+        width: 64,
         height: height,
         child: OutlinedButton(
-          style: OutlinedButton.styleFrom(foregroundColor: color, padding: .zero),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: color,
+            padding: .zero,
+            minimumSize: const Size(64, 64),
+            tapTargetSize: MaterialTapTargetSize.padded,
+          ),
           onPressed: action,
           child: child,
         ),
@@ -303,7 +359,11 @@ class _CalculatorPostfixAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _CalculatorAction(key: Key('cashier.calculator.$text'), action: () => action(text), child: Text(text));
+    return _CalculatorAction(
+      key: Key('cashier.calculator.$text'),
+      action: () => action(text),
+      child: Text(text),
+    );
   }
 }
 

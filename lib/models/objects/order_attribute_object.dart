@@ -14,10 +14,17 @@ class OrderAttributeObject extends ModelObject<OrderAttribute> {
 
   final Iterable<OrderAttributeOptionObject> options;
 
-  OrderAttributeObject({this.id, this.name, this.index, this.mode, this.options = const Iterable.empty()});
+  OrderAttributeObject({
+    this.id,
+    this.name,
+    this.index,
+    this.mode,
+    this.options = const Iterable.empty(),
+  });
 
   factory OrderAttributeObject.build(Map<String, Object?> data) {
-    final options = (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final options =
+        (data['options'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return OrderAttributeObject(
       id: data['id'].toString(),
@@ -26,7 +33,10 @@ class OrderAttributeObject extends ModelObject<OrderAttribute> {
       mode: OrderAttributeMode.values[data['mode'] as int],
       options: options.entries
           .map<OrderAttributeOptionObject>(
-            (e) => OrderAttributeOptionObject.build({'id': e.key, ...e.value as Map<String, Object?>}),
+            (e) => OrderAttributeOptionObject.build({
+              'id': e.key,
+              ...e.value as Map<String, Object?>,
+            }),
           )
           .toList(),
     );
@@ -73,7 +83,13 @@ class OrderAttributeOptionObject extends ModelObject<OrderAttributeOption> {
 
   final num? modeValue;
 
-  const OrderAttributeOptionObject({this.id, this.name, this.index, this.isDefault, this.modeValue});
+  const OrderAttributeOptionObject({
+    this.id,
+    this.name,
+    this.index,
+    this.isDefault,
+    this.modeValue,
+  });
 
   factory OrderAttributeOptionObject.build(Map<String, Object?> data) {
     return OrderAttributeOptionObject(
@@ -88,7 +104,12 @@ class OrderAttributeOptionObject extends ModelObject<OrderAttributeOption> {
 
   @override
   Map<String, Object?> toMap() {
-    return {'name': name, 'index': index, 'isDefault': isDefault ?? false, 'modeValue': modeValue};
+    return {
+      'name': name,
+      'index': index,
+      'isDefault': isDefault ?? false,
+      'modeValue': modeValue,
+    };
   }
 
   @override

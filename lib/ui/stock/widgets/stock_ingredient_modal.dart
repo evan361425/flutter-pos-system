@@ -8,7 +8,7 @@ import 'package:possystem/models/objects/stock_object.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 class StockIngredientModal extends StatefulWidget {
@@ -16,13 +16,15 @@ class StockIngredientModal extends StatefulWidget {
 
   final bool isNew;
 
-  const StockIngredientModal({super.key, this.ingredient}) : isNew = ingredient == null;
+  const StockIngredientModal({super.key, this.ingredient})
+    : isNew = ingredient == null;
 
   @override
   State<StockIngredientModal> createState() => _StockIngredientModalState();
 }
 
-class _StockIngredientModalState extends State<StockIngredientModal> with ItemModal<StockIngredientModal> {
+class _StockIngredientModalState extends State<StockIngredientModal>
+    with ItemModal<StockIngredientModal> {
   late TextEditingController nameController;
   late TextEditingController amountController;
   late TextEditingController totalAmountController;
@@ -31,7 +33,9 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
   final _totalAmountFocusNode = FocusNode();
 
   @override
-  String get title => widget.isNew ? S.stockIngredientTitleCreate : S.stockIngredientTitleUpdate;
+  String get title => widget.isNew
+      ? S.stockIngredientTitleCreate
+      : S.stockIngredientTitleUpdate;
 
   @override
   List<Widget> buildFormFields() => <Widget>[
@@ -53,7 +57,8 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
           30,
           focusNode: _nameFocusNode,
           validator: (name) {
-            return widget.ingredient?.name != name && Stock.instance.hasName(name)
+            return widget.ingredient?.name != name &&
+                    Stock.instance.hasName(name)
                 ? S.stockIngredientNameErrorRepeat
                 : null;
           },
@@ -67,8 +72,15 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
         focusNode: _amountFocusNode,
         textInputAction: .next,
         keyboardType: .number,
-        decoration: InputDecoration(labelText: S.stockIngredientAmountLabel, filled: false),
-        validator: Validator.positiveNumber(S.stockIngredientAmountLabel, allowNull: true, focusNode: _amountFocusNode),
+        decoration: InputDecoration(
+          labelText: S.stockIngredientAmountLabel,
+          filled: false,
+        ),
+        validator: Validator.positiveNumber(
+          S.stockIngredientAmountLabel,
+          allowNull: true,
+          focusNode: _amountFocusNode,
+        ),
       ),
     ),
     p(
@@ -102,7 +114,10 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
       yield ListTile(
         key: Key('stock.ingredient.${product.id}'),
         title: Text('${product.catalog.name} - ${product.name}'),
-        onTap: () => context.pushNamed(Routes.menuProductUpdate, pathParameters: {'id': product.id}),
+        onTap: () => context.pushNamed(
+          AppRouteNames.menuProductUpdate,
+          pathParameters: {'id': product.id},
+        ),
       );
     }
   }
@@ -136,7 +151,11 @@ class _StockIngredientModalState extends State<StockIngredientModal> with ItemMo
 
     if (widget.isNew) {
       await Stock.instance.addItem(
-        Ingredient(name: object.name!, currentAmount: object.currentAmount!, totalAmount: object.totalAmount),
+        Ingredient(
+          name: object.name!,
+          currentAmount: object.currentAmount!,
+          totalAmount: object.totalAmount,
+        ),
       );
     } else {
       await widget.ingredient!.update(object);

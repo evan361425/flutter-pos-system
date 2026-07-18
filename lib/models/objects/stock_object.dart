@@ -60,7 +60,8 @@ class IngredientObject extends ModelObject<Ingredient> {
       model.restockQuantity = restockQuantity!;
       result['$prefix.restockQuantity'] = restockQuantity!;
     }
-    if (restockLastPrice != null && restockLastPrice != model.restockLastPrice) {
+    if (restockLastPrice != null &&
+        restockLastPrice != model.restockLastPrice) {
       model.restockLastPrice = restockLastPrice;
       result['$prefix.restockLastPrice'] = restockLastPrice!;
     }
@@ -72,14 +73,16 @@ class IngredientObject extends ModelObject<Ingredient> {
       model.lastAmount = lastAmount;
       result['$prefix.lastAmount'] = lastAmount!;
     }
-    if ((fromModal || totalAmount != null) && totalAmount != model.totalAmount) {
+    if ((fromModal || totalAmount != null) &&
+        totalAmount != model.totalAmount) {
       model.totalAmount = totalAmount;
       result['$prefix.totalAmount'] = totalAmount;
     }
 
     if (result.isNotEmpty) {
       // should not only change currentAmount
-      if (!(result.length == 1 && result.containsKey('$prefix.currentAmount'))) {
+      if (!(result.length == 1 &&
+          result.containsKey('$prefix.currentAmount'))) {
         model.updatedAt = .now();
         result['$prefix.updatedAt'] = model.updatedAt.toString();
       }
@@ -98,7 +101,9 @@ class IngredientObject extends ModelObject<Ingredient> {
       restockLastPrice: data['restockLastPrice'] as num?,
       lastAmount: data['lastAmount'] as num?,
       totalAmount: data['totalAmount'] as num?,
-      updatedAt: data['updatedAt'] == null ? null : DateTime.parse(data['updatedAt'] as String),
+      updatedAt: data['updatedAt'] == null
+          ? null
+          : DateTime.parse(data['updatedAt'] as String),
     );
   }
 }
@@ -124,7 +129,8 @@ class QuantityObject extends ModelObject<Quantity> {
       model.name = name!;
       result['$prefix.name'] = name!;
     }
-    if (defaultProportion != null && defaultProportion != model.defaultProportion) {
+    if (defaultProportion != null &&
+        defaultProportion != model.defaultProportion) {
       model.defaultProportion = defaultProportion!;
       result['$prefix.defaultProportion'] = defaultProportion!;
     }
@@ -184,6 +190,10 @@ class ReplenishmentObject extends ModelObject<Replenishment> {
       });
     }
 
-    return ReplenishmentObject(id: data['id'] as String, name: data['name'] as String, data: replenishmentData);
+    return ReplenishmentObject(
+      id: data['id'] as String,
+      name: data['name'] as String,
+      data: replenishmentData,
+    );
   }
 }

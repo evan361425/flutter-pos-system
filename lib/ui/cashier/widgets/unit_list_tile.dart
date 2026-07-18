@@ -23,7 +23,12 @@ class UnitListTile extends StatelessWidget {
     );
   }
 
-  Future<void> _setUnitCount(BuildContext context, num unit, num max, int value) async {
+  Future<void> _setUnitCount(
+    BuildContext context,
+    num unit,
+    num max,
+    int value,
+  ) async {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) => SliderTextDialog(

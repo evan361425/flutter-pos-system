@@ -57,8 +57,13 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
         controller: sourceCount,
         keyboardType: .number,
         onChanged: handleCountChanged,
-        decoration: InputDecoration(labelText: S.cashierChangerCustomCountLabel),
-        validator: Validator.positiveInt(S.cashierChangerCustomCountLabel, minimum: 1),
+        decoration: InputDecoration(
+          labelText: S.cashierChangerCustomCountLabel,
+        ),
+        validator: Validator.positiveInt(
+          S.cashierChangerCustomCountLabel,
+          minimum: 1,
+        ),
       ),
       DropdownButtonFormField<num>(
         key: const Key('changer.custom.source.unit'),
@@ -78,9 +83,13 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
             TextFormField(
               key: Key('changer.custom.target.${entry.key}.count'),
               controller: entry.key == 0 ? targetController : null,
-              initialValue: entry.key == 0 ? null : entry.value.count?.toString(),
+              initialValue: entry.key == 0
+                  ? null
+                  : entry.value.count?.toString(),
               keyboardType: .number,
-              decoration: InputDecoration(labelText: S.cashierChangerCustomCountLabel),
+              decoration: InputDecoration(
+                labelText: S.cashierChangerCustomCountLabel,
+              ),
               validator: Validator.positiveInt('', allowNull: true),
               onSaved: (value) => entry.value.count = int.tryParse(value ?? ''),
             ),
@@ -101,7 +110,9 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
                     }),
                     color: theme.colorScheme.error,
                     icon: const Icon(KIcons.entryRemove),
-                    tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).deleteButtonTooltip,
                   ),
           ),
         ),
@@ -117,7 +128,12 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
             actions,
             if (errorMessage.isNotEmpty)
               Center(
-                child: Text(errorMessage, style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.error)),
+                child: Text(
+                  errorMessage,
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
               ),
             TextDivider(label: S.cashierChangerCustomDividerFrom),
             sourceEntry,
@@ -157,9 +173,13 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
 
     await Cashier.instance.addFavorite(
       CashierChangeBatchObject(
-        source: CashierChangeEntryObject(count: .parse(sourceCount.text), unit: sourceUnit!),
+        source: CashierChangeEntryObject(
+          count: .parse(sourceCount.text),
+          unit: sourceUnit!,
+        ),
         targets: [
-          for (var target in _mergedTargets().entries) CashierChangeEntryObject(count: target.value, unit: target.key),
+          for (var target in _mergedTargets().entries)
+            CashierChangeEntryObject(count: target.value, unit: target.key),
         ],
       ),
     );
@@ -181,7 +201,10 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     if (Cashier.instance.validate(index, count)) {
       await Cashier.instance.update({
         index: -count,
-        ...{for (var target in _mergedTargets().entries) Cashier.instance.indexOf(target.key): target.value},
+        ...{
+          for (var target in _mergedTargets().entries)
+            Cashier.instance.indexOf(target.key): target.value,
+        },
       });
       return true;
     } else {
@@ -229,7 +252,8 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
     var msg = S.cashierChangerErrorInvalidHead(count, sourceUnit!.toCurrency());
     for (var target in targets) {
       if (!target.isEmpty) {
-        msg += '\n •  ${S.cashierChangerErrorInvalidBody(target.count!, target.unit!.toCurrency())}';
+        msg +=
+            '\n •  ${S.cashierChangerErrorInvalidBody(target.count!, target.unit!.toCurrency())}';
       }
     }
     _setError(msg);

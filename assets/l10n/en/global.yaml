@@ -29,6 +29,7 @@ title:
 - analysis: Stats
   stock: Inventory
   cashier: Cashier
+  floorPlan: Floor Plan
   settings: Settings
   menu: Menu
   printers: Printer

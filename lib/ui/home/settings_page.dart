@@ -7,7 +7,7 @@ import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
@@ -26,7 +26,10 @@ class SettingsPage extends StatelessWidget {
     const String flavor = .fromEnvironment('appFlavor');
 
     void navigateTo(Feature feature) {
-      context.pushNamed(Routes.settingsFeature, pathParameters: {'feature': feature.name});
+      context.pushNamed(
+        AppRouteNames.settingsFeature,
+        pathParameters: {'feature': feature.name},
+      );
     }
 
     return SafeArea(
@@ -74,7 +77,9 @@ class SettingsPage extends StatelessWidget {
                 key: const Key('feature.theme'),
                 leading: const Icon(Icons.palette_outlined),
                 title: Text(S.settingThemeTitle),
-                subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
+                subtitle: Text(
+                  S.settingThemeName(ThemeSetting.instance.value.name),
+                ),
                 trailing: const Icon(Icons.navigate_next_outlined),
                 onTap: () => navigateTo(.theme),
               );
@@ -101,11 +106,56 @@ class SettingsPage extends StatelessWidget {
                 key: const Key('feature.checkout_warning'),
                 leading: const Icon(Icons.store_mall_directory_outlined),
                 title: Text(S.settingCheckoutWarningTitle),
-                subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
+                subtitle: Text(
+                  S.settingCheckoutWarningName(
+                    CheckoutWarningSetting.instance.value.name,
+                  ),
+                ),
                 trailing: const Icon(Icons.navigate_next_outlined),
                 onTap: () => navigateTo(.checkoutWarning),
               );
             },
+          ),
+          ListTile(
+            key: const Key('feature.printer_management'),
+            leading: const Icon(Icons.print_outlined),
+            title: const Text('Printer Management'),
+            subtitle: const Text('Configure LAN/USB cashier and kitchen printers'),
+            trailing: const Icon(Icons.navigate_next_outlined),
+            onTap: () =>
+                context.pushNamed(AppRouteNames.settingsPrinterManagement),
+          ),
+          ListTile(
+            key: const Key('feature.staff'),
+            leading: const Icon(Icons.badge_outlined),
+            title: const Text('Staff'),
+            subtitle: const Text('Manage employees and PIN access'),
+            trailing: const Icon(Icons.navigate_next_outlined),
+            onTap: () => context.pushNamed(AppRouteNames.settingsStaff),
+          ),
+          ListTile(
+            key: const Key('feature.cloud_sync'),
+            leading: const Icon(Icons.cloud_sync_outlined),
+            title: const Text('Cloud Sync'),
+            subtitle: const Text('E-commerce inventory and web orders'),
+            trailing: const Icon(Icons.navigate_next_outlined),
+            onTap: () => context.pushNamed(AppRouteNames.settingsCloudSync),
+          ),
+          ListTile(
+            key: const Key('feature.manager_dashboard'),
+            leading: const Icon(Icons.dashboard_outlined),
+            title: const Text('Manager Dashboard'),
+            subtitle: const Text('Peak hours, bestsellers, payment mix'),
+            trailing: const Icon(Icons.navigate_next_outlined),
+            onTap: () => context.pushNamed(AppRouteNames.managerDashboard),
+          ),
+          ListTile(
+            key: const Key('feature.close_register'),
+            leading: const Icon(Icons.point_of_sale_outlined),
+            title: const Text('Close Register'),
+            subtitle: const Text('Count cash, print Z-report, and lock'),
+            trailing: const Icon(Icons.navigate_next_outlined),
+            onTap: () => context.pushNamed(AppRouteNames.closeRegister),
           ),
           ListenableBuilder(
             listenable: OrderAwakeningSetting.instance,
@@ -117,7 +167,8 @@ class SettingsPage extends StatelessWidget {
                 subtitle: Text(S.settingOrderAwakeningDescription),
                 autofocus: focus == 'orderAwakening',
                 value: OrderAwakeningSetting.instance.value,
-                onChanged: (value) => OrderAwakeningSetting.instance.update(value),
+                onChanged: (value) =>
+                    OrderAwakeningSetting.instance.update(value),
               );
             },
           ),
@@ -132,7 +183,8 @@ class SettingsPage extends StatelessWidget {
                 subtitle: Text(S.settingReportDescription),
                 autofocus: focus == 'collectEvents',
                 value: CollectEventsSetting.instance.value,
-                onChanged: (value) => CollectEventsSetting.instance.update(value),
+                onChanged: (value) =>
+                    CollectEventsSetting.instance.update(value),
               );
             },
           ),
@@ -162,7 +214,9 @@ class ItemListScaffold extends StatelessWidget {
               .mapIndexed(
                 (index, pair) => ListTile(
                   title: Text(pair[0]),
-                  trailing: value == index ? const Icon(Icons.check_outlined) : null,
+                  trailing: value == index
+                      ? const Icon(Icons.check_outlined)
+                      : null,
                   subtitle: Text(pair[1], style: hintStyle),
                   onTap: () async {
                     if (value != index) {
@@ -190,7 +244,9 @@ enum Feature {
     return switch (this) {
       .theme => ThemeMode.values.map((e) => S.settingThemeName(e.name)),
       .language => Language.values.map((e) => e.title),
-      .checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name)),
+      .checkoutWarning => CheckoutWarningTypes.values.map(
+        (e) => S.settingCheckoutWarningName(e.name),
+      ),
     };
   }
 
@@ -198,7 +254,9 @@ enum Feature {
     return switch (this) {
       .theme => ThemeMode.values.map((e) => ''),
       .language => Language.values.map((e) => ''),
-      .checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name)),
+      .checkoutWarning => CheckoutWarningTypes.values.map(
+        (e) => S.settingCheckoutWarningTip(e.name),
+      ),
     };
   }
 
@@ -222,7 +280,9 @@ enum Feature {
     return switch (this) {
       .theme => ThemeSetting.instance.update(ThemeMode.values[index]),
       .language => LanguageSetting.instance.update(Language.values[index]),
-      .checkoutWarning => CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]),
+      .checkoutWarning => CheckoutWarningSetting.instance.update(
+        CheckoutWarningTypes.values[index],
+      ),
     };
   }
 }

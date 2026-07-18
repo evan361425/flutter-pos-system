@@ -9,7 +9,7 @@ import 'package:possystem/components/style/route_buttons.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/printer.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/widgets/printer_view.dart';
 
@@ -38,7 +38,7 @@ class PrinterPage extends StatelessWidget {
           buttons: [
             RouteIconButton(
               key: const Key('printer.create'),
-              route: Routes.printerCreate,
+              route: AppRouteNames.printerCreate,
               icon: const Icon(KIcons.add),
               label: S.printerTitleCreate,
             ),
@@ -50,7 +50,7 @@ class PrinterPage extends StatelessWidget {
             ),
             RouteIconButton(
               key: const Key('printer.settings'),
-              route: Routes.printerSettings,
+              route: AppRouteNames.printerSettings,
               icon: const Icon(Icons.settings),
               label: S.printerTitleSettings,
             ),
@@ -59,10 +59,12 @@ class PrinterPage extends StatelessWidget {
         delegate: SlidableItemDelegate(
           disableSlide: true,
           items: Printers.instance.itemList,
-          tileBuilder: (printer, _, actorBuilder) => _Tile(printer, actorBuilder),
+          tileBuilder: (printer, _, actorBuilder) =>
+              _Tile(printer, actorBuilder),
           handleDelete: (printer) => printer.remove(),
           deleteValue: 0,
-          warningContentBuilder: (_, printer) => S.dialogDeletionContent(printer.name, ''),
+          warningContentBuilder: (_, printer) =>
+              S.dialogDeletionContent(printer.name, ''),
         ),
       ),
     );
@@ -83,7 +85,10 @@ class _Tile extends StatelessWidget {
       child: PrinterView(
         printer: item,
         trailing: EntryMoreButton(onPressed: actor),
-        onTap: () => context.pushNamed(Routes.printerUpdate, pathParameters: {'id': item.id}),
+        onTap: () => context.pushNamed(
+          AppRouteNames.printerUpdate,
+          pathParameters: {'id': item.id},
+        ),
         onLogPress: actor,
       ),
     );
@@ -99,9 +104,15 @@ class _EmptyBody extends StatelessWidget {
     final buttons = Row(
       mainAxisAlignment: .center,
       children: [
-        FilledButton(onPressed: () => context.pushNamed(Routes.printerCreate), child: Text(S.printerTitleCreate)),
+        FilledButton(
+          onPressed: () => context.pushNamed(AppRouteNames.printerCreate),
+          child: Text(S.printerTitleCreate),
+        ),
         const SizedBox(width: kInternalSpacing),
-        OutlinedButton(onPressed: _showSupportedPrinters(context), child: Text(S.printerSupportedTitle)),
+        OutlinedButton(
+          onPressed: _showSupportedPrinters(context),
+          child: Text(S.printerSupportedTitle),
+        ),
       ],
     );
 
@@ -129,7 +140,10 @@ class _EmptyBody extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: DecoratedBox(
-                      decoration: BoxDecoration(borderRadius: .circular(100), color: Colors.white),
+                      decoration: BoxDecoration(
+                        borderRadius: .circular(100),
+                        color: Colors.white,
+                      ),
                       child: const Padding(
                         padding: .all(14.0),
                         child: Icon(
@@ -149,13 +163,19 @@ class _EmptyBody extends StatelessWidget {
         Positioned.fill(
           child: ClipPath(
             clipper: _Wave1(),
-            child: ColoredBox(color: theme.scaffoldBackgroundColor.withAlpha(102), child: const SizedBox.expand()),
+            child: ColoredBox(
+              color: theme.scaffoldBackgroundColor.withAlpha(102),
+              child: const SizedBox.expand(),
+            ),
           ),
         ),
         Positioned.fill(
           child: ClipPath(
             clipper: _Wave2(),
-            child: ColoredBox(color: theme.scaffoldBackgroundColor, child: const SizedBox.expand()),
+            child: ColoredBox(
+              color: theme.scaffoldBackgroundColor,
+              child: const SizedBox.expand(),
+            ),
           ),
         ),
         Positioned.fill(
@@ -169,12 +189,21 @@ class _EmptyBody extends StatelessWidget {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          Text(S.printerMetaHelper, textAlign: .center, style: theme.textTheme.titleMedium),
+                          Text(
+                            S.printerMetaHelper,
+                            textAlign: .center,
+                            style: theme.textTheme.titleMedium,
+                          ),
                           const SizedBox(height: kInternalSpacing),
-                          SingleChildScrollView(scrollDirection: .horizontal, child: buttons),
+                          SingleChildScrollView(
+                            scrollDirection: .horizontal,
+                            child: buttons,
+                          ),
                           if (kDebugMode)
                             OutlinedButton(
-                              onPressed: () => Printers.instance.addItem(Printer(id: 'demo', name: 'Demo Printer')),
+                              onPressed: () => Printers.instance.addItem(
+                                Printer(id: 'demo', name: 'Demo Printer'),
+                              ),
                               child: const Text('Add demo'),
                             ),
                         ],
@@ -238,7 +267,11 @@ VoidCallback _showSupportedPrinters(BuildContext context) {
       title: Text(S.printerSupportedTitle),
       content: Column(
         children: [
-          for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter58, PrinterProvider.yokoscan58])
+          for (final printer in [
+            PrinterProvider.catPrinter,
+            PrinterProvider.xPrinter58,
+            PrinterProvider.yokoscan58,
+          ])
             ListTile(
               key: Key('printer.supported.${printer.name}'),
               title: Text(S.printerSupportedName(printer.name)),

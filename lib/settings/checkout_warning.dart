@@ -16,7 +16,8 @@ class CheckoutWarningSetting extends Setting<CheckoutWarningTypes> {
 
   @override
   void initialize() {
-    value = CheckoutWarningTypes.values[service.get<int>(key) ?? defaultValue.index];
+    value = CheckoutWarningTypes
+        .values[service.get<int>(key) ?? defaultValue.index];
   }
 
   @override

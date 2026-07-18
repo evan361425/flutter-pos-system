@@ -11,7 +11,10 @@ class HistoryCleanDialog extends StatefulWidget {
   const HistoryCleanDialog({super.key});
 
   static Future<DateTime?> show(BuildContext context) {
-    return showDialog<DateTime>(context: context, builder: (context) => const HistoryCleanDialog());
+    return showDialog<DateTime>(
+      context: context,
+      builder: (context) => const HistoryCleanDialog(),
+    );
   }
 
   @override
@@ -38,12 +41,20 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
             RadioListTile(
               value: _Mode.lastYear,
               title: Text(S.analysisHistoryActionClearLastYear),
-              subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year - 1, now.month, now.day))),
+              subtitle: Text(
+                S.analysisHistoryActionClearSubtitle(
+                  DateTime(now.year - 1, now.month, now.day),
+                ),
+              ),
             ),
             RadioListTile(
               value: _Mode.sixMonthsAgo,
               title: Text(S.analysisHistoryActionClearLast6Months),
-              subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year, now.month - 6, now.day))),
+              subtitle: Text(
+                S.analysisHistoryActionClearSubtitle(
+                  DateTime(now.year, now.month - 6, now.day),
+                ),
+              ),
             ),
             RadioListTile(
               value: _Mode.custom,
@@ -60,15 +71,26 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
       ),
       actions: [
         PopButton(title: local.cancelButtonLabel),
-        TextButton(onPressed: () => _onOk(context), child: Text(local.okButtonLabel)),
+        TextButton(
+          onPressed: () => _onOk(context),
+          child: Text(local.okButtonLabel),
+        ),
       ],
     );
   }
 
   Future<void> _onOk(BuildContext context) async {
     final date = switch (mode) {
-      .lastYear => DateTime(DateTime.now().year - 1, DateTime.now().month, DateTime.now().day),
-      .sixMonthsAgo => DateTime(DateTime.now().year, DateTime.now().month - 6, DateTime.now().day),
+      .lastYear => DateTime(
+        DateTime.now().year - 1,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
+      .sixMonthsAgo => DateTime(
+        DateTime.now().year,
+        DateTime.now().month - 6,
+        DateTime.now().day,
+      ),
       .custom => customDate,
     };
 
@@ -92,7 +114,11 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
   }
 
   Future<void> _selectCustomDate(BuildContext context) async {
-    final selected = await showDatePicker(context: context, firstDate: DateTime(2021, 1), lastDate: .now());
+    final selected = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2021, 1),
+      lastDate: .now(),
+    );
 
     if (selected != null) {
       setState(() {
@@ -103,14 +129,20 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
   }
 
   Future<bool> _confirmClean(BuildContext context, DateTime notAfter) async {
-    final metric = await Seller.instance.getMetrics(DateTime(2021, 1), notAfter);
+    final metric = await Seller.instance.getMetrics(
+      DateTime(2021, 1),
+      notAfter,
+    );
 
     var ok = false;
     if (context.mounted) {
       ok = await ConfirmDialog.show(
         context,
         title: S.analysisHistoryActionClearConfirmTitle,
-        content: S.analysisHistoryActionClearConfirmContent(notAfter, metric.count),
+        content: S.analysisHistoryActionClearConfirmContent(
+          notAfter,
+          metric.count,
+        ),
       );
     }
 
@@ -122,14 +154,18 @@ class HistoryScheduleResetNoDialog extends StatelessWidget {
   final GlobalKey<_PeriodSelectorState> _periodKey;
   final Period? initialPeriod;
 
-  const HistoryScheduleResetNoDialog._(GlobalKey<_PeriodSelectorState> key, this.initialPeriod) : _periodKey = key;
+  const HistoryScheduleResetNoDialog._(
+    GlobalKey<_PeriodSelectorState> key,
+    this.initialPeriod,
+  ) : _periodKey = key;
 
   static Future<Period?> show(BuildContext context) async {
     final key = GlobalKey<_PeriodSelectorState>();
     final origin = Period.fromCache();
     final period = await showDialog<Period>(
       context: context,
-      builder: (context) => HistoryScheduleResetNoDialog._(key, origin.isInvalid ? null : origin),
+      builder: (context) =>
+          HistoryScheduleResetNoDialog._(key, origin.isInvalid ? null : origin),
     );
 
     return period;
@@ -146,7 +182,9 @@ class HistoryScheduleResetNoDialog extends StatelessWidget {
           HintText(S.analysisHistoryActionScheduleResetNoHint),
           _PeriodSelector(
             key: _periodKey,
-            initialPeriod: initialPeriod ?? const Period(values: [1], unit: .xDayOfEachMonth),
+            initialPeriod:
+                initialPeriod ??
+                const Period(values: [1], unit: .xDayOfEachMonth),
           ),
         ],
       ),
@@ -200,7 +238,9 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
               for (final unit in PeriodUnit.values)
                 DropdownMenuItem<PeriodUnit>(
                   value: unit,
-                  child: Text(S.analysisHistoryActionScheduleResetNoPeriod(unit.name)),
+                  child: Text(
+                    S.analysisHistoryActionScheduleResetNoPeriod(unit.name),
+                  ),
                 ),
             ],
             onChanged: _updateUnit,
@@ -258,7 +298,11 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
                     return CheckboxListTile(
                       dense: true,
                       value: _values.contains(day),
-                      title: Text(S.analysisHistoryActionScheduleResetNoWeekday(DateTime(2025, 9, day))),
+                      title: Text(
+                        S.analysisHistoryActionScheduleResetNoWeekday(
+                          DateTime(2025, 9, day),
+                        ),
+                      ),
                       onChanged: _updateValuesCallback(day, rebuild),
                     );
                   },
@@ -287,7 +331,11 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
                         builder: (context, rebuild) {
                           return CheckboxListTile(
                             value: _values.contains(day),
-                            title: Text(S.analysisHistoryActionScheduleResetNoMonthDay(day)),
+                            title: Text(
+                              S.analysisHistoryActionScheduleResetNoMonthDay(
+                                day,
+                              ),
+                            ),
                             onChanged: _updateValuesCallback(day, rebuild),
                           );
                         },
@@ -327,15 +375,24 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
         builder: (context, value, child) {
           final today = Period.today();
           return Text(
-            _values.isEmpty ? '' : S.analysisHistoryActionScheduleResetNoNext(period.nextDate(today, today)),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: .bold),
+            _values.isEmpty
+                ? ''
+                : S.analysisHistoryActionScheduleResetNoNext(
+                    period.nextDate(today, today),
+                  ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: .bold),
           );
         },
       ),
     );
   }
 
-  void Function(bool?) _updateValuesCallback(int day, void Function(void Function()) rebuild) {
+  void Function(bool?) _updateValuesCallback(
+    int day,
+    void Function(void Function()) rebuild,
+  ) {
     return (bool? checked) {
       if (checked == true) {
         _values.add(day);
@@ -357,7 +414,9 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
   }
 
   String? _validateValues(int? value) {
-    return _values.isEmpty ? S.analysisHistoryActionScheduleResetNoErrorDaysEmpty : null;
+    return _values.isEmpty
+        ? S.analysisHistoryActionScheduleResetNoErrorDaysEmpty
+        : null;
   }
 
   Period? submit() {

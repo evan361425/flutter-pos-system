@@ -73,7 +73,10 @@ Future<GoogleSpreadsheet?> prepareSpreadsheet({
 
   stateNotifier.value = S.transitGoogleSheetProgressFulfill;
   final added = await exporter.addSheets(spreadsheet, missing.toList());
-  Log.out('add ${added?.length} sheets to spreadsheet: ${spreadsheet.name}', 'gs_export');
+  Log.out(
+    'add ${added?.length} sheets to spreadsheet: ${spreadsheet.name}',
+    'gs_export',
+  );
   if (added == null) {
     if (context.mounted) {
       showMoreInfoSnackBar(
@@ -169,10 +172,17 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
               if (errorText != null)
                 Padding(
                   padding: const .only(top: 8.0),
-                  child: Text(errorText!, style: Theme.of(context).inputDecorationTheme.errorStyle),
+                  child: Text(
+                    errorText!,
+                    style: Theme.of(context).inputDecorationTheme.errorStyle,
+                  ),
                 ),
             ],
-            if (showTutorial) Padding(padding: const .only(top: 8.0), child: _buildTutorialImage()),
+            if (showTutorial)
+              Padding(
+                padding: const .only(top: 8.0),
+                child: _buildTutorialImage(),
+              ),
           ],
         ),
       ),
@@ -218,14 +228,16 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
   Widget _buildTutorialImage() {
     return CachedNetworkImage(
       imageUrl: _sheetTutorial,
-      progressIndicatorBuilder: (context, url, prog) => CircularProgressIndicator.adaptive(value: prog.progress),
+      progressIndicatorBuilder: (context, url, prog) =>
+          CircularProgressIndicator.adaptive(value: prog.progress),
     );
   }
 
   @override
   void initState() {
     final val =
-        Cache.instance.get<String>(widget.cacheKey) ?? Cache.instance.get<String>(widget.fallbackCacheKey ?? '');
+        Cache.instance.get<String>(widget.cacheKey) ??
+        Cache.instance.get<String>(widget.fallbackCacheKey ?? '');
     if (val != null) {
       spreadsheet = GoogleSpreadsheet.fromString(val);
     }
@@ -233,6 +245,12 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     createNew = widget.allowCreateNew ? spreadsheet == null : false;
     textController = TextEditingController(text: spreadsheet?.id);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
   }
 
   Future<void> _setupSpreadsheet(String? id) async {
@@ -253,7 +271,9 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
 
     if (createNew) {
       Log.out('create new spreadsheet', 'gs_export');
-      Navigator.of(context).pop(GoogleSpreadsheet(id: '', name: '', sheets: []));
+      Navigator.of(
+        context,
+      ).pop(GoogleSpreadsheet(id: '', name: '', sheets: []));
       return;
     }
 
@@ -275,7 +295,8 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     if (mounted) {
       if (spreadsheet == null) {
         setState(() {
-          errorText = '${S.transitGoogleSheetErrorIdNotFound}\n${S.transitGoogleSheetErrorIdNotFoundHelper}';
+          errorText =
+              '${S.transitGoogleSheetErrorIdNotFound}\n${S.transitGoogleSheetErrorIdNotFoundHelper}';
         });
       } else {
         Log.out('selected spreadsheet: ${spreadsheet!.name}', 'gs_export');

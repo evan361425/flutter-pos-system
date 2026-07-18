@@ -46,9 +46,18 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Sensitive data
+# Sensitive data — never commit secrets or signing material
 google-services.json
 services.*.tar
+.env
+.env.*
+!.env.example
+
+# Android signing (also covered under android/.gitignore; kept at root as defense-in-depth)
+*.jks
+*.keystore
+key.properties
+**/key.properties
 
 # mocks
 # *.mocks.dart
@@ -61,6 +70,8 @@ Pipfile.lock
 /lib/firebase_options.dart
 .metadata
 
-
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# FVM Version Cache
+.fvm/

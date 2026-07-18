@@ -26,7 +26,10 @@ class Linkify extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bodyTheme = Theme.of(context).textTheme.bodyMedium;
-    final linkStyle = bodyTheme?.copyWith(color: Colors.blueAccent, decoration: .underline);
+    final linkStyle = bodyTheme?.copyWith(
+      color: Colors.blueAccent,
+      decoration: .underline,
+    );
 
     return SelectableText.rich(
       TextSpan(
@@ -36,7 +39,8 @@ class Linkify extends StatelessWidget {
                   ? TextSpan(
                       text: element.text,
                       style: linkStyle,
-                      recognizer: TapGestureRecognizer()..onTap = element.launch,
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = element.launch,
                     )
                   : TextSpan(text: element.text),
             )

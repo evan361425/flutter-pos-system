@@ -8,10 +8,19 @@ import 'package:possystem/ui/transit/formatter/formatter.dart';
 import 'preview_page.dart';
 
 class ProductPreviewPage extends PreviewPage<Product> {
-  const ProductPreviewPage({super.key, required super.model, required super.items, super.progress, super.physics});
+  const ProductPreviewPage({
+    super.key,
+    required super.model,
+    required super.items,
+    super.progress,
+    super.physics,
+  });
 
   @override
-  Iterable<Widget> buildDetails(BuildContext context, Iterable<FormattedItem> items) sync* {
+  Iterable<Widget> buildDetails(
+    BuildContext context,
+    Iterable<FormattedItem> items,
+  ) sync* {
     String catalogName = '';
 
     for (final item in items) {
@@ -27,7 +36,11 @@ class ProductPreviewPage extends PreviewPage<Product> {
         yield const SizedBox(height: 12.0);
         yield Padding(
           padding: const .only(left: 4.0),
-          child: ImporterColumnStatus(name: catalogName, status: product.catalog.statusName, fontWeight: .bold),
+          child: ImporterColumnStatus(
+            name: catalogName,
+            status: product.catalog.statusName,
+            fontWeight: .bold,
+          ),
         );
       }
 
@@ -38,7 +51,9 @@ class ProductPreviewPage extends PreviewPage<Product> {
   @override
   Widget buildItem(BuildContext context, Product item) {
     final textTheme = Theme.of(context).textTheme;
-    final textStyle = textTheme.bodyMedium?.copyWith(color: textTheme.bodySmall?.color);
+    final textStyle = textTheme.bodyMedium?.copyWith(
+      color: textTheme.bodySmall?.color,
+    );
 
     return ExpansionTile(
       key: Key('transit_preview.menu.${item.id}'),
@@ -51,24 +66,37 @@ class ProductPreviewPage extends PreviewPage<Product> {
       ),
       childrenPadding: const .symmetric(horizontal: 8.0),
       children: [
-        MetaBlock.withString(context, <String>[S.menuProductMetaPrice(item.price), S.menuProductMetaCost(item.cost)])!,
+        MetaBlock.withString(context, <String>[
+          S.menuProductMetaPrice(item.price),
+          S.menuProductMetaCost(item.cost),
+        ])!,
         const SizedBox(height: 8.0),
         for (final ingredient in item.items)
           Column(
             children: [
               ListTile(
-                title: ImporterColumnStatus(name: ingredient.name, status: ingredient.statusName),
+                title: ImporterColumnStatus(
+                  name: ingredient.name,
+                  status: ingredient.statusName,
+                ),
                 subtitle: Text(S.menuIngredientMetaAmount(ingredient.amount)),
                 visualDensity: .compact,
                 minVerticalPadding: 0,
               ),
               for (final quantity in ingredient.items)
                 ListTile(
-                  title: ImporterColumnStatus(name: quantity.name, status: quantity.statusName),
+                  title: ImporterColumnStatus(
+                    name: quantity.name,
+                    status: quantity.statusName,
+                  ),
                   subtitle: MetaBlock.withString(context, <String>[
                     S.menuQuantityMetaAmount(quantity.amount),
-                    S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice.toCurrency()),
-                    S.menuQuantityMetaAdditionalCost(quantity.additionalCost.toCurrency()),
+                    S.menuQuantityMetaAdditionalPrice(
+                      quantity.additionalPrice.toCurrency(),
+                    ),
+                    S.menuQuantityMetaAdditionalCost(
+                      quantity.additionalCost.toCurrency(),
+                    ),
                   ], textStyle: textStyle),
                   leading: const Text(MetaBlock.string),
                   visualDensity: .compact,

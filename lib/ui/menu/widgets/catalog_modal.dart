@@ -19,19 +19,24 @@ class CatalogModal extends StatefulWidget {
   State<CatalogModal> createState() => _CatalogModalState();
 }
 
-class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal> {
+class _CatalogModalState extends State<CatalogModal>
+    with ItemModal<CatalogModal> {
   late TextEditingController _nameController;
   late FocusNode _nameFocusNode;
 
   String? _image;
 
   @override
-  String get title => widget.isNew ? S.menuCatalogTitleCreate : S.menuCatalogTitleUpdate;
+  String get title =>
+      widget.isNew ? S.menuCatalogTitleCreate : S.menuCatalogTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
     return [
-      EditImageHolder(path: _image, onSelected: (image) => setState(() => _image = image)),
+      EditImageHolder(
+        path: _image,
+        onSelected: (image) => setState(() => _image = image),
+      ),
       p(
         TextFormField(
           key: const Key('catalog.name'),
@@ -51,7 +56,9 @@ class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.catalog?.name != name && Menu.instance.hasName(name) ? S.menuCatalogNameErrorRepeat : null;
+              return widget.catalog?.name != name && Menu.instance.hasName(name)
+                  ? S.menuCatalogNameErrorRepeat
+                  : null;
             },
           ),
         ),
@@ -61,7 +68,13 @@ class _CatalogModalState extends State<CatalogModal> with ItemModal<CatalogModal
 
   Future<Catalog> getCatalog() async {
     final object = CatalogObject(name: _nameController.text, imagePath: _image);
-    final catalog = widget.catalog ?? Catalog(name: object.name, index: Menu.instance.newIndex, imagePath: _image);
+    final catalog =
+        widget.catalog ??
+        Catalog(
+          name: object.name,
+          index: Menu.instance.newIndex,
+          imagePath: _image,
+        );
 
     if (widget.isNew) {
       await Menu.instance.addItem(catalog);

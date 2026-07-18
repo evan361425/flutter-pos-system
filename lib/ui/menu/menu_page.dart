@@ -10,7 +10,7 @@ import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -103,7 +103,10 @@ class _MenuPageState extends State<MenuPage> {
   Widget get firstView {
     if (Menu.instance.isEmpty) {
       return Center(
-        child: EmptyBody(content: S.menuCatalogEmptyBody, onPressed: _handleCatalogCreate),
+        child: EmptyBody(
+          content: S.menuCatalogEmptyBody,
+          onPressed: _handleCatalogCreate,
+        ),
       );
     }
 
@@ -184,7 +187,7 @@ class _MenuPageState extends State<MenuPage> {
 
   Future<void> _handleCatalogCreate() async {
     // only catalog modal will return ID
-    final catalog = await context.pushNamed(Routes.menuCatalogCreate);
+    final catalog = await context.pushNamed(AppRouteNames.menuCatalogCreate);
 
     if (catalog is Catalog) {
       _handleSelected(catalog);
@@ -192,15 +195,18 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _handleProductCreate() async {
-    final id = await context.pushNamed(Routes.menuCatalogCreate, queryParameters: {'id': selected?.id});
+    final id = await context.pushNamed(
+      AppRouteNames.menuCatalogCreate,
+      queryParameters: {'id': selected?.id},
+    );
     if (id is String && mounted) {
-      context.pushNamed(Routes.menuProduct, pathParameters: {'id': id});
+      context.pushNamed(AppRouteNames.menuProduct, pathParameters: {'id': id});
     }
   }
 
   void _handlePop() {
     if (_onPopInvoked(selected == null, null)) {
-      PopButton.safePop(context, path: '${Routes.base}/_');
+      PopButton.safePop(context, path: AppRouteNames.homeMore);
     }
   }
 
@@ -215,7 +221,11 @@ class _MenuPageState extends State<MenuPage> {
 
   Future<void> _pageSlideTo(int index) async {
     if (singleView) {
-      return controller.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.ease);
+      return controller.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
     }
   }
 }
@@ -238,22 +248,38 @@ class _SearchAction extends StatelessWidget {
     );
   }
 
-  Widget _searchItemBuilder(BuildContext context, String pattern, ProductMatch match) {
+  Widget _searchItemBuilder(
+    BuildContext context,
+    String pattern,
+    ProductMatch match,
+  ) {
     final details = match.detailedName;
     return ListTile(
       key: Key('search.${match.product.id}'),
-      title: details == null ? HighlightText(text: match.product.name, pattern: pattern) : Text(match.product.name),
+      title: details == null
+          ? HighlightText(text: match.product.name, pattern: pattern)
+          : Text(match.product.name),
       subtitle: details != null
-          ? HighlightText(text: details, pattern: pattern, prefix: S.menuSearchPrefix(match.detailedType!))
+          ? HighlightText(
+              text: details,
+              pattern: pattern,
+              prefix: S.menuSearchPrefix(match.detailedType!),
+            )
           : null,
       onTap: () {
         match.product.searched();
-        context.pushNamed(Routes.menuProduct, pathParameters: {'id': match.product.id});
+        context.pushNamed(
+          AppRouteNames.menuProduct,
+          pathParameters: {'id': match.product.id},
+        );
       },
     );
   }
 
   Widget _searchEmptyBuilder(BuildContext context, String text) {
-    return ListTile(title: Text(S.menuSearchNotFound), leading: const Icon(KIcons.warn));
+    return ListTile(
+      title: Text(S.menuSearchNotFound),
+      leading: const Icon(KIcons.warn),
+    );
   }
 }

@@ -15,21 +15,29 @@ class ChangerFavoriteView extends StatelessWidget {
   final VoidCallback emptyAction;
   final ValueNotifier<FavoriteItem?> selectedItem;
 
-  const ChangerFavoriteView({super.key, required this.emptyAction, required this.selectedItem});
+  const ChangerFavoriteView({
+    super.key,
+    required this.emptyAction,
+    required this.selectedItem,
+  });
 
   @override
   Widget build(BuildContext context) {
     context.watch<Cashier>();
 
     if (Cashier.instance.favoriteIsEmpty) {
-      return EmptyBody(content: S.cashierChangerFavoriteEmptyBody, onPressed: emptyAction);
+      return EmptyBody(
+        content: S.cashierChangerFavoriteEmptyBody,
+        onPressed: emptyAction,
+      );
     }
 
     final delegate = SlidableItemDelegate<FavoriteItem, int>(
       items: Cashier.instance.favoriteItems.toList(),
       deleteValue: 0,
       handleDelete: (item) => handleDeletion(item.index),
-      tileBuilder: (item, index, actorBuilder) => _Tile(item, actorBuilder, selectedItem),
+      tileBuilder: (item, index, actorBuilder) =>
+          _Tile(item, actorBuilder, selectedItem),
     );
 
     return ValueListenableBuilder(
@@ -82,10 +90,18 @@ class _Tile extends StatelessWidget {
         groupValue: selectedItem.value,
         // ignore: deprecated_member_use
         onChanged: (value) => selectedItem.value = value,
-        title: Text(S.cashierChangerFavoriteItemFrom(item.source.count!, item.source.unit!.toCurrency())),
+        title: Text(
+          S.cashierChangerFavoriteItemFrom(
+            item.source.count!,
+            item.source.unit!.toCurrency(),
+          ),
+        ),
         subtitle: MetaBlock.withString(
           context,
-          item.targets.map<String>((e) => S.cashierChangerFavoriteItemTo(e.count!, e.unit!.toCurrency())),
+          item.targets.map<String>(
+            (e) =>
+                S.cashierChangerFavoriteItemTo(e.count!, e.unit!.toCurrency()),
+          ),
           textOverflow: .visible,
         ),
         secondary: EntryMoreButton(onPressed: actor),

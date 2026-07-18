@@ -15,11 +15,14 @@ const _reInt = r'[0-9 ]+';
 const _rePre = r'^';
 const _any = '<_ANY_>';
 
-ModelFormatter<Repository, String> findPlainTextFormatter(FormattableModel able) {
+ModelFormatter<Repository, String> findPlainTextFormatter(
+  FormattableModel able,
+) {
   final parser = able.toParser();
 
   return switch (able) {
-    .menu => _MenuFormatter(.instance, parser) as ModelFormatter<Repository, String>,
+    .menu =>
+      _MenuFormatter(.instance, parser) as ModelFormatter<Repository, String>,
     .stock => _StockFormatter(.instance, parser),
     .quantities => _QuantitiesFormatter(.instance, parser),
     .replenisher => _ReplenisherFormatter(.instance, parser),
@@ -103,19 +106,37 @@ class _MenuFormatter extends ModelFormatter<Menu, String> {
 
   @override
   List<List<String>> transformRows(List<List<String>> rows) {
-    final reCatalog = RegExp(_rePre + S.transitFormatTextMenuCatalog(_reInt, r'(?<name>.+)', r'.*'));
+    final reCatalog = RegExp(
+      _rePre + S.transitFormatTextMenuCatalog(_reInt, r'(?<name>.+)', r'.*'),
+    );
     final reProduct = RegExp(
       _rePre +
           S
-              .transitFormatTextMenuProduct(_reInt, r'(?<name>.+)', '(?<price>$_reDig)', '(?<cost>$_reDig)', r'.*')
+              .transitFormatTextMenuProduct(
+                _reInt,
+                r'(?<name>.+)',
+                '(?<price>$_reDig)',
+                '(?<cost>$_reDig)',
+                r'.*',
+              )
               .replaceAll(r'$', r'\$'),
     );
-    final reIngredient = RegExp(S.transitFormatTextMenuIngredient('(?<amount>$_reDig)', r'(?<name>.+?)', r'.*'));
+    final reIngredient = RegExp(
+      S.transitFormatTextMenuIngredient(
+        '(?<amount>$_reDig)',
+        r'(?<name>.+?)',
+        r'.*',
+      ),
+    );
     final reQuantity = RegExp(
       _rePre +
           r'(?<name>.+)（' + // hard coded naming pattern
           S
-              .transitFormatTextMenuQuantity('(?<amount>$_reDig)', '(?<price>$_reDig)', '(?<cost>$_reDig)')
+              .transitFormatTextMenuQuantity(
+                '(?<amount>$_reDig)',
+                '(?<price>$_reDig)',
+                '(?<cost>$_reDig)',
+              )
               .replaceAll(r'$', r'\$'),
     );
 
@@ -165,7 +186,9 @@ class _MenuFormatter extends ModelFormatter<Menu, String> {
         }
         if (quaStartIndex == ing.length) continue;
 
-        final quaSplit = ing.substring(quaStartIndex + 1).split(quantityDelimiter);
+        final quaSplit = ing
+            .substring(quaStartIndex + 1)
+            .split(quantityDelimiter);
         for (final qua in quaSplit) {
           match = reQuantity.firstMatch(qua);
           if (match != null) {
@@ -223,13 +246,26 @@ class _StockFormatter extends ModelFormatter<Stock, String> {
     final reBase = RegExp(
       _rePre +
           _removeSuffixAfterAny(
-            S.transitFormatTextStockIngredient(_reInt, r'(?<name>.+?)', '(?<amount>$_reDig)', _any),
+            S.transitFormatTextStockIngredient(
+              _reInt,
+              r'(?<name>.+?)',
+              '(?<amount>$_reDig)',
+              _any,
+            ),
             'details',
           ),
     );
-    final reMax = RegExp(S.transitFormatTextStockIngredientMaxAmount(1, '(?<max>$_reDig)'));
+    final reMax = RegExp(
+      S.transitFormatTextStockIngredientMaxAmount(1, '(?<max>$_reDig)'),
+    );
     final reRestock = RegExp(
-      S.transitFormatTextStockIngredientRestockPrice(1, '(?<q>$_reDig)', '(?<p>$_reDig)').replaceAll(r'$', r'\$'),
+      S
+          .transitFormatTextStockIngredientRestockPrice(
+            1,
+            '(?<q>$_reDig)',
+            '(?<p>$_reDig)',
+          )
+          .replaceAll(r'$', r'\$'),
     );
 
     final result = <List<String>>[];
@@ -285,7 +321,14 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, String> {
 
   @override
   List<List<String>> transformRows(List<List<Object?>> rows) {
-    final re = RegExp(_rePre + S.transitFormatTextQuantitiesQuantity(_reInt, r'(?<name>.+?)', '(?<prop>$_reDig)'));
+    final re = RegExp(
+      _rePre +
+          S.transitFormatTextQuantitiesQuantity(
+            _reInt,
+            r'(?<name>.+?)',
+            '(?<prop>$_reDig)',
+          ),
+    );
 
     final result = <List<String>>[];
     for (final line in rows[0]) {
@@ -317,12 +360,17 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, String> {
     return [
       [S.transitFormatTextReplenisherHeader(target.length)],
       target.itemList.map((repl) {
-        String d = repl.ingredientData.entries.map((e) => '${e.key.name}（${nf.format(e.value)}）').join('、');
+        String d = repl.ingredientData.entries
+            .map((e) => '${e.key.name}（${nf.format(e.value)}）')
+            .join('、');
         d = d.isEmpty ? '' : ingredientDelimiter + d;
         return S.transitFormatTextReplenisherReplenishment(
           (counter++).toString(),
           repl.name,
-          S.transitFormatTextReplenisherReplenishmentDetails(repl.ingredientData.length) + d,
+          S.transitFormatTextReplenisherReplenishmentDetails(
+                repl.ingredientData.length,
+              ) +
+              d,
         );
       }).toList(),
     ];
@@ -331,7 +379,14 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, String> {
   @override
   List<List<String>> transformRows(List<List<Object?>> rows) {
     final reBase = RegExp(
-      _rePre + _removeSuffixAfterAny(S.transitFormatTextReplenisherReplenishment(_reInt, r'(?<name>.+?)', _any)),
+      _rePre +
+          _removeSuffixAfterAny(
+            S.transitFormatTextReplenisherReplenishment(
+              _reInt,
+              r'(?<name>.+?)',
+              _any,
+            ),
+          ),
     );
     final reIngredient = RegExp('$_rePre(?<name>.*)（(?<amount>$_reDig)）');
 
@@ -380,7 +435,9 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, String> {
             .map((e) {
               final details = [
                 e.isDefault ? S.transitFormatTextOaDefaultOption : '',
-                e.modeValue == null ? '' : S.transitFormatTextOaModeValue(e.modeValue!),
+                e.modeValue == null
+                    ? ''
+                    : S.transitFormatTextOaModeValue(e.modeValue!),
               ].where((e) => e.isNotEmpty).join('，');
               return details.isEmpty ? e.name : '${e.name}（$details）';
             })
@@ -400,7 +457,15 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, String> {
   @override
   List<List<String>> transformRows(List<List<Object?>> rows) {
     final reOA = RegExp(
-      _rePre + _removeSuffixAfterAny(S.transitFormatTextOaOa(_reInt, r'(?<name>.+?)', r'(?<mode>.+?)', _any)),
+      _rePre +
+          _removeSuffixAfterAny(
+            S.transitFormatTextOaOa(
+              _reInt,
+              r'(?<name>.+?)',
+              r'(?<mode>.+?)',
+              _any,
+            ),
+          ),
     );
 
     final result = <List<String>>[];
@@ -408,7 +473,10 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, String> {
       final lineSplit = line.toString().split('：');
       final oaMatch = reOA.firstMatch(lineSplit[0]);
       if (oaMatch == null) {
-        Log.out('unknown order attribute: $lineSplit', 'transit_import_plaintext');
+        Log.out(
+          'unknown order attribute: $lineSplit',
+          'transit_import_plaintext',
+        );
         continue;
       }
 
@@ -430,7 +498,11 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, String> {
         }
       }
 
-      result.add([oaMatch.namedGroup('name')!, oaMatch.namedGroup('mode')!, options]);
+      result.add([
+        oaMatch.namedGroup('name')!,
+        oaMatch.namedGroup('mode')!,
+        options,
+      ]);
     }
 
     return result;

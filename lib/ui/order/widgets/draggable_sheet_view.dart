@@ -7,7 +7,8 @@ class DraggableSheetView extends StatefulWidget {
   final Widget row1;
   final Widget row2;
   final Widget row3_1;
-  final Widget Function(ScrollController scroll, ValueNotifier<bool> scrollable) row3_2Builder;
+  final Widget Function(ScrollController scroll, ValueNotifier<bool> scrollable)
+  row3_2Builder;
   final Widget row3_3;
   final Widget row4;
   final ChangeNotifier? resetNotifier;
@@ -43,10 +44,16 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
           child: Column(
             crossAxisAlignment: .stretch,
             children: [
-              ColoredBox(color: Theme.of(context).colorScheme.surface, child: widget.row1),
+              ColoredBox(
+                color: Theme.of(context).colorScheme.surface,
+                child: widget.row1,
+              ),
               Expanded(
                 key: const Key('order.bg'),
-                child: GestureDetector(onTap: () => controller.reset(), child: widget.row2),
+                child: GestureDetector(
+                  onTap: () => controller.reset(),
+                  child: widget.row2,
+                ),
               ),
             ],
           ),
@@ -102,7 +109,11 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
     super.initState();
 
     const base = stateSelectorHeight * 2 + itemHeight;
-    controller = ScrollableDraggableController(const [snapshotHeight, base, 1.0]);
+    controller = ScrollableDraggableController(const [
+      snapshotHeight,
+      base,
+      1.0,
+    ]);
 
     Cart.instance.addListener(_showStateSelectorIfStartOrder);
     widget.resetNotifier?.addListener(_reset);
@@ -117,7 +128,9 @@ class _DraggableSheetViewState extends State<DraggableSheetView> {
 
   void _showStateSelectorIfStartOrder() {
     // first order
-    if (controller.isAttached && Cart.instance.products.length == 1 && controller.snapIndex.value == 0) {
+    if (controller.isAttached &&
+        Cart.instance.products.length == 1 &&
+        controller.snapIndex.value == 0) {
       controller.jumpTo(controller.snapSizes[1]);
     }
   }

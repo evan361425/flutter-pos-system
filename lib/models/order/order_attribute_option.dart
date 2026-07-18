@@ -4,7 +4,9 @@ import 'package:possystem/models/order/order_attribute.dart';
 import 'package:possystem/services/storage.dart';
 
 class OrderAttributeOption extends Model<OrderAttributeOptionObject>
-    with ModelStorage<OrderAttributeOptionObject>, ModelOrderable<OrderAttributeOptionObject> {
+    with
+        ModelStorage<OrderAttributeOptionObject>,
+        ModelOrderable<OrderAttributeOptionObject> {
   /// Connect to parent model
   late OrderAttribute attribute;
 
@@ -36,12 +38,18 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
     );
   }
 
-  factory OrderAttributeOption.fromRow(OrderAttributeOption? ori, List<String> row, {required int index}) {
+  factory OrderAttributeOption.fromRow(
+    OrderAttributeOption? ori,
+    List<String> row, {
+    required int index,
+  }) {
     final isDefault = row.length > 1 ? row[1] == 'true' : false;
     final modeValue = row.length > 2 ? num.tryParse(row[2]) : null;
     final status = ori == null
         ? ModelStatus.staged
-        : (isDefault == ori.isDefault && modeValue == ori.modeValue ? ModelStatus.normal : ModelStatus.updated);
+        : (isDefault == ori.isDefault && modeValue == ori.modeValue
+              ? ModelStatus.normal
+              : ModelStatus.updated);
 
     return OrderAttributeOption(
       id: ori?.id,
@@ -76,6 +84,11 @@ class OrderAttributeOption extends Model<OrderAttributeOptionObject>
   }
 
   @override
-  OrderAttributeOptionObject toObject() =>
-      OrderAttributeOptionObject(id: id, name: name, index: index, isDefault: isDefault, modeValue: modeValue);
+  OrderAttributeOptionObject toObject() => OrderAttributeOptionObject(
+    id: id,
+    name: name,
+    index: index,
+    isDefault: isDefault,
+    modeValue: modeValue,
+  );
 }

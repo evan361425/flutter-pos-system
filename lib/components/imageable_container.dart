@@ -10,20 +10,31 @@ class ImageableContainer extends StatelessWidget {
 
   final List<Widget> children;
 
-  const ImageableContainer({super.key, required this.controller, required this.children});
+  const ImageableContainer({
+    super.key,
+    required this.controller,
+    required this.children,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
       child: Padding(
-        padding: const .symmetric(horizontal: kHorizontalSpacing, vertical: kTopSpacing),
+        padding: const .symmetric(
+          horizontal: kHorizontalSpacing,
+          vertical: kTopSpacing,
+        ),
         child: SingleChildScrollView(
           child: DefaultTextStyle(
             style: const TextStyle(color: Color(0xFF424242), overflow: .clip),
             child: RepaintBoundary(
               key: controller.key,
-              child: Column(mainAxisSize: .min, crossAxisAlignment: .stretch, children: children),
+              child: Column(
+                mainAxisSize: .min,
+                crossAxisAlignment: .stretch,
+                children: children,
+              ),
             ),
           ),
         ),
@@ -53,14 +64,17 @@ class ImageableController {
     // Delay is required. See Issue https://github.com/flutter/flutter/issues/22308
     await Future.delayed(const Duration(milliseconds: 20));
 
-    final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+    final boundary =
+        key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
     if (boundary == null) {
       return null;
     }
 
     final result = <ConvertibleImage>[];
     for (final w in widths) {
-      final image = await boundary.toImage(pixelRatio: w / boundary.paintBounds.width);
+      final image = await boundary.toImage(
+        pixelRatio: w / boundary.paintBounds.width,
+      );
       final byteData = await image.toByteData(format: .rawRgba);
       result.add(ConvertibleImage(byteData!.buffer.asUint8List(), width: w));
       Log.out('generate image with width: $w', 'imageable_container');

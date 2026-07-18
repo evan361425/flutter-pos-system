@@ -6,7 +6,10 @@ import 'package:possystem/settings/language_setting.dart';
 /// Human usually think 5/1-5/2 is two days.
 /// Machine usually think 5/1-5/2 is one day (5/1 0:0 ~ 5/2 0:0).
 /// So we need to convert between human and machine by adding a day to the end.
-Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange range) async {
+Future<DateTimeRange?> showMyDateRangePicker(
+  BuildContext context,
+  DateTimeRange range,
+) async {
   final end = range.end.subtract(const Duration(days: 1));
   final DateTime now = .now();
   final size = MediaQuery.sizeOf(context);
@@ -30,14 +33,23 @@ Future<DateTimeRange?> showMyDateRangePicker(BuildContext context, DateTimeRange
                 margin: const .all(12.0),
                 shape: RoundedRectangleBorder(borderRadius: .circular(16.0)),
                 clipBehavior: .antiAlias,
-                child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 560, maxHeight: 540), child: child),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 560,
+                    maxHeight: 540,
+                  ),
+                  child: child,
+                ),
               ),
             ],
           ),
   );
 
   if (result != null) {
-    return DateTimeRange(start: result.start, end: result.end.add(const Duration(days: 1)));
+    return DateTimeRange(
+      start: result.start,
+      end: result.end.add(const Duration(days: 1)),
+    );
   }
 
   return null;

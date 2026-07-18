@@ -937,7 +937,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printers{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} floorPlan{Floor Plan} settings{Settings} menu{Menu} printers{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
   "@title": {
     "placeholders": {
       "name": {
@@ -1520,7 +1520,25 @@
   },
   "orderActionExchange": "Exchange",
   "orderActionStash": "Stash",
+  "orderActionSendToKitchen": "Send to Kitchen",
   "orderActionReview": "Order History",
+  "orderActionSplitBill": "Split Bill",
+  "orderCartProductNoteTitle": "Kitchen note",
+  "orderCartProductNoteHint": "e.g. No onions, Allergy…",
+  "orderCartProductNoteSave": "Save",
+  "orderSplitBillTitle": "Split Bill",
+  "orderSplitBillRemaining": "Remaining on table",
+  "orderSplitBillSelected": "Paying now",
+  "orderSplitBillSubtotal": "Subtotal to pay: {price}",
+  "@orderSplitBillSubtotal": {
+    "placeholders": {
+      "price": {"type": "String"}
+    }
+  },
+  "orderSplitBillPaySelected": "Pay Selected",
+  "orderSplitBillEmptySelection": "Select at least one item to pay.",
+  "orderSplitBillFailed": "Split payment failed. Table order was not changed.",
+  "orderSplitBillCheckoutTitle": "Pay selected items",
   "orderLoaderMetaTotalRevenue": "Revenue: {revenue}",
   "@orderLoaderMetaTotalRevenue": {
     "description": "Total revenue from orders in the order list",
@@ -1684,6 +1702,14 @@
     }
   },
   "orderCheckoutSnackbarPaidFailed": "Payment is less than the order amount.",
+  "orderCheckoutSubtotal": "Subtotal",
+  "orderCheckoutTotalTax": "Tax",
+  "orderCheckoutGrandTotal": "Grand Total",
+  "orderCheckoutPaymentCash": "Cash",
+  "orderCheckoutPaymentCard": "Card",
+  "orderCheckoutPaymentMixed": "Mixed",
+  "orderCheckoutPaymentCashAmount": "Cash",
+  "orderCheckoutPaymentCardAmount": "Card",
   "orderObjectViewEmpty": "No order records found",
   "orderObjectViewChange": "Change",
   "orderObjectViewPriceTotal": "Total Price: {price}",
@@ -1697,6 +1723,8 @@
   },
   "orderObjectViewPriceProducts": "Product Price",
   "orderObjectViewPriceAttributes": "Customer Settings Price",
+  "orderObjectViewTotalTax": "Tax",
+  "orderObjectViewSubtotal": "Subtotal",
   "orderObjectViewCost": "Cost",
   "orderObjectViewProfit": "Profit",
   "orderObjectViewPaid": "Paid",

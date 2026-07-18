@@ -51,7 +51,10 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
       scrollable: true,
       content: Form(key: form, child: child),
       actions: [
-        PopButton(key: const Key('slider_dialog.cancel'), title: local.cancelButtonLabel),
+        PopButton(
+          key: const Key('slider_dialog.cancel'),
+          title: local.cancelButtonLabel,
+        ),
         FilledButton(
           key: const Key('slider_dialog.confirm'),
           onPressed: () {
@@ -114,7 +117,10 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
     sliderMax = max(widget.max, sliderValue.value);
     withSlider = widget.max > 0;
     if (!withSlider) {
-      textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+      textController.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: textController.text.length,
+      );
     }
 
     textController.addListener(() {

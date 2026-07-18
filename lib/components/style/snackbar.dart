@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:possystem/components/linkify.dart';
@@ -110,9 +109,18 @@ void showMoreInfoSnackBar(
   final ctx = context ?? key?.currentContext;
   final action = content == null || ctx == null
       ? null
-      : SnackBarAction(label: S.actMoreInfo, onPressed: () => showMoreInfoDialog(ctx, message, content));
+      : SnackBarAction(
+          label: S.actMoreInfo,
+          onPressed: () => showMoreInfoDialog(ctx, message, content),
+        );
 
-  showSnackBar(message, action: action, context: context, key: key, persist: persist);
+  showSnackBar(
+    message,
+    action: action,
+    context: context,
+    key: key,
+    persist: persist,
+  );
 }
 
 void showMoreInfoDialog(BuildContext context, String title, Widget body) {
@@ -124,19 +132,32 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
         title: Text(title),
         contentPadding: const .fromLTRB(24.0, 8.0, 24.0, 16.0),
         content: body,
-        actions: [PopButton(title: MaterialLocalizations.of(context).okButtonLabel)],
+        actions: [
+          PopButton(title: MaterialLocalizations.of(context).okButtonLabel),
+        ],
       );
     },
   );
 }
 
-void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key, String? moreMessage}) {
+void _prettierError(
+  Object e, {
+  BuildContext? context,
+  GlobalKey<ScaffoldMessengerState>? key,
+  String? moreMessage,
+}) {
   void show(String msg, [String? more]) {
-    if (kDebugMode) {
-      print('snackbar debug error: $msg');
-      print('snackbar debug stack: ${e is Error ? e.stackTrace : null}');
-    }
-    showMoreInfoSnackBar(msg, more == null ? null : Linkify.fromString(more), context: context, key: key);
+    Log.err(
+      e,
+      'snackbar_debug',
+      e is Error ? e.stackTrace : null,
+    );
+    showMoreInfoSnackBar(
+      msg,
+      more == null ? null : Linkify.fromString(more),
+      context: context,
+      key: key,
+    );
   }
 
   if (e is PlatformException) {
@@ -149,7 +170,9 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
     return show(S.printerErrorBluetoothOff);
   }
 
-  if (e is PlatformException && ['connect', 'startScan'].contains(e.code) && e.message?.contains('bluetooth') == true) {
+  if (e is PlatformException &&
+      ['connect', 'startScan'].contains(e.code) &&
+      e.message?.contains('bluetooth') == true) {
     return show(S.printerErrorBluetoothOff);
   }
 
@@ -166,7 +189,10 @@ void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessenge
       BluetoothExceptionCode.serviceNotFound.index,
       BluetoothExceptionCode.characteristicNotFound.index,
     ].contains(e.code)) {
-      return show(S.printerErrorNotSupportTitle, S.printerErrorNotSupportContent);
+      return show(
+        S.printerErrorNotSupportTitle,
+        S.printerErrorNotSupportContent,
+      );
     }
 
     if ([

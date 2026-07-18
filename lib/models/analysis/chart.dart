@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/models/analysis/analysis.dart';
@@ -8,7 +10,8 @@ import 'package:possystem/services/storage.dart';
 
 enum AnalysisChartType { cartesian, circular }
 
-class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrderable<ChartObject> {
+class Chart extends Model<ChartObject>
+    with ModelStorage<ChartObject>, ModelOrderable<ChartObject> {
   /// Which type of chart to show, for example, cartesian or circular
   AnalysisChartType type;
 
@@ -23,6 +26,9 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
 
   /// Target's specified items IDs.
   List<String> targetItems;
+
+  /// Tracks the current loading future for proper cancellation
+  Future<List>? _loadingFuture;
 
   Chart({
     super.id,
@@ -71,8 +77,21 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
     );
   }
 
+  /// Cancel any ongoing load operation
+  void _cancelLoading() {
+    _loadingFuture = null;
+  }
+
+  @override
+  void dispose() {
+    _cancelLoading();
+    super.dispose();
+  }
+
   Iterable<OrderMetricUnit> get units {
-    return metrics.groupFoldBy<OrderMetricUnit, int>((e) => e.unit, (prev, current) => 0).keys;
+    return metrics
+        .groupFoldBy<OrderMetricUnit, int>((e) => e.unit, (prev, current) => 0)
+        .keys;
   }
 
   /// Get the name and unit of each metric in the chart.
@@ -84,15 +103,25 @@ class Chart extends Model<ChartObject> with ModelStorage<ChartObject>, ModelOrde
     final unit = metrics.first.unit;
     return target
         .getItems(targetItems)
-        .map(target.isGroupedName(targetItems) ? (e) => '${e.name}(${(e.repository as Model).name})' : (e) => e.name)
+        .map(
+          target.isGroupedName(targetItems)
+              ? (e) => '${e.name}(${(e.repository as Model).name})'
+              : (e) => e.name,
+        )
         .map((e) => MapEntry(e, unit));
   }
 
   Future<List> load(DateTimeRange range) {
-    return switch (type) {
+    // Cancel any previous load
+    _cancelLoading();
+
+    final future = switch (type) {
       .cartesian => _loadCartesian(range),
       .circular => _loadCircular(range),
     };
+
+    _loadingFuture = future;
+    return future;
   }
 
   Future<List<OrderSummary>> _loadCartesian(DateTimeRange range) {

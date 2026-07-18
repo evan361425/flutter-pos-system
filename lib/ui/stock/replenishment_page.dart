@@ -9,7 +9,7 @@ import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/stock/replenishment.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 class ReplenishmentPage extends StatelessWidget {
@@ -23,15 +23,19 @@ class ReplenishmentPage extends StatelessWidget {
       content: ListenableBuilder(
         listenable: Replenisher.instance,
         builder: (context, title) {
-          handleCreate() => context.pushNamed(Routes.stockReplCreate);
+          handleCreate() => context.pushNamed(AppRouteNames.stockReplCreate);
           if (Replenisher.instance.isEmpty) {
             return Center(
-              child: EmptyBody(onPressed: handleCreate, content: S.stockReplenishmentEmptyBody),
+              child: EmptyBody(
+                onPressed: handleCreate,
+                content: S.stockReplenishmentEmptyBody,
+              ),
             );
           }
 
           return buildList(
-            (Replenishment a, ReplenishActions b) => handleActions(context, a, b),
+            (Replenishment a, ReplenishActions b) =>
+                handleActions(context, a, b),
             Row(
               children: [
                 Expanded(
@@ -50,19 +54,23 @@ class ReplenishmentPage extends StatelessWidget {
     );
   }
 
-  Widget buildList(void Function(Replenishment a, ReplenishActions b) actionHandler, Widget leading) {
+  Widget buildList(
+    void Function(Replenishment a, ReplenishActions b) actionHandler,
+    Widget leading,
+  ) {
     return SlidableItemList<Replenishment, ReplenishActions>(
       leading: leading,
       delegate: SlidableItemDelegate(
         handleDelete: (item) => item.remove(),
         deleteValue: ReplenishActions.delete,
-        warningContentBuilder: (_, item) => S.dialogDeletionContent(item.name, ''),
+        warningContentBuilder: (_, item) =>
+            S.dialogDeletionContent(item.name, ''),
         items: Replenisher.instance.itemList,
         actionBuilder: (item) => [
           MenuAction(
             title: Text(S.stockReplenishmentTitleUpdate),
             leading: const Icon(KIcons.edit),
-            route: Routes.stockReplUpdate,
+            route: AppRouteNames.stockReplUpdate,
             routePathParameters: {'id': item.id},
           ),
           MenuAction(
@@ -72,15 +80,25 @@ class ReplenishmentPage extends StatelessWidget {
           ),
         ],
         handleAction: actionHandler,
-        tileBuilder: (item, index, actorBuilder) =>
-            _Tile(item: item, actorBuilder: actorBuilder, onTap: () => actionHandler(item, .preview)),
+        tileBuilder: (item, index, actorBuilder) => _Tile(
+          item: item,
+          actorBuilder: actorBuilder,
+          onTap: () => actionHandler(item, .preview),
+        ),
       ),
     );
   }
 
-  void handleActions(BuildContext context, Replenishment item, ReplenishActions action) async {
+  void handleActions(
+    BuildContext context,
+    Replenishment item,
+    ReplenishActions action,
+  ) async {
     if (action == .preview) {
-      final confirmed = await context.pushNamed<bool>(Routes.stockReplPreview, pathParameters: {'id': item.id});
+      final confirmed = await context.pushNamed<bool>(
+        AppRouteNames.stockReplPreview,
+        pathParameters: {'id': item.id},
+      );
 
       if (confirmed == true && context.mounted) {
         PopButton.safePop(context, value: true);
@@ -94,7 +112,11 @@ class _Tile extends StatelessWidget {
   final ActorBuilder actorBuilder;
   final VoidCallback onTap;
 
-  const _Tile({required this.item, required this.actorBuilder, required this.onTap});
+  const _Tile({
+    required this.item,
+    required this.actorBuilder,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

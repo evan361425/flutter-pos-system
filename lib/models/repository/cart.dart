@@ -1,20 +1,20 @@
-import 'dart:math';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
-import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/order/payment_intent.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/models/repository/stashed_orders.dart';
+import 'package:possystem/services/cart/cart_state.dart';
+import 'package:possystem/services/cart/cart_state_manager.dart';
+import 'package:possystem/services/cart/checkout_service.dart';
+import 'package:possystem/services/cart/stash_service.dart';
 
-import 'cashier.dart';
-import 'seller.dart';
-import 'stock.dart';
+export 'package:possystem/services/cart/checkout_service.dart'
+    show CheckoutStatus;
 
 /// Collect current cart status.
 ///
@@ -25,336 +25,216 @@ class Cart extends ChangeNotifier {
 
   Cart({this.name = 'cart'});
 
-  /// Timer for order creation.
+  /// Timer for order creation (delegates to [CartState.timer]).
   @visibleForTesting
-  static DateTime Function() timer = () => DateTime.now();
+  static DateTime Function() get timer => CartState.timer;
+  @visibleForTesting
+  static set timer(DateTime Function() value) => CartState.timer = value;
 
   /// Help analysis checkout is from stashed or actual cart.
   final String name;
 
-  /// Current ordered products.
-  final List<CartProduct> products = [];
+  /// Internal state holder
+  final CartState _state = CartState();
 
-  /// Current select attributes.
-  final Map<String, String> attributes = {};
+  List<CartProduct> get products => _state.products;
+  Map<String, String> get attributes => _state.attributes;
+  ValueNotifier<CartProduct?> get selectedProduct => _state.selectedProduct;
+  String get note => _state.note;
+  set note(String value) => _state.note = value;
+  int get selectedIndex => _state.selectedIndex;
+  set selectedIndex(int value) => _state.selectedIndex = value;
 
-  /// Current selected product if and only if all selected products are same.
-  final ValueNotifier<CartProduct?> selectedProduct = ValueNotifier(null);
+  /// Linked dining table UUID for dine-in; null for takeaway.
+  String? get tableId => _state.tableId;
 
-  /// Note for the order.
-  String note = '';
+  /// Guest count; null means takeaway / unset.
+  int? get pax => _state.pax;
 
-  /// Current selected product index.
-  int selectedIndex = -1;
+  /// Stash row id when restored from [StashedOrders]; null otherwise.
+  int? get stashId => _state.stashId;
 
-  /// Whether cart is empty and can be recovered by stashed data without any
-  /// side effect.
-  bool get isEmpty => products.isEmpty;
+  bool get isEmpty => _state.isEmpty;
+  num get productsPrice => _state.productsPrice;
+  num get productsCost => _state.productsCost;
+  int get productCount => _state.productCount;
+  num get totalTax => _state.totalTax;
+  num get subtotal => _state.subtotal;
+  num get price => _state.price;
+  Iterable<CartProduct> get selected => _state.selected;
+  Iterable<OrderAttributeOption> get selectedAttributeOptions =>
+      _state.selectedAttributeOptions;
 
-  /// The sum of all products price.
-  num get productsPrice {
-    return products.fold(0, (value, product) => value + product.totalPrice);
-  }
-
-  /// The sum of all products cost which is also the order's cost.
-  num get productsCost {
-    return products.fold(0, (value, product) => value + product.totalCost);
-  }
-
-  /// The count of all ordered products.
-  int get productCount {
-    return products.fold(0, (value, product) => value + product.count);
-  }
-
-  /// Order's price, the sum of product and attribute.
-  num get price {
-    var total = productsPrice;
-
-    for (var option in selectedAttributeOptions) {
-      total = option.calculatePrice(total);
-    }
-
-    return max(total.toCurrencyNum(), 0);
-  }
-
-  /// The list of selected product.
-  Iterable<CartProduct> get selected => products.where((product) => product.isSelected);
-
-  /// The attribute options that are selected or default value.
-  Iterable<OrderAttributeOption> get selectedAttributeOptions sync* {
-    for (var attr in OrderAttributes.instance.itemList) {
-      final id = attributes[attr.id];
-      final option = id == null ? attr.defaultOption : attr.getItem(id);
-
-      if (option != null) {
-        yield option;
-      }
-    }
-  }
-
-  /// Add [product] to the cart.
   void add(Product product) {
-    final p = CartProduct(product, isSelected: true);
-    products.add(p);
-
-    toggleAll(false, except: p);
-
+    CartStateManager.instance.add(_state, product);
     notifyListeners();
   }
 
-  /// Update [attributes] by setting the entry.
-  ///
-  /// If you want to disable the specific attribute, try passing empty string,
-  /// because remove it will choose default one after checkout.
   void chooseAttribute(String attrId, String optionId) {
-    attributes[attrId] = optionId;
+    CartStateManager.instance.chooseAttribute(_state, attrId, optionId);
+    notifyListeners();
   }
 
-  /// Update the note of the order.
   void updateNote(String value) {
-    note = value;
+    CartStateManager.instance.updateNote(_state, value);
+    notifyListeners();
   }
 
-  /// Finish the order and get paid.
-  ///
-  /// - [paid] is the money that customer paid. If it is less than the price,
-  ///  will return [CheckoutStatus.paidNotEnough].
-  /// - [context] is the context to show the receipt dialog.
-  Future<CheckoutStatus> checkout({required num paid, required BuildContext context}) async {
-    if (isEmpty) return CheckoutStatus.nothingHappened;
+  /// Update the kitchen note on a single [product] line.
+  void updateProductNote(CartProduct product, String value) {
+    CartStateManager.instance.updateProductNote(_state, product, value);
+    notifyListeners();
+  }
 
-    if (paid < price) return CheckoutStatus.paidNotEnough;
+  /// Bind this cart to a dining table before taking the order.
+  void bindTable({required String tableId, int? pax}) {
+    CartStateManager.instance.bindTable(_state, tableId: tableId, pax: pax);
+    notifyListeners();
+  }
 
-    Log.ger('begin_order_checkout', {'name': name, 'paid': paid, 'price': price});
-    final data = toObject(paid: paid);
-
-    final receipt = await Printers.instance.generateReceipts(context: context, order: data);
-    if (receipt != null) {
-      Printers.instance.printReceipts(receipt);
+  /// Finish the order with typed [payments].
+  Future<CheckoutStatus> checkout({
+    required List<PaymentIntent> payments,
+    required BuildContext context,
+  }) async {
+    final status = await CheckoutService.instance.checkout(
+      state: _state,
+      payments: payments,
+      context: context,
+    );
+    if (status == CheckoutStatus.ok ||
+        status == CheckoutStatus.cashierNotEnough ||
+        status == CheckoutStatus.cashierUsingSmall) {
+      notifyListeners();
     }
-
-    await Seller.instance.push(data);
-    await Stock.instance.order(data);
-    final status = await Cashier.instance.paid(paid, data.price);
-
-    // After all the process, clear the cart.
-    // If any error occurred, the cart will not be cleared and the decision will
-    // be made by the user (re-try or discard).
-    clear();
-
-    return CheckoutStatus.fromCashier(status);
+    return status;
   }
 
-  /// When start ordering, the properties should rebind to avoid legacy data.
   void rebind() {
-    // remove not exist product
-    products.removeWhere((product) {
-      return Menu.instance.items.every((catalog) => !catalog.hasItem(product.id));
+    _state.products.removeWhere((product) {
+      return Menu.instance.items.every(
+        (catalog) => !catalog.hasItem(product.id),
+      );
     });
-    // remove non exist attribute
-    attributes.entries.toList().forEach((entry) {
+    _state.attributes.entries.toList().forEach((entry) {
       final attr = OrderAttributes.instance.getItem(entry.key);
       if (attr == null || !attr.hasItem(entry.value)) {
-        attributes.remove(entry.key);
+        _state.attributes.remove(entry.key);
       }
     });
-    // rebind product ingredient/quantity
-    for (var product in products) {
+    for (var product in _state.products) {
       product.rebind();
     }
-  }
-
-  /// Stash order to restore later.
-  Future<bool> stash() async {
-    final able = !Cart.instance.isEmpty;
-
-    if (able) {
-      Log.ger('begin_order_stash');
-
-      await StashedOrders.instance.stash(toObject());
-
-      clear();
-    }
-
-    return able;
-  }
-
-  /// Restore the order.
-  void restore(OrderObject order) {
-    Log.ger('begin_order_restore');
-
-    products
-      ..clear()
-      ..addAll(order.productModels);
-    attributes
-      ..clear()
-      ..addAll(order.selectedAttributes);
-    selectedProduct.value = null;
-
     notifyListeners();
   }
 
-  /// Toggle all selection of products.
-  void toggleAll(bool? checked, {CartProduct? except}) {
-    // except only acceptable when specify checked
-    assert(checked != null || except == null);
-
-    for (var product in products) {
-      product.toggleSelected(identical(product, except) ? !checked! : checked);
+  Future<bool> stash() async {
+    Log.ger('begin_order_stash');
+    final ok = await StashService.instance.stash(_state);
+    if (ok) {
+      notifyListeners();
     }
+    return ok;
+  }
 
-    updateSelection();
+  void restore(OrderObject order) {
+    Log.ger('begin_order_restore');
+    StashService.instance.restore(_state, order);
+    notifyListeners();
+  }
+
+  void toggleAll(bool? checked, {CartProduct? except}) {
+    CartStateManager.instance.toggleAll(_state, checked, except: except);
+    notifyListeners();
   }
 
   void updateSelection() {
-    final selected = this.selected;
+    _updateSelection();
+    notifyListeners();
+  }
+
+  void _updateSelection() {
+    final selected = _state.selected;
     if (selected.isEmpty) {
-      selectedProduct.value = null;
-      selectedIndex = -1;
+      _state.selectedProduct.value = null;
+      _state.selectedIndex = -1;
       return;
     }
 
     final s = selected.first;
-    selectedIndex = products.indexOf(s);
-    selectedProduct.value = selected.every((e) => e.id == s.id) ? s : null;
+    _state.selectedIndex = _state.products.indexOf(s);
+    _state.selectedProduct.value = selected.every((e) => e.id == s.id)
+        ? s
+        : null;
   }
 
-  /// Remove all selected product.
   void selectedRemove() {
-    products.removeWhere((e) => e.isSelected);
-
-    selectedProduct.value = null;
+    CartStateManager.instance.selectedRemove(_state);
     notifyListeners();
   }
 
-  /// Change the count of selected products.
   void selectedUpdateCount(int? count) {
-    if (count == null) return;
-
-    for (var e in selected) {
-      e.count = count;
-    }
+    CartStateManager.instance.selectedUpdateCount(_state, count);
     notifyListeners();
   }
 
-  /// Change the price of selected products by discount.
-  ///
-  /// It use original price to calculate the final price.
   void selectedUpdateDiscount(int? discount) {
-    if (discount == null) return;
-
-    for (var e in selected) {
-      final price = e.product.price * discount / 100;
-      e.singlePrice = price.toCurrencyNum();
-    }
+    CartStateManager.instance.selectedUpdateDiscount(_state, discount);
     notifyListeners();
   }
 
-  /// Change the price of selected products.
   void selectedUpdatePrice(num? price) {
-    if (price == null) return;
-
-    for (var e in selected) {
-      e.singlePrice = price.toCurrencyNum();
-    }
+    CartStateManager.instance.selectedUpdatePrice(_state, price);
     notifyListeners();
   }
 
-  /// Remove specific product
   void removeAt(int index) {
-    products.removeAt(index);
-
-    updateSelection();
+    CartStateManager.instance.removeAt(_state, index);
     notifyListeners();
   }
 
-  /// Public function to let watcher knows the price has changed.
-  ///
-  /// For example: quantity selection.
+  /// Apply [delta] to the product at [index] (see [CartStateManager.updateQuantity]).
+  void updateQuantity(int index, int delta) {
+    CartStateManager.instance.updateQuantity(_state, index, delta);
+    notifyListeners();
+  }
+
   void priceChanged() {
+    CartStateManager.instance.priceChanged(_state);
     notifyListeners();
   }
 
-  /// Clear all the status.
   void clear() {
-    products.clear();
-    attributes.clear();
-    selectedProduct.value = null;
-    note = '';
-
+    CartStateManager.instance.clear(_state);
     notifyListeners();
   }
 
   @override
   void dispose() {
-    products.clear();
-    attributes.clear();
+    _state.products.clear();
+    _state.attributes.clear();
     super.dispose();
   }
 
   @visibleForTesting
-  void replaceAll({List<CartProduct>? products, Map<String, String>? attributes}) {
+  void replaceAll({
+    List<CartProduct>? products,
+    Map<String, String>? attributes,
+  }) {
     if (products != null) {
-      this.products
+      _state.products
         ..clear()
         ..addAll(products);
     }
     if (attributes != null) {
-      this.attributes
+      _state.attributes
         ..clear()
         ..addAll(attributes);
     }
+    notifyListeners();
   }
 
-  /// Cart status to [OrderObject]
-  OrderObject toObject({num paid = 0}) {
-    return OrderObject(
-      paid: paid,
-      cost: productsCost,
-      price: price,
-      productsCount: productCount,
-      productsPrice: productsPrice,
-      note: note,
-      products: products.map<OrderProductObject>((e) => e.toObject()).toList(),
-      attributes: selectedAttributeOptions.map((e) => OrderSelectedAttributeObject.fromModel(e)).toList(),
-      createdAt: timer(),
-    );
-  }
-}
-
-/// Status of cart after checkout.
-enum CheckoutStatus {
-  /// The paid is not enough, checkout process has suspend.
-  paidNotEnough,
-
-  /// The money is not enough for the change.
-  cashierNotEnough,
-
-  /// Cashier is trying to use small money to paid the change.
-  ///
-  /// For example, need $35 to return but use two $10 and three $5 not three $10
-  /// one $5.
-  ///
-  /// If cashier is unable to return fully, it will get [CheckoutStatus.cashierUsingSmall].
-  cashierUsingSmall,
-
-  /// Cart is empty, checkout has no other side effect.
-  nothingHappened,
-
-  /// Stash the order.
-  stash,
-
-  /// Restore from stashed.
-  restore,
-
-  /// All fine.
-  ok;
-
-  factory CheckoutStatus.fromCashier(CashierUpdateStatus status) {
-    return switch (status) {
-      .notEnough => CheckoutStatus.cashierNotEnough,
-      .usingSmall => CheckoutStatus.cashierUsingSmall,
-      .ok => CheckoutStatus.ok,
-    };
+  OrderObject toObject({List<PaymentIntent>? payments, num paid = 0}) {
+    return _state.toObject(payments: payments, paid: paid);
   }
 }

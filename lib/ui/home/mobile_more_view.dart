@@ -7,7 +7,8 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
+import 'package:possystem/services/staff/employee_manager_service.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,8 @@ class MobileMoreView extends StatefulWidget {
   State<MobileMoreView> createState() => _MobileMoreViewState();
 }
 
-class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAliveClientMixin {
+class _MobileMoreViewState extends State<MobileMoreView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -43,7 +45,7 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
                 child: _buildRouteTile(
                   id: 'orderAttributes',
                   icon: Icons.assignment_ind_outlined,
-                  route: Routes.orderAttr,
+                  route: AppRouteNames.orderAttr,
                   title: S.orderAttributeTitle,
                   subtitle: S.orderAttributeDescription,
                 ),
@@ -52,7 +54,7 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
                 child: _buildRouteTile(
                   id: 'menu',
                   icon: Icons.collections_outlined,
-                  route: Routes.menu,
+                  route: AppRouteNames.menu,
                   title: S.menuTitle,
                   subtitle: S.menuSubtitle,
                 ),
@@ -60,37 +62,59 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
               _buildRouteTile(
                 id: 'printers',
                 icon: Icons.print_outlined,
-                route: Routes.printer,
+                route: AppRouteNames.printer,
                 title: S.printerTitle,
                 subtitle: S.printerDescription,
               ),
               _buildRouteTile(
                 id: 'transit',
                 icon: Icons.upload_file_outlined,
-                route: Routes.transit,
+                route: AppRouteNames.transit,
                 title: S.transitTitle,
                 subtitle: S.transitDescription,
               ),
               _buildRouteTile(
                 id: 'stockQuantities',
                 icon: Icons.exposure_outlined,
-                route: Routes.quantities,
+                route: AppRouteNames.quantities,
                 title: S.stockQuantityTitle,
                 subtitle: S.stockQuantityDescription,
               ),
               _buildRouteTile(
                 id: 'elf',
                 icon: Icons.lightbulb_outlined,
-                route: Routes.elf,
+                route: AppRouteNames.elf,
                 title: S.settingElfTitle,
                 subtitle: S.settingElfDescription,
               ),
-              _buildRouteTile(
-                id: 'settings',
-                icon: Icons.settings_outlined,
-                route: Routes.settings,
-                title: S.settingFeatureTitle,
-                subtitle: S.settingFeatureDescription,
+              ListenableBuilder(
+                listenable: EmployeeManagerService.instance,
+                builder: (context, _) {
+                  if (!EmployeeManagerService.instance.isManager) {
+                    return const SizedBox.shrink();
+                  }
+                  return _buildRouteTile(
+                    id: 'settings',
+                    icon: Icons.settings_outlined,
+                    route: AppRouteNames.settings,
+                    title: S.settingFeatureTitle,
+                    subtitle: S.settingFeatureDescription,
+                  );
+                },
+              ),
+              ListTile(
+                key: const Key('home.lock'),
+                leading: const Icon(Icons.lock_outline),
+                trailing: const Icon(Icons.navigate_next_outlined),
+                title: const Text('Lock terminal'),
+                subtitle: Text(
+                  EmployeeManagerService.instance.currentEmployee?.name ??
+                      'Switch employee',
+                ),
+                onTap: () {
+                  EmployeeManagerService.instance.logout();
+                  context.goNamed(AppRouteNames.lock);
+                },
               ),
               const Footer(),
             ],
@@ -150,7 +174,7 @@ class _HeaderInfoList extends StatelessWidget {
             context: context,
             title: menu.items.fold<int>(0, (v, e) => e.length + v),
             subtitle: S.menuProductHeaderInfo,
-            route: Routes.menu,
+            route: AppRouteNames.menu,
             query: {'mode': 'products'},
           ),
           const SizedBox(width: 16),
@@ -159,7 +183,7 @@ class _HeaderInfoList extends StatelessWidget {
             context: context,
             title: printers.length,
             subtitle: S.printerHeaderInfo,
-            route: Routes.printer,
+            route: AppRouteNames.printer,
           ),
           const SizedBox(width: 16),
           _buildItem(
@@ -167,7 +191,7 @@ class _HeaderInfoList extends StatelessWidget {
             context: context,
             title: attrs.length,
             subtitle: S.orderAttributeHeaderInfo,
-            route: Routes.orderAttr,
+            route: AppRouteNames.orderAttr,
           ),
         ],
       ),

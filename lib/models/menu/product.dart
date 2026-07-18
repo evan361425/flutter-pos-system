@@ -26,6 +26,9 @@ class Product extends Model<ProductObject>
   /// Money show to customer/order
   num price;
 
+  /// Tax rate percentage (e.g. 20.0 for 20%). Snapshotted onto order lines.
+  num taxRate;
+
   /// The time added to catalog
   final DateTime createdAt;
 
@@ -45,6 +48,7 @@ class Product extends Model<ProductObject>
     int index = 1,
     this.cost = 0,
     this.price = 0,
+    this.taxRate = 0.0,
     String? imagePath,
     DateTime? createdAt,
     this.searchedAt,
@@ -78,21 +82,37 @@ class Product extends Model<ProductObject>
       index: object.index!,
       price: object.price!,
       cost: object.cost!,
+      taxRate: object.taxRate ?? 0.0,
       imagePath: object.imagePath,
       createdAt: object.createdAt,
       searchedAt: object.searchedAt,
-      ingredients: {for (var ingredient in ingredients) ingredient!.id: ingredient},
+      ingredients: {
+        for (var ingredient in ingredients) ingredient!.id: ingredient,
+      },
     )..prepareItem();
   }
 
-  factory Product.fromRow(Product? ori, List<String> row, {required int index}) {
+  factory Product.fromRow(
+    Product? ori,
+    List<String> row, {
+    required int index,
+  }) {
     final num price = .parse(row[2]);
     final num cost = .parse(row[3]);
     final status = ori == null
         ? ModelStatus.staged
-        : (price == ori.price && cost == ori.cost ? ModelStatus.normal : ModelStatus.updated);
+        : (price == ori.price && cost == ori.cost
+              ? ModelStatus.normal
+              : ModelStatus.updated);
 
-    return Product(id: ori?.id, name: row[1], index: index, price: price, cost: cost, status: status);
+    return Product(
+      id: ori?.id,
+      name: row[1],
+      index: index,
+      price: price,
+      cost: cost,
+      status: status,
+    );
   }
 
   @override
@@ -110,13 +130,19 @@ class Product extends Model<ProductObject>
   }
 
   ProductMatch getItemsSimilarity(String pattern) {
-    final match = ProductMatch(product: this, score: getSimilarity(pattern) * 1.5);
+    final match = ProductMatch(
+      product: this,
+      score: getSimilarity(pattern) * 1.5,
+    );
     if (match.score > 0) {
       return match;
     }
 
     for (final ingredient in items) {
-      match.mayIngredient(ingredient, ingredient.getSimilarity(pattern).toDouble());
+      match.mayIngredient(
+        ingredient,
+        ingredient.getSimilarity(pattern).toDouble(),
+      );
       for (final quantity in ingredient.items) {
         match.mayQuantity(quantity, quantity.getSimilarity(pattern).toDouble());
       }
@@ -145,6 +171,7 @@ class Product extends Model<ProductObject>
     index: index,
     price: price,
     cost: cost,
+    taxRate: taxRate,
     createdAt: createdAt,
     imagePath: imagePath,
     ingredients: items.map((e) => e.toObject()).toList(),
@@ -157,10 +184,17 @@ class ProductMatch {
   ProductQuantity? quantityMatched;
   double score;
 
-  ProductMatch({required this.product, this.ingredientMatched, this.quantityMatched, this.score = 0});
+  ProductMatch({
+    required this.product,
+    this.ingredientMatched,
+    this.quantityMatched,
+    this.score = 0,
+  });
 
   String? get detailedName => ingredientMatched?.name ?? quantityMatched?.name;
-  String? get detailedType => ingredientMatched != null ? 'ingredient' : (quantityMatched != null ? 'quantity' : null);
+  String? get detailedType => ingredientMatched != null
+      ? 'ingredient'
+      : (quantityMatched != null ? 'quantity' : null);
 
   void mayIngredient(ProductIngredient ingredient, double score) {
     if (score > this.score) {

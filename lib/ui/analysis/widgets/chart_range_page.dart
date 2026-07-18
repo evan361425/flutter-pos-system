@@ -17,7 +17,8 @@ class ChartRangePage extends StatefulWidget {
   State<ChartRangePage> createState() => _ChartRangePageState();
 }
 
-class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProviderStateMixin {
+class _ChartRangePageState extends State<ChartRangePage>
+    with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
   late DateTimeRange select;
@@ -43,10 +44,16 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
                       builder: (context, child) {
                         return SegmentedButton<int>(
                           selected: {_controller.index},
-                          onSelectionChanged: (value) => _controller.index = value.first,
+                          onSelectionChanged: (value) =>
+                              _controller.index = value.first,
                           segments: [
                             for (final tab in _TabType.values)
-                              ButtonSegment(value: tab.index, label: Text(S.analysisChartRangeTabName(tab.name))),
+                              ButtonSegment(
+                                value: tab.index,
+                                label: Text(
+                                  S.analysisChartRangeTabName(tab.name),
+                                ),
+                              ),
                           ],
                         );
                       },
@@ -76,14 +83,25 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
             controller: _controller,
             tabs: [
               for (final tab in _TabType.values)
-                Tab(child: Text(S.analysisChartRangeTabName(tab.name), softWrap: true)),
+                Tab(
+                  child: Text(
+                    S.analysisChartRangeTabName(tab.name),
+                    softWrap: true,
+                  ),
+                ),
             ],
           ),
           Expanded(
             child: TabBarView(
               controller: _controller,
               children: [
-                for (final tab in [_TabType.day, _TabType.week, _TabType.month, _TabType.custom]) _buildTab(tab),
+                for (final tab in [
+                  _TabType.day,
+                  _TabType.week,
+                  _TabType.month,
+                  _TabType.custom,
+                ])
+                  _buildTab(tab),
               ],
             ),
           ),
@@ -150,24 +168,56 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
     final thisMonth = DateTime(today.year, today.month);
     ranges = {
       .day: {
-        S.analysisChartRangeYesterday: DateTimeRange(start: today.subtract(const Duration(days: 1)), end: today),
-        S.analysisChartRangeToday: DateTimeRange(start: today, end: today.add(const Duration(days: 1))),
+        S.analysisChartRangeYesterday: DateTimeRange(
+          start: today.subtract(const Duration(days: 1)),
+          end: today,
+        ),
+        S.analysisChartRangeToday: DateTimeRange(
+          start: today,
+          end: today.add(const Duration(days: 1)),
+        ),
       },
       .week: {
-        S.analysisChartRangeLast7Days: DateTimeRange(start: today.subtract(const Duration(days: 7)), end: today),
-        S.analysisChartRangeThisWeek: DateTimeRange(start: thisWeek, end: thisWeek.add(const Duration(days: 7))),
-        S.analysisChartRangeLastWeek: DateTimeRange(start: thisWeek.subtract(const Duration(days: 7)), end: thisWeek),
+        S.analysisChartRangeLast7Days: DateTimeRange(
+          start: today.subtract(const Duration(days: 7)),
+          end: today,
+        ),
+        S.analysisChartRangeThisWeek: DateTimeRange(
+          start: thisWeek,
+          end: thisWeek.add(const Duration(days: 7)),
+        ),
+        S.analysisChartRangeLastWeek: DateTimeRange(
+          start: thisWeek.subtract(const Duration(days: 7)),
+          end: thisWeek,
+        ),
       },
       .month: {
-        S.analysisChartRangeLast30Days: DateTimeRange(start: today.subtract(const Duration(days: 30)), end: today),
-        S.analysisChartRangeThisMonth: DateTimeRange(start: thisMonth, end: DateTime(now.year, now.month + 1)),
-        S.analysisChartRangeLastMonth: DateTimeRange(start: DateTime(now.year, now.month - 1), end: thisMonth),
+        S.analysisChartRangeLast30Days: DateTimeRange(
+          start: today.subtract(const Duration(days: 30)),
+          end: today,
+        ),
+        S.analysisChartRangeThisMonth: DateTimeRange(
+          start: thisMonth,
+          end: DateTime(now.year, now.month + 1),
+        ),
+        S.analysisChartRangeLastMonth: DateTimeRange(
+          start: DateTime(now.year, now.month - 1),
+          end: thisMonth,
+        ),
       },
       .custom: {'': select},
     };
 
-    final tab = ranges.entries.firstWhereOrNull((e) => e.value.containsValue(select))?.key ?? .custom;
-    _controller = TabController(length: 4, vsync: this, initialIndex: tab.index);
+    final tab =
+        ranges.entries
+            .firstWhereOrNull((e) => e.value.containsValue(select))
+            ?.key ??
+        .custom;
+    _controller = TabController(
+      length: 4,
+      vsync: this,
+      initialIndex: tab.index,
+    );
 
     super.initState();
   }

@@ -26,7 +26,10 @@ class ExportOrderHeader extends TransitOrderHeader {
 
   @override
   Widget build(BuildContext context) {
-    return SignInButton(padding: const .fromLTRB(8.0, 0, 8.0, 4.0), signedInWidget: super.build(context));
+    return SignInButton(
+      padding: const .fromLTRB(8.0, 0, 8.0, 4.0),
+      signedInWidget: super.build(context),
+    );
   }
 
   /// Export all data to spreadsheet.
@@ -79,7 +82,12 @@ class ExportOrderHeader extends TransitOrderHeader {
     var link = '';
     if (settings!.value.isOverwrite) {
       stateNotifier.value = S.transitExportOrderProgressGoogleSheetOverwrite;
-      await exporter.updateSheetValues(ss, sheets, data, ables.map((able) => able.formatHeader()));
+      await exporter.updateSheetValues(
+        ss,
+        sheets,
+        data,
+        ables.map((able) => able.formatHeader()),
+      );
 
       link = ss.toLink();
     } else {
@@ -132,6 +140,10 @@ class ExportOrderView extends TransitOrderList {
   ///
   /// After compression, the values should be multiplied by 0.5.
   static int _memoryPredictor(OrderMetrics m) {
-    return (m.count * 30 + m.attrCount! * 10 + m.productCount! * 13 + m.ingredientCount! * 8).toInt();
+    return (m.count * 30 +
+            m.attrCount! * 10 +
+            m.productCount! * 13 +
+            m.ingredientCount! * 8)
+        .toInt();
   }
 }

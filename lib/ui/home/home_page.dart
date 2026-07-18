@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/style/footer.dart';
 import 'package:possystem/components/tutorial.dart';
-import 'package:possystem/constants/app_themes.dart';
-import 'package:possystem/constants/constant.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/services/cache.dart';
+import 'package:possystem/services/staff/employee_manager_service.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/home/home_chrome.dart';
+import 'package:possystem/ui/home/home_tabs.dart';
+import 'package:possystem/ui/staff/staff_lock_action.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
 class HomePage extends StatelessWidget {
@@ -44,16 +46,17 @@ class _WithTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _FAB(),
+      floatingActionButton: const HomeOrderFab(),
       appBar: AppBar(
         title: Text(S.appTitle),
         centerTitle: true,
-        flexibleSpace: const _FlexibleSpace(),
+        flexibleSpace: const HomeFlexibleSpace(),
         excludeHeaderSemantics: true,
+        actions: const [StaffLockAction()],
       ),
       body: shell,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: min(shell.currentIndex, 3),
+        selectedIndex: min(shell.currentIndex, homeBottomNavTabs.length - 1),
         onDestinationSelected: (index) {
           SpotlightShow.of(context).reset();
           shell.goBranch(
@@ -66,7 +69,7 @@ class _WithTab extends StatelessWidget {
           );
         },
         destinations: [
-          for (final _Tab e in _bottomNavTabs)
+          for (final HomeTab e in homeBottomNavTabs)
             NavigationDestination(
               key: Key('home.${e.name}'),
               icon: e.icon,
@@ -93,14 +96,15 @@ class _WithDrawerState extends State<_WithDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final tab = _Tab.values.elementAtOrNull(widget.shell.currentIndex) ?? .analysis;
+    final tab =
+        HomeTab.values.elementAtOrNull(widget.shell.currentIndex) ?? .analysis;
     final needNested = tab == .analysis;
 
     // Which means body have [CustomScrollView]
     if (needNested) {
       return Scaffold(
         key: scaffold,
-        floatingActionButton: _FAB(),
+        floatingActionButton: const HomeOrderFab(),
         drawer: _buildDrawer(tab),
         body: _Nested(title: S.title(tab.name), body: widget.shell),
       );
@@ -108,38 +112,61 @@ class _WithDrawerState extends State<_WithDrawer> {
 
     return Scaffold(
       key: scaffold,
-      appBar: AppBar(title: Text(S.title(tab.name)), flexibleSpace: const _FlexibleSpace()),
-      floatingActionButton: _FAB(),
+      appBar: AppBar(
+        title: Text(S.title(tab.name)),
+        flexibleSpace: const HomeFlexibleSpace(),
+        actions: const [StaffLockAction()],
+      ),
+      floatingActionButton: const HomeOrderFab(),
       drawer: _buildDrawer(tab),
       body: widget.shell,
     );
   }
 
-  Widget _buildDrawer(_Tab tab) {
+  Widget _buildDrawer(HomeTab tab) {
     return Drawer(
       child: SafeArea(
-        child: ListView(
-          padding: .zero,
-          children: [
-            const SizedBox(height: 48),
-            for (final e in _drawerTabs)
-              Padding(
-                padding: const .fromLTRB(16, 0, 12, 0),
-                child: e.wrap(
-                  ListTile(
-                    key: Key('home.${e.name}'),
-                    leading: tab == e ? e.selectedIcon : e.icon,
-                    title: Text(S.title(e.name)),
-                    selected: tab == e,
-                    visualDensity: .compact,
-                    shape: const RoundedRectangleBorder(borderRadius: .all(.circular(8))),
-                    onTap: () => _navTo(e.index),
-                  ),
-                  _closeDrawer,
+        child: ListenableBuilder(
+          listenable: EmployeeManagerService.instance,
+          builder: (context, _) {
+            return ListView(
+              padding: .zero,
+              children: [
+                const SizedBox(height: 48),
+                for (final e in homeDrawerTabs)
+                  if (e != .settings ||
+                      EmployeeManagerService.instance.isManager)
+                    Padding(
+                      padding: const .fromLTRB(16, 0, 12, 0),
+                      child: e.wrap(
+                        ListTile(
+                          key: Key('home.${e.name}'),
+                          leading: tab == e ? e.selectedIcon : e.icon,
+                          title: Text(S.title(e.name)),
+                          selected: tab == e,
+                          visualDensity: .compact,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: .all(.circular(8)),
+                          ),
+                          onTap: () => _navTo(e.index),
+                        ),
+                        _closeDrawer,
+                      ),
+                    ),
+                ListTile(
+                  key: const Key('home.lock'),
+                  leading: const Icon(Icons.lock_outline),
+                  title: const Text('Lock terminal'),
+                  onTap: () {
+                    _closeDrawer();
+                    EmployeeManagerService.instance.logout();
+                    context.goNamed(AppRouteNames.lock);
+                  },
                 ),
-              ),
-            const Footer(),
-          ],
+                const Footer(),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -158,7 +185,10 @@ class _WithDrawerState extends State<_WithDrawer> {
   void _navTo(int index) {
     _closeDrawer();
     SpotlightShow.of(context).reset();
-    widget.shell.goBranch(index, initialLocation: index == widget.shell.currentIndex);
+    widget.shell.goBranch(
+      index,
+      initialLocation: index == widget.shell.currentIndex,
+    );
   }
 
   void _closeDrawer() {
@@ -181,20 +211,25 @@ class _WithRailState extends State<_WithRail> {
 
   @override
   Widget build(BuildContext context) {
-    final tab = _Tab.values.elementAtOrNull(widget.shell.currentIndex) ?? .analysis;
+    final tab =
+        HomeTab.values.elementAtOrNull(widget.shell.currentIndex) ?? .analysis;
     final needNested = tab == .analysis;
 
     // Which means body have [CustomScrollView]
     if (needNested) {
       return Scaffold(
-        floatingActionButton: _FAB(),
+        floatingActionButton: const HomeOrderFab(),
         body: _Nested(title: S.title(tab.name), body: _buildBody()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(S.title(tab.name)), flexibleSpace: const _FlexibleSpace()),
-      floatingActionButton: _FAB(),
+      appBar: AppBar(
+        title: Text(S.title(tab.name)),
+        flexibleSpace: const HomeFlexibleSpace(),
+        actions: const [StaffLockAction()],
+      ),
+      floatingActionButton: const HomeOrderFab(),
       body: _buildBody(),
     );
   }
@@ -204,8 +239,10 @@ class _WithRailState extends State<_WithRail> {
       children: [
         ListenableBuilder(
           listenable: railExpanded,
-          builder: (context, child) =>
-              ListenableBuilder(listenable: railSelected, builder: (context, child) => _buildRail()),
+          builder: (context, child) => ListenableBuilder(
+            listenable: railSelected,
+            builder: (context, child) => _buildRail(),
+          ),
         ),
         const VerticalDivider(),
         Expanded(child: widget.shell),
@@ -218,28 +255,47 @@ class _WithRailState extends State<_WithRail> {
       extended: railExpanded.value,
       onDestinationSelected: (int index) {
         SpotlightShow.of(context).reset();
-        widget.shell.goBranch(index, initialLocation: index == widget.shell.currentIndex);
+        widget.shell.goBranch(
+          index,
+          initialLocation: index == widget.shell.currentIndex,
+        );
         setState(() => railSelected.value = index);
       },
       leading: IconButton(
         icon: Icon(railExpanded.value ? Icons.close : Icons.menu),
         onPressed: () => railExpanded.value = !railExpanded.value,
       ),
-      selectedIndex: min(railSelected.value, railExpanded.value ? 999 : 2),
+      selectedIndex: min(
+        railSelected.value,
+        railExpanded.value ? 999 : homeImportantTabCount - 1,
+      ),
       destinations: [
-        for (final e in _drawerTabs)
+        for (final e in homeDrawerTabs)
           // Show all tabs if expanded, otherwise only show important tabs
           if (railExpanded.value || e.important)
-            NavigationRailDestination(icon: e.icon, selectedIcon: e.selectedIcon, label: e.wrap(Text(S.title(e.name)))),
+            NavigationRailDestination(
+              icon: e.icon,
+              selectedIcon: e.selectedIcon,
+              label: e.wrap(Text(S.title(e.name))),
+            ),
       ],
     );
   }
 
   @override
   void initState() {
-    railExpanded = ValueNotifier(Cache.instance.get<bool>('tutorial.home.order') != true);
+    railExpanded = ValueNotifier(
+      Cache.instance.get<bool>('tutorial.home.order') != true,
+    );
     railSelected = ValueNotifier(widget.shell.currentIndex);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    railExpanded.dispose();
+    railSelected.dispose();
+    super.dispose();
   }
 }
 
@@ -254,96 +310,14 @@ class _Nested extends StatelessWidget {
   Widget build(BuildContext context) {
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
-        SliverAppBar(pinned: true, title: Text(title), flexibleSpace: const _FlexibleSpace()),
+        SliverAppBar(
+          pinned: true,
+          title: Text(title),
+          flexibleSpace: const HomeFlexibleSpace(),
+          actions: const [StaffLockAction()],
+        ),
       ],
       body: body,
     );
-  }
-}
-
-class _FAB extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Tutorial(
-      id: 'home.order',
-      index: 100,
-      spotlightBuilder: const SpotlightRectBuilder(borderRadius: 16.0),
-      title: S.orderTutorialTitle,
-      message: S.orderTutorialContent,
-      preferVertical: true,
-      child: FloatingActionButton.extended(
-        key: const Key('home.order'),
-        heroTag: null,
-        onPressed: () => context.pushNamed(Routes.order),
-        icon: const Icon(Icons.store_outlined),
-        label: Text(S.orderBtn),
-      ),
-    );
-  }
-}
-
-class _FlexibleSpace extends StatelessWidget {
-  const _FlexibleSpace();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: Theme.of(context).gradientColors,
-          tileMode: .clamp,
-        ),
-      ),
-    );
-  }
-}
-
-const _bottomNavTabs = [_Tab.analysis, _Tab.stock, _Tab.cashier, _Tab.more];
-
-const _drawerTabs = [
-  _Tab.analysis,
-  _Tab.stock,
-  _Tab.cashier,
-  _Tab.orderAttributes,
-  _Tab.menu,
-  _Tab.printers,
-  _Tab.stockQuantities,
-  _Tab.transit,
-  _Tab.elf,
-  _Tab.settings,
-  if (!isProd) _Tab.debug,
-];
-
-enum _Tab {
-  analysis(icon: Icon(Icons.analytics_outlined), selectedIcon: Icon(Icons.analytics), important: true),
-  stock(icon: Icon(Icons.inventory_2_outlined), selectedIcon: Icon(Icons.inventory_2), important: true),
-  cashier(icon: Icon(Icons.monetization_on_outlined), selectedIcon: Icon(Icons.monetization_on), important: true),
-  orderAttributes(icon: Icon(Icons.assignment_ind_outlined), selectedIcon: Icon(Icons.assignment_ind)),
-  menu(icon: Icon(Icons.collections_outlined), selectedIcon: Icon(Icons.collections)),
-  printers(icon: Icon(Icons.print_outlined), selectedIcon: Icon(Icons.print)),
-  stockQuantities(icon: Icon(Icons.exposure_outlined), selectedIcon: Icon(Icons.exposure)),
-  transit(icon: Icon(Icons.local_shipping_outlined), selectedIcon: Icon(Icons.local_shipping)),
-  elf(icon: Icon(Icons.lightbulb_outlined), selectedIcon: Icon(Icons.lightbulb)),
-  settings(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings)),
-  debug(icon: Icon(Icons.bug_report_outlined), selectedIcon: Icon(Icons.bug_report)),
-
-  /// entrypoint for mobile screen
-  more(icon: Icon(Icons.dehaze_outlined), selectedIcon: Icon(Icons.dehaze));
-
-  final Icon icon;
-  final Icon selectedIcon;
-  final bool important;
-
-  const _Tab({required this.icon, required this.selectedIcon, this.important = false});
-
-  Widget wrap(Widget child, [void Function()? action]) {
-    return switch (this) {
-      .menu => MenuTutorial(child: child),
-      // after finish this tutorial, we will close the drawer
-      .orderAttributes => OrderAttrTutorial(onDismissed: action, child: child),
-      _ => child,
-    };
   }
 }

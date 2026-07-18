@@ -75,7 +75,10 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   Widget buildTrailing(OrderMetrics metrics) {
-    return Padding(padding: const .only(right: 8.0), child: widget.trailingBuilder!(context, metrics));
+    return Padding(
+      padding: const .only(right: 8.0),
+      child: widget.trailingBuilder!(context, metrics),
+    );
   }
 
   void _reloadOrders() {
@@ -96,6 +99,10 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   Future<List<OrderObject>> _loadOrders(int offset) {
-    return Seller.instance.getOrders(widget.ranger.value.start, widget.ranger.value.end, offset: offset);
+    return Seller.instance.getOrders(
+      widget.ranger.value.start,
+      widget.ranger.value.end,
+      offset: offset,
+    );
   }
 }

@@ -18,14 +18,38 @@ class StashedOrders extends ChangeNotifier {
 
   /// Get the stashed orders.
   Future<List<OrderObject>> getItems({int offset = 0, int? limit = 10}) async {
-    final rows = await Database.instance.query(table, orderBy: 'createdAt desc', limit: limit, offset: offset);
+    final rows = await Database.instance.query(
+      table,
+      orderBy: 'createdAt desc',
+      limit: limit,
+      offset: offset,
+    );
 
     return rows.map((e) => OrderObject.fromStashMap(e)).toList();
   }
 
+  /// Open stash row for a dining table (most recent if several).
+  ///
+  /// Uses a single parameterized query on `table_id` (Law 2.1 / 2.2) — there is
+  /// no in-memory `.items` cache on this repository.
+  Future<OrderObject?> getByTableId(String tableId) async {
+    final rows = await Database.instance.query(
+      table,
+      where: 'table_id = ?',
+      whereArgs: [tableId],
+      orderBy: 'createdAt desc',
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return OrderObject.fromStashMap(rows.first);
+  }
+
   /// Get the stashed orders.
   Future<StashedOrderMetrics> getMetrics() async {
-    final rows = await Database.instance.query(table, columns: ['COUNT(*) count']);
+    final rows = await Database.instance.query(
+      table,
+      columns: ['COUNT(*) count'],
+    );
 
     return StashedOrderMetrics.fromMap(rows.isEmpty ? {} : rows[0]);
   }

@@ -14,7 +14,8 @@ class ProductIngredientReorder extends StatelessWidget {
     return ReorderableScaffold(
       items: product.itemList,
       title: S.menuIngredientTitleReorder,
-      handleSubmit: (List<ProductIngredient> items) => product.reorderItems(items),
+      handleSubmit: (List<ProductIngredient> items) =>
+          product.reorderItems(items),
     );
   }
 }

@@ -47,11 +47,19 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
           return Column(
             children: [
               Padding(
-                padding: const .fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
+                padding: const .fromLTRB(
+                  kHorizontalSpacing,
+                  0,
+                  kHorizontalSpacing,
+                  kInternalSpacing,
+                ),
                 child: Row(
                   children: [
                     Expanded(child: Center(child: HintText(createdAt!))),
-                    MoreButton(key: const Key('order_modal.more'), onPressed: _showActions),
+                    MoreButton(
+                      key: const Key('order_modal.more'),
+                      onPressed: _showActions,
+                    ),
                   ],
                 ),
               ),
@@ -69,8 +77,11 @@ class _HistoryOrderModalState extends State<HistoryOrderModal> {
         context,
         deleteValue: _Action.delete,
         popAfterDeleted: true,
-        deleteCallback: () =>
-            showSnackbarWhenFutureError(Seller.instance.delete(widget.orderId), 'analysis_deletion', context: context),
+        deleteCallback: () => showSnackbarWhenFutureError(
+          Seller.instance.delete(widget.orderId),
+          'analysis_deletion',
+          context: context,
+        ),
         warningContent: S.analysisHistoryOrderDeleteDialog(createdAt!),
       );
     }

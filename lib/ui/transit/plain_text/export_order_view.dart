@@ -8,7 +8,12 @@ import 'package:possystem/ui/transit/exporter/plain_text_exporter.dart';
 import 'package:possystem/ui/transit/order_widgets.dart';
 
 class ExportOrderHeader extends TransitOrderHeader {
-  const ExportOrderHeader({super.key, required super.stateNotifier, required super.ranger, super.settings});
+  const ExportOrderHeader({
+    super.key,
+    required super.stateNotifier,
+    required super.ranger,
+    super.settings,
+  });
 
   @override
   String get title => S.transitExportOrderTitlePlainText;
@@ -16,7 +21,14 @@ class ExportOrderHeader extends TransitOrderHeader {
   @override
   Future<void> onExport(BuildContext context, List<OrderObject> orders) async {
     await const PlainTextExporter().exportToClipboard(
-      orders.map((o) => [o.createDateTimeString, ExportOrderView.formatOrder(o)].join('\n')).join('\n\n'),
+      orders
+          .map(
+            (o) => [
+              o.createDateTimeString,
+              ExportOrderView.formatOrder(o),
+            ].join('\n'),
+          )
+          .join('\n\n'),
     );
 
     if (context.mounted) {
@@ -47,13 +59,20 @@ class ExportOrderView extends TransitOrderList {
   /// There are 3 (2 kinds) products including:
   /// Cheese Burger (Burger) 1, total $200, ingredients are Cheese (Large, use 3).
   static int _memoryPredictor(OrderMetrics m) {
-    return (m.count * 60 + m.attrCount! * 18 + m.productCount! * 25 + m.ingredientCount! * 10).toInt();
+    return (m.count * 60 +
+            m.attrCount! * 18 +
+            m.productCount! * 25 +
+            m.ingredientCount! * 10)
+        .toInt();
   }
 
   static String formatOrder(OrderObject order) {
     final attributes = order.attributes
         .map((a) {
-          return S.transitFormatTextOrderOrderAttributeItem(a.name, a.optionName);
+          return S.transitFormatTextOrderOrderAttributeItem(
+            a.name,
+            a.optionName,
+          );
         })
         .join('、');
     final products = order.products
@@ -86,7 +105,10 @@ class ExportOrderView extends TransitOrderList {
         order.price.toCurrency(),
         order.productsPrice.toCurrency(),
       ),
-      S.transitFormatTextOrderMoney(order.paid.toCurrency(), order.cost.toCurrency()),
+      S.transitFormatTextOrderMoney(
+        order.paid.toCurrency(),
+        order.cost.toCurrency(),
+      ),
       if (attributes != '') S.transitFormatTextOrderOrderAttribute(attributes),
       S.transitFormatTextOrderProductCount(totalCount, setCount, products),
     ].join('\n');

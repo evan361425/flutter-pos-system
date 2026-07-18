@@ -11,10 +11,16 @@ class CheckoutCashierSnapshot extends StatefulWidget {
 
   final bool showChange;
 
-  const CheckoutCashierSnapshot({super.key, required this.price, required this.paid, this.showChange = true});
+  const CheckoutCashierSnapshot({
+    super.key,
+    required this.price,
+    required this.paid,
+    this.showChange = true,
+  });
 
   @override
-  State<CheckoutCashierSnapshot> createState() => _CheckoutCashierSnapshotState();
+  State<CheckoutCashierSnapshot> createState() =>
+      _CheckoutCashierSnapshotState();
 }
 
 class _CheckoutCashierSnapshotState extends State<CheckoutCashierSnapshot> {
@@ -53,14 +59,24 @@ class _CheckoutCashierSnapshotState extends State<CheckoutCashierSnapshot> {
       children: <Widget>[
         Expanded(child: chips),
         Padding(
-          padding: const .fromLTRB(kInternalLargeSpacing, 0, kHorizontalSpacing, 0),
-          child: Text(S.orderCheckoutDetailsSnapshotLabelChange(change.toCurrency())),
+          padding: const .fromLTRB(
+            kInternalLargeSpacing,
+            0,
+            kHorizontalSpacing,
+            0,
+          ),
+          child: Text(
+            S.orderCheckoutDetailsSnapshotLabelChange(change.toCurrency()),
+          ),
         ),
       ],
     );
   }
 
-  List<num> get paidOptionWithCustom => [if (customValue != null) customValue!, ...paidOptions];
+  List<num> get paidOptionWithCustom => [
+    if (customValue != null) customValue!,
+    ...paidOptions,
+  ];
 
   @override
   void initState() {

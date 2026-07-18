@@ -8,7 +8,7 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cashier.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 import 'widgets/unit_list_tile.dart';
@@ -32,7 +32,8 @@ class CashierView extends StatelessWidget {
                 children: [
                   _buildActions(context),
                   const SizedBox(height: kInternalSpacing),
-                  for (final item in Cashier.instance.currentUnits) UnitListTile(item: item, index: i++),
+                  for (final item in Cashier.instance.currentUnits)
+                    UnitListTile(item: item, index: i++),
                 ],
               );
             },
@@ -55,7 +56,11 @@ class CashierView extends StatelessWidget {
             child: RouteIconButton(
               key: const Key('cashier.defaulter'),
               label: S.cashierToDefaultTitle,
-              icon: Icon(Cashier.instance.defaultNotSet ? Icons.star_border_outlined : Icons.star),
+              icon: Icon(
+                Cashier.instance.defaultNotSet
+                    ? Icons.star_border_outlined
+                    : Icons.star,
+              ),
               onPressed: () => _handleSetDefault(context),
             ),
           ),
@@ -69,7 +74,7 @@ class CashierView extends StatelessWidget {
                 preferVertical: true,
                 child: RouteIconButton(
                   key: const Key('cashier.changer'),
-                  route: Routes.cashierChanger,
+                  route: AppRouteNames.cashierChanger,
                   icon: const Icon(Icons.sync_alt_outlined),
                   label: S.cashierChangerTitle,
                   popTrueShowSuccess: true,
@@ -119,7 +124,7 @@ class CashierView extends StatelessWidget {
       return showSnackBar(S.cashierSurplusErrorEmptyDefault, context: context);
     }
 
-    final result = await context.pushNamed(Routes.cashierSurplus);
+    final result = await context.pushNamed(AppRouteNames.cashierSurplus);
     if (result == true) {
       if (context.mounted) {
         showSnackBar(S.actSuccess, context: context);

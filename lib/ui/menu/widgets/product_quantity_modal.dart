@@ -9,7 +9,7 @@ import 'package:possystem/models/menu/product_quantity.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +19,18 @@ class ProductQuantityModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ProductQuantityModal({super.key, this.quantity, required this.ingredient}) : isNew = quantity == null;
+  const ProductQuantityModal({
+    super.key,
+    this.quantity,
+    required this.ingredient,
+  }) : isNew = quantity == null;
 
   @override
   State<ProductQuantityModal> createState() => _ProductQuantityModalState();
 }
 
-class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemModal<ProductQuantityModal> {
+class _ProductQuantityModalState extends State<ProductQuantityModal>
+    with ItemModal<ProductQuantityModal> {
   late TextEditingController _amountController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
@@ -37,7 +42,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
   String quantityId = '';
 
   @override
-  String get title => widget.isNew ? S.menuQuantityTitleCreate : S.menuQuantityTitleUpdate;
+  String get title =>
+      widget.isNew ? S.menuQuantityTitleCreate : S.menuQuantityTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -65,8 +71,14 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
           keyboardType: .number,
           textInputAction: .next,
           focusNode: _amountFocusNode,
-          decoration: InputDecoration(labelText: S.menuQuantityAmountLabel, filled: false),
-          validator: Validator.positiveNumber(S.menuQuantityAmountLabel, focusNode: _amountFocusNode),
+          decoration: InputDecoration(
+            labelText: S.menuQuantityAmountLabel,
+            filled: false,
+          ),
+          validator: Validator.positiveNumber(
+            S.menuQuantityAmountLabel,
+            focusNode: _amountFocusNode,
+          ),
         ),
       ),
       p(
@@ -83,7 +95,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
             helperMaxLines: 10,
             filled: false,
           ),
-          validator: Validator.isNumber(S.menuQuantityAdditionalPriceLabel, focusNode: _priceFocusNode),
+          validator: Validator.isNumber(
+            S.menuQuantityAdditionalPriceLabel,
+            focusNode: _priceFocusNode,
+          ),
         ),
       ),
       p(
@@ -101,7 +116,10 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
             helperMaxLines: 10,
             filled: false,
           ),
-          validator: Validator.isNumber(S.menuQuantityAdditionalCostLabel, focusNode: _costFocusNode),
+          validator: Validator.isNumber(
+            S.menuQuantityAdditionalCostLabel,
+            focusNode: _costFocusNode,
+          ),
         ),
       ),
     ];
@@ -124,9 +142,15 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
     super.initState();
 
     final q = widget.quantity;
-    _amountController = TextEditingController(text: q?.amount.toString() ?? '0');
-    _priceController = TextEditingController(text: q?.additionalPrice.toString() ?? '0');
-    _costController = TextEditingController(text: q?.additionalCost.toString() ?? '0');
+    _amountController = TextEditingController(
+      text: q?.amount.toString() ?? '0',
+    );
+    _priceController = TextEditingController(
+      text: q?.additionalPrice.toString() ?? '0',
+    );
+    _costController = TextEditingController(
+      text: q?.additionalCost.toString() ?? '0',
+    );
     _amountFocusNode = FocusNode();
     _priceFocusNode = FocusNode();
     _costFocusNode = FocusNode();
@@ -183,7 +207,8 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
     if (quantityId.isEmpty) {
       return S.menuQuantitySearchErrorEmpty;
     }
-    if (widget.quantity?.quantity.id != quantityId && widget.ingredient.hasQuantity(quantityId)) {
+    if (widget.quantity?.quantity.id != quantityId &&
+        widget.ingredient.hasQuantity(quantityId)) {
       return S.menuQuantitySearchErrorRepeat;
     }
 
@@ -205,14 +230,21 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
     );
   }
 
-  Widget _searchItemBuilder(BuildContext context, String pattern, Quantity quantity) {
+  Widget _searchItemBuilder(
+    BuildContext context,
+    String pattern,
+    Quantity quantity,
+  ) {
     return ListTile(
       title: Text(quantity.name),
       trailing: NavToButton(
         onPressed: () {
           // pop off search page
           Navigator.of(context).pop();
-          context.pushNamed(Routes.quantityUpdate, pathParameters: {'id': quantity.id});
+          context.pushNamed(
+            AppRouteNames.quantityUpdate,
+            pathParameters: {'id': quantity.id},
+          );
         },
       ),
       onTap: () => _updateQuantity(quantity),
@@ -224,7 +256,9 @@ class _ProductQuantityModalState extends State<ProductQuantityModal> with ItemMo
     setState(() {
       quantityId = quantity.id;
       quantityName = quantity.name;
-      _amountController.text = val.toInt() == val ? val.toString() : val.toStringAsFixed(2);
+      _amountController.text = val.toInt() == val
+          ? val.toString()
+          : val.toStringAsFixed(2);
     });
     // pop off search page
     Navigator.of(context).pop();

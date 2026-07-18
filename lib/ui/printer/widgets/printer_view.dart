@@ -20,7 +20,13 @@ class PrinterView extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLogPress;
 
-  const PrinterView({super.key, required this.printer, this.trailing, this.onTap, this.onLogPress});
+  const PrinterView({
+    super.key,
+    required this.printer,
+    this.trailing,
+    this.onTap,
+    this.onLogPress,
+  });
 
   @override
   State<PrinterView> createState() => _PrinterViewState();
@@ -38,7 +44,9 @@ class _PrinterViewState extends State<PrinterView> {
           listenable: waiting,
           builder: (context, child) {
             if (waiting.value) {
-              return const _Backdrop(child: CircularProgressIndicator.adaptive());
+              return const _Backdrop(
+                child: CircularProgressIndicator.adaptive(),
+              );
             }
 
             return const SizedBox.shrink();
@@ -52,7 +60,9 @@ class _PrinterViewState extends State<PrinterView> {
     return ListenableBuilder(
       listenable: widget.printer,
       builder: (context, child) {
-        return widget.printer.connected ? _buildConnected() : _buildDisconnected();
+        return widget.printer.connected
+            ? _buildConnected()
+            : _buildDisconnected();
       },
     );
   }
@@ -61,12 +71,19 @@ class _PrinterViewState extends State<PrinterView> {
     return Card(
       shadowColor: Colors.green,
       elevation: 4,
-      margin: const .fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
+      margin: const .fromLTRB(
+        kHorizontalSpacing,
+        0,
+        kHorizontalSpacing,
+        kInternalSpacing,
+      ),
       child: _wrapWithInkWell(
         Column(
           children: [
             ListTile(
-              title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
+              title: Text(
+                widget.printer.name == '' ? '<unknown>' : widget.printer.name,
+              ),
               leading: const Icon(Icons.bluetooth_connected),
               subtitle: Text(S.printerStatusSuccess),
               trailing: widget.trailing,
@@ -116,12 +133,19 @@ class _PrinterViewState extends State<PrinterView> {
     return Card(
       shadowColor: Colors.amber,
       elevation: 4,
-      margin: const .fromLTRB(kHorizontalSpacing, 0, kHorizontalSpacing, kInternalSpacing),
+      margin: const .fromLTRB(
+        kHorizontalSpacing,
+        0,
+        kHorizontalSpacing,
+        kInternalSpacing,
+      ),
       child: _wrapWithInkWell(
         Column(
           children: [
             ListTile(
-              title: Text(widget.printer.name == '' ? '<unknown>' : widget.printer.name),
+              title: Text(
+                widget.printer.name == '' ? '<unknown>' : widget.printer.name,
+              ),
               leading: const Icon(Icons.bluetooth_disabled),
               subtitle: HintText(S.printerStatusStandby),
               trailing: widget.trailing,
@@ -129,7 +153,10 @@ class _PrinterViewState extends State<PrinterView> {
             Row(
               mainAxisAlignment: .end,
               children: [
-                FilledButton(onPressed: connect, child: Text(S.printerBtnConnect)),
+                FilledButton(
+                  onPressed: connect,
+                  child: Text(S.printerBtnConnect),
+                ),
                 const SizedBox(width: 8.0),
               ],
             ),
@@ -145,7 +172,12 @@ class _PrinterViewState extends State<PrinterView> {
       return child;
     }
 
-    return InkWell(borderRadius: .circular(12), onTap: widget.onTap, onLongPress: widget.onLogPress, child: child);
+    return InkWell(
+      borderRadius: .circular(12),
+      onTap: widget.onTap,
+      onLongPress: widget.onLogPress,
+      child: child,
+    );
   }
 
   void connect() async {
@@ -167,7 +199,11 @@ class _PrinterViewState extends State<PrinterView> {
     if (!waiting.value) {
       waiting.value = true;
 
-      await showSnackbarWhenFutureError(widget.printer.disconnect(), 'printer_view_disconnect', context: context);
+      await showSnackbarWhenFutureError(
+        widget.printer.disconnect(),
+        'printer_view_disconnect',
+        context: context,
+      );
 
       waiting.value = false;
     }
@@ -212,13 +248,22 @@ class _PrinterViewState extends State<PrinterView> {
         contentPadding: const .all(0),
         actions: [
           PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
-          _PrintButton(progress: progress, controller: controller, printer: widget.printer),
+          _PrintButton(
+            progress: progress,
+            controller: controller,
+            printer: widget.printer,
+          ),
         ],
         content: Stack(
           alignment: Alignment.center,
           children: [
             Padding(
-              padding: const .only(left: 24.0, top: 16, right: 24.0, bottom: 24.0),
+              padding: const .only(
+                left: 24.0,
+                top: 16,
+                right: 24.0,
+                bottom: 24.0,
+              ),
               child: PrinterReceiptView(
                 controller: controller,
                 order: OrderObject(
@@ -255,7 +300,9 @@ class _PrinterViewState extends State<PrinterView> {
               builder: (context, value, _) {
                 return value == null
                     ? const SizedBox.shrink()
-                    : _Backdrop(child: CircularProgressIndicator.adaptive(value: value));
+                    : _Backdrop(
+                        child: CircularProgressIndicator.adaptive(value: value),
+                      );
               },
             ),
           ],
@@ -292,7 +339,11 @@ class _PrintButton extends StatelessWidget {
   final ImageableController controller;
   final Printer printer;
 
-  const _PrintButton({required this.progress, required this.controller, required this.printer});
+  const _PrintButton({
+    required this.progress,
+    required this.controller,
+    required this.printer,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +360,9 @@ class _PrintButton extends StatelessWidget {
       // disable the button
       progress.value = 0;
 
-      final future = controller.toImage(widths: [printer.provider.manufactory.widthBits]);
+      final future = controller.toImage(
+        widths: [printer.provider.manufactory.widthBits],
+      );
       final data = await future;
       if (data != null && context.mounted) {
         final image = data.first.toGrayScale().toBitMap().bytes;
@@ -325,7 +378,10 @@ class _PrintButton extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: progress,
       builder: (context, value, _) {
-        return TextButton(onPressed: value == null ? handlePress : null, child: Text(S.printerBtnPrint));
+        return TextButton(
+          onPressed: value == null ? handlePress : null,
+          child: Text(S.printerBtnPrint),
+        );
       },
     );
   }

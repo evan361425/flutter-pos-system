@@ -14,7 +14,9 @@ class CartProductSelector extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
             key: const Key('cart.select_all'),
-            style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: .circular(8))),
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: .circular(8)),
+            ),
             onPressed: () => Cart.instance.toggleAll(true),
             child: Text(S.orderCartActionSelectAll),
           ),
@@ -23,7 +25,9 @@ class CartProductSelector extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
             key: const Key('cart.toggle_all'),
-            style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: .circular(8))),
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: .circular(8)),
+            ),
             onPressed: () => Cart.instance.toggleAll(null),
             child: Text(S.orderCartActionToggle),
           ),

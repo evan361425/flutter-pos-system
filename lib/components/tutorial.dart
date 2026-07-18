@@ -18,7 +18,7 @@ class TutorialWrapper extends StatelessWidget {
   }
 }
 
-class Tutorial extends StatelessWidget {
+class Tutorial extends StatefulWidget {
   final String id;
 
   /// index of the tutorial
@@ -73,24 +73,49 @@ class Tutorial extends StatelessWidget {
   });
 
   @override
+  State<Tutorial> createState() => _TutorialState();
+}
+
+class _TutorialState extends State<Tutorial> {
+  bool _enabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _enabled = _computeEnabled();
+  }
+
+  bool _computeEnabled() {
+    if (widget.disable) return false;
+    return !(Cache.instance.get<bool>('tutorial.${widget.id}') ?? false);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (!enabled) {
-      return child;
+    if (!_enabled) {
+      return widget.child;
     }
 
     final theme = Theme.of(context);
     return SpotlightAnt(
-      enable: enabled,
-      index: index,
-      traceChild: traceChild,
-      duration: debug ? SpotlightDurationConfig.zero : const SpotlightDurationConfig(),
-      monitorId: monitorVisibility ? 'tutorial.$id' : null,
+      enable: _enabled,
+      index: widget.index,
+      traceChild: widget.traceChild,
+      duration: Tutorial.debug
+          ? SpotlightDurationConfig.zero
+          : const SpotlightDurationConfig(),
+      monitorId: widget.monitorVisibility ? 'tutorial.${widget.id}' : null,
       onDismiss: _onDismiss,
-      onDismissed: action,
-      spotlight: SpotlightConfig(builder: spotlightBuilder, padding: padding),
+      onDismissed: widget.action,
+      spotlight: SpotlightConfig(
+        builder: widget.spotlightBuilder,
+        padding: widget.padding,
+      ),
       backdrop: const SpotlightBackdropConfig(),
-      action: const SpotlightActionConfig(enabled: [SpotlightAntAction.prev, SpotlightAntAction.next]),
-      contentLayout: preferVertical
+      action: const SpotlightActionConfig(
+        enabled: [SpotlightAntAction.prev, SpotlightAntAction.next],
+      ),
+      contentLayout: widget.preferVertical
           ? const SpotlightContentLayoutConfig(prefer: .vertical)
           : const SpotlightContentLayoutConfig(prefer: .largerRatio),
       content: SpotlightContent(
@@ -99,28 +124,31 @@ class Tutorial extends StatelessWidget {
           width: 500,
           child: Column(
             children: [
-              if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
+              if (widget.title != null)
+                Text(
+                  widget.title!,
+                  style: theme.textTheme.headlineMedium!.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
               const SizedBox(height: 16),
-              Linkify.fromString(message),
-              if (below != null) below!,
+              Linkify.fromString(widget.message),
+              if (widget.below != null) widget.below!,
             ],
           ),
         ),
       ),
-      child: child,
+      child: widget.child,
     );
   }
 
-  bool get enabled {
-    if (disable) {
-      return false;
-    }
-
-    return !(Cache.instance.get<bool>('tutorial.$id') ?? false);
-  }
-
   void _onDismiss() async {
-    await Cache.instance.set<bool>('tutorial.$id', true);
+    await Cache.instance.set<bool>('tutorial.${widget.id}', true);
+    if (mounted) {
+      setState(() {
+        _enabled = false;
+      });
+    }
   }
 }
 
@@ -139,7 +167,11 @@ class MenuTutorial extends StatelessWidget {
       title: S.menuTutorialTitle,
       message: S.menuTutorialContent,
       traceChild: true,
-      below: TutorialCheckboxListTile(key: checkbox, title: S.menuTutorialCreateExample, value: Menu.instance.isEmpty),
+      below: TutorialCheckboxListTile(
+        key: checkbox,
+        title: S.menuTutorialCreateExample,
+        value: Menu.instance.isEmpty,
+      ),
       spotlightBuilder: const SpotlightRectBuilder(),
       action: () async {
         if (checkbox.currentState?.value == true) {
@@ -189,10 +221,15 @@ class TutorialCheckboxListTile extends StatefulWidget {
 
   final bool value;
 
-  const TutorialCheckboxListTile({super.key, required this.title, required this.value});
+  const TutorialCheckboxListTile({
+    super.key,
+    required this.title,
+    required this.value,
+  });
 
   @override
-  State<TutorialCheckboxListTile> createState() => TutorialCheckboxListTileState();
+  State<TutorialCheckboxListTile> createState() =>
+      TutorialCheckboxListTileState();
 }
 
 class TutorialCheckboxListTileState extends State<TutorialCheckboxListTile> {

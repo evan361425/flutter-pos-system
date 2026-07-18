@@ -39,7 +39,10 @@ class OrientatedView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: .stretch,
             children: [
-              ColoredBox(color: Theme.of(context).colorScheme.surface, child: row1),
+              ColoredBox(
+                color: Theme.of(context).colorScheme.surface,
+                child: row1,
+              ),
               Expanded(child: row2),
             ],
           ),
@@ -52,7 +55,10 @@ class OrientatedView extends StatelessWidget {
     return Card(
       shape: const RoundedRectangleBorder(borderRadius: .all(.circular(6.0))),
       color: Theme.of(context).colorScheme.surface,
-      child: Column(crossAxisAlignment: .stretch, children: [row3_1, row3_2, row3_3]),
+      child: Column(
+        crossAxisAlignment: .stretch,
+        children: [row3_1, row3_2, row3_3],
+      ),
     );
   }
 }

@@ -13,7 +13,11 @@ class OrderProductListView extends StatelessWidget {
 
   final ProductListView view;
 
-  const OrderProductListView({super.key, required this.products, required this.view});
+  const OrderProductListView({
+    super.key,
+    required this.products,
+    required this.view,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,11 @@ class OrderProductListView extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // each width should between 200 and 320
-        return _buildGridView(Breakpoint.find(box: constraints).lookup(compact: 2, medium: 3, expanded: 4, large: 5));
+        return _buildGridView(
+          Breakpoint.find(
+            box: constraints,
+          ).lookup(compact: 2, medium: 3, expanded: 4, large: 5),
+        );
       },
     );
   }

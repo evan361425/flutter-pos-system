@@ -12,7 +12,13 @@ class SlidableItemList<T, U> extends StatelessWidget {
   final Widget? leading;
   final Widget? action;
 
-  const SlidableItemList({super.key, required this.delegate, this.hintText, this.leading, this.action});
+  const SlidableItemList({
+    super.key,
+    required this.delegate,
+    this.hintText,
+    this.leading,
+    this.action,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +36,13 @@ class SlidableItemList<T, U> extends StatelessWidget {
             Row(
               children: [
                 if (hintText != '')
-                  Expanded(child: Center(child: HintText(hintText ?? S.totalCount(delegate.items.length)))),
+                  Expanded(
+                    child: Center(
+                      child: HintText(
+                        hintText ?? S.totalCount(delegate.items.length),
+                      ),
+                    ),
+                  ),
                 if (action != null)
                   Padding(
                     padding: const .only(right: kHorizontalSpacing),
@@ -39,7 +51,10 @@ class SlidableItemList<T, U> extends StatelessWidget {
               ],
             ),
             const SizedBox(height: kInternalSpacing),
-            for (final widget in delegate.items.mapIndexed((index, item) => delegate.build(item, index))) widget,
+            for (final widget in delegate.items.mapIndexed(
+              (index, item) => delegate.build(item, index),
+            ))
+              widget,
           ],
         ),
       ),
@@ -47,12 +62,14 @@ class SlidableItemList<T, U> extends StatelessWidget {
   }
 }
 
-typedef ActorBuilder = void Function([BuildContext?]) Function(BuildContext context);
+typedef ActorBuilder =
+    void Function([BuildContext?]) Function(BuildContext context);
 
 class SlidableItemDelegate<T, U> {
   final List<T> items;
 
-  final Widget Function(T item, int index, ActorBuilder actorBuilder) tileBuilder;
+  final Widget Function(T item, int index, ActorBuilder actorBuilder)
+  tileBuilder;
 
   final Future<void> Function(T item) handleDelete;
 
@@ -103,13 +120,17 @@ class SlidableItemDelegate<T, U> {
   Future<void> showActions(BuildContext context, T item) async {
     assert(deleteValue != null, "deleteValue should be set when using actions");
 
-    final customActions = actionBuilder == null ? <MenuAction<U?>>[] : actionBuilder!(item).toList();
+    final customActions = actionBuilder == null
+        ? <MenuAction<U?>>[]
+        : actionBuilder!(item).toList();
 
     final result = await MenuActionGroup.withDelete<U?>(
       context,
       actions: customActions.toList(),
       deleteValue: deleteValue,
-      warningContent: warningContentBuilder == null ? null : warningContentBuilder!(context, item),
+      warningContent: warningContentBuilder == null
+          ? null
+          : warningContentBuilder!(context, item),
       deleteCallback: () => handleDelete(item),
     );
 

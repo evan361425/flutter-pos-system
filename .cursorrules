@@ -1,0 +1,238 @@
+# .cursorrules — Constitution du Projet POSFlu
+
+> **Source de vérité absolue** pour tout agent IA (Cursor, Copilot, Codex, etc.) modifiant ce dépôt Flutter POS.
+> Toute modification, refactorisation ou génération de code DOIT respecter les lois ci-dessous.
+> Ces règles sont le résultat direct du **Sprint 4 — Project Constitution & Tech Debt Prevention**,
+> lui-même issu du démantèlement récent du *God Object* `Cart` (~500 lignes) en Facade + services.
+
+---
+
+## 0. Contexte du projet
+
+- **Stack** : Flutter (SDK Dart >= 3.11), `sqflite` (SQLite local), `sembast` (stockage KV), `provider` (state management), `go_router` (routing).
+- **Pattern d'état** : `ChangeNotifier` + `Provider` / `ChangeNotifierProvider` / `Consumer`. **NE PAS** introduire Riverpod, Bloc, GetX, MobX, ni aucune autre lib de state management.
+- **Facades existantes** (à réutiliser en priorité) :
+ - `Cart` (`lib/models/repository/cart.dart`) — orchestrateur panier (Facade fine)
+ - `CartStateManager` (`lib/services/cart/cart_state_manager.dart`) — mutations d'état pur
+  - `CheckoutService` (`lib/services/cart/checkout_service.dart`) — encaissement
+  - `ReceiptService` (`lib/services/cart/receipt_service.dart`) — impression / reçu
+  - `StashService` (`lib/services/cart/stash_service.dart`) — commandes mises de côté
+  - `SyncService` (`lib/services/sync/sync_service.dart`) — outbox / synchro cloud
+  - `PrinterManagerService` (`lib/services/printer/printer_manager_service.dart`) — matériel
+- **Routing centralisé** : `AppRouteNames` (`lib/routes/app_route_names.dart`) + fichiers `lib/routes/*_routes.dart`.
+
+---
+
+## 1. Taille des fichiers & Principe de responsabilité unique (SRP)
+
+### Loi 1.1 — Plafond dur : 400 lignes par fichier `.dart`
+- **Aucun** fichier Dart ne doit dépasser **400 lignes de code** (commentaires + code, hors licence).
+- Cette limite est un **plafond dur**, pas un objectif indicatif.
+
+### Loi 1.2 — Découpage proactif via Facade
+- Si une classe/feature approche ou dépasse 400 lignes, l'agent DOIT **immédiatement** proposer un découpage en plusieurs services focalisés, orchestrés par une **Facade**.
+- Le patron obligatoire est : `XService` (Facade fine) → délègue à `XStateManager`, `XCheckoutService`, `XReceiptService`, etc.
+- Chaque service extrait doit avoir **une seule raison de changer** (SRP strict).
+
+### Loi 1.3 — Anti-God-Object
+- **INTERDIT** de recréer un God Object type `Cart` (500 lignes, mixant état + I/O + impression + réseau).
+- Le mélange dans une même classe de : **état UI + logique métier + persistance + I/O matériel + appels réseau** est prohibé.
+- Toute nouvelle classe cumulant ≥ 3 responsabilités doit être refusée et redécoupée.
+
+### Loi 1.4 — Nommage et localisation
+- Services : `lib/services/<domaine>/<nom>_service.dart`.
+- Un fichier = une classe publique de premier plan (les classes privées `_Foo` sont autorisées si étroitement liées).
+
+---
+
+## 2. SQLite & Persistance des données
+
+### Loi 2.1 — Zéro tolérance sur l'injection SQL
+- **TOUTES** les requêtes SQLite DOIVENT utiliser des paramètres liés via `whereArgs` (ou l'équivalent `arguments:` pour `rawQuery` / `execute`).
+- **STRICTEMENT INTERDIT** : l'interpolation de variables Dart (`$variable`, `${expr}`, concaténation `+`) à l'intérieur d'une chaîne SQL.
+- Exemple **INTERDIT** :
+  ```dart
+  db.rawQuery('SELECT * FROM orders WHERE id = $orderId'); // BANNI
+  db.query('orders', where: "name = '$name'");             // BANNI
+  ```
+- Exemple **CORRECT** :
+  ```dart
+  db.rawQuery('SELECT * FROM orders WHERE id = ?', [orderId]);
+  db.query('orders', where: 'name = ?', whereArgs: [name]);
+  ```
+- Les noms de tables/colonnes qui ne peuvent pas être paramétrés doivent provenir de constantes du code, **jamais** d'une entrée utilisateur.
+
+### Loi 2.2 — Pas de N+1
+- Interdit de boucler sur une liste et d'émettre une requête par élément.
+- Utiliser obligatoirement : `JOIN`, `IN (?, ?, ...)`, `UNION`, ou les API de batch (`Database.batch()` de `sqflite`).
+- Pour l'analytique et les agrégations : privilégier une **seule** requête SQL avec `GROUP BY`/agrégats plutôt qu'une agrégation Dart en mémoire.
+- Toute nouvelle fonction d'analyse doit être auditée pour N+1 avant merge.
+
+### Loi 2.3 — Migrations
+- Toute évolution de schéma passe par `lib/services/database_migrations.dart` + `database_migration_actions.dart`.
+- Les migrations doivent être **idempotentes** et testées.
+
+---
+
+## 3. Offline-First & opérations asynchrones
+
+### Loi 3.1 — L'UI ne bloque JAMAIS sur le réseau
+- Le POS DOIT rester réactif même sans connectivité.
+- **Interdit** : `await http.post(...)` directement dans un handler UI, un `onPressed`, ou pendant l'encaissement.
+- **Obligation** : toute écriture destinée au cloud passe par la file d'attente locale via
+  ```dart
+  await SyncService.instance.enqueue(payload, '<endpoint>');
+  ```
+  Ce `await` reste synchrone vis-à-vis de la SQLite locale (rapide), pas du cloud.
+
+### Loi 3.2 — Outbox Pattern obligatoire
+- Sauvegarde locale SQLite = **synchrone à l'UI** (l'utilisateur voit le succès immédiat).
+- Envoi cloud = **asynchrone, en arrière-plan**, géré par `SyncService` (`processQueue`, retry, dead-letter).
+- Ne jamais court-circuiter la file : pas d'appel HTTP direct pour du métier transactionnel.
+
+### Loi 3.3 — I/O matériel isolé via `unawaited`
+- Imprimantes (thermiques, kitchen), Bluetooth, USB serial, découverte réseau, ping, envoi cloud : DOIVENT être **isolés** du flux principal.
+- Pendant l'encaissement (`CheckoutService`), les effets de bord matériels utilisent `unawaited(...)` (import `dart:async`) pour ne pas retarder le retour à la caisse.
+- Exemple correct :
+  ```dart
+  import 'dart:async';
+  // ...
+  unawaited(PrinterManagerService.instance.printReceipt(order));
+  unawaited(SyncService.instance.enqueue(order.toJson(), 'orders'));
+  ```
+
+### Loi 3.4 — `try/catch` strict autour de tout I/O
+- **TOUT** appel matériel ou réseau DOIT être enveloppé dans un `try/catch`.
+- Une imprimante cuisine hors ligne, un socket coupé, un ping cloud échoué : **NE DOIVENT JAMAIS** faire crasher l'application ni interrompre l'encaissement.
+- Logger l'erreur via `Log.err(e, '<tag>', stack)`, jamais un `print` nu.
+- Ne jamais laisser un `Future` sans gestion d'exception : soit `await` + `try/catch`, soit `unawaited(...)` avec `.catchError(...)` interne ou `try/catch` dans la fonction appelée.
+
+### Loi 3.5 — Pas de blocage sur les timers
+- Utiliser `Timer.periodic` uniquement dans un service singleton ; toujours le stocker dans un champ et l'annuler dans `dispose()`.
+
+---
+
+## 4. Routage & performance UI
+
+### Loi 4.1 — Construction paresseuse (lazy) obligatoire
+- Toutes les définitions `go_router` DOIVENT utiliser une fonction `builder` (ou `pageBuilder`) qui n'instancie l'écran **qu'au moment du rendu**.
+- **INTERDIT** : passer une instance de widget pré-construite ou évaluer un constructeur au moment de la déclaration de la route.
+- Exemple **INTERDIT** :
+  ```dart
+  GoRoute(path: '/menu', builder: MenuPage()); // BANNI (pas une fonction)
+  final menuPage = MenuPage();                  // BANNI (eager)
+  GoRoute(path: '/menu', builder: (c, s) => menuPage);
+  ```
+- Exemple **CORRECT** :
+  ```dart
+  GoRoute(
+    path: AppRouteNames.menu,
+    builder: (context, state) => const MenuPage(),
+  );
+  ```
+
+### Loi 4.2 — Zéro *magic string* de navigation
+- Toute navigation DOIT utiliser une constante de `AppRouteNames` (`lib/routes/app_route_names.dart`).
+- **INTERDIT** :
+  ```dart
+  context.go('/pos/menu/product'); // BANNI
+  Navigator.pushNamed(context, '/settings');
+  ```
+- **CORRECT** :
+  ```dart
+  context.pushNamed(AppRouteNames.menuProduct);
+  context.go(AppRouteNames.path(AppRouteNames.settings));
+  ```
+- Si une route manque : l'ajouter d'abord à `AppRouteNames`, puis l'utiliser.
+
+### Loi 4.3 — `const` partout où c'est possible
+- Tout constructeur invocable en `const` DOIT être appelé en `const` (widgets, `EdgeInsets`, `Duration`, `TextStyle`, etc.).
+- Les listes/maps littérales immuables : `const [...]`, `const {...}`.
+- L'analyseur (`prefer_const_constructors`, `prefer_const_literals_to_create_immutables`) doit rester silencieux.
+
+### Loi 4.4 — Discipline stricte du cycle de vie
+- Tout objet à durée de vie DOIT être libéré :
+  | Type | Méthode obligatoire |
+  |---|---|
+  | `ChangeNotifier` / `ValueNotifier` | `.dispose()` |
+  | `TextEditingController`, `ScrollController`, `AnimationController`, `FocusNode` | `.dispose()` |
+  | `Timer` (y compris `Timer.periodic`) | `.cancel()` |
+  | `StreamSubscription` | `.cancel()` |
+  | `Socket`, `ServerSocket`, connexions imprimantes | `.destroy()` / `.close()` |
+- Dans un `State<...>` : libérer dans `dispose()` **avant** `super.dispose()`.
+- Dans un service singleton avec ressources : exposer une méthode `dispose()` idempotente (voir `SyncService.dispose()` pour le pattern).
+- **INTERDIT** : créer un `Timer` ou un `StreamSubscription` sans le stocker dans un champ.
+
+### Loi 4.5 — Rebuilds maîtrisés
+- Un `Consumer` / `Selector` doit cibler le plus petit sous-arbre possible.
+- Ne pas appeler `notifyListeners()` en boucle ou dans un `build()`.
+- Préférer `Selector<T, R>` quand seule une sous-partie de l'état est écoutée.
+
+---
+
+## 5. Règles de workflow IA
+
+### 5.1 — Analyser AVANT de coder
+- **Toujours** commencer par identifier :
+  1. Quelle **Facade** existante couvre le domaine (Cart, Checkout, Receipt, Stash, Sync, Printer…) ?
+  2. Y a-t-il déjà un service qui fait 80% du travail demandé ?
+  3. Quel(s) fichier(s) sont concernés et leur taille actuelle (viser à rester < 400 lignes) ?
+- Ne pas dupliquer une logique déjà présente dans un service. Étendre / composer d'abord.
+
+### 5.2 — Pas de nouvelle lib de state management
+- Le projet utilise **`provider` + `ChangeNotifier`**. Point.
+- Ne PAS introduire : `riverpod`, `flutter_bloc`, `get`, `mobx`, `redux`, `signals`, `states_rebuilder`, `hooks_riverpod`, etc.
+- Toute proposition d'ajout d'une telle dépendance dans `pubspec.yaml` doit être refusée.
+
+### 5.3 — Dépendances externes : minimalisme
+- Ne pas ajouter de package à `pubspec.yaml` sans justification explicite.
+- Préférer étendre le code existant ou utiliser la stdlib Dart.
+- Si un package est ajouté : fixer une contrainte de version, documenter la raison en commentaire dans `pubspec.yaml`.
+
+### 5.4 — Code propre en sortie
+- Le code généré DOIT passer `dart format` sans changement de layout (indentation 2 espaces, trailing commas où pertinent).
+- Aucune erreur ni avertissement de `flutter analyze` / `dart analyze` : pas d'imports inutilisés, pas de variables inutilisées, pas de `dynamic` gratuit.
+- Respecter les règles de `flutter_lints` et `prefer_shorthands` (voir `analysis_options.yaml`).
+- Pas de `print(...)` : utiliser `Log.ger(...)` / `Log.err(...)` (`lib/helpers/logger.dart`).
+- Pas de `// TODO` sans référence de ticket / contexte clair.
+
+### 5.5 — Commentaires : intention, pas narration
+- Interdits : `// increment counter`, `// return result`, `// import the module`, `// handle error`.
+- Autorisés : commentaires expliquant un **compromis**, une **contrainte**, un **invariant**, ou un **pourquoi** non évident.
+- Documenter les APIs publiques avec `///` (dartdoc), surtout sur les Facades/Services.
+
+### 5.6 — Tests
+- Les fichiers de test vivent dans `test/`. Les mocks générés (`*.mocks.dart`) ne se modifient pas à la main ; utiliser `build_runner`.
+- Toute nouvelle logique métier dans un service DOIT être testable sans Flutter engine (pure Dart).
+
+### 5.7 — Journalisation de contexte
+- Utiliser `Log.ger('<event>', {<contexte>})` pour les événements métier et `Log.err(e, '<tag>', stack)` pour les erreurs.
+- Ne pas exposer de PII / données de paiement en clair dans les logs.
+
+---
+
+## 6. Checklist de revue (auto-vérification avant de rendre le code)
+
+Avant de considérer une tâche terminée, l'agent DOIT vérifier :
+
+- [ ] Aucun fichier `.dart` ne dépasse **400 lignes**.
+- [ ] Aucune requête SQL n'utilise `$` / concaténation ; toutes utilisent `whereArgs` / `?`.
+- [ ] Aucune boucle n'émet de requête SQL par itération (pas de N+1).
+- [ ] Aucun `await` réseau ne bloque un handler UI ; les envois cloud passent par `SyncService.instance.enqueue`.
+- [ ] Les opérations imprimante/Bluetooth/USB/socket sont en `unawaited(...)` pendant l'encaissement et enveloppées dans `try/catch`.
+- [ ] Toutes les routes `go_router` utilisent `builder: (context, state) => ...` et pointent sur `AppRouteNames`.
+- [ ] `const` est utilisé partout où c'est possible.
+- [ ] Chaque `ChangeNotifier` / `Controller` / `Timer` / `StreamSubscription` / `Socket` créé a un `dispose` / `cancel` / `destroy` correspondant.
+- [ ] Aucun nouveau package de state management n'a été ajouté.
+- [ ] Aucun `print` ; les erreurs I/O sont loguées, pas propagées jusqu'à l'UI.
+- [ ] `dart format` et `flutter analyze` passent sans avertissement (imports/variables inutilisés = zéro).
+
+---
+
+## 7. En cas de doute
+
+1. **Lire** la Facade existante du domaine avant d'écrire du neuf.
+2. **Proposer** un plan de découpage si un fichier va dépasser 400 lignes.
+3. **Refuser** poliment toute demande qui violerait les lois 1 à 4 et proposer une alternative conforme.
+
+Ces règles sont non négociables. Toute exception doit être justifiée explicitement et validée par un humain via un commentaire `// CURSORRULES-EXCEPTION: <raison>` au-dessus de la ligne concernée.

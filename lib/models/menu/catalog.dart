@@ -44,11 +44,18 @@ class Catalog extends Model<CatalogObject>
       name: object.name,
       createdAt: object.createdAt,
       imagePath: object.imagePath,
-      products: {for (var product in object.products) product.id!: Product.fromObject(product)},
+      products: {
+        for (var product in object.products)
+          product.id!: Product.fromObject(product),
+      },
     )..prepareItem();
   }
 
-  factory Catalog.fromRow(Catalog? ori, List<String> row, {required int index}) {
+  factory Catalog.fromRow(
+    Catalog? ori,
+    List<String> row, {
+    required int index,
+  }) {
     final status = ori == null ? ModelStatus.staged : ModelStatus.normal;
 
     return Catalog(id: ori?.id, name: row[0], index: index, status: status);

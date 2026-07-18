@@ -12,5 +12,8 @@ key.properties
 
 fastlane-keys.json
 *.jks
+*.keystore
 *.lockfile
 fastlane/report.xml
+.env
+.env.*

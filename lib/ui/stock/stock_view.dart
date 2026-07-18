@@ -9,7 +9,7 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/stock/widgets/stock_ingredient_list_tile.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +21,8 @@ class StockView extends StatefulWidget {
   State<StockView> createState() => _StockViewState();
 }
 
-class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixin {
+class _StockViewState extends State<StockView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -30,7 +31,10 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
     // stock changes.
     if (context.select<Stock, bool>((Stock stock) => stock.isEmpty)) {
       return Center(
-        child: EmptyBody(content: S.stockIngredientEmptyBody, routeName: Routes.stockIngrCreate),
+        child: EmptyBody(
+          content: S.stockIngredientEmptyBody,
+          routeName: AppRouteNames.stockIngrCreate,
+        ),
       );
     }
 
@@ -66,13 +70,14 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
                             key: const Key('stock.add'),
                             icon: const Icon(KIcons.add),
                             label: S.stockIngredientTitleCreate,
-                            route: Routes.stockIngrCreate,
+                            route: AppRouteNames.stockIngrCreate,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  for (final item in Stock.instance.itemList) StockIngredientListTile(item: item),
+                  for (final item in Stock.instance.itemList)
+                    StockIngredientListTile(item: item),
                 ],
               );
             },
@@ -114,7 +119,7 @@ class _StockViewState extends State<StockView> with AutomaticKeepAliveClientMixi
           child: RouteIconButton(
             key: const Key('stock.replenisher'),
             icon: const Icon(Icons.shopping_basket_outlined),
-            route: Routes.stockRepl,
+            route: AppRouteNames.stockRepl,
             popTrueShowSuccess: true,
             label: S.stockReplenishmentButton,
           ),

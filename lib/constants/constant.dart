@@ -11,4 +11,6 @@ const bool isInternalTest = String.fromEnvironment('appFlavor') == 'dev';
 const bool isProd = String.fromEnvironment('appFlavor') == 'prod';
 
 /// The time to show the warning message when the bluetooth is not found.
-const Duration btSearchWarningTime = kDebugMode ? Duration(milliseconds: 10) : Duration(minutes: 1);
+const Duration btSearchWarningTime = kDebugMode
+    ? Duration(milliseconds: 10)
+    : Duration(minutes: 1);

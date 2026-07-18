@@ -9,7 +9,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 class MenuProductList extends StatelessWidget {
@@ -26,7 +26,7 @@ class MenuProductList extends StatelessWidget {
       action: RouteIconButton(
         label: S.menuProductTitleReorder,
         icon: const Icon(KIcons.reorder),
-        route: Routes.menuProductReorder,
+        route: AppRouteNames.menuProductReorder,
         pathParameters: {'id': catalog?.id ?? ''},
         hideLabel: true,
       ),
@@ -35,7 +35,8 @@ class MenuProductList extends StatelessWidget {
         deleteValue: 0,
         actionBuilder: _actionBuilder,
         tileBuilder: (product, _, actorBuilder) => _Tile(product, actorBuilder),
-        warningContentBuilder: (context, product) => S.dialogDeletionContent(product.name, ''),
+        warningContentBuilder: (context, product) =>
+            S.dialogDeletionContent(product.name, ''),
         handleDelete: (item) => item.remove(),
       ),
     );
@@ -46,13 +47,13 @@ class MenuProductList extends StatelessWidget {
       MenuAction(
         title: Text(S.menuProductTitleUpdate),
         leading: const Icon(KIcons.modal),
-        route: Routes.menuProductUpdate,
+        route: AppRouteNames.menuProductUpdate,
         routePathParameters: {'id': product.id},
       ),
       MenuAction(
         title: Text(S.menuIngredientTitleReorder),
         leading: const Icon(KIcons.reorder),
-        route: Routes.menuProductReorderIngredient,
+        route: AppRouteNames.menuProductReorderIngredient,
         routePathParameters: {'id': product.id},
       ),
     ];
@@ -79,7 +80,10 @@ class _Tile extends StatelessWidget {
         emptyText: S.menuProductEmptyIngredients,
       ),
       onLongPress: actor,
-      onTap: () => context.pushNamed(Routes.menuProduct, pathParameters: {'id': product.id}),
+      onTap: () => context.pushNamed(
+        AppRouteNames.menuProduct,
+        pathParameters: {'id': product.id},
+      ),
     );
   }
 }

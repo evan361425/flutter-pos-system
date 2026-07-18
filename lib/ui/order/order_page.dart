@@ -9,13 +9,14 @@ import 'package:possystem/components/tutorial.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/menu.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/order_awakening_setting.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/cart/cart_metadata_view.dart';
 import 'package:possystem/ui/order/cart/cart_product_list.dart';
 import 'package:possystem/ui/order/cart/cart_product_selector.dart';
+import 'package:possystem/ui/order/cart/order_cart_action_bar.dart';
 import 'package:possystem/ui/order/widgets/printer_button_view.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -60,18 +61,24 @@ class _OrderPageState extends State<OrderPage> {
         controller: _pageController,
         onPageChanged: (index) => _catalogIndexNotifier.value = index,
         itemCount: catalogs.length,
-        itemBuilder: (context, index) =>
-            OrderProductListView(products: catalogs[index].itemList, view: _productViewNotifier.value),
+        itemBuilder: (context, index) => OrderProductListView(
+          products: catalogs[index].itemList,
+          view: _productViewNotifier.value,
+        ),
       ),
     );
 
-    final body = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= .medium
+    final body =
+        Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= .medium
         ? DraggableSheetView(
             row1: orderCatalogListView,
             row2: orderProductListView,
             row3_1: const CartProductSelector(),
             row3_2Builder: (scroll, scrollable) => Expanded(
-              child: CartProductList(scrollController: scroll, scrollable: scrollable),
+              child: CartProductList(
+                scrollController: scroll,
+                scrollable: scrollable,
+              ),
             ),
             row3_3: const CartMetadataView(),
             row4: const CartProductStateSelector(),
@@ -95,14 +102,12 @@ class _OrderPageState extends State<OrderPage> {
           actions: [
             MoreButton(key: const Key('order.more'), onPressed: _showActions),
             const PrinterButtonView(),
-            TextButton(
-              key: const Key('order.checkout'),
-              onPressed: () => _handleCheckout(),
-              child: Text(S.orderActionCheckout),
-            ),
           ],
         ),
         body: body,
+        bottomNavigationBar: OrderCartActionBar(
+          onCheckout: () => _handleCheckout(),
+        ),
       ),
     );
   }
@@ -130,7 +135,9 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _handleCheckout() async {
-    final status = await context.pushNamed<CheckoutStatus>(Routes.orderCheckout);
+    final status = await context.pushNamed<CheckoutStatus>(
+      AppRouteNames.orderCheckout,
+    );
     if (status != null && mounted) {
       handleCheckoutStatus(context, status);
       _resetNotifier.notify();
@@ -145,7 +152,7 @@ class _OrderPageState extends State<OrderPage> {
           key: const Key('order.action.exchange'),
           title: Text(S.orderActionExchange),
           leading: const Icon(Icons.change_circle_outlined),
-          returnValue: const _Action(route: Routes.cashierChanger),
+          returnValue: const _Action(route: AppRouteNames.cashierChanger),
         ),
         MenuAction(
           key: const Key('order.action.stash'),
@@ -153,11 +160,18 @@ class _OrderPageState extends State<OrderPage> {
           leading: const Icon(Icons.archive_outlined),
           returnValue: _Action(action: _handleStash),
         ),
+        if (Cart.instance.tableId != null && !Cart.instance.isEmpty)
+          MenuAction(
+            key: const Key('order.action.split_bill'),
+            title: Text(S.orderActionSplitBill),
+            leading: const Icon(Icons.call_split_outlined),
+            returnValue: const _Action(route: AppRouteNames.orderSplitBill),
+          ),
         MenuAction(
           key: const Key('order.action.history'),
           title: Text(S.orderActionReview),
           leading: const Icon(Icons.history_outlined),
-          returnValue: const _Action(route: Routes.history),
+          returnValue: const _Action(route: AppRouteNames.history),
         ),
       ],
     );
@@ -181,11 +195,20 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
   status = CheckoutWarningSetting.instance.shouldShow(status);
 
   return switch (status) {
-    CheckoutStatus.ok || CheckoutStatus.stash || .restore => showSnackBar(S.actSuccess, context: context),
-    .cashierNotEnough => showSnackBar(S.orderSnackbarCashierNotEnough, context: context),
+    CheckoutStatus.ok ||
+    CheckoutStatus.stash ||
+    .restore => showSnackBar(S.actSuccess, context: context),
+    .cashierNotEnough => showSnackBar(
+      S.orderSnackbarCashierNotEnough,
+      context: context,
+    ),
     .cashierUsingSmall => showMoreInfoSnackBar(
       S.orderSnackbarCashierUsingSmallMoney,
-      Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('settings/checkoutWarning'))),
+      Linkify.fromString(
+        S.orderSnackbarCashierUsingSmallMoneyHelper(
+          AppRouteNames.url('settings/checkoutWarning'),
+        ),
+      ),
       context: context,
     ),
     _ => null,

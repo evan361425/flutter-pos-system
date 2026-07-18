@@ -15,12 +15,21 @@ class ExportBasicHeader extends StatelessWidget {
   final ValueNotifier<FormattableModel?> selected;
   final TransitStateNotifier stateNotifier;
 
-  const ExportBasicHeader({super.key, required this.exporter, required this.selected, required this.stateNotifier});
+  const ExportBasicHeader({
+    super.key,
+    required this.exporter,
+    required this.selected,
+    required this.stateNotifier,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SignInButton(
-      signedInWidget: _ExportBasicHeader(exporter: exporter, stateNotifier: stateNotifier, selected: selected),
+      signedInWidget: _ExportBasicHeader(
+        exporter: exporter,
+        stateNotifier: stateNotifier,
+        selected: selected,
+      ),
     );
   }
 }
@@ -60,7 +69,10 @@ class _ExportBasicHeader extends BasicModelPicker {
   /// 1. Ask user to select a spreadsheet.
   /// 2. Prepare the spreadsheet, make all sheets ready.
   /// 3. Export data to the spreadsheet.
-  Future<String?> _startExport(BuildContext context, FormattableModel? able) async {
+  Future<String?> _startExport(
+    BuildContext context,
+    FormattableModel? able,
+  ) async {
     // Step 1
     GoogleSpreadsheet? ss = await SpreadsheetDialog.show(
       context,
@@ -96,8 +108,14 @@ class _ExportBasicHeader extends BasicModelPicker {
     await exporter.updateSheet(
       ss,
       names.map((e) => ss!.sheets.firstWhere((sheet) => sheet.title == e)),
-      data.map((rows) => rows.map((row) => row.map((cell) => GoogleSheetCellData.fromCellData(cell)))),
-      headers.map((row) => row.map((cell) => GoogleSheetCellData.fromCellData(cell))),
+      data.map(
+        (rows) => rows.map(
+          (row) => row.map((cell) => GoogleSheetCellData.fromCellData(cell)),
+        ),
+      ),
+      headers.map(
+        (row) => row.map((cell) => GoogleSheetCellData.fromCellData(cell)),
+      ),
     );
 
     Log.out('export finish', 'gs_export');
@@ -106,7 +124,11 @@ class _ExportBasicHeader extends BasicModelPicker {
 }
 
 class ExportBasicView extends ExportView {
-  const ExportBasicView({super.key, required super.selected, required super.stateNotifier});
+  const ExportBasicView({
+    super.key,
+    required super.selected,
+    required super.stateNotifier,
+  });
 
   @override
   ModelData getSourceAndHeaders(FormattableModel able) {

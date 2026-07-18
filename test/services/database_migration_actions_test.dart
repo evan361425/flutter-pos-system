@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:possystem/models/repository/seller.dart';
@@ -13,10 +16,13 @@ import 'database_test.mocks.dart';
 void main() {
   group('Database Migration Actions', () {
     Future<sqflite.Database> createDb(int latestVer) async {
+      final path =
+          '${Directory.systemTemp.path}/posflu_mig_${latestVer}_${DateTime.now().microsecondsSinceEpoch}.sqlite';
       final db = await databaseFactoryFfi.openDatabase(
-        sqflite.inMemoryDatabasePath,
+        path,
         options: sqflite.OpenDatabaseOptions(
           version: latestVer,
+          singleInstance: false,
           onCreate: (db, version) async {
             for (var ver = 1; ver <= version; ver++) {
               final sqlSet = dbMigrationUp[ver];
@@ -58,7 +64,10 @@ void main() {
 
       // ===== prepare rows =====
       // wrong data should able to catch and go on.
-      await db.insert('order', {'createdAt': 1000, 'encodedProducts': '[{"cost":""}]'});
+      await db.insert('order', {
+        'createdAt': 1000,
+        'encodedProducts': '[{"cost":""}]',
+      });
       await db.insert('order', {'createdAt': 1001, 'encodedProducts': '{[]}'});
       // version 1 format
       await db.insert('order', {
@@ -149,12 +158,100 @@ void main() {
       );
 
       const expected = [1001, 1002, 2000, 3000, 4000];
-      for (final it in IterableZip([orders.map((e) => e.createdAt.millisecondsSinceEpoch), expected])) {
+      for (final it in IterableZip([
+        orders.map((e) => e.createdAt.millisecondsSinceEpoch),
+        expected,
+      ])) {
         expect(it[0], equals(it[1] * 1000));
       }
       final order = orders[4];
       expect(order.products.isNotEmpty, isTrue);
       expect(order.attributes.isNotEmpty, isTrue);
+    });
+
+    test('12 - backfill payments from legacy paid', () async {
+      // Simulate a real upgrade path: schema at v11, then migrate to v12.
+      final db = await createDb(11);
+
+      final id1 = await db.insert('order_records', {
+        'paid': 50,
+        'price': 45,
+        'cost': 10,
+        'revenue': 35,
+        'productsPrice': 45,
+        'productsCount': 1,
+        'attributesPrice': 0,
+        'createdAt': 1000,
+      });
+      final id2 = await db.insert('order_records', {
+        'paid': 100,
+        'price': 100,
+        'cost': 20,
+        'revenue': 80,
+        'productsPrice': 100,
+        'productsCount': 2,
+        'attributesPrice': 0,
+        'createdAt': 2000,
+      });
+
+      await Database.execMigration(db, 12);
+      // Pre-fill one row as already migrated to assert idempotency.
+      await db.update(
+        'order_records',
+        {
+          'payments': jsonEncode([
+            {'amount': 100, 'method': 'card'},
+          ]),
+        },
+        where: 'id = ?',
+        whereArgs: [id2],
+      );
+      await Database.execMigrationAction(db, 12);
+
+      final row1 = (await db.query(
+        'order_records',
+        where: 'id = ?',
+        whereArgs: [id1],
+      )).first;
+      expect(row1['paid'], 50);
+      expect(row1['totalTax'], 0);
+      final payments1 = jsonDecode(row1['payments'] as String) as List;
+      expect(payments1, [
+        {'amount': 50, 'method': 'cash'},
+      ]);
+
+      final row2 = (await db.query(
+        'order_records',
+        where: 'id = ?',
+        whereArgs: [id2],
+      )).first;
+      expect(row2['paid'], 100);
+      final payments2 = jsonDecode(row2['payments'] as String) as List;
+      expect(payments2, [
+        {'amount': 100, 'method': 'card'},
+      ]);
+
+      // Idempotent: second run must not rewrite already-filled payments.
+      await Database.execMigrationAction(db, 12);
+      final row2Again = (await db.query(
+        'order_records',
+        where: 'id = ?',
+        whereArgs: [id2],
+      )).first;
+      expect(jsonDecode(row2Again['payments'] as String), [
+        {'amount': 100, 'method': 'card'},
+      ]);
+
+      final columns = await db.rawQuery('PRAGMA table_info(order_records)');
+      expect(columns.any((c) => c['name'] == 'payments'), isTrue);
+      expect(columns.any((c) => c['name'] == 'totalTax'), isTrue);
+
+      final productColumns = await db.rawQuery(
+        'PRAGMA table_info(order_products)',
+      );
+      expect(productColumns.any((c) => c['name'] == 'taxRate'), isTrue);
+
+      await db.close();
     });
 
     setUpAll(() {

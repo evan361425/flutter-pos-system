@@ -54,20 +54,30 @@ class MenuParser extends ModelParser<Menu, Product> {
 
     final vIng = Validator.textLimit(S.stockIngredientNameLabel, 30);
     final vQua = Validator.textLimit(S.stockQuantityNameLabel, 30);
-    final vAmount = Validator.positiveNumber(S.stockIngredientAmountLabel, allowNull: true);
-    final vQuaAmount = Validator.positiveNumber(S.menuQuantityAmountLabel, allowNull: true);
+    final vAmount = Validator.positiveNumber(
+      S.stockIngredientAmountLabel,
+      allowNull: true,
+    );
+    final vQuaAmount = Validator.positiveNumber(
+      S.menuQuantityAmountLabel,
+      allowNull: true,
+    );
 
     final lines = row[4].toString().split('\n').map((e) => e.trim());
     for (final line in lines) {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
 
-        final msg = (columns.isEmpty ? null : vIng(columns[0])) ?? (columns.length < 2 ? null : vAmount(columns[1]));
+        final msg =
+            (columns.isEmpty ? null : vIng(columns[0])) ??
+            (columns.length < 2 ? null : vAmount(columns[1]));
         if (msg != null) return msg;
       } else if (line.startsWith('+ ')) {
         final columns = line.substring(2).split(',');
 
-        final msg = (columns.isEmpty ? null : vQua(columns[0])) ?? (columns.length < 2 ? null : vQuaAmount(columns[1]));
+        final msg =
+            (columns.isEmpty ? null : vQua(columns[0])) ??
+            (columns.length < 2 ? null : vQuaAmount(columns[1]));
         if (msg != null) return msg;
       }
     }
@@ -79,14 +89,20 @@ class MenuParser extends ModelParser<Menu, Product> {
   Product parse(List<String> row, int index) {
     final catalog =
         target.getStagedByName(row[0]) ??
-        Catalog.fromRow(target.getItemByName(row[0]), row, index: Menu.instance.stagedItems.length + 1);
+        Catalog.fromRow(
+          target.getItemByName(row[0]),
+          row,
+          index: Menu.instance.stagedItems.length + 1,
+        );
     Menu.instance.addStaged(catalog);
 
     final oriProduct = target.getProductByName(row[1]);
     final product = Product.fromRow(oriProduct, row, index: index);
     catalog.addItem(product, save: false);
 
-    return row.length == 4 ? product : _formatProduct(oriProduct, product, row[4]);
+    return row.length == 4
+        ? product
+        : _formatProduct(oriProduct, product, row[4]);
   }
 
   Product _formatProduct(Product? ori, Product product, String value) {
@@ -106,7 +122,10 @@ class MenuParser extends ModelParser<Menu, Product> {
         final columns = line.substring(2).split(',');
         if (columns.isEmpty) continue;
 
-        final quantity = ProductQuantity.fromRow(oriIngredient?.getItemByName(columns[0]), columns);
+        final quantity = ProductQuantity.fromRow(
+          oriIngredient?.getItemByName(columns[0]),
+          columns,
+        );
         ingredient.addItem(quantity, save: false);
       }
     }
@@ -123,11 +142,17 @@ class StockParser extends ModelParser<Stock, Ingredient> {
     if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockIngredientNameLabel, 30)(row[0]) ??
-        Validator.positiveNumber(S.stockIngredientAmountLabel, allowNull: true)(row.length > 1 ? row[1] : null) ??
-        Validator.positiveNumber(S.stockIngredientRestockPriceLabel, allowNull: true)(row.length > 2 ? row[2] : null) ??
-        Validator.positiveNumber(S.stockIngredientRestockQuantityLabel, allowNull: true)(
-          row.length > 3 ? row[3] : null,
-        );
+        Validator.positiveNumber(S.stockIngredientAmountLabel, allowNull: true)(
+          row.length > 1 ? row[1] : null,
+        ) ??
+        Validator.positiveNumber(
+          S.stockIngredientRestockPriceLabel,
+          allowNull: true,
+        )(row.length > 2 ? row[2] : null) ??
+        Validator.positiveNumber(
+          S.stockIngredientRestockQuantityLabel,
+          allowNull: true,
+        )(row.length > 3 ? row[3] : null);
   }
 
   @override
@@ -147,9 +172,11 @@ class QuantitiesParser extends ModelParser<Quantities, Quantity> {
     if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
     return Validator.textLimit(S.stockQuantityNameLabel, 30)(row[0]) ??
-        Validator.positiveNumber(S.stockQuantityProportionLabel, maximum: 100, allowNull: true)(
-          row.length > 1 ? row[1] : null,
-        );
+        Validator.positiveNumber(
+          S.stockQuantityProportionLabel,
+          maximum: 100,
+          allowNull: true,
+        )(row.length > 1 ? row[1] : null);
   }
 
   @override
@@ -168,7 +195,9 @@ class ReplenisherParser extends ModelParser<Replenisher, Replenishment> {
   String? validate(List<String> row) {
     if (row.isEmpty) return S.transitImportErrorBasicColumnCount(1);
 
-    final errorMsg = Validator.textLimit(S.stockReplenishmentNameLabel, 30)(row[0]);
+    final errorMsg = Validator.textLimit(S.stockReplenishmentNameLabel, 30)(
+      row[0],
+    );
     if (errorMsg != null || row.length == 1) return errorMsg;
 
     final lines = row[1].split('\n');
@@ -209,7 +238,9 @@ class ReplenisherParser extends ModelParser<Replenisher, Replenishment> {
       final amount = num.tryParse(columns[1]);
       if (amount == null) continue;
 
-      Ingredient? ing = Stock.instance.getItemByName(columns[0]) ?? Stock.instance.getStagedByName(columns[0]);
+      Ingredient? ing =
+          Stock.instance.getItemByName(columns[0]) ??
+          Stock.instance.getStagedByName(columns[0]);
       if (ing == null) {
         ing = Ingredient(name: columns[0], status: .staged);
         Stock.instance.addStaged(ing);
@@ -240,7 +271,11 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
       if (line.startsWith('- ')) {
         final columns = line.substring(2).split(',');
 
-        final err = vName(columns[0]) ?? (columns.length > 2 && shouldValidateMode ? vMode(columns[2]) : null);
+        final err =
+            vName(columns[0]) ??
+            (columns.length > 2 && shouldValidateMode
+                ? vMode(columns[2])
+                : null);
         if (err != null) return err;
       }
     }
@@ -251,7 +286,12 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
   @override
   OrderAttribute parse(List<String> row, int index) {
     final ori = target.getItemByName(row[0]);
-    final attr = OrderAttribute.fromRow(ori, row, index: index, mode: _str2mode(row[1]));
+    final attr = OrderAttribute.fromRow(
+      ori,
+      row,
+      index: index,
+      mode: _str2mode(row[1]),
+    );
     OrderAttributes.instance.addStaged(attr);
 
     if (row.length >= 3) {
@@ -263,7 +303,10 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
     return attr;
   }
 
-  Iterable<OrderAttributeOption> _formatOptions(OrderAttribute? ori, String value) sync* {
+  Iterable<OrderAttributeOption> _formatOptions(
+    OrderAttribute? ori,
+    String value,
+  ) sync* {
     final lines = value.split('\n');
     int counter = 1;
     for (var line in lines.map((e) => e.trim())) {
@@ -271,7 +314,11 @@ class OAParser extends ModelParser<OrderAttributes, OrderAttribute> {
 
       final columns = line.substring(2).split(',');
 
-      yield OrderAttributeOption.fromRow(ori?.getItemByName(columns[0]), columns, index: counter++);
+      yield OrderAttributeOption.fromRow(
+        ori?.getItemByName(columns[0]),
+        columns,
+        index: counter++,
+      );
     }
   }
 

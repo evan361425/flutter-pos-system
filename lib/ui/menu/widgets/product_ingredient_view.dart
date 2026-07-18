@@ -10,7 +10,7 @@ import 'package:possystem/constants/icons.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/menu/product_quantity.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 class ProductIngredientView extends StatelessWidget {
@@ -35,7 +35,7 @@ class ProductIngredientView extends StatelessWidget {
                 key: Key('$key.add'),
                 icon: const Icon(KIcons.add),
                 label: S.menuQuantityTitleCreate,
-                route: Routes.menuProductUpdateIngredient,
+                route: AppRouteNames.menuProductUpdateIngredient,
                 pathParameters: {'id': ingredient.product.id},
                 queryParameters: {'iid': ingredient.id, 'qid': ''},
               ),
@@ -57,7 +57,7 @@ class ProductIngredientView extends StatelessWidget {
         MenuAction(
           title: Text(S.menuIngredientTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.menuProductUpdateIngredient,
+          route: AppRouteNames.menuProductUpdateIngredient,
           routePathParameters: {'id': ingredient.product.id},
           routeQueryParameters: {'iid': ingredient.id},
         ),
@@ -84,8 +84,12 @@ class _QuantityTile extends StatelessWidget {
         title: Text(quantity.name),
         subtitle: MetaBlock.withString(context, <String>[
           S.menuQuantityMetaAmount(quantity.amount),
-          S.menuQuantityMetaAdditionalPrice(quantity.additionalPrice.toCurrency()),
-          S.menuQuantityMetaAdditionalCost(quantity.additionalCost.toCurrency()),
+          S.menuQuantityMetaAdditionalPrice(
+            quantity.additionalPrice.toCurrency(),
+          ),
+          S.menuQuantityMetaAdditionalCost(
+            quantity.additionalCost.toCurrency(),
+          ),
         ]),
         onLongPress: () => MenuActionGroup.withDelete<int>(
           context,
@@ -94,7 +98,7 @@ class _QuantityTile extends StatelessWidget {
           deleteCallback: _remove,
         ),
         onTap: () => context.pushNamed(
-          Routes.menuProductUpdateIngredient,
+          AppRouteNames.menuProductUpdateIngredient,
           pathParameters: {'id': quantity.ingredient.product.id},
           queryParameters: {'iid': quantity.ingredient.id, 'qid': quantity.id},
         ),

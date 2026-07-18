@@ -24,7 +24,10 @@ class EmptyBody extends StatelessWidget {
     this.routeName,
     this.pathParameters = const <String, String>{},
     this.onPressed,
-  }) : assert(routeName != null || onPressed != null, 'Either routeName or onPressed must be provided');
+  }) : assert(
+         routeName != null || onPressed != null,
+         'Either routeName or onPressed must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +37,23 @@ class EmptyBody extends StatelessWidget {
         mainAxisAlignment: .center,
         crossAxisAlignment: .center,
         children: [
-          Text(title ?? S.emptyBodyTitle, style: Theme.of(context).textTheme.titleLarge),
-          if (content != null) Padding(padding: const .fromLTRB(16, 8.0, 16.0, 8.0), child: Text(content!)),
+          Text(
+            title ?? S.emptyBodyTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          if (content != null)
+            Padding(
+              padding: const .fromLTRB(16, 8.0, 16.0, 8.0),
+              child: Text(content!),
+            ),
           TextButton(
             key: const Key('empty_body'),
-            onPressed: onPressed ?? () => context.pushNamed(routeName!, pathParameters: pathParameters),
+            onPressed:
+                onPressed ??
+                () => context.pushNamed(
+                  routeName!,
+                  pathParameters: pathParameters,
+                ),
             child: Text(S.emptyBodyAction),
           ),
         ],

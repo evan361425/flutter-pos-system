@@ -25,7 +25,10 @@ class ExcelExporter extends DataExporter {
     required List<List<CellData>> headers,
     required String fileName,
   }) async {
-    assert(names.length == data.length && names.length == headers.length, 'length not match');
+    assert(
+      names.length == data.length && names.length == headers.length,
+      'length not match',
+    );
 
     final excel = Excel.createExcel();
     for (final (sheetIdx, rows) in data.indexed) {
@@ -40,7 +43,13 @@ class ExcelExporter extends DataExporter {
               ? DoubleCellValue(cell.number!.toDouble())
               : null;
           if (value != null) {
-            sheet.updateCell(CellIndex.indexByColumnRow(columnIndex: columnIdx, rowIndex: rowIdx), value);
+            sheet.updateCell(
+              CellIndex.indexByColumnRow(
+                columnIndex: columnIdx,
+                rowIndex: rowIdx,
+              ),
+              value,
+            );
           }
         }
       }

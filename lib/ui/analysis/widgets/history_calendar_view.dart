@@ -17,7 +17,11 @@ class HistoryCalendarView extends StatefulWidget {
 
   final bool shouldFillViewport;
 
-  const HistoryCalendarView({super.key, required this.notifier, required this.shouldFillViewport});
+  const HistoryCalendarView({
+    super.key,
+    required this.notifier,
+    required this.shouldFillViewport,
+  });
 
   @override
   State<HistoryCalendarView> createState() => _HistoryCalendarViewState();
@@ -26,7 +30,10 @@ class HistoryCalendarView extends StatefulWidget {
 class _HistoryCalendarViewState extends State<HistoryCalendarView> {
   final List<int> _loadedMonths = <int>[];
 
-  final LinkedHashMap<DateTime, int> _loadedCounts = LinkedHashMap(equals: isSameDay, hashCode: _hashDate);
+  final LinkedHashMap<DateTime, int> _loadedCounts = LinkedHashMap(
+    equals: isSameDay,
+    hashCode: _hashDate,
+  );
 
   late CalendarFormat _calendarFormat;
 
@@ -62,14 +69,19 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
         weekendDays: const [],
         // event handlers
         selectedDayPredicate: (DateTime day) => isSameDay(day, _selectedDay),
-        eventLoader: (DateTime day) => List.filled(_loadedCounts[day] ?? 0, null),
-        calendarBuilders: CalendarBuilders(markerBuilder: _badgeBuilder, defaultBuilder: _defaultBuilder),
+        eventLoader: (DateTime day) =>
+            List.filled(_loadedCounts[day] ?? 0, null),
+        calendarBuilders: CalendarBuilders(
+          markerBuilder: _badgeBuilder,
+          defaultBuilder: _defaultBuilder,
+        ),
         onPageChanged: _searchPageData,
         onFormatChanged: (format) async {
           setState(() => _calendarFormat = format);
           await Cache.instance.set('history.calendar_format', format.index);
         },
-        onDaySelected: (DateTime selectedDay, DateTime focusedDay) => _onDaySelected(selectedDay),
+        onDaySelected: (DateTime selectedDay, DateTime focusedDay) =>
+            _onDaySelected(selectedDay),
       ),
     );
   }
@@ -79,10 +91,14 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
     _focusedDay = _selectedDay = widget.notifier.value.start;
 
     // cache from last time, or default to month if in wide screen else week
-    final cached = Cache.instance.get<int>('history.calendar_format') ?? CalendarFormat.values.length;
+    final cached =
+        Cache.instance.get<int>('history.calendar_format') ??
+        CalendarFormat.values.length;
     _calendarFormat =
         CalendarFormat.values.elementAtOrNull(cached) ??
-        (widget.shouldFillViewport ? CalendarFormat.month : CalendarFormat.week);
+        (widget.shouldFillViewport
+            ? CalendarFormat.month
+            : CalendarFormat.week);
 
     super.initState();
   }
@@ -101,10 +117,18 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
     if (value.isEmpty) return null;
 
     final length = value.length;
-    return Positioned(right: 0, top: 0, child: Badge(label: Text(length > 99 ? '99+' : length.toString())));
+    return Positioned(
+      right: 0,
+      top: 0,
+      child: Badge(label: Text(length > 99 ? '99+' : length.toString())),
+    );
   }
 
-  Widget _defaultBuilder(BuildContext context, DateTime day, DateTime focusedDay) {
+  Widget _defaultBuilder(
+    BuildContext context,
+    DateTime day,
+    DateTime focusedDay,
+  ) {
     final local = day.toLocal();
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -141,9 +165,16 @@ class _HistoryCalendarViewState extends State<HistoryCalendarView> {
     final local = day.toLocal();
     // add/sub 7 days for first/last few days on next/last month
     final end = DateTime(local.year, local.month + 1, 7);
-    final start = DateTime(local.year, local.month).subtract(const Duration(days: 7));
+    final start = DateTime(
+      local.year,
+      local.month,
+    ).subtract(const Duration(days: 7));
 
-    final metrics = await Seller.instance.getMetricsInPeriod(start, end, types: [OrderMetricType.count]);
+    final metrics = await Seller.instance.getMetricsInPeriod(
+      start,
+      end,
+      types: [OrderMetricType.count],
+    );
 
     if (mounted) {
       setState(() {

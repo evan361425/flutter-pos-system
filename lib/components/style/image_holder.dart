@@ -49,7 +49,11 @@ class ImageHolder extends StatelessWidget {
                 padding: padding,
                 decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: colors[0])),
-                  gradient: LinearGradient(colors: colors, begin: Alignment.bottomCenter, end: Alignment.topCenter),
+                  gradient: LinearGradient(
+                    colors: colors,
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
                 ),
                 child: Text(
                   title!,
@@ -92,8 +96,13 @@ class EditImageHolder extends StatelessWidget {
   final void Function()? onPressed;
   final double size;
 
-  const EditImageHolder({super.key, this.path, this.onSelected, this.onPressed, this.size = 256})
-    : assert(onSelected != null || onPressed != null);
+  const EditImageHolder({
+    super.key,
+    this.path,
+    this.onSelected,
+    this.onPressed,
+    this.size = 256,
+  }) : assert(onSelected != null || onPressed != null);
 
   @override
   Widget build(BuildContext context) {

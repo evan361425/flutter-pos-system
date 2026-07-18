@@ -75,13 +75,16 @@ class _ImportBasicHeader extends ImportBasicBaseHeader {
     }
 
     // Step 2
-    final titles = selected.value?.toL10nNames() ?? FormattableModel.allL10nNames;
+    final titles =
+        selected.value?.toL10nNames() ?? FormattableModel.allL10nNames;
     if (await showSnackbarWhenFutureError(
           _prepareSheets(ss, titles),
           'import_sheet_preparing',
           context: context,
           showIfFalse: true,
-          message: S.transitImportErrorGoogleSheetMissingTitle(titles.join(', ')),
+          message: S.transitImportErrorGoogleSheetMissingTitle(
+            titles.join(', '),
+          ),
           more: S.transitImportErrorGoogleSheetMissingHelper,
         ) !=
         true) {
@@ -93,7 +96,9 @@ class _ImportBasicHeader extends ImportBasicBaseHeader {
     Log.ger('gs_import', {'spreadsheet': ss.id, 'sheets': titles});
 
     final ables = selected.value?.toList() ?? FormattableModel.values;
-    final sheets = titles.map((title) => ss.sheets.firstWhere((e) => e.title == title)).toList();
+    final sheets = titles
+        .map((title) => ss.sheets.firstWhere((e) => e.title == title))
+        .toList();
     final data = await _requestData(ss, ables, sheets);
 
     return (FormattableModel able) {
@@ -127,8 +132,11 @@ class _ImportBasicHeader extends ImportBasicBaseHeader {
   ) async {
     final futures = sheets
         .mapIndexed(
-          (i, sheet) =>
-              exporter.getSheetData(ss, sheet.title, neededColumns: findFieldFormatter(ables[i]).getHeader().length),
+          (i, sheet) => exporter.getSheetData(
+            ss,
+            sheet.title,
+            neededColumns: findFieldFormatter(ables[i]).getHeader().length,
+          ),
         )
         .toList();
 

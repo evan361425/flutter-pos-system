@@ -54,7 +54,13 @@ class ResponsiveDialog extends StatelessWidget {
         ),
         actions: action == null
             ? null
-            : [PopButton(key: const Key('pop'), title: MaterialLocalizations.of(context).cancelButtonLabel), action!],
+            : [
+                PopButton(
+                  key: const Key('pop'),
+                  title: MaterialLocalizations.of(context).cancelButtonLabel,
+                ),
+                action!,
+              ],
       );
 
       // Using _PropertyHolderWidget to allow [Scaffold]'s snackbar able to be

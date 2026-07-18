@@ -22,12 +22,31 @@ class CartProduct extends ChangeNotifier {
   /// Keys are ingredient and values are quantities.
   final Map<String, String> _quantities;
 
+  /// Per-line kitchen note (e.g. allergy / "no onions").
+  String _note;
+
   /// [product] will set the default [singlePrice] and [quantities] is default
   /// to empty map.
-  CartProduct(this.product, {int count = 1, num? singlePrice, this.isSelected = false, Map<String, String>? quantities})
-    : _singlePrice = singlePrice ?? product.price,
-      _count = count,
-      _quantities = quantities ?? <String, String>{};
+  CartProduct(
+    this.product, {
+    int count = 1,
+    num? singlePrice,
+    this.isSelected = false,
+    Map<String, String>? quantities,
+    String note = '',
+  }) : _singlePrice = singlePrice ?? product.price,
+       _count = count,
+       _quantities = quantities ?? <String, String>{},
+       _note = note;
+
+  /// Kitchen / prep note for this line item.
+  String get note => _note;
+  set note(String other) {
+    if (other != _note) {
+      _note = other;
+      notifyListeners();
+    }
+  }
 
   /// product's ID
   String get id => product.id;
@@ -36,13 +55,23 @@ class CartProduct extends ChangeNotifier {
   String get name => product.name;
 
   /// The cost of single product.
-  num get cost => quantities.fold<num>(product.cost, (v, q) => v + (q.additionalCost));
+  num get cost =>
+      quantities.fold<num>(product.cost, (v, q) => v + (q.additionalCost));
 
   /// Total price which is single price times the count.
   num get totalPrice => _count * _singlePrice;
 
   /// Total cost which is single cost times the count.
   num get totalCost => _count * cost;
+
+  /// Snapshot tax rate (%) from the menu product.
+  num get taxRate => product.taxRate;
+
+  /// Line tax: `(price * quantity) * (taxRate / 100)`.
+  num get lineTax {
+    if (taxRate == 0) return 0;
+    return totalPrice * (taxRate / 100);
+  }
 
   /// Get all ingredients that has selected quantity.
   Iterable<ProductQuantity> get quantities => _quantities.entries
@@ -78,7 +107,11 @@ class CartProduct extends ChangeNotifier {
   num getQuantityPrice(String ingredientId, String? quantityId) {
     if (quantityId == null) return 0;
 
-    return product.getItem(ingredientId)?.getItem(quantityId)?.additionalPrice ?? 0;
+    return product
+            .getItem(ingredientId)
+            ?.getItem(quantityId)
+            ?.additionalPrice ??
+        0;
   }
 
   /// Selected the quantity from cart and affect the price.
@@ -142,7 +175,11 @@ class CartProduct extends ChangeNotifier {
       singlePrice: _singlePrice,
       originalPrice: product.price,
       isDiscount: _singlePrice < product.price,
-      ingredients: product.items.map((e) => OrderIngredientObject.fromModel(e, getQuantityId(e.id))).toList(),
+      taxRate: product.taxRate,
+      note: _note,
+      ingredients: product.items
+          .map((e) => OrderIngredientObject.fromModel(e, getQuantityId(e.id)))
+          .toList(),
     );
   }
 }

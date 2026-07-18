@@ -6,22 +6,44 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/translator.dart';
 
-class CheckoutAttributeView extends StatelessWidget {
+class CheckoutAttributeView extends StatefulWidget {
   final ValueNotifier<num> price;
 
   const CheckoutAttributeView({super.key, required this.price});
 
   @override
+  State<CheckoutAttributeView> createState() => _CheckoutAttributeViewState();
+}
+
+class _CheckoutAttributeViewState extends State<CheckoutAttributeView> {
+  // Kept as a member field so it is created once and disposed in [dispose],
+  // instead of being rebuilt on every frame like the previous stateless
+  // implementation did (Law 4.4 of `.cursorrules`).
+  late final TextEditingController _noteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _noteController = TextEditingController(text: Cart.instance.note);
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final noteField = TextField(
       key: const Key('order.attr_note'),
-      controller: TextEditingController(text: Cart.instance.note),
-      textInputAction: .done,
+      controller: _noteController,
+      textInputAction: TextInputAction.done,
       decoration: InputDecoration(
         hintText: S.orderCheckoutAttributeNoteHint,
-        border: OutlineInputBorder(borderRadius: .circular(8.0)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
       ),
-      keyboardType: .multiline,
+      keyboardType: TextInputType.multiline,
       maxLength: 200,
       minLines: 2,
       maxLines: 5,
@@ -29,12 +51,21 @@ class CheckoutAttributeView extends StatelessWidget {
     );
 
     return SingleChildScrollView(
-      padding: const .fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kFABSpacing),
+      padding: const EdgeInsets.fromLTRB(
+        kHorizontalSpacing,
+        kTopSpacing,
+        kHorizontalSpacing,
+        kFABSpacing,
+      ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
-          Text(S.orderCheckoutAttributeNoteTitle, style: Theme.of(context).textTheme.titleMedium),
+          for (final item in OrderAttributes.instance.notEmptyItems)
+            _CheckoutAttributeGroup(item, widget.price),
+          Text(
+            S.orderCheckoutAttributeNoteTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: kInternalSpacing),
           noteField,
         ],
@@ -51,7 +82,8 @@ class _CheckoutAttributeGroup extends StatefulWidget {
   const _CheckoutAttributeGroup(this.attribute, this.price);
 
   @override
-  State<_CheckoutAttributeGroup> createState() => _CheckoutAttributeGroupState();
+  State<_CheckoutAttributeGroup> createState() =>
+      _CheckoutAttributeGroupState();
 }
 
 class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
@@ -60,12 +92,15 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: .stretch,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(widget.attribute.name, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          widget.attribute.name,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: kInternalSpacing),
         Padding(
-          padding: const .symmetric(horizontal: kHorizontalSpacing),
+          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
           child: Wrap(
             spacing: kInternalSpacing,
             children: [
@@ -90,11 +125,16 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
   @override
   void initState() {
     super.initState();
-    selectedId = Cart.instance.attributes[widget.attribute.id] ?? widget.attribute.defaultOption?.id;
+    selectedId =
+        Cart.instance.attributes[widget.attribute.id] ??
+        widget.attribute.defaultOption?.id;
   }
 
   void selectOption(OrderAttributeOption option, bool isSelected) {
-    Cart.instance.chooseAttribute(widget.attribute.id, isSelected ? option.id : '');
+    Cart.instance.chooseAttribute(
+      widget.attribute.id,
+      isSelected ? option.id : '',
+    );
 
     widget.price.value = Cart.instance.price;
   }

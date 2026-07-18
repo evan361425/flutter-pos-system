@@ -6,7 +6,7 @@ import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/analysis/chart.dart';
 import 'package:possystem/models/repository/seller.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/analysis/widgets/reloadable_card.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -53,7 +53,11 @@ class ChartCardView extends StatelessWidget {
 
   Widget buildChart(BuildContext context, List metrics) {
     if (metrics.isEmpty) {
-      return SizedBox(width: 128, height: 128, child: Center(child: Text(S.analysisChartCardEmptyData)));
+      return SizedBox(
+        width: 128,
+        height: 128,
+        child: Center(child: Text(S.analysisChartCardEmptyData)),
+      );
     }
 
     return switch (chart.type) {
@@ -62,7 +66,10 @@ class ChartCardView extends StatelessWidget {
         metrics: metrics as List<OrderSummary>,
         interval: MetricsIntervalType.fromDays(range.value.duration.inDays),
       ),
-      .circular => _CircularChart(chart: chart, metrics: metrics as List<OrderMetricPerItem>),
+      .circular => _CircularChart(
+        chart: chart,
+        metrics: metrics as List<OrderMetricPerItem>,
+      ),
     };
   }
 }
@@ -74,7 +81,11 @@ class _CartesianChart extends StatelessWidget {
 
   final MetricsIntervalType interval;
 
-  const _CartesianChart({required this.chart, required this.metrics, required this.interval});
+  const _CartesianChart({
+    required this.chart,
+    required this.metrics,
+    required this.interval,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +99,13 @@ class _CartesianChart extends StatelessWidget {
         // get the different unit axis
         axes: chart.units
             .take(2)
-            .mapIndexed((i, e) => NumericAxis(opposedPosition: i == 1, name: e.name, labelFormat: e.labelFormat))
+            .mapIndexed(
+              (i, e) => NumericAxis(
+                opposedPosition: i == 1,
+                name: e.name,
+                labelFormat: e.labelFormat,
+              ),
+            )
             .toList(),
         primaryXAxis: DateTimeAxis(
           enableAutoIntervalOnZooming: false,
@@ -100,14 +117,18 @@ class _CartesianChart extends StatelessWidget {
           enable: true,
           activationMode: .singleTap,
           tooltipDisplayMode: .groupAllPoints,
-          tooltipSettings: const InteractiveTooltip(format: 'series.name : point.y'),
+          tooltipSettings: const InteractiveTooltip(
+            format: 'series.name : point.y',
+          ),
         ),
         legend: const Legend(isVisible: true),
         series: chart.keyUnits().map((keyUnit) {
           return LineSeries(
             animationDuration: 0,
             markerSettings: const MarkerSettings(isVisible: true),
-            name: chart.target == .order ? S.analysisChartMetricName(keyUnit.key) : keyUnit.key,
+            name: chart.target == .order
+                ? S.analysisChartMetricName(keyUnit.key)
+                : keyUnit.key,
             yAxisName: keyUnit.value.name,
             xValueMapper: (v, i) => v.at,
             yValueMapper: (v, i) => v.value(keyUnit.key),
@@ -195,7 +216,10 @@ class _MoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MoreButton(key: Key('chart.${chart.id}.more'), onPressed: _showActions);
+    return MoreButton(
+      key: Key('chart.${chart.id}.more'),
+      onPressed: _showActions,
+    );
   }
 
   void _showActions(BuildContext context) async {
@@ -208,7 +232,7 @@ class _MoreButton extends StatelessWidget {
         MenuAction(
           title: Text(S.analysisChartCardTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.chartUpdate,
+          route: AppRouteNames.chartUpdate,
           routePathParameters: {'id': chart.id},
         ),
       ],

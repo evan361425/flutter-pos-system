@@ -143,7 +143,8 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
 
   /// Get highest index of products plus 1
   /// 1-index
-  int get newIndex => isEmpty ? 1 : items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
+  int get newIndex =>
+      isEmpty ? 1 : items.reduce((a, b) => a.index > b.index ? a : b).index + 1;
 
   Future<void> reorderItems(List<T> items) async {
     var i = 0;
@@ -156,11 +157,20 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
             return false;
           }
         })
-        .map<RepositoryBatchData>((item) => RepositoryBatchData(id: item.prefix, key: 'index', value: item.index))
+        .map<RepositoryBatchData>(
+          (item) => RepositoryBatchData(
+            id: item.prefix,
+            key: 'index',
+            value: item.index,
+          ),
+        )
         .toList();
 
     if (data.isNotEmpty) {
-      Log.ger('reorder_items', {'type': items.first.logName, 'length': data.length});
+      Log.ger('reorder_items', {
+        'type': items.first.logName,
+        'length': data.length,
+      });
       await saveBatch(data);
 
       notifyItems();
@@ -170,7 +180,10 @@ mixin RepositoryOrderable<T extends ModelOrderable> on Repository<T> {
 
 mixin RepositorySearchable<T extends ModelSearchable> on Repository<T> {
   List<T> sortBySimilarity(String text, {int limit = 10}) {
-    final similarities = items.map((e) => MapEntry(e.id, e.getSimilarity(text))).where((e) => e.value > 0).toList();
+    final similarities = items
+        .map((e) => MapEntry(e.id, e.getSimilarity(text)))
+        .where((e) => e.value > 0)
+        .toList();
     similarities.sort((ing1, ing2) {
       // if ing1 < ing2 return -1 will make ing1 be the first one
       if (ing1.value == ing2.value) return 0;
@@ -207,9 +220,13 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
       prepareItem();
 
       if (versionChanged) {
-        Log.ger('upgrade_items', {'type': storageStore.name, 'length': _items.length});
+        Log.ger('upgrade_items', {
+          'type': storageStore.name,
+          'length': _items.length,
+        });
         await Storage.instance.setAll(storageStore, {
-          for (final item in _items.values) item.prefix: item.toObject().toMap(),
+          for (final item in _items.values)
+            item.prefix: item.toObject().toMap(),
         });
       }
     } catch (e, stack) {
@@ -219,7 +236,9 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveBatch(Iterable<RepositoryBatchData> data) {
-    return Storage.instance.set(storageStore, {for (final item in data) '${item.id}.${item.key}': item.value});
+    return Storage.instance.set(storageStore, {
+      for (final item in data) '${item.id}.${item.key}': item.value,
+    });
   }
 
   @override

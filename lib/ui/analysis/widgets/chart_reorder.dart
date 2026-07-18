@@ -12,7 +12,8 @@ class ChartReorder extends StatelessWidget {
     return ReorderableScaffold(
       items: Analysis.instance.itemList,
       title: S.analysisChartTitleReorder,
-      handleSubmit: (List<Chart> items) => Analysis.instance.reorderItems(items),
+      handleSubmit: (List<Chart> items) =>
+          Analysis.instance.reorderItems(items),
     );
   }
 }

@@ -37,10 +37,13 @@ class ImportBasicHeader extends ImportBasicBaseHeader {
     final data = await exporter.import(input);
 
     if (selected.value != null) {
-      return (FormattableModel able) => findFieldFormatter(able).format(data.first.skip(1).toList());
+      return (FormattableModel able) =>
+          findFieldFormatter(able).format(data.first.skip(1).toList());
     }
 
-    final headers = getAllFormattedFieldHeaders(null).map((row) => row.map((e) => e.toString()).join(',')).toList();
+    final headers = getAllFormattedFieldHeaders(
+      null,
+    ).map((row) => row.map((e) => e.toString()).join(',')).toList();
     final parts = <FormattableModel, List<List<String>>>{};
     data.where((rows) => rows.isNotEmpty).forEach((rows) {
       final header = rows.first.join(',');
@@ -50,6 +53,8 @@ class ImportBasicHeader extends ImportBasicBaseHeader {
       }
     });
 
-    return (FormattableModel able) => parts.containsKey(able) ? findFieldFormatter(able).format(parts[able]!) : null;
+    return (FormattableModel able) => parts.containsKey(able)
+        ? findFieldFormatter(able).format(parts[able]!)
+        : null;
   }
 }

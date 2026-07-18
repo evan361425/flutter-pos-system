@@ -20,7 +20,11 @@ class PreviewPageWrapper extends StatefulWidget {
   final List<FormattableModel> models;
   final PreviewFormatter formatter;
 
-  const PreviewPageWrapper({super.key, required this.models, required this.formatter});
+  const PreviewPageWrapper({
+    super.key,
+    required this.models,
+    required this.formatter,
+  });
 
   @override
   State<PreviewPageWrapper> createState() => _PreviewPageWrapperState();
@@ -41,9 +45,16 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
         children: <Widget>[
           TabBar.secondary(
             isScrollable: true,
-            tabs: [for (final model in widget.models) Tab(child: Text(model.l10nName, softWrap: true))],
+            tabs: [
+              for (final model in widget.models)
+                Tab(child: Text(model.l10nName, softWrap: true)),
+            ],
           ),
-          Expanded(child: TabBarView(children: [for (final model in widget.models) _buildPage(model)])),
+          Expanded(
+            child: TabBarView(
+              children: [for (final model in widget.models) _buildPage(model)],
+            ),
+          ),
         ],
       ),
     );
@@ -70,15 +81,37 @@ class _PreviewPageWrapperState extends State<PreviewPageWrapper> {
     if (items == null || items.isEmpty) {
       // missing this sheet data is still able to import other sheets
       progress?[model]?.value = true;
-      return Center(child: HintText(S.transitImportErrorPreviewNotFound(model.l10nName)));
+      return Center(
+        child: HintText(S.transitImportErrorPreviewNotFound(model.l10nName)),
+      );
     }
 
     return switch (model) {
-      .menu => ProductPreviewPage(model: model, items: items, progress: progress),
-      .orderAttr => OrderAttributePreviewPage(model: model, items: items, progress: progress),
-      .quantities => QuantityPreviewPage(model: model, items: items, progress: progress),
-      .stock => IngredientPreviewPage(model: model, items: items, progress: progress),
-      .replenisher => ReplenishmentPreviewPage(model: model, items: items, progress: progress),
+      .menu => ProductPreviewPage(
+        model: model,
+        items: items,
+        progress: progress,
+      ),
+      .orderAttr => OrderAttributePreviewPage(
+        model: model,
+        items: items,
+        progress: progress,
+      ),
+      .quantities => QuantityPreviewPage(
+        model: model,
+        items: items,
+        progress: progress,
+      ),
+      .stock => IngredientPreviewPage(
+        model: model,
+        items: items,
+        progress: progress,
+      ),
+      .replenisher => ReplenishmentPreviewPage(
+        model: model,
+        items: items,
+        progress: progress,
+      ),
     };
   }
 }
@@ -89,7 +122,13 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
   final Map<FormattableModel, ValueNotifier<bool>>? progress;
   final ScrollPhysics? physics;
 
-  const PreviewPage({super.key, required this.model, required this.items, this.progress, this.physics});
+  const PreviewPage({
+    super.key,
+    required this.model,
+    required this.items,
+    this.progress,
+    this.physics,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +176,10 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
             key: const Key('transit.import.confirm'),
             child: Text(S.transitImportPreviewConfirmBtn),
             onPressed: () async {
-              final confirmed = await ConfirmDialog.show(context, title: S.transitImportPreviewConfirmTitle);
+              final confirmed = await ConfirmDialog.show(
+                context,
+                title: S.transitImportPreviewConfirmTitle,
+              );
               if (!confirmed) {
                 return;
               }
@@ -163,9 +205,14 @@ abstract class PreviewPage<T extends Model> extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> buildDetails(BuildContext context, Iterable<FormattedItem> items) sync* {
+  Iterable<Widget> buildDetails(
+    BuildContext context,
+    Iterable<FormattedItem> items,
+  ) sync* {
     for (final item in items) {
-      yield item.hasError ? PreviewErrorListTile(item) : buildItem(context, item.item! as T);
+      yield item.hasError
+          ? PreviewErrorListTile(item)
+          : buildItem(context, item.item! as T);
     }
   }
 
@@ -181,18 +228,29 @@ class ImporterColumnStatus extends StatelessWidget {
 
   final FontWeight? fontWeight;
 
-  const ImporterColumnStatus({super.key, required this.name, required this.status, this.fontWeight});
+  const ImporterColumnStatus({
+    super.key,
+    required this.name,
+    required this.status,
+    this.fontWeight,
+  });
 
   @override
   Widget build(BuildContext context) {
     return RichText(
       text: TextSpan(
         text: name,
-        style: DefaultTextStyle.of(context).style.copyWith(fontWeight: fontWeight),
+        style: DefaultTextStyle.of(
+          context,
+        ).style.copyWith(fontWeight: fontWeight),
         children: <TextSpan>[
           TextSpan(
             text: S.transitImportColumnStatus(status),
-            style: TextStyle(fontWeight: .normal, fontSize: 12, color: Theme.of(context).hintColor),
+            style: TextStyle(
+              fontWeight: .normal,
+              fontSize: 12,
+              color: Theme.of(context).hintColor,
+            ),
           ),
         ],
       ),
@@ -213,7 +271,10 @@ class PreviewErrorListTile extends StatelessWidget {
 
     return ListTile(
       title: Text(error.raw, style: const TextStyle(decoration: .lineThrough)),
-      subtitle: Text(error.message, style: TextStyle(color: theme.colorScheme.error)),
+      subtitle: Text(
+        error.message,
+        style: TextStyle(color: theme.colorScheme.error),
+      ),
       tileColor: theme.listTileTheme.tileColor?.withAlpha(100),
     );
   }

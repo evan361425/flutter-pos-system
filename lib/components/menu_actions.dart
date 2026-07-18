@@ -4,17 +4,24 @@ import 'package:possystem/constants/icons.dart';
 
 import 'dialog/delete_dialog.dart';
 
-Future<T?> showPositionedMenu<T>(BuildContext context, {required List<MenuAction<T>> actions}) {
+Future<T?> showPositionedMenu<T>(
+  BuildContext context, {
+  required List<MenuAction<T>> actions,
+}) {
   // copy from [flutter/src/material/popup_menu.dart]
   final widget = context.findRenderObject();
   RelativeRect position = const .fromLTRB(0, 0, 0, 0);
   if (widget is RenderBox) {
-    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    final RenderBox overlay =
+        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
     final Offset offset = Offset(0, widget.size.height);
     position = .fromRect(
       .fromPoints(
         widget.localToGlobal(offset, ancestor: overlay),
-        widget.localToGlobal(widget.size.bottomRight(.zero) + offset, ancestor: overlay),
+        widget.localToGlobal(
+          widget.size.bottomRight(.zero) + offset,
+          ancestor: overlay,
+        ),
       ),
       Offset.zero & overlay.size,
     );
@@ -64,7 +71,11 @@ class MenuAction<T> {
 
   Future<void> onTap(BuildContext context) async {
     if (route != null && context.mounted) {
-      await context.pushNamed(route!, pathParameters: routePathParameters, queryParameters: routeQueryParameters);
+      await context.pushNamed(
+        route!,
+        pathParameters: routePathParameters,
+        queryParameters: routeQueryParameters,
+      );
     }
   }
 }

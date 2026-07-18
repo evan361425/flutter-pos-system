@@ -17,7 +17,8 @@ class StockIngredientRestockModal extends StatefulWidget {
   State<StockIngredientRestockModal> createState() => _ModalState();
 }
 
-class _ModalState extends State<StockIngredientRestockModal> with ItemModal<StockIngredientRestockModal> {
+class _ModalState extends State<StockIngredientRestockModal>
+    with ItemModal<StockIngredientRestockModal> {
   late TextEditingController priceController;
   late TextEditingController quantityController;
   final priceFocusNode = FocusNode();
@@ -36,7 +37,11 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
         focusNode: priceFocusNode,
         textInputAction: .next,
         keyboardType: .number,
-        decoration: InputDecoration(labelText: S.stockIngredientRestockPriceLabel, helperMaxLines: 3, filled: false),
+        decoration: InputDecoration(
+          labelText: S.stockIngredientRestockPriceLabel,
+          helperMaxLines: 3,
+          filled: false,
+        ),
         validator: Validator.positiveNumber(
           S.stockIngredientRestockPriceLabel,
           allowNull: true,
@@ -52,7 +57,11 @@ class _ModalState extends State<StockIngredientRestockModal> with ItemModal<Stoc
         textInputAction: .done,
         keyboardType: .number,
         onFieldSubmitted: handleFieldSubmit,
-        decoration: InputDecoration(labelText: S.stockIngredientRestockQuantityLabel, helperMaxLines: 5, filled: false),
+        decoration: InputDecoration(
+          labelText: S.stockIngredientRestockQuantityLabel,
+          helperMaxLines: 5,
+          filled: false,
+        ),
         validator: Validator.positiveNumber(
           S.stockIngredientRestockQuantityLabel,
           allowNull: true,

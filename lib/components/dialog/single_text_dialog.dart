@@ -66,7 +66,10 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
         ],
       ),
       actions: [
-        PopButton(key: const Key('text_dialog.cancel'), title: local.cancelButtonLabel),
+        PopButton(
+          key: const Key('text_dialog.cancel'),
+          title: local.cancelButtonLabel,
+        ),
         FilledButton(
           key: const Key('text_dialog.confirm'),
           onPressed: () => onSubmit(textController.text),
@@ -87,7 +90,10 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
     super.initState();
     textController = TextEditingController(text: widget.initialValue);
     if (widget.selectAll && widget.initialValue != null) {
-      textController.selection = TextSelection(baseOffset: 0, extentOffset: widget.initialValue!.length);
+      textController.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: widget.initialValue!.length,
+      );
     }
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/constants/constant.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 import 'transit_station.dart';
@@ -17,14 +17,23 @@ class TransitPage extends StatelessWidget {
         children: [
           ListTile(
             key: const Key('transit.google_sheet'),
-            leading: CircleAvatar(radius: 24, child: SvgPicture.asset('assets/google_sheet_icon.svg', width: 24)),
+            leading: CircleAvatar(
+              radius: 24,
+              child: SvgPicture.asset(
+                'assets/google_sheet_icon.svg',
+                width: 24,
+              ),
+            ),
             title: Text(TransitMethod.googleSheet.l10nName),
             subtitle: Text(S.transitDescriptionGoogleSheet),
             onTap: () => _next(context, .googleSheet),
           ),
           ListTile(
             key: const Key('transit.excel'),
-            leading: CircleAvatar(radius: 24, child: SvgPicture.asset('assets/excel_icon.svg', width: 24)),
+            leading: CircleAvatar(
+              radius: 24,
+              child: SvgPicture.asset('assets/excel_icon.svg', width: 24),
+            ),
             title: Text(TransitMethod.excel.l10nName),
             subtitle: Text(S.transitDescriptionExcel),
             onTap: () => _next(context, .excel),
@@ -71,7 +80,10 @@ class TransitPage extends StatelessWidget {
     );
 
     if (catalog != null && context.mounted) {
-      context.pushNamed(Routes.transitStation, pathParameters: {'method': method.name, 'catalog': catalog.name});
+      context.pushNamed(
+        AppRouteNames.transitStation,
+        pathParameters: {'method': method.name, 'catalog': catalog.name},
+      );
     }
   }
 }

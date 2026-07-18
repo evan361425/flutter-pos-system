@@ -16,19 +16,28 @@ class CheckoutReceiptDialog extends StatefulWidget {
   /// Show the dialog and return the image list.
   ///
   /// - [widths] is the width in pixels of the image.
-  static Future<List<ConvertibleImage>?> show(BuildContext context, OrderObject order, List<int> widths) async {
+  static Future<List<ConvertibleImage>?> show(
+    BuildContext context,
+    OrderObject order,
+    List<int> widths,
+  ) async {
     final data = await showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (context) => CheckoutReceiptDialog._(order: order, widths: widths),
+      builder: (context) =>
+          CheckoutReceiptDialog._(order: order, widths: widths),
     );
 
     if (data is! List<ConvertibleImage>) {
       if (data != null) {
         // We need Log.err in this function, no matter context is mounted or not
         // ignore: use_build_context_synchronously
-        await showSnackbarWhenFutureError(Future.error(data), 'order_print_receipt', context: context);
+        await showSnackbarWhenFutureError(
+          Future.error(data),
+          'order_print_receipt',
+          context: context,
+        );
       }
 
       return null;
@@ -52,14 +61,27 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
         alignment: Alignment.center,
         children: [
           Padding(
-            padding: const .only(left: 24.0, top: 16, right: 24.0, bottom: 24.0),
-            child: PrinterReceiptView(controller: controller, order: widget.order),
+            padding: const .only(
+              left: 24.0,
+              top: 16,
+              right: 24.0,
+              bottom: 24.0,
+            ),
+            child: PrinterReceiptView(
+              controller: controller,
+              order: widget.order,
+            ),
           ),
           Positioned.fill(
             child: AbsorbPointer(
               child: DecoratedBox(
-                decoration: BoxDecoration(color: Colors.black.withAlpha(89), borderRadius: .circular(28)),
-                child: const Center(child: CircularProgressIndicator.adaptive()),
+                decoration: BoxDecoration(
+                  color: Colors.black.withAlpha(89),
+                  borderRadius: .circular(28),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
               ),
             ),
           ),

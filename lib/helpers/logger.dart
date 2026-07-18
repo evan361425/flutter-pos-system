@@ -10,13 +10,24 @@ const _isDebug = kDebugMode || isLocalTest;
 class Log {
   static Future<void>? current;
 
-  static void out(String msg, String code, {Object? error, StackTrace? stackTrace}) {
+  static void out(
+    String msg,
+    String code, {
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     developer.log(msg, name: code, error: error, stackTrace: stackTrace);
   }
 
-  static void ger(String event, [Map<String, Object?>? parameters, @visibleForTesting bool forceSend = false]) async {
+  static void ger(
+    String event, [
+    Map<String, Object?>? parameters,
+    @visibleForTesting bool forceSend = false,
+  ]) async {
     assert(!event.contains('.'), 'should not contain "."');
-    final message = parameters?.entries.map((e) => '${e.key}=${e.value}').join(' ');
+    final message = parameters?.entries
+        .map((e) => '${e.key}=${e.value}')
+        .join(' ');
     Log.out(message ?? '', event);
 
     if (forceSend || allowSendEvents) {
@@ -27,11 +38,19 @@ class Log {
         }
       });
 
-      current = FirebaseAnalytics.instance.logEvent(name: event, parameters: filtered);
+      current = FirebaseAnalytics.instance.logEvent(
+        name: event,
+        parameters: filtered,
+      );
     }
   }
 
-  static void err(Object error, String code, [StackTrace? stackTrace, @visibleForTesting bool forceSend = false]) {
+  static void err(
+    Object error,
+    String code, [
+    StackTrace? stackTrace,
+    @visibleForTesting bool forceSend = false,
+  ]) {
     assert(() {
       errorCount++;
       return !code.contains('.');
@@ -46,7 +65,8 @@ class Log {
   // no need send event in debug mode
   static bool _allowSendEvents = !_isDebug;
   static bool get allowSendEvents => _allowSendEvents;
-  static set allowSendEvents(bool value) => _allowSendEvents = _isDebug ? false : value;
+  static set allowSendEvents(bool value) =>
+      _allowSendEvents = _isDebug ? false : value;
 
   @visibleForTesting
   static int errorCount = 0;

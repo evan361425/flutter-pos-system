@@ -14,7 +14,7 @@ import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/repository/quantities.dart';
 import 'package:possystem/models/repository/stock.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -46,10 +46,18 @@ class _ProductPageState extends State<ProductPage> {
         primary: false,
         body: CustomScrollView(
           slivers: [
-            SliverImageAppBar(model: widget.product, actions: [_buildActionButton()]),
+            SliverImageAppBar(
+              model: widget.product,
+              actions: [_buildActionButton()],
+            ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const .fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
+                padding: const .fromLTRB(
+                  kHorizontalSpacing,
+                  kTopSpacing,
+                  kHorizontalSpacing,
+                  kInternalSpacing,
+                ),
                 child: _buildMetadata(),
               ),
             ),
@@ -75,14 +83,21 @@ class _ProductPageState extends State<ProductPage> {
   Widget _buildDialog() {
     final metadataTile = Row(
       children: [
-        ImageHolder(size: 140, image: widget.product.image, onImageError: () => widget.product.saveImage(null)),
+        ImageHolder(
+          size: 140,
+          image: widget.product.image,
+          onImageError: () => widget.product.saveImage(null),
+        ),
         const SizedBox(width: kInternalLargeSpacing),
         Expanded(
           child: Column(
             crossAxisAlignment: .start,
             spacing: kInternalSpacing,
             children: [
-              Text(widget.product.name, style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                widget.product.name,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               _buildMetadata(),
             ],
           ),
@@ -102,7 +117,8 @@ class _ProductPageState extends State<ProductPage> {
             _buildIngredientTitle(),
             if (widget.product.isNotEmpty) _buildAddButton(),
             if (widget.product.isNotEmpty)
-              for (final item in widget.product.itemList) ProductIngredientView(item),
+              for (final item in widget.product.itemList)
+                ProductIngredientView(item),
             const SizedBox(height: kFABSpacing),
           ],
         ),
@@ -113,7 +129,12 @@ class _ProductPageState extends State<ProductPage> {
       child: Stack(
         children: [
           dialog,
-          const IgnorePointer(child: Scaffold(primary: false, backgroundColor: Colors.transparent)),
+          const IgnorePointer(
+            child: Scaffold(
+              primary: false,
+              backgroundColor: Colors.transparent,
+            ),
+          ),
         ],
       ),
     );
@@ -129,17 +150,22 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildIngredientTitle() {
     if (widget.product.isEmpty) {
-      return EmptyBody(content: S.menuIngredientEmptyBody, onPressed: _handleCreateIng);
+      return EmptyBody(
+        content: S.menuIngredientEmptyBody,
+        onPressed: _handleCreateIng,
+      );
     }
 
     return Row(
       children: [
-        Expanded(child: Center(child: HintText(S.totalCount(widget.product.length)))),
+        Expanded(
+          child: Center(child: HintText(S.totalCount(widget.product.length))),
+        ),
         RouteIconButton(
           key: const Key('product.reorder'),
           label: S.menuIngredientTitleReorder,
           icon: const Icon(KIcons.reorder),
-          route: Routes.menuProductReorderIngredient,
+          route: AppRouteNames.menuProductReorderIngredient,
           pathParameters: {'id': widget.product.id},
           hideLabel: true,
         ),
@@ -163,7 +189,11 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget _buildActionButton() {
-    return MoreButton(key: const Key('product.more'), onPressed: _showActions, backgroundIsImage: true);
+    return MoreButton(
+      key: const Key('product.more'),
+      onPressed: _showActions,
+      backgroundIsImage: true,
+    );
   }
 
   @override
@@ -198,7 +228,7 @@ class _ProductPageState extends State<ProductPage> {
         MenuAction(
           title: Text(S.menuProductTitleUpdate),
           leading: const Icon(KIcons.modal),
-          route: Routes.menuProductUpdate,
+          route: AppRouteNames.menuProductUpdate,
           routePathParameters: {'id': widget.product.id},
         ),
         MenuAction(
@@ -209,7 +239,7 @@ class _ProductPageState extends State<ProductPage> {
         MenuAction(
           title: Text(S.menuIngredientTitleReorder),
           leading: const Icon(KIcons.reorder),
-          route: Routes.menuProductReorderIngredient,
+          route: AppRouteNames.menuProductReorderIngredient,
           routePathParameters: {'id': widget.product.id},
         ),
       ],
@@ -227,7 +257,10 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _handleCreateIng() {
-    context.pushNamed(Routes.menuProductUpdateIngredient, pathParameters: {'id': widget.product.id});
+    context.pushNamed(
+      AppRouteNames.menuProductUpdateIngredient,
+      pathParameters: {'id': widget.product.id},
+    );
   }
 }
 

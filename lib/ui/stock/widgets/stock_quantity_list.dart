@@ -6,7 +6,7 @@ import 'package:possystem/components/style/buttons.dart';
 import 'package:possystem/constants/icons.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/stock/quantity.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 
 class StockQuantityList extends StatelessWidget {
@@ -14,7 +14,11 @@ class StockQuantityList extends StatelessWidget {
 
   final Widget leading;
 
-  const StockQuantityList({super.key, required this.quantities, required this.leading});
+  const StockQuantityList({
+    super.key,
+    required this.quantities,
+    required this.leading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class StockQuantityList extends StatelessWidget {
             key: const Key('btn.edit'),
             title: Text(S.menuQuantityTitleUpdate),
             leading: const Icon(KIcons.edit),
-            route: Routes.quantityUpdate,
+            route: AppRouteNames.quantityUpdate,
             routePathParameters: {'id': quantity.id},
           ),
         ],
@@ -67,7 +71,10 @@ class _Tile extends StatelessWidget {
       subtitle: Text(S.stockQuantityMetaProportion(item.defaultProportion)),
       trailing: EntryMoreButton(onPressed: actor),
       onLongPress: actor,
-      onTap: () => context.pushNamed(Routes.quantityUpdate, pathParameters: {'id': item.id}),
+      onTap: () => context.pushNamed(
+        AppRouteNames.quantityUpdate,
+        pathParameters: {'id': item.id},
+      ),
     );
   }
 }

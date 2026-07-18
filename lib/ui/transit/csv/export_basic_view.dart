@@ -24,10 +24,18 @@ class ExportBasicHeader extends BasicModelPicker {
   @override
   Future<void> onExport(BuildContext context, FormattableModel? able) async {
     final name = able?.l10nName;
-    final headers = getAllFormattedFieldHeaders(able).map((e) => e.map((v) => v.toString())).toList();
-    final data = getAllFormattedFieldData(able).map((e) => e.map((r) => r.map((c) => c.toString()))).toList();
+    final headers = getAllFormattedFieldHeaders(
+      able,
+    ).map((e) => e.map((v) => v.toString())).toList();
+    final data = getAllFormattedFieldData(
+      able,
+    ).map((e) => e.map((r) => r.map((c) => c.toString()))).toList();
 
-    final ok = await exporter.export(name: name ?? S.transitExportBasicFileName, data: data, headers: headers);
+    final ok = await exporter.export(
+      name: name ?? S.transitExportBasicFileName,
+      data: data,
+      headers: headers,
+    );
     if (context.mounted && ok) {
       showSnackBar(S.transitExportBasicSuccessCsv, context: context);
     }
@@ -35,7 +43,11 @@ class ExportBasicHeader extends BasicModelPicker {
 }
 
 class ExportBasicView extends ExportView {
-  const ExportBasicView({super.key, required super.selected, required super.stateNotifier});
+  const ExportBasicView({
+    super.key,
+    required super.selected,
+    required super.stateNotifier,
+  });
 
   @override
   ModelData getSourceAndHeaders(FormattableModel able) {

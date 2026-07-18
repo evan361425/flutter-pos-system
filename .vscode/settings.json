@@ -33,6 +33,9 @@
     "*.arb": "json"
   },
   "yaml.schemas": {
-    ".vscode/arb.schema.json": ["/assets/l10n/**/*.yaml"]
-  }
+    ".vscode/arb.schema.json": [
+      "/assets/l10n/**/*.yaml"
+    ]
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.41.9"
 }

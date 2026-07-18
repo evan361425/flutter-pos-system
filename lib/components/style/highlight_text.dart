@@ -9,13 +9,21 @@ class HighlightText extends StatelessWidget {
   final String pattern;
   final String? prefix;
 
-  const HighlightText({super.key, required this.text, required this.pattern, this.prefix});
+  const HighlightText({
+    super.key,
+    required this.text,
+    required this.pattern,
+    this.prefix,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final normalStyle = theme.textTheme.bodyMedium;
-    final highlightStyle = normalStyle?.copyWith(backgroundColor: theme.highlightColor, fontWeight: .bold);
+    final highlightStyle = normalStyle?.copyWith(
+      backgroundColor: theme.highlightColor,
+      fontWeight: .bold,
+    );
 
     final spans = _buildHighlightedSpans(normalStyle, highlightStyle);
 
@@ -23,7 +31,10 @@ class HighlightText extends StatelessWidget {
   }
 
   /// Builds a list of TextSpan objects with highlighted matches
-  List<TextSpan> _buildHighlightedSpans(TextStyle? normalStyle, TextStyle? highlightStyle) {
+  List<TextSpan> _buildHighlightedSpans(
+    TextStyle? normalStyle,
+    TextStyle? highlightStyle,
+  ) {
     final spans = <TextSpan>[
       if (prefix != null)
         TextSpan(
@@ -32,7 +43,12 @@ class HighlightText extends StatelessWidget {
         ),
     ];
     final textLower = text.toLowerCase();
-    final patternWords = pattern.toLowerCase().split(' ').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    final patternWords = pattern
+        .toLowerCase()
+        .split(' ')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
 
     if (patternWords.isEmpty) {
       spans.add(TextSpan(text: text, style: normalStyle));
@@ -61,18 +77,30 @@ class HighlightText extends StatelessWidget {
     for (final match in mergedMatches) {
       // Add text before the match
       if (currentIndex < match.start) {
-        spans.add(TextSpan(text: text.substring(currentIndex, match.start), style: normalStyle));
+        spans.add(
+          TextSpan(
+            text: text.substring(currentIndex, match.start),
+            style: normalStyle,
+          ),
+        );
       }
 
       // Add highlighted match
-      spans.add(TextSpan(text: text.substring(match.start, match.end), style: highlightStyle));
+      spans.add(
+        TextSpan(
+          text: text.substring(match.start, match.end),
+          style: highlightStyle,
+        ),
+      );
 
       currentIndex = match.end;
     }
 
     // Add remaining text after the last match
     if (currentIndex < text.length) {
-      spans.add(TextSpan(text: text.substring(currentIndex), style: normalStyle));
+      spans.add(
+        TextSpan(text: text.substring(currentIndex), style: normalStyle),
+      );
     }
 
     return spans;
@@ -89,7 +117,10 @@ class HighlightText extends StatelessWidget {
       final next = matches[i];
       if (current.end >= next.start) {
         // Overlapping or adjacent matches, merge them
-        current = _Match(current.start, next.end > current.end ? next.end : current.end);
+        current = _Match(
+          current.start,
+          next.end > current.end ? next.end : current.end,
+        );
       } else {
         // Non-overlapping, add current and move to next
         merged.add(current);

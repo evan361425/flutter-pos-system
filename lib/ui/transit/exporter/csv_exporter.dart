@@ -28,7 +28,10 @@ class CSVExporter extends DataExporter {
             try {
               return split(line);
             } catch (e) {
-              Log.out('parse csv failed at line $lineNo: ${e.toString()}', 'csv');
+              Log.out(
+                'parse csv failed at line $lineNo: ${e.toString()}',
+                'csv',
+              );
               return [line];
             }
           })
@@ -54,7 +57,9 @@ class CSVExporter extends DataExporter {
     final texts = <String>[];
     for (var i = 0; i < data.length; i++) {
       if (data[i].isNotEmpty) {
-        texts.add('${join(headers[i])}\n${data[i].map((e) => join(e)).join('\n')}');
+        texts.add(
+          '${join(headers[i])}\n${data[i].map((e) => join(e)).join('\n')}',
+        );
       }
     }
 
@@ -70,7 +75,9 @@ class CSVExporter extends DataExporter {
     return fields
         .map((e) {
           final v = e.replaceAll('"', '""').replaceAll('\n', '\\n');
-          return v.contains(',') || v.contains('"') || v.contains('\\n') ? '"$v"' : v;
+          return v.contains(',') || v.contains('"') || v.contains('\\n')
+              ? '"$v"'
+              : v;
         })
         .join(',');
   }

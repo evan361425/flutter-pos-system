@@ -13,11 +13,17 @@ class TextDivider extends StatelessWidget {
       child: Row(
         children: <Widget>[
           const Expanded(
-            child: Divider(indent: kInternalSpacing, endIndent: kInternalSpacing),
+            child: Divider(
+              indent: kInternalSpacing,
+              endIndent: kInternalSpacing,
+            ),
           ),
           Text(label),
           const Expanded(
-            child: Divider(indent: kInternalSpacing, endIndent: kInternalSpacing),
+            child: Divider(
+              indent: kInternalSpacing,
+              endIndent: kInternalSpacing,
+            ),
           ),
         ],
       ),

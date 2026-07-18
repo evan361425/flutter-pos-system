@@ -17,13 +17,15 @@ class OrderAttributeOptionModal extends StatefulWidget {
 
   final bool isNew;
 
-  const OrderAttributeOptionModal(this.attribute, {super.key, this.option}) : isNew = option == null;
+  const OrderAttributeOptionModal(this.attribute, {super.key, this.option})
+    : isNew = option == null;
 
   @override
   State<OrderAttributeOptionModal> createState() => _OrderAttributeModalState();
 }
 
-class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with ItemModal<OrderAttributeOptionModal> {
+class _OrderAttributeModalState extends State<OrderAttributeOptionModal>
+    with ItemModal<OrderAttributeOptionModal> {
   late TextEditingController _nameController;
   late TextEditingController _valueController;
   late FocusNode _nameFocusNode;
@@ -31,7 +33,9 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
   late bool isDefault;
 
   @override
-  String get title => widget.isNew ? S.orderAttributeOptionTitleCreate : S.orderAttributeOptionTitleUpdate;
+  String get title => widget.isNew
+      ? S.orderAttributeOptionTitleCreate
+      : S.orderAttributeOptionTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -39,8 +43,17 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
     final helper = S.orderAttributeOptionModeHelper(widget.attribute.mode.name);
     final hint = S.orderAttributeOptionModeHint(widget.attribute.mode.name);
     final validator = widget.attribute.mode == .changeDiscount
-        ? Validator.positiveInt(label, maximum: 1000, allowNull: true, focusNode: _valueFocusNode)
-        : Validator.isNumber(label, allowNull: true, focusNode: _valueFocusNode);
+        ? Validator.positiveInt(
+            label,
+            maximum: 1000,
+            allowNull: true,
+            focusNode: _valueFocusNode,
+          )
+        : Validator.isNumber(
+            label,
+            allowNull: true,
+            focusNode: _valueFocusNode,
+          );
 
     return [
       HintText(S.orderAttributeOptionMetaOptionOf(widget.attribute.name)),
@@ -64,7 +77,8 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.option?.name != name && widget.attribute.hasName(name)
+              return widget.option?.name != name &&
+                      widget.attribute.hasName(name)
                   ? S.orderAttributeOptionNameErrorRepeat
                   : null;
             },
@@ -108,7 +122,8 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
     _valueController = TextEditingController(
       text: switch (widget.option?.modeValue) {
         null => '',
-        var value when widget.attribute.mode == .changeDiscount => value.toInt().toString(),
+        var value when widget.attribute.mode == .changeDiscount =>
+          value.toInt().toString(),
         var value => value.toCurrency(),
       },
     );
@@ -163,11 +178,15 @@ class _OrderAttributeModalState extends State<OrderAttributeOptionModal> with It
   void _toggledDefault(bool? value) async {
     final defaultOption = widget.attribute.defaultOption;
     // warn if default option is going to changed
-    if (value == true && defaultOption != null && defaultOption.id != widget.option?.id) {
+    if (value == true &&
+        defaultOption != null &&
+        defaultOption.id != widget.option?.id) {
       final confirmed = await ConfirmDialog.show(
         context,
         title: S.orderAttributeOptionToDefaultConfirmChangeTitle,
-        content: S.orderAttributeOptionToDefaultConfirmChangeContent(defaultOption.name),
+        content: S.orderAttributeOptionToDefaultConfirmChangeContent(
+          defaultOption.name,
+        ),
       );
 
       if (confirmed) {

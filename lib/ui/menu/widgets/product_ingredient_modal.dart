@@ -9,7 +9,7 @@ import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/menu_object.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
-import 'package:possystem/routes.dart';
+import 'package:possystem/routes/app_route_names.dart';
 import 'package:possystem/translator.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +19,18 @@ class ProductIngredientModal extends StatefulWidget {
 
   final bool isNew;
 
-  const ProductIngredientModal({super.key, this.ingredient, required this.product}) : isNew = ingredient == null;
+  const ProductIngredientModal({
+    super.key,
+    this.ingredient,
+    required this.product,
+  }) : isNew = ingredient == null;
 
   @override
   State<ProductIngredientModal> createState() => _ProductIngredientModalState();
 }
 
-class _ProductIngredientModalState extends State<ProductIngredientModal> with ItemModal<ProductIngredientModal> {
+class _ProductIngredientModalState extends State<ProductIngredientModal>
+    with ItemModal<ProductIngredientModal> {
   late TextEditingController _amountController;
   late FocusNode _amountFocusNode;
 
@@ -33,7 +38,8 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
   String ingredientName = '';
 
   @override
-  String get title => widget.isNew ? S.menuIngredientTitleCreate : S.menuIngredientTitleUpdate;
+  String get title =>
+      widget.isNew ? S.menuIngredientTitleCreate : S.menuIngredientTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -68,7 +74,10 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
             helperMaxLines: 10,
             filled: false,
           ),
-          validator: Validator.positiveNumber(S.menuIngredientAmountLabel, focusNode: _amountFocusNode),
+          validator: Validator.positiveNumber(
+            S.menuIngredientAmountLabel,
+            focusNode: _amountFocusNode,
+          ),
         ),
       ),
     ];
@@ -130,7 +139,10 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
   }
 
   ProductIngredientObject _parseObject() {
-    return ProductIngredientObject(ingredientId: ingredientId, amount: num.tryParse(_amountController.text));
+    return ProductIngredientObject(
+      ingredientId: ingredientId,
+      amount: num.tryParse(_amountController.text),
+    );
   }
 
   String? _validateIngredient(String? name) {
@@ -138,7 +150,8 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
       return S.menuIngredientSearchErrorEmpty;
     }
 
-    if (widget.ingredient?.ingredient.id != ingredientId && widget.product.hasIngredient(ingredientId)) {
+    if (widget.ingredient?.ingredient.id != ingredientId &&
+        widget.product.hasIngredient(ingredientId)) {
       return S.menuIngredientSearchErrorRepeat;
     }
 
@@ -160,7 +173,11 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
     );
   }
 
-  Widget _searchItemBuilder(BuildContext context, String pattern, Ingredient ingredient) {
+  Widget _searchItemBuilder(
+    BuildContext context,
+    String pattern,
+    Ingredient ingredient,
+  ) {
     return ListTile(
       key: Key('product_ingredient.search.${ingredient.id}'),
       title: Text(ingredient.name),
@@ -168,7 +185,10 @@ class _ProductIngredientModalState extends State<ProductIngredientModal> with It
         onPressed: () {
           // pop off search page
           Navigator.of(context).pop();
-          context.pushNamed(Routes.stockIngrUpdate, pathParameters: {'id': ingredient.id});
+          context.pushNamed(
+            AppRouteNames.stockIngrUpdate,
+            pathParameters: {'id': ingredient.id},
+          );
         },
       ),
       onTap: () => _updateIngredient(context, ingredient),

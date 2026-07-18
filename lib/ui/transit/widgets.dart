@@ -90,7 +90,8 @@ class ImportView extends StatefulWidget {
   State<ImportView> createState() => _ImportViewState();
 }
 
-class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMixin {
+class _ImportViewState extends State<ImportView>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -105,7 +106,10 @@ class _ImportViewState extends State<ImportView> with AutomaticKeepAliveClientMi
           return Center(child: HintText(widget.hint));
         }
 
-        return PreviewPageWrapper(models: widget.selected.value?.toList() ?? FormattableModel.values, formatter: f);
+        return PreviewPageWrapper(
+          models: widget.selected.value?.toList() ?? FormattableModel.values,
+          formatter: f,
+        );
       },
     );
   }
@@ -115,7 +119,11 @@ abstract class ExportView extends StatefulWidget {
   final TransitStateNotifier stateNotifier;
   final ValueNotifier<FormattableModel?> selected;
 
-  const ExportView({super.key, required this.stateNotifier, required this.selected});
+  const ExportView({
+    super.key,
+    required this.stateNotifier,
+    required this.selected,
+  });
 
   @override
   State<ExportView> createState() => _ExportViewState();
@@ -155,7 +163,8 @@ abstract class ExportView extends StatefulWidget {
   }
 }
 
-class _ExportViewState extends State<ExportView> with SingleTickerProviderStateMixin {
+class _ExportViewState extends State<ExportView>
+    with SingleTickerProviderStateMixin {
   late final TabController controller;
 
   @override
@@ -165,12 +174,18 @@ class _ExportViewState extends State<ExportView> with SingleTickerProviderStateM
         TabBar.secondary(
           controller: controller,
           isScrollable: true,
-          tabs: [for (final able in FormattableModel.values) Tab(text: able.l10nName)],
+          tabs: [
+            for (final able in FormattableModel.values)
+              Tab(text: able.l10nName),
+          ],
         ),
         Expanded(
           child: TabBarView(
             controller: controller,
-            children: [for (final able in FormattableModel.values) widget.buildModel(context, able)],
+            children: [
+              for (final able in FormattableModel.values)
+                widget.buildModel(context, able),
+            ],
           ),
         ),
       ],
@@ -180,7 +195,10 @@ class _ExportViewState extends State<ExportView> with SingleTickerProviderStateM
   @override
   initState() {
     super.initState();
-    controller = TabController(length: FormattableModel.values.length, vsync: this);
+    controller = TabController(
+      length: FormattableModel.values.length,
+      vsync: this,
+    );
 
     controller.addListener(() {
       final model = FormattableModel.values[controller.index];
@@ -237,7 +255,11 @@ abstract class BasicModelPicker extends StatefulWidget {
 
   void onTap(BuildContext context) {
     stateNotifier.exec(
-      () => showSnackbarWhenFutureError(onExport(context, selected.value), 'transit_basic_export', context: context),
+      () => showSnackbarWhenFutureError(
+        onExport(context, selected.value),
+        'transit_basic_export',
+        context: context,
+      ),
     );
   }
 
@@ -330,7 +352,10 @@ class ModelDataTableSource extends DataTableSource {
   DataRow? getRow(int index) {
     return DataRow(
       cells: [
-        for (final item in data[index]) DataCell(Tooltip(message: item.toString(), child: Text(item.toString()))),
+        for (final item in data[index])
+          DataCell(
+            Tooltip(message: item.toString(), child: Text(item.toString())),
+          ),
       ],
     );
   }

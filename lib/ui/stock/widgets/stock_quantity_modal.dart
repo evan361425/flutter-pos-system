@@ -12,20 +12,23 @@ class StockQuantityModal extends StatefulWidget {
 
   final bool isNew;
 
-  const StockQuantityModal({super.key, this.quantity}) : isNew = quantity == null;
+  const StockQuantityModal({super.key, this.quantity})
+    : isNew = quantity == null;
 
   @override
   State<StockQuantityModal> createState() => _StockQuantityModalState();
 }
 
-class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<StockQuantityModal> {
+class _StockQuantityModalState extends State<StockQuantityModal>
+    with ItemModal<StockQuantityModal> {
   late TextEditingController _nameController;
   late TextEditingController _proportionController;
   late FocusNode _nameFocusNode;
   late FocusNode _proportionFocusNode;
 
   @override
-  String get title => widget.isNew ? S.stockQuantityTitleCreate : S.stockQuantityTitleUpdate;
+  String get title =>
+      widget.isNew ? S.stockQuantityTitleCreate : S.stockQuantityTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
@@ -48,7 +51,8 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.quantity?.name != name && Quantities.instance.hasName(name)
+              return widget.quantity?.name != name &&
+                      Quantities.instance.hasName(name)
                   ? S.stockQuantityNameErrorRepeat
                   : null;
             },
@@ -107,7 +111,12 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
     final object = _parseObject();
 
     if (widget.isNew) {
-      await Quantities.instance.addItem(Quantity(name: object.name!, defaultProportion: object.defaultProportion!));
+      await Quantities.instance.addItem(
+        Quantity(
+          name: object.name!,
+          defaultProportion: object.defaultProportion!,
+        ),
+      );
     } else {
       await widget.quantity!.update(object);
     }
@@ -118,6 +127,9 @@ class _StockQuantityModalState extends State<StockQuantityModal> with ItemModal<
   }
 
   QuantityObject _parseObject() {
-    return QuantityObject(name: _nameController.text, defaultProportion: num.tryParse(_proportionController.text) ?? 1);
+    return QuantityObject(
+      name: _nameController.text,
+      defaultProportion: num.tryParse(_proportionController.text) ?? 1,
+    );
   }
 }

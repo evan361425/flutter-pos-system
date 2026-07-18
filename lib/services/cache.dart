@@ -9,6 +9,16 @@ class Cache {
   bool _initialized = false;
 
   T? get<T>(String name) {
+    assert(
+      _initialized,
+      'Cache must be initialized before use. Call Cache.instance.initialize() first.',
+    );
+    if (!_initialized) {
+      throw StateError(
+        'Cache not initialized. Call Cache.instance.initialize() first.',
+      );
+    }
+
     if (T == bool) {
       return service.getBool(name) as T?;
     } else if (T == String) {

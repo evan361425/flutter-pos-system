@@ -8,12 +8,14 @@ import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/models/repository/cart.dart';
 import 'package:possystem/translator.dart';
+import 'package:possystem/ui/order/checkout/checkout_attribute_view.dart';
 import 'package:possystem/ui/order/checkout/checkout_cashier_calculator.dart';
 import 'package:possystem/ui/order/checkout/checkout_cashier_snapshot.dart';
+import 'package:possystem/ui/order/checkout/checkout_payment_panel.dart';
+import 'package:possystem/ui/order/checkout/checkout_tender_state.dart';
+import 'package:possystem/ui/order/checkout/checkout_totals_banner.dart';
 import 'package:possystem/ui/order/checkout/stashed_order_list_view.dart';
 import 'package:possystem/ui/order/widgets/order_object_view.dart';
-
-import 'checkout/checkout_attribute_view.dart';
 
 class OrderCheckoutPage extends StatefulWidget {
   const OrderCheckoutPage({super.key});
@@ -23,10 +25,7 @@ class OrderCheckoutPage extends StatefulWidget {
 }
 
 class _OrderCheckoutPageState extends State<OrderCheckoutPage> {
-  late final ValueNotifier<num> paid;
-
-  late final ValueNotifier<num> price;
-
+  late final CheckoutTenderState tender;
   final ValueNotifier<int> viewIndex = ValueNotifier(0);
 
   @override
@@ -34,8 +33,8 @@ class _OrderCheckoutPageState extends State<OrderCheckoutPage> {
     return LayoutBuilder(
       builder: (context, constraint) {
         return Breakpoint.find(width: constraint.maxWidth) <= .medium
-            ? _Mobile(paid: paid, price: price, viewIndex: viewIndex)
-            : _Desktop(paid: paid, price: price, viewIndex: viewIndex);
+            ? _Mobile(tender: tender, viewIndex: viewIndex)
+            : _Desktop(tender: tender, viewIndex: viewIndex);
       },
     );
   }
@@ -43,28 +42,22 @@ class _OrderCheckoutPageState extends State<OrderCheckoutPage> {
   @override
   void initState() {
     super.initState();
-
-    price = ValueNotifier(Cart.instance.price);
-    paid = ValueNotifier(price.value);
-    price.addListener(() => paid.value = price.value);
+    tender = CheckoutTenderState();
   }
 
   @override
   void dispose() {
-    price.dispose();
-    paid.dispose();
+    viewIndex.dispose();
+    tender.dispose();
     super.dispose();
   }
 }
 
 class _Mobile extends StatefulWidget {
-  final ValueNotifier<num> paid;
-
-  final ValueNotifier<num> price;
-
+  final CheckoutTenderState tender;
   final ValueNotifier<int> viewIndex;
 
-  const _Mobile({required this.paid, required this.price, required this.viewIndex});
+  const _Mobile({required this.tender, required this.viewIndex});
 
   @override
   State<_Mobile> createState() => _MobileState();
@@ -75,8 +68,9 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
   static const double calculatorHeight = 408.0;
 
   late final TabController _controller;
-
   ScrollableDraggableController? draggableController;
+
+  CheckoutTenderState get tender => widget.tender;
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +79,25 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
         leading: const PopButton(),
         actions: Cart.instance.isEmpty
             ? null
-            : <Widget>[const _StashButton(), _ConfirmButton(price: widget.price, paid: widget.paid)],
+            : <Widget>[
+                const _StashButton(),
+                _ConfirmButton(tender: tender),
+              ],
         bottom: TabBar(
           controller: _controller,
           tabs: [
-            Tab(key: const Key('order.details.attr'), text: S.orderCheckoutAttributeTab),
-            Tab(key: const Key('order.details.order'), text: S.orderCheckoutDetailsTab),
-            Tab(key: const Key('order.details.stashed'), text: S.orderCheckoutStashTab),
+            Tab(
+              key: const Key('order.details.attr'),
+              text: S.orderCheckoutAttributeTab,
+            ),
+            Tab(
+              key: const Key('order.details.order'),
+              text: S.orderCheckoutDetailsTab,
+            ),
+            Tab(
+              key: const Key('order.details.stashed'),
+              text: S.orderCheckoutStashTab,
+            ),
           ],
         ),
       ),
@@ -104,13 +110,15 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
       return TabBarView(
         controller: _controller,
         children: [
-          CheckoutAttributeView(price: widget.price),
+          CheckoutAttributeView(price: tender.price),
           Center(child: HintText(S.orderCheckoutEmptyCart)),
           const StashedOrderListView(),
         ],
       );
     }
 
+    // Keep the draggable sheet full-bleed (same as pre-tax UI) so snapshot
+    // chips stay on-stage for existing widget tests.
     return Stack(
       children: [
         Positioned.fill(
@@ -119,11 +127,8 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
             child: TabBarView(
               controller: _controller,
               children: [
-                CheckoutAttributeView(price: widget.price),
-                ValueListenableBuilder(
-                  valueListenable: widget.paid,
-                  builder: (context, value, child) => OrderObjectView(order: Cart.instance.toObject(paid: value)),
-                ),
+                CheckoutAttributeView(price: tender.price),
+                _OrderSummaryBody(tender: tender),
                 const StashedOrderListView(),
               ],
             ),
@@ -141,7 +146,10 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
                   height: snapshotHeight,
                   baseline: -2 * snapshotHeight,
                   valueScalar: -1,
-                  child: CheckoutCashierSnapshot(price: widget.price, paid: widget.paid),
+                  child: CheckoutCashierSnapshot(
+                    price: tender.price,
+                    paid: tender.paid,
+                  ),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -149,9 +157,10 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
                     child: SizedBox(
                       height: calculatorHeight,
                       child: CheckoutCashierCalculator(
-                        onSubmit: () => _ConfirmButton.confirm(context, paid: widget.paid.value),
-                        price: widget.price,
-                        paid: widget.paid,
+                        onSubmit: () =>
+                            _ConfirmButton.confirm(context, tender),
+                        price: tender.price,
+                        paid: tender.paid,
                       ),
                     ),
                   ),
@@ -167,8 +176,11 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
-    _controller = TabController(initialIndex: widget.viewIndex.value, length: 3, vsync: this);
+    _controller = TabController(
+      initialIndex: widget.viewIndex.value,
+      length: 3,
+      vsync: this,
+    );
     _controller.addListener(() {
       widget.viewIndex.value = _controller.index;
     });
@@ -182,13 +194,10 @@ class _MobileState extends State<_Mobile> with SingleTickerProviderStateMixin {
 }
 
 class _Desktop extends StatelessWidget {
-  final ValueNotifier<num> paid;
-
-  final ValueNotifier<num> price;
-
+  final CheckoutTenderState tender;
   final ValueNotifier<int> viewIndex;
 
-  const _Desktop({required this.paid, required this.price, required this.viewIndex});
+  const _Desktop({required this.tender, required this.viewIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -199,17 +208,26 @@ class _Desktop extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const .fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kInternalSpacing),
+              padding: const .fromLTRB(
+                kHorizontalSpacing,
+                kTopSpacing,
+                kHorizontalSpacing,
+                kInternalSpacing,
+              ),
               child: SizedBox(
                 height: 36,
-                child: CheckoutCashierSnapshot(price: price, paid: paid, showChange: false),
+                child: CheckoutCashierSnapshot(
+                  price: tender.price,
+                  paid: tender.paid,
+                  showChange: false,
+                ),
               ),
             ),
             Expanded(
               child: CheckoutCashierCalculator(
-                onSubmit: () => _ConfirmButton.confirm(context, paid: paid.value),
-                price: price,
-                paid: paid,
+                onSubmit: () => _ConfirmButton.confirm(context, tender),
+                price: tender.price,
+                paid: tender.paid,
               ),
             ),
           ],
@@ -220,7 +238,9 @@ class _Desktop extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const PopButton(),
-        actions: Cart.instance.isEmpty ? null : [const _StashButton(), _ConfirmButton(price: price, paid: paid)],
+        actions: Cart.instance.isEmpty
+            ? null
+            : [const _StashButton(), _ConfirmButton(tender: tender)],
       ),
       body: ListenableBuilder(
         listenable: viewIndex,
@@ -234,7 +254,7 @@ class _Desktop extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildSwitcher(),
-                        Expanded(child: _buildBody(context)),
+                        Expanded(child: _buildBody()),
                       ],
                     ),
                   ),
@@ -250,22 +270,16 @@ class _Desktop extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody() {
     if (viewIndex.value == 0) {
-      return CheckoutAttributeView(price: price);
+      return CheckoutAttributeView(price: tender.price);
     }
-
     if (viewIndex.value == 1) {
       if (Cart.instance.isEmpty) {
         return Center(child: HintText(S.orderCheckoutEmptyCart));
       }
-
-      return ValueListenableBuilder(
-        valueListenable: paid,
-        builder: (context, value, child) => OrderObjectView(order: Cart.instance.toObject(paid: value)),
-      );
+      return _OrderSummaryBody(tender: tender);
     }
-
     return const StashedOrderListView();
   }
 
@@ -277,6 +291,40 @@ class _Desktop extends StatelessWidget {
         ButtonSegment(value: 0, label: Text(S.orderCheckoutAttributeTab)),
         ButtonSegment(value: 1, label: Text(S.orderCheckoutDetailsTab)),
         ButtonSegment(value: 2, label: Text(S.orderCheckoutStashTab)),
+      ],
+    );
+  }
+}
+
+class _OrderSummaryBody extends StatelessWidget {
+  final CheckoutTenderState tender;
+
+  const _OrderSummaryBody({required this.tender});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CheckoutTotalsBanner(
+          subtotal: Cart.instance.subtotal,
+          totalTax: Cart.instance.totalTax,
+          grandTotal: Cart.instance.price,
+        ),
+        CheckoutPaymentPanel(
+          price: tender.price,
+          paid: tender.paid,
+          method: tender.method,
+          cashAmount: tender.cashAmount,
+          cardAmount: tender.cardAmount,
+        ),
+        Expanded(
+          child: ValueListenableBuilder(
+            valueListenable: tender.paid,
+            builder: (context, value, child) => OrderObjectView(
+              order: Cart.instance.toObject(payments: tender.intents()),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -302,21 +350,25 @@ class _StashButton extends StatelessWidget {
 }
 
 class _ConfirmButton extends StatelessWidget {
-  final ValueNotifier<num> paid;
+  final CheckoutTenderState tender;
 
-  final ValueNotifier<num> price;
+  const _ConfirmButton({required this.tender});
 
-  const _ConfirmButton({required this.price, required this.paid});
-
-  static void confirm(BuildContext context, {required num paid}) async {
-    final future = Cart.instance.checkout(paid: paid, context: context);
-    final status = await showSnackbarWhenFutureError(future, 'order_checkout', context: context);
+  static void confirm(BuildContext context, CheckoutTenderState tender) async {
+    final future = Cart.instance.checkout(
+      payments: tender.intents(),
+      context: context,
+    );
+    final status = await showSnackbarWhenFutureError(
+      future,
+      'order_checkout',
+      context: context,
+    );
 
     if (context.mounted && status != null) {
       if (status == .paidNotEnough) {
         showSnackBar(S.orderCheckoutSnackbarPaidFailed, context: context);
       } else if (context.canPop()) {
-        // send success message
         context.pop(status);
       }
     }
@@ -326,7 +378,7 @@ class _ConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       key: const Key('order.details.confirm'),
-      onPressed: () => confirm(context, paid: paid.value),
+      onPressed: () => confirm(context, tender),
       tooltip: S.orderCheckoutActionConfirm,
       icon: const Icon(Icons.check_outlined),
     );

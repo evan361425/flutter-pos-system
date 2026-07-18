@@ -37,7 +37,8 @@ class Util {
     return DateTimeRange(start: start, end: end);
   }
 
-  static Widget Function(BuildContext context, AsyncSnapshot<T> snapshot) handleSnapshot<T>(
+  static Widget Function(BuildContext context, AsyncSnapshot<T> snapshot)
+  handleSnapshot<T>(
     Widget Function(BuildContext context, T? data) builder, {
     void Function(Object)? onError,
   }) {
@@ -53,7 +54,9 @@ class Util {
           child: SizedBox(
             height: 20,
             width: 20,
-            child: Center(child: CircularProgressIndicator.adaptive(strokeWidth: 2)),
+            child: Center(
+              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+            ),
           ),
         );
       }
@@ -66,23 +69,31 @@ class Util {
 extension RangeFormat on DateTimeRange {
   String format(String local) {
     final thisYear = DateTime.now().year;
-    final fs = start.year == thisYear ? DateFormat.MMMd(local) : DateFormat.yMMMd(local);
+    final fs = start.year == thisYear
+        ? DateFormat.MMMd(local)
+        : DateFormat.yMMMd(local);
     if (duration.inDays == 1) {
       return fs.format(start);
     }
 
-    final fe = end.year == thisYear ? DateFormat.MMMd(local) : DateFormat.yMMMd(local);
+    final fe = end.year == thisYear
+        ? DateFormat.MMMd(local)
+        : DateFormat.yMMMd(local);
     return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
   }
 
   String formatCompact(String local) {
     final thisYear = DateTime.now().year;
-    final fs = start.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
+    final fs = start.year == thisYear
+        ? DateFormat('MMdd', local)
+        : DateFormat('yMMdd', local);
     if (duration.inDays == 1) {
       return fs.format(start);
     }
 
-    final fe = end.year == thisYear ? DateFormat('MMdd', local) : DateFormat('yMMdd', local);
+    final fe = end.year == thisYear
+        ? DateFormat('MMdd', local)
+        : DateFormat('yMMdd', local);
     return '${fs.format(start)} - ${fe.format(end.subtract(const Duration(days: 1)))}';
   }
 }

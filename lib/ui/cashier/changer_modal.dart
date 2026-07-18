@@ -19,7 +19,8 @@ class ChangerModal extends StatefulWidget {
   State<ChangerModal> createState() => _ChangerModalState();
 }
 
-class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMixin {
+class _ChangerModalState extends State<ChangerModal>
+    with TickerProviderStateMixin {
   late TabController controller;
   final customState = GlobalKey<ChangerCustomViewState>();
   final favoriteSelected = ValueNotifier<FavoriteItem?>(null);
@@ -42,10 +43,17 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
                       builder: (context, child) {
                         return SegmentedButton<int>(
                           selected: {controller.index},
-                          onSelectionChanged: (value) => controller.index = value.first,
+                          onSelectionChanged: (value) =>
+                              controller.index = value.first,
                           segments: [
-                            ButtonSegment(value: 0, label: Text(S.cashierChangerFavoriteTab)),
-                            ButtonSegment(value: 1, label: Text(S.cashierChangerCustomTab)),
+                            ButtonSegment(
+                              value: 0,
+                              label: Text(S.cashierChangerFavoriteTab),
+                            ),
+                            ButtonSegment(
+                              value: 1,
+                              label: Text(S.cashierChangerCustomTab),
+                            ),
                           ],
                         );
                       },
@@ -54,7 +62,11 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
                 ),
         ],
       ),
-      action: TextButton(key: const Key('changer.apply'), onPressed: handleApply, child: Text(S.cashierChangerButton)),
+      action: TextButton(
+        key: const Key('changer.apply'),
+        onPressed: handleApply,
+        child: Text(S.cashierChangerButton),
+      ),
       content: _buildContent(bp),
     );
   }
@@ -67,8 +79,14 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
           TabBar(
             controller: controller,
             tabs: [
-              Tab(key: const Key('changer.favorite'), text: S.cashierChangerFavoriteTab),
-              Tab(key: const Key('changer.custom'), text: S.cashierChangerCustomTab),
+              Tab(
+                key: const Key('changer.favorite'),
+                text: S.cashierChangerFavoriteTab,
+              ),
+              Tab(
+                key: const Key('changer.custom'),
+                text: S.cashierChangerCustomTab,
+              ),
             ],
           ),
           Expanded(
@@ -87,7 +105,10 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
                 SingleChildScrollView(
                   child: Padding(
                     padding: const .only(top: kTopSpacing),
-                    child: ChangerCustomView(key: customState, afterFavoriteAdded: () => controller.animateTo(0)),
+                    child: ChangerCustomView(
+                      key: customState,
+                      afterFavoriteAdded: () => controller.animateTo(0),
+                    ),
                   ),
                 ),
               ],
@@ -103,9 +124,15 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
         listenable: controller,
         builder: (context, child) {
           if (controller.index == 0) {
-            return ChangerFavoriteView(selectedItem: favoriteSelected, emptyAction: _moveToCustom);
+            return ChangerFavoriteView(
+              selectedItem: favoriteSelected,
+              emptyAction: _moveToCustom,
+            );
           }
-          return ChangerCustomView(key: customState, afterFavoriteAdded: _moveToFavorite);
+          return ChangerCustomView(
+            key: customState,
+            afterFavoriteAdded: _moveToFavorite,
+          );
         },
       ),
     );
@@ -118,7 +145,9 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
   }
 
   void handleApply() async {
-    final isValid = await (controller.index == 1 ? customState.currentState?.handleApply() : _handleFavoriteApply());
+    final isValid = await (controller.index == 1
+        ? customState.currentState?.handleApply()
+        : _handleFavoriteApply());
 
     if (isValid == true && mounted && context.canPop()) {
       context.pop(true);
@@ -145,11 +174,15 @@ class _ChangerModalState extends State<ChangerModal> with TickerProviderStateMix
       return false;
     }
 
-    final isValid = await Cashier.instance.applyFavorite(favoriteSelected.value!.item);
+    final isValid = await Cashier.instance.applyFavorite(
+      favoriteSelected.value!.item,
+    );
 
     if (!isValid && mounted) {
       showSnackBar(
-        S.cashierChangerErrorNotEnough(favoriteSelected.value!.source.unit?.toCurrency() ?? ''),
+        S.cashierChangerErrorNotEnough(
+          favoriteSelected.value!.source.unit?.toCurrency() ?? '',
+        ),
         context: context,
       );
     }

@@ -9,18 +9,23 @@ import 'package:possystem/translator.dart';
 import 'package:possystem/ui/transit/formatter/formatter.dart';
 
 List<List<CellData>> getAllFormattedFieldHeaders(FormattableModel? able) {
-  return (able?.toList() ?? FormattableModel.values).map((able) => findFieldFormatter(able).getHeader()).toList();
+  return (able?.toList() ?? FormattableModel.values)
+      .map((able) => findFieldFormatter(able).getHeader())
+      .toList();
 }
 
 List<List<List<CellData>>> getAllFormattedFieldData(FormattableModel? able) {
-  return (able?.toList() ?? FormattableModel.values).map((able) => findFieldFormatter(able).getRows()).toList();
+  return (able?.toList() ?? FormattableModel.values)
+      .map((able) => findFieldFormatter(able).getRows())
+      .toList();
 }
 
 ModelFormatter<Repository, CellData> findFieldFormatter(FormattableModel able) {
   final parser = able.toParser();
 
   return switch (able) {
-    .menu => _MenuFormatter(.instance, parser) as ModelFormatter<Repository, CellData>,
+    .menu =>
+      _MenuFormatter(.instance, parser) as ModelFormatter<Repository, CellData>,
     .stock => _StockFormatter(.instance, parser),
     .quantities => _QuantitiesFormatter(.instance, parser),
     .replenisher => _ReplenisherFormatter(.instance, parser),
@@ -95,12 +100,21 @@ class _QuantitiesFormatter extends ModelFormatter<Quantities, CellData> {
   @override
   List<CellData> getHeader() => [
     CellData(string: S.stockQuantityNameLabel, isBold: true),
-    CellData(string: S.stockQuantityProportionLabel, note: S.stockQuantityProportionHelper, isBold: true),
+    CellData(
+      string: S.stockQuantityProportionLabel,
+      note: S.stockQuantityProportionHelper,
+      isBold: true,
+    ),
   ];
 
   @override
   List<List<CellData>> getRows() => target.itemList
-      .map((quantity) => [CellData(string: quantity.name), CellData(number: quantity.defaultProportion)])
+      .map(
+        (quantity) => [
+          CellData(string: quantity.name),
+          CellData(number: quantity.defaultProportion),
+        ],
+      )
       .toList();
 }
 
@@ -110,12 +124,19 @@ class _ReplenisherFormatter extends ModelFormatter<Replenisher, CellData> {
   @override
   List<CellData> getHeader() => [
     CellData(string: S.stockReplenishmentNameLabel, isBold: true),
-    CellData(string: S.transitFormatFieldReplenishmentTitle, note: S.transitFormatFieldReplenishmentNote, isBold: true),
+    CellData(
+      string: S.transitFormatFieldReplenishmentTitle,
+      note: S.transitFormatFieldReplenishmentNote,
+      isBold: true,
+    ),
   ];
 
   @override
   List<List<CellData>> getRows() => target.itemList.map((e) {
-    final info = [for (final entry in e.ingredientData.entries) '- ${entry.key.name},${entry.value}'].join('\n');
+    final info = [
+      for (final entry in e.ingredientData.entries)
+        '- ${entry.key.name},${entry.value}',
+    ].join('\n');
     return [CellData(string: e.name), CellData(string: info)];
   }).toList();
 }
@@ -126,7 +147,10 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, CellData> {
   @override
   List<CellData> getHeader() {
     final note = OrderAttributeMode.values
-        .map((e) => '${S.orderAttributeModeName(e.name)} -  ${S.orderAttributeModeHelper(e.name)}')
+        .map(
+          (e) =>
+              '${S.orderAttributeModeName(e.name)} -  ${S.orderAttributeModeHelper(e.name)}',
+        )
         .join('\n');
     return <CellData>[
       CellData(string: S.orderAttributeNameLabel, isBold: true),
@@ -141,15 +165,21 @@ class _OAFormatter extends ModelFormatter<OrderAttributes, CellData> {
 
   @override
   List<List<CellData>> getRows() {
-    final options = OrderAttributeMode.values.map((e) => S.orderAttributeModeName(e.name)).toList();
+    final options = OrderAttributeMode.values
+        .map((e) => S.orderAttributeModeName(e.name))
+        .toList();
 
     return target.itemList.map((e) {
       final info = [
-        for (final item in e.itemList) '- ${item.name},${item.isDefault},${item.modeValue ?? ''}',
+        for (final item in e.itemList)
+          '- ${item.name},${item.isDefault},${item.modeValue ?? ''}',
       ].join('\n');
       return [
         CellData(string: e.name),
-        CellData(string: S.orderAttributeModeName(e.mode.name), options: options),
+        CellData(
+          string: S.orderAttributeModeName(e.mode.name),
+          options: options,
+        ),
         CellData(string: info),
       ];
     }).toList();

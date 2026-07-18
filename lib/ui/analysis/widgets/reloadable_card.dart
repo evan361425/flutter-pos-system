@@ -37,7 +37,8 @@ class ReloadableCard<T> extends StatefulWidget {
   State<ReloadableCard<T>> createState() => _ReloadableCardState<T>();
 }
 
-class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKeepAliveClientMixin {
+class _ReloadableCardState<T> extends State<ReloadableCard<T>>
+    with AutomaticKeepAliveClientMixin {
   /// Error message when loading failed
   String? error;
 
@@ -50,19 +51,24 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   /// Last built target, used to prevent rebuild when reloading
   Widget? lastBuiltTarget;
 
-  Future<T>? lastFuture;
+  /// Current loading completer for proper cancellation
+  Completer<T>? _loadingCompleter;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Column(
       children: [
-        if (widget.title != null) Padding(padding: const .fromLTRB(16, 8, 0, 4), child: buildTitle()),
+        if (widget.title != null)
+          Padding(padding: const .fromLTRB(16, 8, 0, 4), child: buildTitle()),
         Stack(
           children: [
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: Breakpoint.medium.max),
-              child: SizedBox(width: .infinity, child: buildWrapper(buildTarget())),
+              child: SizedBox(
+                width: .infinity,
+                child: buildWrapper(buildTarget()),
+              ),
             ),
             if (reloadable) buildReloading(),
           ],
@@ -118,7 +124,10 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
       );
     }
 
-    return Column(crossAxisAlignment: .start, children: [const SizedBox(height: 8.0), child]);
+    return Column(
+      crossAxisAlignment: .start,
+      children: [const SizedBox(height: 8.0), child],
+    );
   }
 
   Widget buildTitle() {
@@ -127,7 +136,9 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
       children: [
         Text(
           widget.title!,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 24),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineMedium?.copyWith(fontSize: 24),
           overflow: .ellipsis,
         ),
         if (widget.action != null) widget.action!,
@@ -148,7 +159,11 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
         child: const ColoredBox(
           color: Colors.black12,
           child: Center(
-            child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator.adaptive(strokeWidth: 2)),
+            child: SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+            ),
           ),
         ),
       ),
@@ -158,19 +173,38 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   @override
   void initState() {
     super.initState();
-
-    load().then((value) {
-      if (mounted) {
-        setState(() => data = value);
-      }
-    });
+    _startLoading();
     widget.notifiers?.forEach((e) {
       e.addListener(handleUpdate);
     });
   }
 
+  void _startLoading() {
+    _loadingCompleter = Completer<T>();
+    widget
+        .loader()
+        .then((value) {
+          if (mounted && !_loadingCompleter!.isCompleted) {
+            _loadingCompleter!.complete(value);
+          }
+        })
+        .onError((e, stack) {
+          Log.err(e ?? 'unknown', 'load_metrics', stack);
+          if (mounted && !_loadingCompleter!.isCompleted) {
+            setState(() => error = e?.toString() ?? 'unknown');
+            _loadingCompleter!.completeError(e ?? 'unknown');
+          }
+        });
+  }
+
   @override
   void dispose() {
+    // Cancel any ongoing loading operation
+    if (_loadingCompleter != null && !_loadingCompleter!.isCompleted) {
+      _loadingCompleter!.completeError(
+        Exception('ReloadableCard disposed'),
+      );
+    }
     super.dispose();
     widget.notifiers?.forEach((e) {
       e.removeListener(handleUpdate);
@@ -178,24 +212,24 @@ class _ReloadableCardState<T> extends State<ReloadableCard<T>> with AutomaticKee
   }
 
   Future<T?> load() {
-    return widget.loader().onError((e, stack) {
-      Log.err(e ?? 'unknown', 'load_metrics', stack);
-      setState(() => error = e?.toString() ?? 'unknown');
-      return Future.value(null);
-    });
+    return _loadingCompleter?.future ?? Future.value(null);
   }
 
   Future<void> reload() async {
     // only reload when data changed
     if (reloadable) {
       lastBuiltTarget = null;
+      error = null;
+      _startLoading();
       final inline = await load();
 
-      setState(() {
-        reloadable = false;
-        lastBuiltTarget = null;
-        data = inline;
-      });
+      if (mounted) {
+        setState(() {
+          reloadable = false;
+          lastBuiltTarget = null;
+          data = inline;
+        });
+      }
     }
   }
 
