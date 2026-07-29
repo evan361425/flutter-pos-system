@@ -5,15 +5,16 @@ import 'package:possystem/settings/setting.dart';
 class CurrencySetting extends Setting<CurrencyTypes> {
   static CurrencySetting instance = ._();
 
-  static const CurrencyTypes defaultValue = .twd;
+  static const CurrencyTypes defaultValue = .eur;
 
   static const supports = <CurrencyTypes, List<num>>{
+    .eur: [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200],
     .twd: [1, 5, 10, 50, 100, 500, 1000],
     .usd: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
   };
 
   /// Current available unit of money
-  List<num> unitList = CurrencySetting.supports[CurrencyTypes.twd]!;
+  List<num> unitList = CurrencySetting.supports[CurrencyTypes.eur]!;
 
   /// Is this currency all int?
   bool isInt = true;
@@ -24,16 +25,28 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   CurrencySetting._() {
     value = defaultValue;
     LanguageSetting.instance.addListener(() {
-      formatter = NumberFormat.compact(locale: LanguageSetting.instance.language.locale.toString());
+      formatter = _buildFormatter();
     });
   }
 
   @override
   String get key => 'currency';
 
-  String get recordName => '新台幣';
+  String get recordName => switch (value) {
+    .eur => 'Euro',
+    .twd => 'New Taiwan Dollar',
+    .usd => 'US Dollar',
+  };
 
-  NumberFormat formatter = NumberFormat.compact(locale: LanguageSetting.instance.language.locale.toString());
+  NumberFormat formatter = _buildFormatter();
+
+  static NumberFormat _buildFormatter() {
+    return NumberFormat.currency(
+      locale: 'de_DE',
+      symbol: '€',
+      decimalDigits: 2,
+    );
+  }
 
   /// Ceiling [value] to currency least value
   ///
@@ -105,4 +118,4 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   }
 }
 
-enum CurrencyTypes { twd, usd }
+enum CurrencyTypes { eur, twd, usd }

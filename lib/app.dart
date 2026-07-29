@@ -1,4 +1,3 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -40,10 +39,7 @@ class App extends StatelessWidget {
       // the case that none is used.
       // onException: (context, state, route) => context.go('/pos'),
       debugLogDiagnostics: kDebugMode,
-      observers: [
-        FirebaseAnalyticsObserver(analytics: .instance),
-        routeObserver,
-      ],
+      observers: [routeObserver],
     );
 
     // Glue the SettingsController to the MaterialApp.

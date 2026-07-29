@@ -33,8 +33,9 @@ dependencies:
   http: ^1.5.0
   packages:
     git:
-      url: https://github.com/evan361425/flutter-pos-packages
-      ref: 2026.05.03-04
+      # The upstream production package is private. The author provides this
+      # public mock implementation for independent local development.
+      url: https://github.com/evan361425/flutter-pos-packages-mock
 
   # google services
   googleapis: ^14.0.0
@@ -87,6 +88,13 @@ dev_dependencies:
   sqflite_common_ffi: ^2.3.6
 
   arb_glue: ^1.0.0
+
+# The public upstream development package points at a monorepo root. Pin the
+# actual package path so independent builds resolve without private access.
+dependency_overrides:
+  # The public mock references an incompatible fork. Use the matching public
+  # release so the non-printing validation build remains compilable.
+  flutter_blue_plus: 1.35.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,10 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:possystem/constants/constant.dart';
@@ -14,7 +9,7 @@ import 'package:possystem/models/repository/cart.dart';
 import 'package:provider/provider.dart';
 
 import 'app.dart';
-import 'firebase_compatible_options.dart';
+import 'helpers/setup_example.dart';
 import 'helpers/logger.dart';
 import 'models/repository/cashier.dart';
 import 'models/repository/menu.dart';
@@ -36,24 +31,6 @@ void main() async {
     final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    Log.out('start with firebase: ${DefaultFirebaseOptions.currentPlatform.appId}', 'init');
-
-    // https://firebase.google.com/docs/crashlytics/get-started?platform=flutter&authuser=0&hl=zh-tw#configure-crash-handlers
-    // Pass all uncaught errors from the framework to Crashlytics.
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
-
-    if (kDebugMode) {
-      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-      await FirebaseInAppMessaging.instance.setMessagesSuppressed(true);
-    }
-
     await Database.instance.initialize(logWhenQuery: isLocalTest);
     await Storage.instance.initialize();
     await Cache.instance.initialize();
@@ -70,6 +47,7 @@ void main() async {
     await Printers().initialize();
     // Last for setup ingredient and quantity
     await Menu().initialize();
+    await setupExampleMenu();
 
     /// Why use provider?
     /// https://stackoverflow.com/questions/57157823/provider-vs-inheritedwidget
@@ -90,5 +68,5 @@ void main() async {
         child: const App(),
       ),
     );
-  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
+  }, (error, stack) => Log.err(error, 'uncaught', stack));
 }

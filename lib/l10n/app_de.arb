@@ -1,7 +1,7 @@
 {
-  "@@locale": "en",
+  "@@locale": "de",
   "@@author": "Lu Shueh Chou",
-  "settingTab": "Settings",
+  "settingTab": "Einstellungen",
   "settingVersion": "Version: {version}",
   "@settingVersion": {
     "description": "Display the app version",
@@ -26,7 +26,7 @@
   "settingElfContent": "Feel like something's missing here?\nFeel free to [give suggestions](https://forms.gle/s8V5SXuqhA1u3zmt7).\nYou can also check out [upcoming features](https://github.com/evan361425/flutter-pos-system/milestones).",
   "settingFeatureTitle": "Other Settings",
   "settingFeatureDescription": "Appearance, Language, Tips",
-  "settingThemeTitle": "Theme",
+  "settingThemeTitle": "Darstellung",
   "settingThemeName": "{name, select, dark{Dark Mode} light{Light Mode} system{Follow System} other{UNKNOWN}}",
   "@settingThemeName": {
     "description": "Appearance of the app",
@@ -36,7 +36,7 @@
       }
     }
   },
-  "settingLanguageTitle": "Language",
+  "settingLanguageTitle": "Sprache",
   "settingCheckoutWarningTitle": "Cash Registry Warnings",
   "settingCheckoutWarningName": "{name, select, showAll{Show All} onlyNotEnough{Show Only When Not Enough} hideAll{Hide All} other{UNKNOWN}}",
   "@settingCheckoutWarningName": {
@@ -55,13 +55,13 @@
       }
     }
   },
-  "settingOrderAwakeningTitle": "Keep Screen On During Ordering",
+  "settingOrderAwakeningTitle": "Bildschirm beim Kassieren eingeschaltet lassen",
   "@settingOrderAwakeningTitle": {
     "description": "Keep the screen on during ordering, even when idle"
   },
-  "settingOrderAwakeningDescription": "If disabled, the screen will turn off based on system settings during ordering.",
-  "settingReportTitle": "Collect Errors and Events",
-  "settingReportDescription": "Send error messages when the app encounters issues, helping the app improve",
+  "settingOrderAwakeningDescription": "Wenn diese Option deaktiviert ist, gelten die Systemeinstellungen für die Bildschirmabschaltung.",
+  "settingReportTitle": "Lokale Fehlerprotokolle",
+  "settingReportDescription": "Fehler werden nur lokal protokolliert; es werden keine Analysedaten versendet.",
   "stockTab": "Inventory",
   "stockUpdatedAt": "Last Purchased: {updatedAt}",
   "@stockUpdatedAt": {
@@ -204,8 +204,8 @@
   "stockQuantityNameErrorRepeat": "Quantity name already exists",
   "stockQuantityProportionLabel": "Default Ratio",
   "stockQuantityProportionHelper": "Applied when this quantity is used for an ingredient.\n\nFor example:\nif this quantity is \"Large\" and the default ratio is \"1.5\",\nand there's a product \"Cheeseburger\" with the ingredient \"Cheese,\"\nwhich uses \"2\" units of cheese per burger,\nwhen adding this quantity,\nthe quantity of \"Cheese\" will automatically be set to \"3\" (2 * 1.5).\n\nIf set to \"1,\" there's no effect.\n\nIf set to \"0,\" the ingredient won't be used.",
-  "printerTitle": "Printer Management",
-  "printerDescription": "Bluetooth Connection, Printer Settings",
+  "printerTitle": "Druckerverwaltung",
+  "printerDescription": "Bluetooth-Thermodrucker verwalten",
   "printerHeaderInfo": "Printers",
   "@printerHeaderInfo": {
     "description": "Displayed on the upper in mobile view"
@@ -213,18 +213,18 @@
   "printerTitleCreate": "Add Printer",
   "printerTitleUpdate": "Edit Printer",
   "printerTitleSettings": "Format Settings",
-  "printerBtnConnect": "Connect",
-  "printerBtnDisconnect": "Disconnect",
-  "printerBtnTestPrint": "Test Print",
-  "printerBtnRetry": "Re-Connect",
-  "printerBtnPrint": "Print",
-  "printerStatusSuccess": "Printer connected",
-  "printerStatusConnecting": "Connecting",
-  "printerStatusStandby": "Not connected",
-  "printerStatusPrinted": "Print complete",
+  "printerBtnConnect": "Verbinden",
+  "printerBtnDisconnect": "Trennen",
+  "printerBtnTestPrint": "Testdruck",
+  "printerBtnRetry": "Erneut versuchen",
+  "printerBtnPrint": "Drucken",
+  "printerStatusSuccess": "Verbunden",
+  "printerStatusConnecting": "Verbindung wird hergestellt",
+  "printerStatusStandby": "Bereit",
+  "printerStatusPrinted": "Gedruckt",
   "printerStatusName": "{name, select, good{All Good} writeFailed{Last Print Failed} unrecoverable{Unrecoverable Error, Restart Required} paperJams{Paper Jammed} paperNotFound{Paper Not Found} tooHot{Printer Overheated} lowBattery{Low Battery} uncovering{Uncovering} noResponse{No Response} printing{Printing} unknown{Unknown} other{UNKNOWN}}",
   "printerSignalName": "{name, select, good{Good} normal{Normal} weak{Weak} other{UNKNOWN}}",
-  "printerScanIng": "Scanning for Bluetooth Devices...",
+  "printerScanIng": "Bluetooth-Drucker werden gesucht …",
   "printerScanCount": "{count, plural, =1{{count} Device Found} other{{count} Devices Found}}",
   "@printerScanCount": {
     "placeholders": {
@@ -234,15 +234,15 @@
       }
     }
   },
-  "printerScanRetry": "Re-scan",
-  "printerScanNotFound": "Not Found?",
-  "printerErrorNotSelect": "No device selected",
+  "printerScanRetry": "Erneut suchen",
+  "printerScanNotFound": "Keine Drucker gefunden.",
+  "printerErrorNotSelect": "Bitte zuerst einen Drucker auswählen.",
   "printerErrorNotSupportTitle": "Device Not Compatible",
   "printerErrorNotSupportContent": "This device is currently unsupported.\n\n[Contact Us](mailto:evanlu361425@gmail.com) for assistance.",
-  "printerErrorBluetoothOff": "Bluetooth is off",
-  "printerErrorDisconnected": "Printer is disconnected",
-  "printerErrorTimeout": "Printer connection timeout",
-  "printerErrorCanceled": "Printer connection request interrupted",
+  "printerErrorBluetoothOff": "Bluetooth ist ausgeschaltet.",
+  "printerErrorDisconnected": "Die Druckerverbindung wurde getrennt.",
+  "printerErrorTimeout": "Zeitüberschreitung bei der Druckerverbindung.",
+  "printerErrorCanceled": "Vorgang abgebrochen.",
   "printerErrorTimeoutMore": "Try the following:\n• Check if the device is powered on (usually will flash)\n• Ensure the device is within range\n• Restart Bluetooth",
   "printerNameLabel": "Printer Name",
   "printerNameHint": "e.g., Kitchen's Printer",
@@ -289,12 +289,12 @@
   "printerInfoStatus": "Status",
   "printerSupportedTitle": "Supported Printers",
   "printerSupportedName": "{name, select, xPrinter58{XPrinter} catPrinter{Portable Mini Printer} yokoscan58{Yokoscan printer} other{UNKNOWN}}",
-  "transitTitle": "Data Transfer",
+  "transitTitle": "Datentransfer",
   "transitDescription": "Importing and Exporting Store Information and Orders",
-  "transitDescriptionCsv": "Commas Separate Values, lightweight to export and import data, compatible with most software.",
-  "transitDescriptionExcel": "Excel allow offline export and import, easy to integrate with Google Sheets and Microsoft Excel.",
+  "transitDescriptionCsv": "CSV ist ein kompaktes Austauschformat und mit den meisten Programmen kompatibel.",
+  "transitDescriptionExcel": "Excel-Dateien können offline exportiert und importiert werden und sind mit Microsoft Excel kompatibel.",
   "transitDescriptionGoogleSheet": "Google Sheets is a powerful mini-database. After exporting, it can be customized for various analyses!",
-  "transitDescriptionPlainText": "Quick check, quick share.",
+  "transitDescriptionPlainText": "Schnell prüfen und teilen.",
   "transitMethodTitle": "Please Select Transfer Method",
   "transitMethodName": "{name, select, googleSheet{Google Sheets} plainText{Plain Text} excel{Excel} csv{CSV} other{UNKNOWN}}",
   "transitCatalogTitle": "Use {name} to Do What?",
@@ -365,15 +365,15 @@
   "transitOrderItemDialogTitle": "Order Details",
   "transitExportTab": "Export",
   "transitExportFileDialogTitle": "Select Export Location",
-  "transitExportBasicBtnCsv": "Export CSV files",
-  "transitExportBasicBtnExcel": "Export Excel file",
+  "transitExportBasicBtnCsv": "CSV-Dateien exportieren",
+  "transitExportBasicBtnExcel": "Excel-Datei exportieren",
   "transitExportBasicBtnGoogleSheet": "Upload to Google Sheets",
-  "transitExportBasicBtnPlainText": "Copy",
+  "transitExportBasicBtnPlainText": "Kopieren",
   "transitExportBasicFileName": "POS System Data",
-  "transitExportBasicSuccessCsv": "Exported successfully",
-  "transitExportBasicSuccessExcel": "Exported successfully",
+  "transitExportBasicSuccessCsv": "Erfolgreich exportiert",
+  "transitExportBasicSuccessExcel": "Erfolgreich exportiert",
   "transitExportBasicSuccessGoogleSheet": "Uploaded successfully",
-  "transitExportBasicSuccessPlainText": "Copied successfully",
+  "transitExportBasicSuccessPlainText": "Erfolgreich kopiert",
   "transitExportBasicSuccessActionGoogleSheet": "Open",
   "transitExportOrderTitleCsv": "Export CSV files",
   "transitExportOrderTitleExcel": "Export Excel file",
@@ -896,16 +896,16 @@
   "transitGoogleSheetErrorIdEmpty": "ID cannot be empty",
   "transitGoogleSheetErrorIdInvalid": "Invalid ID. It must include:\n• /spreadsheets/d/<ID>/\n• Or provide the ID directly (combination of letters, numbers, underscores, and hyphens).",
   "transitGoogleSheetErrorNetwork": "Network error, unable to connect to Google Sheets.",
-  "appTitle": "POS System",
-  "actSuccess": "Done Successfully!",
+  "appTitle": "Elbe-Jade POS",
+  "actSuccess": "Erfolgreich abgeschlossen",
   "@actSuccess": {
     "description": "Action executed successfully and displayed on the Snackbar."
   },
-  "actError": "Happening Error",
+  "actError": "Ein Fehler ist aufgetreten",
   "@actError": {
     "description": "Error message displayed on the Snackbar when an error occurs."
   },
-  "actMoreInfo": "More",
+  "actMoreInfo": "Mehr",
   "@actMoreInfo": {
     "description": "Button on the Snackbar to show more details."
   },
@@ -937,7 +937,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printers{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, analysis{Statistik} stock{Lager} cashier{Kasse} settings{Einstellungen} menu{Sortiment} printers{Drucker} transit{Datentransfer} orderAttributes{Kundeneinstellungen} stockQuantities{Mengeneinheiten} elf{Vorschläge} more{Mehr} debug{Debug} other{Unbekannt}}",
   "@title": {
     "placeholders": {
       "name": {
@@ -982,11 +982,11 @@
       }
     }
   },
-  "emptyBodyTitle": "Oops! It's empty here.",
+  "emptyBodyTitle": "Hier ist noch nichts.",
   "@emptyBodyTitle": {
     "description": "Text displayed on EmptyBody, informing the user that there are no items yet. This is the default text."
   },
-  "emptyBodyAction": "SETUP",
+  "emptyBodyAction": "EINRICHTEN",
   "btnNavTo": "View",
   "@btnNavTo": {
     "description": "Button text to navigate to another screen in trailing."
@@ -1194,14 +1194,14 @@
   },
   "orderAttributeValueEmpty": "No price impact",
   "orderAttributeValueFree": "Free",
-  "menuTitle": "Menu",
-  "menuSubtitle": "Categories, Products",
-  "menuTutorialTitle": "Create Your Menu",
-  "menuTutorialContent": "Let's start by creating a menu!",
-  "menuTutorialCreateExample": "Help create an example menu to test.",
-  "menuSearchHint": "Search for products, ingredients, quantities",
+  "menuTitle": "Sortiment",
+  "menuSubtitle": "Kategorien und Produkte",
+  "menuTutorialTitle": "Sortiment anlegen",
+  "menuTutorialContent": "Legen Sie zuerst ein Sortiment an.",
+  "menuTutorialCreateExample": "Beispielsortiment mit 20 Meeresfrüchten anlegen.",
+  "menuSearchHint": "Produkte, Zutaten oder Mengen suchen",
   "menuSearchPrefix": "{name, select, ingredient{Ingredient: } quantity{Quantity: } other{UNKNOWN}}",
-  "menuSearchNotFound": "Couldn't find relevant information. Did you misspell something?",
+  "menuSearchNotFound": "Keine passenden Einträge gefunden.",
   "menuExampleCatalogBurger": "Burgers",
   "menuExampleCatalogDrink": "Drinks",
   "menuExampleCatalogSide": "Side",
@@ -1229,12 +1229,12 @@
   "menuExampleQuantityLarge": "Large",
   "menuExampleQuantityNone": "None",
   "menuCatalogEmptyBody": "Similar products will be grouped under categories,\nmaking ordering convenient, such as:\n• \"Cheese Burger\", \"Veggie Burger\" > \"Burgers\"\n• \"Plastic Bag\", \"Eco Cup\" > \"Others\"",
-  "menuCatalogTitleCreate": "Add Category",
+  "menuCatalogTitleCreate": "Kategorie hinzufügen",
   "@menuCatalogTitleCreate": {
     "description": "FloatingActionButton description on the menu page"
   },
-  "menuCatalogTitleUpdate": "Edit Category",
-  "menuCatalogTitleReorder": "Reorder Categories",
+  "menuCatalogTitleUpdate": "Kategorie bearbeiten",
+  "menuCatalogTitleReorder": "Kategorien sortieren",
   "menuCatalogDialogDeletionContent": "{count, plural, =0{No products inside} =1{Will also delete {count} related product} other{Will also delete {count} related products}}",
   "@menuCatalogDialogDeletionContent": {
     "description": "Warning message when deleting product categories on the menu page",
@@ -1244,7 +1244,7 @@
       }
     }
   },
-  "menuCatalogNameLabel": "Category Name",
+  "menuCatalogNameLabel": "Kategoriename",
   "menuCatalogNameHint": "e.g., Burgers",
   "menuCatalogNameErrorRepeat": "Name already exists. Please choose a different name!",
   "menuCatalogEmptyProducts": "No products set yet",
@@ -1257,9 +1257,9 @@
   "@menuProductNotSelected": {
     "description": "When not selecting a category, the product list will not be displayed. This message will be displayed in the product list"
   },
-  "menuProductTitleCreate": "Add Product",
-  "menuProductTitleUpdate": "Edit Product",
-  "menuProductTitleReorder": "Reorder Products",
+  "menuProductTitleCreate": "Produkt hinzufügen",
+  "menuProductTitleUpdate": "Produkt bearbeiten",
+  "menuProductTitleReorder": "Produkte sortieren",
   "menuProductTitleUpdateImage": "Update Photo",
   "menuProductMetaTitle": "Product",
   "@menuProductMetaTitle": {
@@ -1289,12 +1289,12 @@
   "@menuProductMetaEmpty": {
     "description": "Text displayed in the subtitle in the product list"
   },
-  "menuProductNameLabel": "Product Name",
+  "menuProductNameLabel": "Produktname",
   "menuProductNameHint": "e.g., Cheeseburger",
   "menuProductNameErrorRepeat": "Product name already exists",
-  "menuProductPriceLabel": "Product Price",
+  "menuProductPriceLabel": "Verkaufspreis",
   "menuProductPriceHelper": "Price displayed on the order page",
-  "menuProductCostLabel": "Product Cost",
+  "menuProductCostLabel": "Einstandspreis",
   "menuProductCostHelper": "Used to calculate profit, should be less than the price",
   "menuProductEmptyIngredients": "No ingredients set yet",
   "menuIngredientEmptyBody": "You can set ingredients for the product, such as:\n\"Cheeseburger\" with \"Cheese\", \"Bun\" as ingredients",
@@ -1482,8 +1482,8 @@
   "cashierSurplusCurrentTotalHelper": "The total amount the cash register should have now.\nIf you find that the cash and this value don't match, think about whether you used the cash register to buy something today?",
   "cashierSurplusDiffTotalLabel": "Difference",
   "cashierSurplusDiffTotalHelper": "The difference from the total amount of the cash register at the very beginning.\nThis can quickly help you understand how much money the cash register has gained today.",
-  "orderTitle": "Ordering",
-  "orderBtn": "Order",
+  "orderTitle": "Bestellung",
+  "orderBtn": "Bestellen",
   "orderTutorialTitle": "Ordering!",
   "orderTutorialContent": "Once you have set up your menu, you can start ordering!\nLet's tap and go see what's available!\n",
   "orderTutorialPrinterBtnTitle": "Printer Status Change",
@@ -1514,13 +1514,13 @@
       }
     }
   },
-  "orderActionCheckout": "Checkout",
+  "orderActionCheckout": "Kassieren",
   "@orderActionCheckout": {
     "description": "Proceed to the next step after confirming the items in your cart"
   },
   "orderActionExchange": "Exchange",
-  "orderActionStash": "Stash",
-  "orderActionReview": "Order History",
+  "orderActionStash": "Zurückstellen",
+  "orderActionReview": "Bestellverlauf",
   "orderLoaderMetaTotalRevenue": "Revenue: {revenue}",
   "@orderLoaderMetaTotalRevenue": {
     "description": "Total revenue from orders in the order list",
@@ -1658,9 +1658,9 @@
       }
     }
   },
-  "orderCheckoutEmptyCart": "Please make an order first.",
+  "orderCheckoutEmptyCart": "Bitte zuerst Produkte hinzufügen.",
   "orderCheckoutActionStash": "Stash",
-  "orderCheckoutActionConfirm": "Confirm",
+  "orderCheckoutActionConfirm": "Bestätigen",
   "orderCheckoutStashTab": "Stash",
   "orderCheckoutStashEmpty": "No items currently stashed.",
   "orderCheckoutStashNoProducts": "No products",
@@ -1912,6 +1912,6 @@
   "analysisChartModalTargetItemLabel": "Item Selection",
   "analysisChartModalTargetItemHelper": "Choose the items you want to observe, such as the quantity of a specific product within a certain period.",
   "analysisChartModalTargetItemSelectAll": "Select All",
-  "orderCheckoutAttributeNoteTitle": "Note",
-  "orderCheckoutAttributeNoteHint": "Additional information about this order"
+  "orderCheckoutAttributeNoteTitle": "Notiz",
+  "orderCheckoutAttributeNoteHint": "Zusätzliche Angaben zu dieser Bestellung"
 }

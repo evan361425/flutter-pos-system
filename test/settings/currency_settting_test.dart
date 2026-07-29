@@ -11,15 +11,18 @@ void main() {
 
       CurrencySetting.instance.updateRemotely(.usd);
 
-      verify(cache.set('currency', 1));
+      verify(cache.set('currency', 2));
     });
 
     test('initialize', () {
-      when(cache.get(any)).thenReturn(1);
+      when(cache.get(any)).thenReturn(0);
 
       CurrencySetting.instance.initialize();
 
       expect(CurrencySetting.instance.isInt, false);
+      final formatted = CurrencySetting.instance.formatter.format(1234.5);
+      expect(formatted, contains('1.234,50'));
+      expect(formatted, contains('€'));
     });
 
     setUpAll(() {

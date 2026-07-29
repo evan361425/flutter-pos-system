@@ -78,7 +78,7 @@ export:
       excel: 匯出成 Excel 檔
       googleSheet: 匯出至 Google 試算表
       plainText: 純文字拷貝
-    fileName: POS 系統資料
+    fileName: Elbe-Jade POS 資料
     success:
       csv: 匯出成功
       excel: 匯出成功

@@ -3,12 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:possystem/components/sign_in_button.dart';
 import 'package:possystem/components/style/outlined_text.dart';
 import 'package:possystem/components/style/pop_button.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/routes.dart';
-import 'package:possystem/services/auth.dart';
 import 'package:possystem/settings/checkout_warning.dart';
 import 'package:possystem/settings/collect_events_setting.dart';
 import 'package:possystem/settings/language_setting.dart';
@@ -26,7 +24,10 @@ class SettingsPage extends StatelessWidget {
     const String flavor = .fromEnvironment('appFlavor');
 
     void navigateTo(Feature feature) {
-      context.pushNamed(Routes.settingsFeature, pathParameters: {'feature': feature.name});
+      context.pushNamed(
+        Routes.settingsFeature,
+        pathParameters: {'feature': feature.name},
+      );
     }
 
     return SafeArea(
@@ -49,24 +50,6 @@ class SettingsPage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 8.0),
-          Padding(
-            padding: const .symmetric(horizontal: 8.0),
-            child: SignInButton(
-              signedInWidgetBuilder: (user) => Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  Text(S.settingWelcome(user?.displayName ?? '')),
-                  OutlinedButton(
-                    key: const Key('feature.sign_out'),
-                    onPressed: () async {
-                      await Auth.instance.signOut();
-                    },
-                    child: Text(S.settingLogoutBtn),
-                  ),
-                ],
-              ),
-            ),
-          ),
           ListenableBuilder(
             listenable: ThemeSetting.instance,
             builder: (context, _) {
@@ -74,7 +57,9 @@ class SettingsPage extends StatelessWidget {
                 key: const Key('feature.theme'),
                 leading: const Icon(Icons.palette_outlined),
                 title: Text(S.settingThemeTitle),
-                subtitle: Text(S.settingThemeName(ThemeSetting.instance.value.name)),
+                subtitle: Text(
+                  S.settingThemeName(ThemeSetting.instance.value.name),
+                ),
                 trailing: const Icon(Icons.navigate_next_outlined),
                 onTap: () => navigateTo(.theme),
               );
@@ -101,7 +86,11 @@ class SettingsPage extends StatelessWidget {
                 key: const Key('feature.checkout_warning'),
                 leading: const Icon(Icons.store_mall_directory_outlined),
                 title: Text(S.settingCheckoutWarningTitle),
-                subtitle: Text(S.settingCheckoutWarningName(CheckoutWarningSetting.instance.value.name)),
+                subtitle: Text(
+                  S.settingCheckoutWarningName(
+                    CheckoutWarningSetting.instance.value.name,
+                  ),
+                ),
                 trailing: const Icon(Icons.navigate_next_outlined),
                 onTap: () => navigateTo(.checkoutWarning),
               );
@@ -117,7 +106,8 @@ class SettingsPage extends StatelessWidget {
                 subtitle: Text(S.settingOrderAwakeningDescription),
                 autofocus: focus == 'orderAwakening',
                 value: OrderAwakeningSetting.instance.value,
-                onChanged: (value) => OrderAwakeningSetting.instance.update(value),
+                onChanged: (value) =>
+                    OrderAwakeningSetting.instance.update(value),
               );
             },
           ),
@@ -132,7 +122,8 @@ class SettingsPage extends StatelessWidget {
                 subtitle: Text(S.settingReportDescription),
                 autofocus: focus == 'collectEvents',
                 value: CollectEventsSetting.instance.value,
-                onChanged: (value) => CollectEventsSetting.instance.update(value),
+                onChanged: (value) =>
+                    CollectEventsSetting.instance.update(value),
               );
             },
           ),
@@ -162,7 +153,9 @@ class ItemListScaffold extends StatelessWidget {
               .mapIndexed(
                 (index, pair) => ListTile(
                   title: Text(pair[0]),
-                  trailing: value == index ? const Icon(Icons.check_outlined) : null,
+                  trailing: value == index
+                      ? const Icon(Icons.check_outlined)
+                      : null,
                   subtitle: Text(pair[1], style: hintStyle),
                   onTap: () async {
                     if (value != index) {
@@ -190,7 +183,9 @@ enum Feature {
     return switch (this) {
       .theme => ThemeMode.values.map((e) => S.settingThemeName(e.name)),
       .language => Language.values.map((e) => e.title),
-      .checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningName(e.name)),
+      .checkoutWarning => CheckoutWarningTypes.values.map(
+        (e) => S.settingCheckoutWarningName(e.name),
+      ),
     };
   }
 
@@ -198,7 +193,9 @@ enum Feature {
     return switch (this) {
       .theme => ThemeMode.values.map((e) => ''),
       .language => Language.values.map((e) => ''),
-      .checkoutWarning => CheckoutWarningTypes.values.map((e) => S.settingCheckoutWarningTip(e.name)),
+      .checkoutWarning => CheckoutWarningTypes.values.map(
+        (e) => S.settingCheckoutWarningTip(e.name),
+      ),
     };
   }
 
@@ -222,7 +219,9 @@ enum Feature {
     return switch (this) {
       .theme => ThemeSetting.instance.update(ThemeMode.values[index]),
       .language => LanguageSetting.instance.update(Language.values[index]),
-      .checkoutWarning => CheckoutWarningSetting.instance.update(CheckoutWarningTypes.values[index]),
+      .checkoutWarning => CheckoutWarningSetting.instance.update(
+        CheckoutWarningTypes.values[index],
+      ),
     };
   }
 }

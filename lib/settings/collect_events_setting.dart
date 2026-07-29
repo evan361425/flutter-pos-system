@@ -1,5 +1,3 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/settings/setting.dart';
 
@@ -27,9 +25,5 @@ class CollectEventsSetting extends Setting<bool> {
     // Do it first to make testing easier, because the rest future will not
     // complete.
     await service.set<bool>(key, data);
-    await Future.wait([
-      FirebaseInAppMessaging.instance.setAutomaticDataCollectionEnabled(data),
-      FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(data),
-    ]);
   }
 }

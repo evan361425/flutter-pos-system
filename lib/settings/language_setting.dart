@@ -45,11 +45,14 @@ class LanguageSetting extends Setting<Language?> {
 
     final codes = value.split('_');
 
-    return Language.values.firstWhereOrNull((e) => e.locale.languageCode == codes[0]);
+    return Language.values.firstWhereOrNull(
+      (e) => e.locale.languageCode == codes[0],
+    );
   }
 }
 
 enum Language {
+  de(Locale('de', 'DE'), 'Deutsch'),
   zhTW(Locale('zh', 'TW'), '繁體中文'),
   en(Locale('en'), 'English');
 

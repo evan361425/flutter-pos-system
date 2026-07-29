@@ -4,6 +4,7 @@ template-arb-file: app_zh.arb
 output-dir: lib/l10n/gen
 output-localization-file: app_localizations.dart
 preferred-supported-locales:
+- "de"
 - "en"
 - "zh"
 # - "zh_TW"

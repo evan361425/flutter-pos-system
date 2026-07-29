@@ -1,4 +1,4 @@
-package com.evanlu.possystem
+package com.elbejade.pos
 
 import io.flutter.embedding.android.FlutterActivity
 

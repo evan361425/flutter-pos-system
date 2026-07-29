@@ -7,6 +7,8 @@ void main() {
       final LanguageSetting l = .instance;
       expect(l.parseLanguage(''), isNull);
       expect(l.parseLanguage('something'), equals(null));
+      expect(l.parseLanguage('de'), equals(Language.de));
+      expect(l.parseLanguage('de_DE'), equals(Language.de));
       expect(l.parseLanguage('zh'), equals(Language.zhTW));
       expect(l.parseLanguage('zh_TW'), equals(Language.zhTW));
       expect(l.parseLanguage('zh_Hant'), equals(Language.zhTW));

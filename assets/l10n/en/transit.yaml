@@ -89,7 +89,7 @@ export:
       excel: Export Excel file
       googleSheet: Upload to Google Sheets
       plainText: Copy
-    fileName: POS System Data
+    fileName: Elbe-Jade POS Data
     success:
       csv: Exported successfully
       excel: Exported successfully
@@ -110,7 +110,7 @@ export:
         Upload needs network connection and request might be throttled by Google.
         If the upload fails, please try again later or use other methods to export.
       plainText: Simple text format, should be used for small data.
-    fileName: POS System Orders
+    fileName: Elbe-Jade POS Orders
     progress:
       googleSheet:
         overwrite: Overwriting existing data
