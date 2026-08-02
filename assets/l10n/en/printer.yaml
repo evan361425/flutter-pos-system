@@ -101,28 +101,28 @@ settings:
     helper: Reduces paper between receipts; need caution when tearing
 receipt:
   title: Receipt
-  productTable:
-    name: Item
-    price: U/P
-    count: QTY
-    total: TOT
-    time: Time
-  discountTable:
-    title: Discount
-    price: U/P
-    count: QTY
-    total: TOT
-    origin: Origin
-  attributeTable:
-    title: Add-Ons
-    adjustment: Adj
-  priceTable:
-    total: Total
-    paid: Paid
-    price: Price
-    change: Change
-    productsPrice: Prod. TOT
-    productsQuantity: Prod. QTY
+  table:
+    order:
+      name: Item
+      singlePrice: U/P
+      quantity: QTY
+      totalPrice: TOT
+    discount:
+      title: Discount
+      quantity: QTY
+      originPrice: Origin
+      singlePrice: U/P
+      totalPrice: TOT
+    attribute:
+      title: Add-Ons
+      adjustment: Adj
+    price:
+      total: Total
+      paid: Paid
+      price: Price
+      change: Change
+      productsPrice: Prod. TOT
+      productsQuantity: Prod. QTY
   template:
     meta:
       componentsCount:
@@ -168,8 +168,9 @@ receipt:
         left: Move Left
         right: Move Right
         down: Move Down
-      delete:
-        btn: Delete Column
+      deleteBtn:
+        row: Delete Row
+        col: Delete Column
       attr:
         title:
           addAttr: Add Category to Title

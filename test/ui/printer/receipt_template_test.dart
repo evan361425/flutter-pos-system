@@ -3,21 +3,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/components/style/slide_to_delete.dart';
-import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/printer_page.dart';
 
 import '../../mocks/mock_cache.dart';
 import '../../mocks/mock_storage.dart';
+import '../../test_helpers/breakpoint_mocker.dart';
+import '../../test_helpers/file_mocker.dart';
 import '../../test_helpers/translator.dart';
 
 void main() {
   group('Printer Template', () {
-    Widget buildApp() {
+    Widget buildApp([GoRoute? subroute]) {
       return MaterialApp.router(
         routerConfig: GoRouter(
           navigatorKey: Routes.rootNavigatorKey,
@@ -25,109 +27,78 @@ void main() {
             GoRoute(
               path: '/',
               builder: (_, __) => const Scaffold(body: PrinterPage()),
+              routes: [
+                if (subroute != null) subroute,
+                ...Routes.getDesiredRoute(0).routes.map((r) {
+                  if (r is GoRoute && subroute != null) {
+                    r.routes.removeWhere((rr) => rr is GoRoute && rr.name == subroute.name);
+                  }
+                  return r;
+                }),
+              ],
             ),
-            ...Routes.getDesiredRoute(0).routes,
           ],
         ),
       );
     }
 
+    // for (final device in [Device.desktop, Device.mobile]) {
+    const device = Device.mobile;
+    // group(device.name, () {
     testWidgets('Add template with all type of component', (tester) async {
+      deviceAs(device, tester);
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
-
-      // open settings
       await tester.tap(find.byKey(const Key('printer.settings')));
       await tester.pumpAndSettle();
 
       // tap add template
       await tester.tap(find.byKey(const Key('printer.settings.template_create')));
       await tester.pumpAndSettle();
-
-      // fill name
       await tester.enterText(find.byKey(const Key('receipt_tpl.name')), 'AllComponentsTemplate');
       await tester.pumpAndSettle();
 
-      // add every component type
-      // 1. Text Field
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('textField')));
-      await tester.pumpAndSettle();
+      Future<void> addComponent(ReceiptComponentType v, [bool save = true]) async {
+        await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.printerReceiptComponentType(v.name)));
+        await tester.pumpAndSettle();
+        if (save) {
+          await tester.tap(find.byKey(const Key('modal.save')).last);
+          await tester.pumpAndSettle();
+        }
+      }
+
+      await addComponent(.textField, false);
       await tester.enterText(find.byKey(const Key('editor_ant.editor')), 'Sample Text');
       await tester.tap(find.byIcon(Icons.data_object));
       await tester.pumpAndSettle();
       await tester.tap(find.text('now'));
       await tester.pumpAndSettle();
 
-      // 1-1. Date Placeholder
+      // Date Placeholder
       await tester.tap(find.text('now'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('yMMMd Hms'));
       await tester.pumpAndSettle();
-      expect(find.text(S.printerReceiptComponentTextPlaceholderDateLabel), findsOneWidget);
-
-      await tester.tap(find.text('Cancel'));
+      tester.testTextInput.enterText('yy/mm/d');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('modal.save')).last);
       await tester.pumpAndSettle();
 
-      // 2. Image
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('image')));
-      await tester.pumpAndSettle();
+      await addComponent(.image);
+      await addComponent(.orderTable);
+      await addComponent(.discountTable);
+      await addComponent(.attributeTable);
+      await addComponent(.priceTable);
+      await addComponent(.divider);
+
       await tester.tap(find.byKey(const Key('modal.save')).last);
       await tester.pumpAndSettle();
 
-      // 3. Order Table
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('orderTable')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      // 4. Discount Table
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('discountTable')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      // 5. Attribute Table
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('attributeTable')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      // 6. Price Table
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('priceTable')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      // 7. Divider
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('divider')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      // save template
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      // Expect template appears in list
       expect(find.text('AllComponentsTemplate'), findsOneWidget);
-
-      // Verify storage add/set called with expected structure
       verify(
         storage.set(
           any,
@@ -141,44 +112,47 @@ void main() {
                 return name == 'AllComponentsTemplate' &&
                     components != null &&
                     components.length == 7 &&
-                    components.any((c) => c['type'] == ReceiptComponentType.textField.index) &&
-                    components.any((c) => c['type'] == ReceiptComponentType.image.index) &&
-                    components.any((c) => c['type'] == ReceiptComponentType.orderTable.index) &&
-                    components.any((c) => c['type'] == ReceiptComponentType.discountTable.index) &&
-                    components.any((c) => c['type'] == ReceiptComponentType.attributeTable.index) &&
-                    components.any((c) => c['type'] == ReceiptComponentType.priceTable.index) &&
-                    components.any((c) => c['type'] == ReceiptComponentType.divider.index);
+                    components[0]['type'] == ReceiptComponentType.textField.index &&
+                    components[0]['c'] == ReceiptComponentType.textField.index &&
+                    components[1]['type'] == ReceiptComponentType.image.index &&
+                    components[2]['type'] == ReceiptComponentType.orderTable.index &&
+                    components[3]['type'] == ReceiptComponentType.discountTable.index &&
+                    components[4]['type'] == ReceiptComponentType.attributeTable.index &&
+                    components[5]['type'] == ReceiptComponentType.priceTable.index &&
+                    components[6]['type'] == ReceiptComponentType.divider.index;
               });
               return containsTemplate;
             }),
           ),
         ),
-      ).called(greaterThanOrEqualTo(1));
+      ).called(equals(1));
     });
+    //   });
+    // }
 
     testWidgets('Edit template with component reordering and deleting', (tester) async {
       await ReceiptTemplates.instance.addItem(
         ReceiptTemplate(
           id: 'tpl1',
           name: 'EditTemplate',
-          components: [
-            DividerComponent(height: 2.0),
-            ImageComponent(imagePath: 'path', widthRatio: 0.5),
-            DividerComponent(height: 3.0),
-          ],
+          components: [DividerComponent(height: 1.0), DividerComponent(height: 2.0), DividerComponent(height: 3.0)],
         ),
         save: false,
       );
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
-
-      // open settings
       await tester.tap(find.byKey(const Key('printer.settings')));
       await tester.pumpAndSettle();
 
-      // open edit modal by tapping the template
       await tester.tap(find.text('EditTemplate'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('receipt_tpl.name')), 'EditTemplate2');
+      await tester.pumpAndSettle();
+
+      // Reorder the image component (drag last-to-second)
+      await tester.drag(find.byIcon(Icons.reorder_outlined).last, const Offset(0, -20));
       await tester.pumpAndSettle();
 
       // Delete the image component by dismissing it via SlideToDelete (drag right-to-left)
@@ -198,18 +172,36 @@ void main() {
           argThat(
             predicate((v) {
               if (v is! Map) return false;
+              if (v['template.tpl1.name'] != 'EditTemplate2') return false;
               if (v['template.tpl1.components'] is! List) return false;
               final invalid = (v['template.tpl1.components'] as List).where((e) {
                 if (e is! Map) return true;
                 if (e['type'] != ReceiptComponentType.divider.index) return true;
+                if (e['height'] == 3) return true;
                 return false;
               });
               return invalid.isEmpty;
-              return false;
             }),
           ),
         ),
-      ).called(greaterThanOrEqualTo(1));
+      ).called(equals(1));
+
+      await tester.drag(find.byKey(const Key('receipt_tpl.tpl1')), const Offset(-500, 0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('delete_dialog.confirm')));
+      await tester.pumpAndSettle();
+
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((v) {
+              if (v is! Map) return false;
+              return v.containsKey('template.tpl1') && v['template.tpl1'] == null;
+            }),
+          ),
+        ),
+      ).called(equals(1));
     });
 
     testWidgets('Open default template and confirm no modal.save button', (tester) async {
@@ -258,16 +250,21 @@ void main() {
       expect(find.text(S.printerReceiptTemplateNameErrorRepeat), findsOneWidget);
     });
 
-    testWidgets('Edit component padding validation and splitting', (tester) async {
+    testWidgets('Edit component padding and select it as default template', (tester) async {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      await ReceiptTemplates.instance.addItem(ReceiptTemplate(id: 'id', name: 'Example', components: []), save: false);
+      await ReceiptTemplates.instance.addItem(
+        ReceiptTemplate(id: 'example', name: 'Example', components: []),
+        save: false,
+      );
 
       // open settings -> add template
       await tester.tap(find.byKey(const Key('printer.settings')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Example'));
+      await tester.longPress(find.text('Example'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerSettingsTitleTemplateUpdate));
       await tester.pumpAndSettle();
 
       // add textField component
@@ -283,14 +280,26 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('modal.save')).last);
       await tester.pumpAndSettle();
+
       expect(ReceiptTemplates.instance.itemList.last.components.first.padding, const EdgeInsets.all(3));
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((v) {
+              if (v is! Map) return false;
+              final c = v['template.example.components'];
+              if (c is! List || c[0] is! Map<String, Object?>) return false;
+              return c[0]['padding'] == '3,3,3,3';
+            }),
+          ),
+        ),
+      ).called(equals(1));
 
       await tester.tap(find.text('Example'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(SlideToDelete<ReceiptComponent>).first);
+      await tester.tap(find.byType(SlideToDelete<ReceiptComponent>));
       await tester.pumpAndSettle();
-
-      // split padding
       await tester.tap(find.text(S.printerReceiptComponentPaddingLabel));
       await tester.pumpAndSettle();
 
@@ -307,10 +316,57 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(ReceiptTemplates.instance.itemList.last.components.first.padding, const EdgeInsets.fromLTRB(1, 2, 3, 4));
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((v) {
+              if (v is! Map) return false;
+              final c = v['template.example.components'];
+              if (c is! List || c[0] is! Map<String, Object?>) return false;
+              return c[0]['padding'] == '1,2,3,4';
+            }),
+          ),
+        ),
+      ).called(equals(1));
+
+      await tester.longPress(find.byKey(const Key('receipt_tpl.example')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerReceiptTemplateSelectLabel));
+      await tester.pumpAndSettle();
+
+      expect(ReceiptTemplates.instance.selected.id, equals('example'));
+
+      verify(
+        storage.set(
+          any,
+          argThat(
+            predicate((v) {
+              if (v is! Map) return false;
+              final s = v['setting'];
+              if (s is! Map<String, Object?>) return false;
+              return s['selectedId'] == 'example';
+            }),
+          ),
+        ),
+      ).called(equals(1));
+      expect(ReceiptTemplates.instance.selected.name, equals('Example'));
     });
 
     testWidgets('Edit template component specific configurations', (tester) async {
-      await tester.pumpWidget(buildApp());
+      await tester.pumpWidget(
+        buildApp(
+          GoRoute(
+            name: Routes.imageGallery,
+            path: 'imageGallery',
+            pageBuilder: (context, __) {
+              return MaterialPage(
+                child: TextButton(onPressed: () => context.pop('test-image'), child: const Text('choose-image')),
+              );
+            },
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // open settings -> add template
@@ -318,258 +374,138 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('printer.settings.template_create')));
       await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('receipt_tpl.name')), 'Custom');
 
-      // 1. Add Order Table component
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('orderTable')));
-      await tester.pumpAndSettle();
+      Future<void> addComponent(ReceiptComponentType v) async {
+        await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.printerReceiptComponentType(v.name)));
+        await tester.pumpAndSettle();
+      }
+
+      Future<void> tapCell(String title, String btn, [String? option]) async {
+        await tester.tap(find.text(title).last);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(btn).last);
+        await tester.pumpAndSettle();
+        if (option != null) {
+          await tester.tap(find.text(option).last);
+          await tester.pumpAndSettle();
+        }
+      }
+
+      Future<void> tapCellAndEnter(String title, String btn, String text) async {
+        await tapCell(title, btn);
+        await tester.enterText(find.byKey(const Key('text_dialog.text')), text);
+        await tester.tap(find.text('OK'));
+        await tester.pumpAndSettle();
+      }
+
+      await addComponent(.orderTable);
+      await tapCellAndEnter(S.printerReceiptTableOrderSinglePrice, S.printerReceiptComponentTableTitleBtn, 'evan');
+      await tapCell(S.printerReceiptTableOrderName, S.printerReceiptComponentTableOrderTitleAddCatalog);
+      await tapCellAndEnter('evan', S.printerReceiptComponentTableWidthBtn, '66');
       await tester.tap(find.byKey(const Key('modal.save')).last);
       await tester.pumpAndSettle();
+      final expected1 = {
+        'type': ReceiptComponentType.orderTable.index,
+        'columns': [
+          {'type': OrderTableColumn.productNameWithCatalogName.index},
+          {'type': OrderTableColumn.quantity.index},
+          {'type': OrderTableColumn.singlePrice.index, 'title': 'evan', 'width': 66.0},
+          {'type': OrderTableColumn.totalPrice.index},
+        ],
+      };
 
-      // 2. Add Discount Table component
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('discountTable')));
-      await tester.pumpAndSettle();
+      await addComponent(.discountTable);
+      await tapCell(S.printerReceiptTableDiscountTitle, S.printerReceiptComponentTableDiscountTitleAddCatalog);
+      String c = S.printerReceiptTableDiscountOriginPrice;
+      await tapCell(c, S.printerReceiptComponentTableInsertBtnLeft, S.printerReceiptTableDiscountQuantity);
+      await tapCell(c, S.printerReceiptComponentTableInsertBtnRight, S.printerReceiptTableDiscountSinglePrice);
+      await tapCell(c, S.printerReceiptComponentTableMoveBtnLeft);
+      await tapCell(c, S.printerReceiptTableDiscountQuantity, S.printerReceiptComponentTableMoveBtnRight);
       await tester.tap(find.byKey(const Key('modal.save')).last);
       await tester.pumpAndSettle();
+      final expected2 = {
+        'type': ReceiptComponentType.discountTable.index,
+        'columns': [
+          {'type': DiscountTableColumn.productNameWithCatalogName.index},
+          {'type': DiscountTableColumn.originPrice.index},
+          {'type': DiscountTableColumn.singlePrice.index},
+          {'type': DiscountTableColumn.quantity.index},
+        ],
+      };
 
-      // 3. Add Attribute Table component
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('attributeTable')));
-      await tester.pumpAndSettle();
-      // 3. Add Attribute Table component
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')), warnIfMissed: false);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('attributeTable')));
-      await tester.pumpAndSettle();
+      await addComponent(.attributeTable);
+      await tapCell(S.printerReceiptTableAttributeTitle, S.printerReceiptComponentTableAttrTitleAddAttr);
+      await tapCell(S.printerReceiptTableAttributeTitle, S.printerReceiptComponentTableAttrTitleRemoveOption);
       await tester.tap(find.byKey(const Key('modal.save')).last);
       await tester.pumpAndSettle();
+      final expected3 = {
+        'type': ReceiptComponentType.attributeTable.index,
+        'columns': [
+          {'type': AttributeTableColumn.attrName.index},
+          {'type': AttributeTableColumn.adjustment.index},
+        ],
+      };
 
-      // 4. Add Price Table component
-      await tester.tap(find.byKey(const Key('receipt_tpl.add_component')), warnIfMissed: false);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(S.printerReceiptComponentType('priceTable')));
-      await tester.pumpAndSettle(); // ensure modal is fully built
-
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      // fill name and save template
-      await tester.enterText(find.byKey(const Key('receipt_tpl.name')), 'CustomConfigTemplate');
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      expect(find.text('CustomConfigTemplate'), findsOneWidget);
-    });
-
-    testWidgets('Unit tests for components and formats', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) {
-                // 1. OrderTableComponent
-                {
-                  final c = OrderTableComponent(
-                    padding: const .all(5),
-                    columns: const [
-                      TableColumnConfig(OrderTableColumn.productName),
-                      TableColumnConfig(OrderTableColumn.quantity),
-                    ],
-                  );
-                  expect(c.leading, isNotNull);
-                  final json = c.toJson();
-                  expect((json['columns'] as List).length, 2);
-                  expect(json['padding'], '5,5,5,5');
-
-                  final c2 = ReceiptComponent.fromJson(json) as OrderTableComponent;
-                  expect(c2.columns.length, 2);
-                  expect(c2.padding, const EdgeInsets.all(5));
-                }
-
-                // 2. DiscountTableComponent
-                {
-                  final c = DiscountTableComponent(
-                    padding: const .all(2),
-                    columns: const [TableColumnConfig(DiscountTableColumn.productName)],
-                  );
-                  expect(c.leading, isNotNull);
-                  final json = c.toJson();
-                  expect((json['columns'] as List).length, 1);
-
-                  final c2 = ReceiptComponent.fromJson(json) as DiscountTableComponent;
-                  expect(c2.columns.length, 1);
-                  expect(c2.padding, const EdgeInsets.all(2));
-                }
-
-                // 3. AttributeTableComponent
-                {
-                  final c = AttributeTableComponent(
-                    padding: const .all(1),
-                    columns: const [TableColumnConfig(AttributeTableColumn.optionName)],
-                  );
-                  expect(c.leading, isNotNull);
-                  final json = c.toJson();
-
-                  final c2 = ReceiptComponent.fromJson(json) as AttributeTableComponent;
-                  expect(c2.columns.length, 1);
-                  expect(c2.padding, const EdgeInsets.all(1));
-                }
-
-                // 4. PriceTableComponent
-                {
-                  final c = PriceTableComponent(
-                    padding: const .all(3),
-                    columns: const [TableColumnConfig(PriceTableColumn.paid)],
-                  );
-                  expect(c.leading, isNotNull);
-                  final json = c.toJson();
-
-                  final c2 = ReceiptComponent.fromJson(json) as PriceTableComponent;
-                  expect(c2.columns.length, 1);
-                  expect(c2.padding, const EdgeInsets.all(3));
-                }
-
-                // 5. DividerComponent
-                {
-                  final c = DividerComponent(height: 3.0);
-                  expect(c.leading, isNotNull);
-                  final json = c.toJson();
-                  expect(json['height'], 3.0);
-
-                  final c2 = ReceiptComponent.fromJson(json) as DividerComponent;
-                  expect(c2.height, 3.0);
-                }
-
-                // 6. ImageComponent
-                {
-                  final c = ImageComponent(imagePath: 'test_path', widthRatio: 0.8);
-                  expect(c.leading, isNotNull);
-                  final json = c.toJson();
-                  expect(json['imagePath'], 'test_path');
-                  expect(json['widthRatio'], 0.8);
-
-                  final c2 = ReceiptComponent.fromJson(json) as ImageComponent;
-                  expect(c2.imagePath, 'test_path');
-                  expect(c2.widthRatio, 0.8);
-                }
-
-                // 7. TextFieldComponent and objects
-                {
-                  final t1 = StyledTextObject.fromText(
-                    'hello',
-                    isBold: true,
-                    isItalic: true,
-                    isStrikethrough: true,
-                    isUnderline: true,
-                    fontSize: 14,
-                    color: Colors.red,
-                  );
-                  final p1 = StyledPlaceholderObject.fromType(
-                    .title,
-                    isBold: true,
-                    isItalic: true,
-                    isStrikethrough: true,
-                    isUnderline: true,
-                    fontSize: 16,
-                    color: Colors.blue,
-                  );
-                  final p2 = StyledPlaceholderObject.fromType(.orderedAt, meta: 'yyyy-MM-dd');
-
-                  final c = TextFieldComponent(texts: [t1, p1, p2], textAlign: .right);
-                  expect(c.leading, isNotNull);
-
-                  final json = c.toJson();
-                  expect(json['textAlign'], TextAlign.right.index);
-
-                  final c2 = ReceiptComponent.fromJson(json) as TextFieldComponent;
-                  expect(c2.textAlign, TextAlign.right);
-                  expect(c2.texts.length, 3);
-                  expect(c2.texts[0].part.text, 'hello');
-                  expect(c2.texts[1].part.text, TextFieldPlaceholderType.title.name);
-
-                  final order = OrderObject(
-                    id: 1,
-                    paid: 100,
-                    price: 80,
-                    cost: 50,
-                    createdAt: DateTime(2025, 5, 20, 12, 0, 0),
-                  );
-
-                  final placeholderNow = StyledPlaceholderObject.fromType(.now, meta: 'yyyy-MM-dd');
-                  expect(placeholderNow.formatText(order: order), isNotEmpty);
-
-                  final placeholderSeq = StyledPlaceholderObject.fromType(.seq);
-                  expect(placeholderSeq.formatText(order: order), isNotNull);
-
-                  final placeholderProductCount = StyledPlaceholderObject.fromType(.productCount);
-                  expect(placeholderProductCount.formatText(order: order), isNotNull);
-
-                  final placeholderPaid = StyledPlaceholderObject.fromType(.paid);
-                  expect(placeholderPaid.formatText(order: order), isNotNull);
-
-                  final placeholderChange = StyledPlaceholderObject.fromType(.change);
-                  expect(placeholderChange.formatText(order: order), isNotNull);
-
-                  final placeholderPrice = StyledPlaceholderObject.fromType(.price);
-                  expect(placeholderPrice.formatText(order: order), isNotNull);
-
-                  final placeholderCost = StyledPlaceholderObject.fromType(.cost);
-                  expect(placeholderCost.formatText(order: order), isNotNull);
-
-                  final placeholderRevenue = StyledPlaceholderObject.fromType(.revenue);
-                  expect(placeholderRevenue.formatText(order: order), isNotNull);
-
-                  final placeholderProductPrice = StyledPlaceholderObject.fromType(.productPrice);
-                  expect(placeholderProductPrice.formatText(order: order), isNotNull);
-
-                  final placeholderAttrPrice = StyledPlaceholderObject.fromType(.attributePrice);
-                  expect(placeholderAttrPrice.formatText(order: order), isNotNull);
-
-                  expect(t1.buildSpan(order: order), isNotNull);
-                  expect(p1.buildSpan(order: order), isNotNull);
-                  expect(p1.buildSpan(order: null), isNotNull);
-                }
-
-                return const SizedBox();
-              },
-            ),
-          ),
-        ),
+      await addComponent(.priceTable);
+      await tapCell(S.printerReceiptTablePricePaid, S.printerReceiptComponentTableDeleteBtnRow);
+      await tapCell(S.printerReceiptTablePriceChange, S.printerReceiptComponentTableDeleteBtnRow);
+      await tapCell(
+        S.printerReceiptTablePricePrice,
+        S.printerReceiptComponentTableInsertBtnUp,
+        S.printerReceiptTablePriceProductsPrice,
       );
+      await tapCell(
+        S.printerReceiptTablePricePrice,
+        S.printerReceiptComponentTableInsertBtnDown,
+        S.printerReceiptTablePriceProductsQuantity,
+      );
+      await tapCellAndEnter(S.printerReceiptTablePriceTotal, S.printerReceiptComponentTableTitleBtn, 'evan');
+      await tester.tap(find.byKey(const Key('modal.save')).last);
       await tester.pumpAndSettle();
-    });
+      final expected4 = {
+        'type': ReceiptComponentType.priceTable.index,
+        'columns': [
+          {'type': PriceTableColumn.total.index, 'title': 'evan'},
+          {'type': PriceTableColumn.productsPrice.index},
+          {'type': PriceTableColumn.price.index},
+          {'type': PriceTableColumn.productsQuantity.index},
+        ],
+      };
 
-    test('ReceiptTemplates and ReceiptTemplate model behavior', () async {
-      when(storage.get(any, any)).thenAnswer((_) => Future.value({}));
+      const XFile('test-image').file.writeAsBytesSync([]);
+      await addComponent(.image);
+      await tester.tap(find.byKey(const Key('image_holder.edit')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('choose-image'));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byKey(const Key('receipt_component.slider')), const Offset(20, 0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('modal.save')).last);
+      await tester.pumpAndSettle();
+      final expected5 = {'type': ReceiptComponentType.image.index, 'imagePath': 'test-image', 'widthRatio': 0.6};
 
-      final repo = ReceiptTemplates();
-      await repo.initialize();
-      expect(repo.itemList.length, 1);
-      expect(repo.selected.id, '__default');
+      // save template
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
 
-      final t1 = ReceiptTemplate(id: 'tpl1', name: 'Test Template', components: []);
-      expect(t1.isDefault, false);
-      expect(t1.isSelected, false);
-      expect(t1.displayName, 'Test Template');
-
-      await repo.addItem(t1, save: false);
-      expect(repo.itemList.length, 2);
-
-      await repo.changeSelected('tpl1');
-      expect(repo.selectedId, 'tpl1');
-      expect(t1.isSelected, true);
+      final template = ReceiptTemplates.instance.getItemByName('Custom')!;
+      expect(template.components.elementAt(0).toJson(), equals(expected1));
+      expect(template.components.elementAt(1).toJson(), equals(expected2));
+      expect(template.components.elementAt(2).toJson(), equals(expected3));
+      expect(template.components.elementAt(3).toJson(), equals(expected4));
+      expect(template.components.elementAt(4).toJson(), equals(expected5));
     });
 
     setUpAll(() {
-      Printers();
+      Printers().replaceItems({'exist': Printer(id: 'exist', name: 'exist', address: 'address2')});
       ReceiptTemplates.reset();
       initializeStorage();
       initializeCache();
       initializeTranslator();
+      initializeFileSystem();
     });
 
     setUp(() {
@@ -578,10 +514,7 @@ void main() {
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
       when(storage.add(any, any, any)).thenAnswer((_) => Future.value());
       when(cache.get(any)).thenReturn(true);
-      Printers.instance.replaceItems({'exist': Printer(id: 'exist', name: 'exist', address: 'address2')});
-      ReceiptTemplates.instance
-        ..replaceItems({})
-        ..prepareDefault();
+      ReceiptTemplates().prepareDefault();
     });
   });
 }

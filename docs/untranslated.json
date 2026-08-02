@@ -1,11 +1,5 @@
 {
   "en": [
-    "printerReceiptComponentHelperColumnActionTooltip",
-    "printerReceiptComponentHelperColumnActionAddLeft",
-    "printerReceiptComponentHelperColumnActionAddRight",
-    "printerReceiptComponentHelperColumnActionMoveLeft",
-    "printerReceiptComponentHelperColumnActionMoveRight",
-    "printerReceiptComponentHelperColumnActionRemove",
     "orderCheckoutAttributeNoteTitle",
     "orderCheckoutAttributeNoteHint"
   ]

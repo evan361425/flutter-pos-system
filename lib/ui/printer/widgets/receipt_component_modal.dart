@@ -186,7 +186,9 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
 
   List<Widget> _buildDiscountTableEditor() {
     final c = component as DiscountTableComponent;
-    final left = DiscountTableColumn.values.toSet().difference(c.columns.map((e) => e.type).toSet()).toList();
+    final left = (DiscountTableColumn.values.toSet()..removeAll(DiscountTableColumn.isNotSelectable))
+        .difference(c.columns.map((e) => e.type).toSet())
+        .toList();
     return [
       _wrapReceiptView(
         PrinterReceiptView.buildDiscountTable(
@@ -216,7 +218,9 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
 
   List<Widget> _buildAttributeTableEditor() {
     final c = component as AttributeTableComponent;
-    final left = AttributeTableColumn.values.toSet().difference(c.columns.map((e) => e.type).toSet()).toList();
+    final left = (AttributeTableColumn.values.toSet()..removeAll(AttributeTableColumn.isNotSelectable))
+        .difference(c.columns.map((e) => e.type).toSet())
+        .toList();
     return [
       _wrapReceiptView(
         PrinterReceiptView.buildAttributesTable(
@@ -261,6 +265,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
               context: context,
               actions: (int index) {
                 return _buildActions(
+                  fixedIndex: 1,
                   index: index,
                   left: left,
                   exist: c.columns,
@@ -329,6 +334,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
         ValueListenableBuilder(
           valueListenable: _notifier!,
           builder: (context, value, child) => Slider(
+            key: const Key('receipt_component.slider'),
             value: value,
             min: min,
             max: max,
@@ -395,33 +401,32 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
             leadingIcon: const Icon(Icons.title_outlined),
             child: Text(entry.value),
           ),
-      if (!isFixed)
-        MenuItemButton(
-          onPressed: () async {
-            final item = exist[index];
-            final result = await showDialog<String>(
-              context: context,
-              builder: (BuildContext context) {
-                final String title = (item.type as dynamic).title;
-                return SingleTextDialog(
-                  validator: Validator.textLimit(S.printerReceiptComponentTableTitleLabel(title), 12),
-                  keyboardType: .text,
-                  selectAll: true,
-                  initialValue: item.title ?? title,
-                  title: Text(S.printerReceiptComponentTableTitleLabel(title)),
-                );
-              },
-            );
+      MenuItemButton(
+        onPressed: () async {
+          final item = exist[index];
+          final result = await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) {
+              final String title = (item.type as dynamic).title;
+              return SingleTextDialog(
+                validator: Validator.textLimit(S.printerReceiptComponentTableTitleLabel(title), 12),
+                keyboardType: .text,
+                selectAll: true,
+                initialValue: item.title ?? title,
+                title: Text(S.printerReceiptComponentTableTitleLabel(title)),
+              );
+            },
+          );
 
-            if (result != null) {
-              setState(() {
-                setter(item.toJson()..['title'] = result);
-              });
-            }
-          },
-          leadingIcon: const Icon(Icons.edit_sharp),
-          child: Text(S.printerReceiptComponentTableTitleBtn),
-        ),
+          if (result != null) {
+            setState(() {
+              setter(item.toJson()..['title'] = result);
+            });
+          }
+        },
+        leadingIcon: const Icon(Icons.edit_sharp),
+        child: Text(S.printerReceiptComponentTableTitleBtn),
+      ),
       if (!isFixed && axis == .horizontal)
         MenuItemButton(
           onPressed: () async {
@@ -521,7 +526,11 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
             exist.removeAt(index);
           }),
           leadingIcon: const Icon(Icons.delete_sharp),
-          child: Text(S.printerReceiptComponentTableDeleteBtn),
+          child: Text(
+            axis == .horizontal
+                ? S.printerReceiptComponentTableDeleteBtnCol
+                : S.printerReceiptComponentTableDeleteBtnRow,
+          ),
         ),
     ];
   }
@@ -675,17 +684,7 @@ class _TextEditorViewState extends State<_TextEditorView> {
     _controller = StyledEditingController<StyledText>();
     _controller.fromParts(
       parts: widget.component.texts.map((e) => e.part).toList(),
-      placeholderParser: (PlaceholderPart placeholder) {
-        final text = S.printerReceiptComponentTextPlaceholders(placeholder.text);
-        return placeholder is MenuPlaceholderPart
-            ? MenuPlaceholder(
-                id: placeholder.text,
-                text: text,
-                meta: placeholder.meta,
-                onMenuSelected: _onPlaceholderSelected,
-              )
-            : TextPlaceholder(id: placeholder.text, text: text);
-      },
+      onPlaceholderPressed: _onPlaceholderSelected,
     );
     _focusNode = FocusNode();
     _colorController = MenuController();
@@ -707,7 +706,7 @@ class _TextEditorViewState extends State<_TextEditorView> {
     widget.component.updateFromParts(parts);
   }
 
-  Future<String?> _onPlaceholderSelected(MenuPlaceholder<String> ph) {
+  Future<String?> _onPlaceholderSelected(MenuPlaceholder<String?> ph) {
     return showDialog<String>(
       context: context,
       builder: (context) {

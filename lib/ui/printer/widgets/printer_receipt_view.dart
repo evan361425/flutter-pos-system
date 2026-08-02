@@ -2,12 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/helpers/logger.dart';
-import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/models/xfile.dart';
-import 'package:possystem/translator.dart';
 
 class PrinterReceiptView extends StatelessWidget {
   static const defaultTextStyle = TextStyle(
@@ -23,10 +21,10 @@ class PrinterReceiptView extends StatelessWidget {
   static const largeTextStyle = TextStyle(fontSize: 22, height: 28 / 22, letterSpacing: 0);
 
   final OrderObject order;
-  final ImageableController? controller;
+  final ImageableController controller;
   final List<ReceiptComponent>? customComponents;
 
-  const PrinterReceiptView({super.key, required this.order, this.controller, this.customComponents});
+  const PrinterReceiptView({super.key, required this.order, required this.controller, this.customComponents});
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +48,7 @@ class PrinterReceiptView extends StatelessWidget {
           // is fixed width (58mm or 80mm).
           // fixed width can provide same density of receipt
           width: 348, // 320 + 28 (padding)
-          child: controller == null
-              ? DefaultTextStyle(
-                  style: defaultTextStyle,
-                  child: Column(mainAxisSize: .min, children: children),
-                )
-              : ImageableContainer(controller: controller!, style: defaultTextStyle, children: children),
+          child: ImageableContainer(controller: controller!, style: defaultTextStyle, children: children),
         ),
       ),
     );
@@ -267,13 +260,13 @@ class PrinterReceiptView extends StatelessWidget {
       children: [
         TableRow(
           children: [
-            Text(S.printerReceiptPriceTableTotal),
-            Text('\$${order.price.toCurrency()}', style: largeTextStyle),
+            _CellWithActions(actions: actions?.call(0), child: Text(titles[0])),
+            Text(values[0], style: largeTextStyle),
           ],
         ),
-        for (int i = 0; i < titles.length; i++)
+        for (int i = 1; i < titles.length; i++)
           TableRow(
-            decoration: i == 0
+            decoration: i == 1
                 ? BoxDecoration(
                     border: Border(top: BorderSide(color: color.outlineVariant)),
                   )
@@ -282,7 +275,7 @@ class PrinterReceiptView extends StatelessWidget {
               _CellWithActions(
                 actions: actions?.call(i),
                 child: Padding(
-                  padding: i == 0 ? const .only(top: 4) : const .only(left: 8),
+                  padding: i == 1 ? const .only(top: 4) : const .only(left: 8),
                   child: Text(titles[i], style: smallTextStyle),
                 ),
               ),

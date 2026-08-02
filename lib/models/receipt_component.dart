@@ -22,10 +22,10 @@ enum OrderTableColumn {
   const OrderTableColumn(this.width);
 
   String get title => switch (this) {
-    .quantity => S.printerReceiptProductTableCount,
-    .singlePrice => S.printerReceiptProductTablePrice,
-    .totalPrice => S.printerReceiptProductTableTotal,
-    _ => S.printerReceiptProductTableName,
+    .quantity => S.printerReceiptTableOrderQuantity,
+    .singlePrice => S.printerReceiptTableOrderSinglePrice,
+    .totalPrice => S.printerReceiptTableOrderTotalPrice,
+    _ => S.printerReceiptTableOrderName,
   };
 
   String valueFromOrder(OrderProductObject order) => switch (this) {
@@ -51,11 +51,11 @@ enum DiscountTableColumn {
   const DiscountTableColumn(this.width);
 
   String get title => switch (this) {
-    .quantity => S.printerReceiptDiscountTableCount,
-    .originPrice => S.printerReceiptDiscountTableOrigin,
-    .singlePrice => S.printerReceiptDiscountTablePrice,
-    .totalPrice => S.printerReceiptDiscountTableTotal,
-    _ => S.printerReceiptDiscountTableTitle,
+    .quantity => S.printerReceiptTableDiscountQuantity,
+    .originPrice => S.printerReceiptTableDiscountOriginPrice,
+    .singlePrice => S.printerReceiptTableDiscountSinglePrice,
+    .totalPrice => S.printerReceiptTableDiscountTotalPrice,
+    _ => S.printerReceiptTableDiscountTitle,
   };
 
   String valueFromOrder(OrderProductObject order) => switch (this) {
@@ -80,8 +80,8 @@ enum AttributeTableColumn {
   const AttributeTableColumn(this.width);
 
   String get title => switch (this) {
-    .adjustment => S.printerReceiptAttributeTableAdjustment,
-    _ => S.printerReceiptAttributeTableTitle,
+    .adjustment => S.printerReceiptTableAttributeAdjustment,
+    _ => S.printerReceiptTableAttributeTitle,
   };
 
   String valueFromOrder(OrderEffectiveAttribute attribute) => switch (this) {
@@ -96,6 +96,7 @@ enum AttributeTableColumn {
 }
 
 enum PriceTableColumn {
+  total,
   paid,
   price,
   change,
@@ -103,14 +104,16 @@ enum PriceTableColumn {
   productsPrice;
 
   String get title => switch (this) {
-    .paid => S.printerReceiptPriceTablePaid,
-    .price => S.printerReceiptPriceTablePrice,
-    .change => S.printerReceiptPriceTableChange,
-    .productsQuantity => S.printerReceiptPriceTableProductsQuantity,
-    .productsPrice => S.printerReceiptPriceTableProductsPrice,
+    .total => S.printerReceiptTablePriceTotal,
+    .paid => S.printerReceiptTablePricePaid,
+    .price => S.printerReceiptTablePricePrice,
+    .change => S.printerReceiptTablePriceChange,
+    .productsQuantity => S.printerReceiptTablePriceProductsQuantity,
+    .productsPrice => S.printerReceiptTablePriceProductsPrice,
   };
 
   String valueFromOrder(OrderObject order) => switch (this) {
+    .total => '\$${order.price.toCurrency()}',
     .paid => '\$${order.paid.toCurrency()}',
     .price => '\$${order.price.toCurrency()}',
     .change => '\$${order.change.toCurrency()}',
@@ -131,7 +134,8 @@ abstract class ReceiptComponent {
   Map<String, Object?> toJson() {
     return {
       'type': type.index,
-      'padding': [padding.left, padding.top, padding.right, padding.bottom].map((e) => e.toInt()).join(','),
+      if (padding != .zero)
+        'padding': [padding.left, padding.top, padding.right, padding.bottom].map((e) => e.toInt()).join(','),
     };
   }
 
@@ -256,6 +260,7 @@ class PriceTableComponent extends ReceiptComponent {
   PriceTableComponent({
     super.padding,
     this.columns = const [
+      TableColumnConfig(PriceTableColumn.total),
       TableColumnConfig(PriceTableColumn.paid),
       TableColumnConfig(PriceTableColumn.price),
       TableColumnConfig(PriceTableColumn.change),
@@ -385,10 +390,6 @@ class TableColumnConfig<T extends Enum> {
       width: json['width'] as double?,
     );
   }
-
-  TableColumnConfig<T> copyWith({T? type}) {
-    return TableColumnConfig(type ?? this.type, title: title, width: width);
-  }
 }
 
 abstract class TextFieldObject<T extends StyledPart> {
@@ -406,29 +407,6 @@ class StyledTextObject extends TextFieldObject<StyledPart> {
 
   factory StyledTextObject.fromJson(StyledPart part, Map<String, Object?> json) {
     return StyledTextObject(part: part);
-  }
-
-  factory StyledTextObject.fromText(
-    String text, {
-    String? meta,
-    bool? isBold,
-    bool? isItalic,
-    bool? isStrikethrough,
-    bool? isUnderline,
-    int? fontSize,
-    Color? color,
-  }) {
-    final style = StyledText.nullableFactory(
-      isBold: isBold,
-      isItalic: isItalic,
-      isStrikethrough: isStrikethrough,
-      isUnderline: isUnderline,
-      fontSize: fontSize,
-      color: color,
-    );
-    return StyledTextObject(
-      part: StyledPart(text: text, style: style),
-    );
   }
 
   @override

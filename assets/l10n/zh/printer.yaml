@@ -92,28 +92,28 @@ settings:
     helper: 單子跟單子之間的空白會變少，較省紙張，但是撕紙時要小心
 receipt:
   title: 交易明細
-  productTable:
-    name: 品項
-    price: 單價
-    count: 數量
-    total: 小計
-    time: 時間
-  discountTable:
-    title: 折扣
-    price: 單價
-    count: 數量
-    total: 小計
-    origin: 原單價
-  attributeTable:
-    title: 附加
-    adjustment: 調整金額
-  priceTable:
-    total: 總價
-    paid: 付額
-    price: 總價
-    change: 找錢
-    productsPrice: 產品總價
-    productsQuantity: 產品總數
+  table:
+    order:
+      name: 品項
+      singlePrice: 單價
+      quantity: 數量
+      totalPrice: 小計
+    discount:
+      title: 折扣
+      quantity: 數量
+      originPrice: 原單價
+      singlePrice: 單價
+      totalPrice: 小計
+    attribute:
+      title: 附加
+      adjustment: 調整金額
+    price:
+      total: 總價
+      paid: 付額
+      price: 價格
+      change: 找錢
+      productsPrice: 產品總價
+      productsQuantity: 產品總數
   template:
     meta:
       componentsCount:
@@ -158,8 +158,9 @@ receipt:
         left: 向左移動
         right: 向右移動
         down: 向下移動
-      delete:
-        btn: 刪除欄
+      deleteBtn:
+        row: 刪除行
+        col: 刪除欄
       attr:
         title:
           addAttr: 標題添加種類名稱
@@ -228,13 +229,6 @@ receipt:
     helper:
       selectColumn: 選擇要在收據中顯示的欄位
       preview: 預覽
-      columnAction:
-        tooltip: 欄位操作
-        addLeft: 在左方新增欄位
-        addRight: 在右方新增欄位
-        moveLeft: 向左移動欄位
-        moveRight: 向右移動欄位
-        remove: 移除欄位
 info:
   title: 出單機資訊
   name: 名稱
