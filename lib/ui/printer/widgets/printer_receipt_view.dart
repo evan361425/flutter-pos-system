@@ -48,7 +48,7 @@ class PrinterReceiptView extends StatelessWidget {
           // is fixed width (58mm or 80mm).
           // fixed width can provide same density of receipt
           width: 348, // 320 + 28 (padding)
-          child: ImageableContainer(controller: controller!, style: defaultTextStyle, children: children),
+          child: ImageableContainer(controller: controller, style: defaultTextStyle, children: children),
         ),
       ),
     );
