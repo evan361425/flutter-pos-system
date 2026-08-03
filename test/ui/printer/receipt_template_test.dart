@@ -42,93 +42,96 @@ void main() {
       );
     }
 
-    // for (final device in [Device.desktop, Device.mobile]) {
-    const device = Device.mobile;
-    // group(device.name, () {
-    testWidgets('Add template with all type of component', (tester) async {
-      deviceAs(device, tester);
-      await tester.pumpWidget(buildApp());
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('printer.settings')));
-      await tester.pumpAndSettle();
+    for (final device in [Device.desktop, Device.mobile]) {
+      group(device.name, () {
+        testWidgets('Add template with all type of component', (tester) async {
+          deviceAs(device, tester);
+          await tester.pumpWidget(buildApp());
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('printer.settings')));
+          await tester.pumpAndSettle();
 
-      // tap add template
-      await tester.tap(find.byKey(const Key('printer.settings.template_create')));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byKey(const Key('receipt_tpl.name')), 'AllComponentsTemplate');
-      await tester.pumpAndSettle();
+          // tap add template
+          await tester.tap(find.byKey(const Key('printer.settings.template_create')));
+          await tester.pumpAndSettle();
+          await tester.enterText(find.byKey(const Key('receipt_tpl.name')), 'AllComponentsTemplate');
+          await tester.pumpAndSettle();
 
-      Future<void> addComponent(ReceiptComponentType v, [bool save = true]) async {
-        await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text(S.printerReceiptComponentType(v.name)));
-        await tester.pumpAndSettle();
-        if (save) {
+          Future<void> addComponent(ReceiptComponentType v, [bool save = true]) async {
+            await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
+            await tester.pumpAndSettle();
+            await tester.tap(find.text(S.printerReceiptComponentType(v.name)));
+            await tester.pumpAndSettle();
+            if (save) {
+              await tester.tap(find.byKey(const Key('modal.save')).last);
+              await tester.pumpAndSettle();
+            }
+          }
+
+          await addComponent(.textField, false);
+          await tester.enterText(find.byKey(const Key('editor_ant.editor')), 'Sample Text');
+          await tester.tap(find.byIcon(Icons.data_object));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('now'));
+          await tester.pumpAndSettle();
+
+          // Date Placeholder
+          await tester.tap(find.text('now'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('yMMMd Hms'));
+          await tester.pumpAndSettle();
+          tester.testTextInput.enterText('yy/mm/d');
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('OK'));
+          await tester.pumpAndSettle();
           await tester.tap(find.byKey(const Key('modal.save')).last);
           await tester.pumpAndSettle();
-        }
-      }
 
-      await addComponent(.textField, false);
-      await tester.enterText(find.byKey(const Key('editor_ant.editor')), 'Sample Text');
-      await tester.tap(find.byIcon(Icons.data_object));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('now'));
-      await tester.pumpAndSettle();
+          await addComponent(.image);
+          await addComponent(.orderTable);
+          await addComponent(.discountTable);
+          await addComponent(.attributeTable);
+          await addComponent(.priceTable);
+          await addComponent(.divider);
 
-      // Date Placeholder
-      await tester.tap(find.text('now'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('yMMMd Hms'));
-      await tester.pumpAndSettle();
-      tester.testTextInput.enterText('yy/mm/d');
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('OK'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('modal.save')).last);
+          await tester.pumpAndSettle();
 
-      await addComponent(.image);
-      await addComponent(.orderTable);
-      await addComponent(.discountTable);
-      await addComponent(.attributeTable);
-      await addComponent(.priceTable);
-      await addComponent(.divider);
-
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-
-      expect(find.text('AllComponentsTemplate'), findsOneWidget);
-      verify(
-        storage.set(
-          any,
-          argThat(
-            predicate((v) {
-              if (v is! Map) return false;
-              final containsTemplate = v.values.any((entry) {
-                if (entry is! Map) return false;
-                final name = entry['name'] as String?;
-                final components = entry['components'] as List<dynamic>?;
-                return name == 'AllComponentsTemplate' &&
-                    components != null &&
-                    components.length == 7 &&
-                    components[0]['type'] == ReceiptComponentType.textField.index &&
-                    components[0]['c'] == ReceiptComponentType.textField.index &&
-                    components[1]['type'] == ReceiptComponentType.image.index &&
-                    components[2]['type'] == ReceiptComponentType.orderTable.index &&
-                    components[3]['type'] == ReceiptComponentType.discountTable.index &&
-                    components[4]['type'] == ReceiptComponentType.attributeTable.index &&
-                    components[5]['type'] == ReceiptComponentType.priceTable.index &&
-                    components[6]['type'] == ReceiptComponentType.divider.index;
-              });
-              return containsTemplate;
-            }),
-          ),
-        ),
-      ).called(equals(1));
-    });
-    //   });
-    // }
+          expect(find.text('AllComponentsTemplate'), findsOneWidget);
+          verify(
+            storage.set(
+              any,
+              argThat(
+                predicate((v) {
+                  if (v is! Map) return false;
+                  final containsTemplate = v.values.any((entry) {
+                    if (entry is! Map) return false;
+                    final name = entry['name'] as String?;
+                    final components = entry['components'] as List<dynamic>?;
+                    if (name != 'AllComponentsTemplate' || components == null || components.length != 7) return false;
+                    final texts = components[0]['texts'] as List<dynamic>?;
+                    return components[0]['type'] == ReceiptComponentType.textField.index &&
+                        texts != null &&
+                        texts[0]['_part']['type'] == 'styled' &&
+                        texts[0]['_part']['text'] == 'Sample Text' &&
+                        texts[1]['_part']['type'] == 'meta_placeholder' &&
+                        texts[1]['_part']['text'] == 'now' &&
+                        texts[1]['_part']['meta'] == 'yy/mm/d' &&
+                        components[1]['type'] == ReceiptComponentType.image.index &&
+                        components[2]['type'] == ReceiptComponentType.orderTable.index &&
+                        components[3]['type'] == ReceiptComponentType.discountTable.index &&
+                        components[4]['type'] == ReceiptComponentType.attributeTable.index &&
+                        components[5]['type'] == ReceiptComponentType.priceTable.index &&
+                        components[6]['type'] == ReceiptComponentType.divider.index;
+                  });
+                  return containsTemplate;
+                }),
+              ),
+            ),
+          ).called(equals(1));
+        });
+      });
+    }
 
     testWidgets('Edit template with component reordering and deleting', (tester) async {
       await ReceiptTemplates.instance.addItem(

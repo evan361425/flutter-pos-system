@@ -7,6 +7,7 @@ import 'package:packages/bluetooth.dart' as bt;
 import 'package:possystem/app.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/model.dart';
@@ -152,7 +153,7 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   @override
   String get prefix => 'printer.$id';
 
-  bool get connected => kDebugMode && id == 'demo' ? true : p.connected;
+  bool get connected => isLocalTest ? true : p.connected;
 
   Printer({
     super.id,

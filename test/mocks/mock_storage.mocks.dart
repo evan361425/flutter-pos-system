@@ -22,6 +22,7 @@ import 'package:sembast/sembast_io.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeDatabase_0 extends _i1.SmartFake implements _i2.Database {
   _FakeDatabase_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
@@ -45,7 +46,7 @@ class MockStorage extends _i1.Mock implements _i3.Storage {
           as _i2.Database);
 
   @override
-  set db(_i2.Database? _db) => super.noSuchMethod(Invocation.setter(#db, _db), returnValueForMissingStub: null);
+  set db(_i2.Database? value) => super.noSuchMethod(Invocation.setter(#db, value), returnValueForMissingStub: null);
 
   @override
   _i4.Future<void> add(_i3.Stores? storeId, String? recordId, Map<String, Object?>? data) =>

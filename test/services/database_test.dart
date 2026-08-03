@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/services/database.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite_common/sqflite_logger.dart' as sqflite_logger;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' show databaseFactoryFfi, sqfliteFfiInit;
 
 import '../mocks/mock_database.mocks.dart' show MockDatabaseExecutor;
@@ -18,7 +19,11 @@ void main() {
     group('#initialize', () {
       test('onCreate', () async {
         sqflite.databaseFactoryOrNull = databaseFactoryFfi;
-        await Database.instance.initialize(path: sqflite.inMemoryDatabasePath, logWhenQuery: true);
+        await Database.instance.initialize(
+          path: sqflite.inMemoryDatabasePath,
+          logWhenQuery: true,
+          logOptions: sqflite_logger.SqfliteLoggerOptions(log: (sqflite_logger.SqfliteLoggerEvent event) {}),
+        );
 
         final dbVersion = await Database.instance.db.getVersion();
         expect(dbVersion, equals(Database.latestVersion));

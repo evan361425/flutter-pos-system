@@ -331,6 +331,7 @@ void main() {
                 ],
               },
               {'type': ReceiptComponentType.priceTable.index, 'columns': 666},
+              {'type': ReceiptComponentType.textField.index},
               {
                 'type': ReceiptComponentType.textField.index,
                 'texts': [

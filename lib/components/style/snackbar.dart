@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -133,8 +135,8 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
 void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key, String? moreMessage}) {
   void show(String msg, [String? more]) {
     if (kDebugMode) {
-      print('snackbar debug error: $msg');
-      print('snackbar debug stack: ${e is Error ? e.stackTrace : null}');
+      developer.log('snackbar debug error: $msg');
+      developer.log('snackbar debug stack: ${e is Error ? e.stackTrace : null}');
     }
     showMoreInfoSnackBar(msg, more == null ? null : Linkify.fromString(more), context: context, key: key);
   }
