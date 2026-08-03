@@ -97,7 +97,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byIcon(KIcons.modal));
+        await tester.tap(find.byIcon(KIcons.edit));
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byKey(const Key('chart.title')), 'title2');
@@ -210,7 +210,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byIcon(KIcons.modal));
+        await tester.tap(find.byIcon(KIcons.edit));
         await tester.pumpAndSettle();
 
         await tester.dragFrom(const Offset(500, 500), const Offset(0, -500));
@@ -386,7 +386,7 @@ void main() {
 
         await tester.tap(find.byKey(const Key('chart.test.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byIcon(KIcons.modal));
+        await tester.tap(find.byIcon(KIcons.edit));
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byKey(const Key('chart.title')), 'title2');
@@ -465,7 +465,7 @@ void main() {
 
       await tester.tap(find.byKey(const Key('chart.test.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.modal));
+      await tester.tap(find.byIcon(KIcons.edit));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('chart.type.circular')));

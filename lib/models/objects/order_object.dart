@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:intl/intl.dart';
+import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
 import 'package:possystem/models/objects/order_attribute_object.dart';
@@ -9,6 +10,7 @@ import 'package:possystem/models/order/cart_product.dart';
 import 'package:possystem/models/order/order_attribute_option.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/seller.dart';
+import 'package:possystem/translator.dart';
 
 /// Order in object mode, helps I/O in DB.
 class OrderObject extends _Object {
@@ -90,6 +92,20 @@ class OrderObject extends _Object {
     }
   }
 
+  /// Get discounted products.
+  Iterable<OrderProductObject> get discounted => products.where((e) => e.isDiscount);
+
+  /// Get actually changed price attributes.
+  Iterable<OrderEffectiveAttribute> get effectiveAttributes => attributes
+      .where((e) => e.modeValue != null)
+      .map(
+        (e) => OrderEffectiveAttribute(
+          name: e.name,
+          optionName: e.optionName,
+          priceChanged: OrderAttributeValueWidget.string(e.mode, e.modeValue!),
+        ),
+      );
+
   /// Get [attributes] as map.
   ///
   /// Help to restore from stash.
@@ -169,6 +185,41 @@ class OrderObject extends _Object {
       attributes: attributes.map((e) => OrderSelectedAttributeObject.fromStashMap(e)).toList(),
       products: products.map((e) => OrderProductObject.fromStashMap(e)).toList(),
       createdAt: Util.fromUTC(data['createdAt'] as int? ?? 0),
+    );
+  }
+
+  factory OrderObject.example() {
+    return OrderObject(
+      createdAt: .now(),
+      price: 330,
+      paid: 500,
+      productsCount: 3,
+      productsPrice: 300,
+      attributes: [
+        OrderSelectedAttributeObject(
+          name: S.orderAttributeExamplePlace,
+          optionName: S.orderAttributeExamplePlaceDineIn,
+          mode: .changeDiscount,
+          modeValue: 10,
+        ),
+      ],
+      products: [
+        OrderProductObject(
+          productName: S.menuExampleProductCheeseBurger,
+          catalogName: S.menuExampleCatalogBurger,
+          count: 2,
+          singlePrice: 60,
+          originalPrice: 120,
+          isDiscount: true,
+        ),
+        OrderProductObject(
+          productName: S.menuExampleProductHamBurger,
+          catalogName: S.menuExampleCatalogBurger,
+          count: 1,
+          singlePrice: 180,
+          originalPrice: 180,
+        ),
+      ],
     );
   }
 }
@@ -456,6 +507,22 @@ class OrderSelectedAttributeObject extends _Object {
       optionId: option.id,
     );
   }
+}
+
+/// Attribute with actually effect on the order, which calculated by
+/// [OrderSelectedAttributeObject.mode] and
+/// [OrderSelectedAttributeObject.modeValue].
+class OrderEffectiveAttribute {
+  /// The attribute name, for example: age.
+  String name;
+
+  /// The attribute's option name, for example: bellow 18.
+  String optionName;
+
+  /// The string that show on receipt which calculated by [mode] and [modeValue].
+  String priceChanged;
+
+  OrderEffectiveAttribute({required this.name, required this.optionName, required this.priceChanged});
 }
 
 List<dynamic> _safeParseList(String? source) {

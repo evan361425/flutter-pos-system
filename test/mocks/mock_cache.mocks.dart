@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeSharedPreferences_0 extends _i1.SmartFake implements _i2.SharedPreferences {
   _FakeSharedPreferences_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
@@ -44,8 +45,8 @@ class MockCache extends _i1.Mock implements _i3.Cache {
           as _i2.SharedPreferences);
 
   @override
-  set service(_i2.SharedPreferences? _service) =>
-      super.noSuchMethod(Invocation.setter(#service, _service), returnValueForMissingStub: null);
+  set service(_i2.SharedPreferences? value) =>
+      super.noSuchMethod(Invocation.setter(#service, value), returnValueForMissingStub: null);
 
   @override
   T? get<T>(String? name) => (super.noSuchMethod(Invocation.method(#get, [name])) as T?);

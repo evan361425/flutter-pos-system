@@ -84,22 +84,24 @@ class MenuActionGroup {
     String? warningContent,
     required Future<void> Function() deleteCallback,
     bool popAfterDeleted = false,
+    bool deletable = true,
   }) async {
     final MaterialLocalizations local = .of(context);
     final result = await showPositionedMenu<T>(
       context,
       actions: [
         ...actions,
-        MenuAction(
-          key: const Key('btn.delete'),
-          title: Text(local.deleteButtonTooltip),
-          leading: const Icon(KIcons.delete),
-          returnValue: deleteValue,
-        ),
+        if (deletable)
+          MenuAction(
+            key: const Key('btn.delete'),
+            title: Text(local.deleteButtonTooltip),
+            leading: const Icon(KIcons.delete),
+            returnValue: deleteValue,
+          ),
       ],
     );
 
-    if (result == deleteValue) {
+    if (deletable && result == deleteValue) {
       if (context.mounted) {
         await DeleteDialog.show(
           context,

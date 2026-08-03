@@ -240,7 +240,12 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
   }
 }
 
-enum RepositoryStorageType { pureRepo, repoModel, repoProperties }
+enum RepositoryStorageType {
+  // Pure repository, each item is stored under its id
+  pureRepo,
+  // This item is both model and repository, storing children under parent id
+  repoModel,
+}
 
 class RepositoryBatchData {
   final String id;

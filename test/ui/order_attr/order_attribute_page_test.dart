@@ -125,7 +125,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.more')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.text_fields_outlined));
+      await tester.tap(find.byIcon(KIcons.edit));
       await tester.pumpAndSettle();
 
       // repeat name

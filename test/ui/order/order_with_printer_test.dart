@@ -8,6 +8,7 @@ import 'package:possystem/app.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/services/bluetooth.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/order/widgets/printer_button_view.dart';
@@ -224,5 +225,6 @@ void main() {
     Printers();
     initializeCache();
     initializeTranslator();
+    ReceiptTemplates.reset();
   });
 }

@@ -35,7 +35,7 @@ class MenuCatalogList extends StatelessWidget {
         actionBuilder: (Catalog catalog) => <MenuAction<_Action>>[
           MenuAction(
             title: Text(S.menuCatalogTitleUpdate),
-            leading: const Icon(KIcons.modal),
+            leading: const Icon(KIcons.edit),
             routePathParameters: {'id': catalog.id},
             route: Routes.menuCatalogUpdate,
           ),

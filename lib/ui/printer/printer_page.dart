@@ -42,11 +42,11 @@ class PrinterPage extends StatelessWidget {
               icon: const Icon(KIcons.add),
               label: S.printerTitleCreate,
             ),
-            IconButton(
+            RouteIconButton(
               key: const Key('printer.supported_list'),
               onPressed: _showSupportedPrinters(context),
-              icon: const Icon(Icons.info_outline),
-              tooltip: S.printerSupportedTitle,
+              icon: const Icon(Icons.devices),
+              label: S.printerTitleSupported,
             ),
             RouteIconButton(
               key: const Key('printer.settings'),
@@ -57,7 +57,6 @@ class PrinterPage extends StatelessWidget {
           ],
         ),
         delegate: SlidableItemDelegate(
-          disableSlide: true,
           items: Printers.instance.itemList,
           tileBuilder: (printer, _, actorBuilder) => _Tile(printer, actorBuilder),
           handleDelete: (printer) => printer.remove(),
@@ -101,7 +100,7 @@ class _EmptyBody extends StatelessWidget {
       children: [
         FilledButton(onPressed: () => context.pushNamed(Routes.printerCreate), child: Text(S.printerTitleCreate)),
         const SizedBox(width: kInternalSpacing),
-        OutlinedButton(onPressed: _showSupportedPrinters(context), child: Text(S.printerSupportedTitle)),
+        OutlinedButton(onPressed: _showSupportedPrinters(context), child: Text(S.printerTitleSupported)),
       ],
     );
 
@@ -235,7 +234,7 @@ VoidCallback _showSupportedPrinters(BuildContext context) {
   return () => showDialog(
     context: context,
     builder: (context) => ResponsiveDialog(
-      title: Text(S.printerSupportedTitle),
+      title: Text(S.printerTitleSupported),
       content: Column(
         children: [
           for (final printer in [PrinterProvider.catPrinter, PrinterProvider.xPrinter58, PrinterProvider.yokoscan58])

@@ -15,7 +15,11 @@ void main() {
         MaterialApp(
           theme: ThemeData.light(),
           home: Scaffold(
-            body: ImageableContainer(controller: controller, children: const [Text('Hello World')]),
+            body: ImageableContainer(
+              controller: controller,
+              style: const TextStyle(),
+              children: const [Text('Hello World')],
+            ),
           ),
         ),
       );

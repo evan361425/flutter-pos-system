@@ -7,6 +7,7 @@ headerInfo:
 _title:
   $prefix: title
   create: Add Printer
+  supported: Supported List
   update: Edit Printer
   settings: Format Settings
 btn:
@@ -17,7 +18,7 @@ btn:
   print: Print
 status:
   success: Printer connected
-  connecting: Connecting
+  connected: Connected
   standby: Not connected
   printed: Print complete
   name:
@@ -90,28 +91,156 @@ meta:
   helper: Enable Bluetooth and keep the printer nearby
 settings:
   title: Printer Format Settings
+  _title:
+    $prefix: title
+    template:
+      create: Create Template
+      update: Update Template
   padding:
     label: Narrow Spacing
     helper: Reduces paper between receipts; need caution when tearing
-  more: More Settings Coming Soon!
 receipt:
   title: Receipt
-  column:
-    name: Item
-    price: U/P
-    count: QTY
-    total: TOT
-    time: Time
-  discount:
-    label: Discount
-    origin: Origin
-  addOns:
-    label: Add-Ons
-    adjustment: Adj
-  total: Total
-  paid: Paid
-  price: Price
-  change: Change
+  table:
+    order:
+      name: Item
+      singlePrice: U/P
+      quantity: QTY
+      totalPrice: TOT
+    discount:
+      title: Discount
+      quantity: QTY
+      originPrice: Origin
+      singlePrice: U/P
+      totalPrice: TOT
+    attribute:
+      title: Add-Ons
+      adjustment: Adj
+    price:
+      total: Total
+      paid: Paid
+      price: Price
+      change: Change
+      productsPrice: Prod. TOT
+      productsQuantity: Prod. QTY
+  template:
+    meta:
+      componentsCount:
+      - =1: '{count} component'
+        other: '{count} components'
+      - count: {type: int, mode: plural, format: compactLong}
+    name:
+      label: Template Name
+      errorRepeat: Template name already exists
+    select:
+      label: Enable This Template
+    default:
+      name: Default Template
+  component:
+    title:
+      add: Add Component
+      empty: No components yet. Tap below button to add one!
+      hint: Drag icon to reorder | Tap to edit | Swipe to delete
+    type:
+    - orderTable: Order Table
+      discountTable: Discount Products Table
+      attributeTable: Adds-on Table
+      priceTable: Price Table
+      textField: Text Field
+      image: Image
+      divider: Divider
+    table:
+      title:
+        btn: Edit Title
+        label:
+        - "{name}'s Title"
+      width:
+        btn: Adjust Column Width
+        label:
+        - "{name}'s Column Width"
+      insertBtn:
+        up: Insert 1 Row Above
+        left: Insert 1 Column Left
+        right: Insert 1 Column Right
+        down: Insert 1 Row Below
+      moveBtn:
+        up: Move Up
+        left: Move Left
+        right: Move Right
+        down: Move Down
+      deleteBtn:
+        row: Delete Row
+        col: Delete Column
+      attr:
+        title:
+          addAttr: Add Category to Title
+          addOption: Add Option to Title
+          removeAttr: Remove Category from Title
+          removeOption: Remove Option from Title
+      discount:
+        title:
+          addCatalog: Add Catalog to Title
+          removeCatalog: Remove Catalog from Title
+      order:
+        title:
+          addCatalog: Add Catalog to Title
+          removeCatalog: Remove Catalog from Title
+    text:
+      value: Start typing...
+      color: Color
+      align: Alignment
+      alignLeft: Left
+      alignCenter: Center
+      alignRight: Right
+      alignJustify: Justify
+      bold: Bold
+      italic: Italic
+      strikeThrough: Strike Through
+      underline: Underline
+      placeholder: Insert Placeholder
+      _placeholder:
+        $prefix: placeholder
+        date:
+          label: Date Format
+          hint: e.g., yyyy/MM/dd
+          helper: Related formats can be found in the [documentation](https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html)
+      placeholders:
+      - title: title
+        now: now
+        seq: order sequence
+        productCount: product count
+        paid: paid amount
+        change: change amount
+        price: order price
+        cost: order cost
+        revenue: revenue
+        productPrice: product price
+        attributePrice: attribute price
+        createdAt: created time
+        orderedAt: order time
+    padding:
+      label: Padding
+      helper: 'Padding around text in pixels'
+      all: All Directions
+      split: Set Directions Separately
+      top: Top
+      bottom: Bottom
+      left: Left
+      right: Right
+    image: Image
+    _image:
+      $prefix: image
+      widthRatio: Width Ratio
+      widthRatioHelper: 'Width ratio compared to receipt width, e.g., 0.5 = 50%'
+    divider:
+      height: Height
+      meta:
+      - 'Height: {height}'
+      - height: {type: double, format: 'compact'}
+    helper:
+      selectColumn: Choose wanted column to display in the receipt
+      preview: Preview
+
 info:
   title: Printer Information
   name: Name
@@ -119,7 +248,6 @@ info:
   signal: Signal
   status: Status
 supported:
-  title: Supported Printers
   name:
   - xPrinter58: XPrinter
     catPrinter: Portable Mini Printer

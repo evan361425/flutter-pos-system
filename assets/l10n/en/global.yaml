@@ -83,6 +83,7 @@ btn:
   - Button text to navigate to another screen in trailing.
   signInWith:
     google: Sign in with Google
+  readonly: Readonly
 semantics:
   percentileBar:
   - Currently {percent} of total

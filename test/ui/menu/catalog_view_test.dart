@@ -141,7 +141,7 @@ void main() {
 
       await tester.longPress(find.byKey(const Key('product.p-1')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(KIcons.modal));
+      await tester.tap(find.byIcon(KIcons.edit));
       await tester.pumpAndSettle();
 
       // save failed

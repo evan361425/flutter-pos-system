@@ -8,9 +8,11 @@ import 'package:possystem/helpers/logger.dart';
 class ImageableContainer extends StatelessWidget {
   final ImageableController controller;
 
+  final TextStyle style;
+
   final List<Widget> children;
 
-  const ImageableContainer({super.key, required this.controller, required this.children});
+  const ImageableContainer({super.key, required this.controller, required this.style, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +21,9 @@ class ImageableContainer extends StatelessWidget {
       child: Padding(
         padding: const .symmetric(horizontal: kHorizontalSpacing, vertical: kTopSpacing),
         child: SingleChildScrollView(
+          // DefaultTextStyle only work here, not work outside settings
           child: DefaultTextStyle(
-            style: const TextStyle(color: Color(0xFF424242), overflow: .clip),
+            style: style,
             child: RepaintBoundary(
               key: controller.key,
               child: Column(mainAxisSize: .min, crossAxisAlignment: .stretch, children: children),

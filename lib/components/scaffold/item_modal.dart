@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:possystem/components/dialog/responsive_dialog.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/constants/constant.dart';
+import 'package:possystem/translator.dart';
 
+/// Base modal design for inputs
 mixin ItemModal<T extends StatefulWidget> on State<T> {
   final formKey = GlobalKey<FormState>();
   final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   bool _isSaving = false;
 
+  /// Title of the dialog
   String get title;
+
+  /// Control [ResponsiveDialog]'s scrollable
+  bool get scrollable => true;
+
+  /// Whether enable save button
+  bool get readonly => false;
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveDialog(
       title: Text(title),
-      action: TextButton(
-        key: const Key('modal.save'),
-        onPressed: () => handleSubmit(),
-        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-      ),
+      action: readonly
+          ? Padding(padding: const .only(right: 8.0), child: HintText(S.btnReadonly))
+          : TextButton(
+              key: const Key('modal.save'),
+              onPressed: () => handleSubmit(),
+              child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+            ),
+      scrollable: scrollable,
       scaffoldMessengerKey: scaffoldMessengerKey,
       floatingActionButton: buildFloatingActionButton(),
       content: Form(
@@ -26,7 +39,7 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
         child: Column(
           children: [
             ...buildFormFields(),
-            const SizedBox(height: kDialogBottomSpacing),
+            if (scrollable) const SizedBox(height: kDialogBottomSpacing),
           ],
         ),
       ),
@@ -51,7 +64,9 @@ mixin ItemModal<T extends StatefulWidget> on State<T> {
     _isSaving = true;
 
     try {
-      await updateItem();
+      if (!readonly) {
+        await updateItem();
+      }
     } finally {
       _isSaving = false;
     }

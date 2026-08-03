@@ -282,7 +282,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('$key.more')));
         await tester.pumpAndSettle();
-        await tester.tap(find.byIcon(KIcons.modal));
+        await tester.tap(find.byIcon(KIcons.edit));
         await tester.pumpAndSettle();
 
         // search for ingredient2

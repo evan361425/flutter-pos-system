@@ -197,7 +197,7 @@ class _ProductPageState extends State<ProductPage> {
       actions: <MenuAction<_Action>>[
         MenuAction(
           title: Text(S.menuProductTitleUpdate),
-          leading: const Icon(KIcons.modal),
+          leading: const Icon(KIcons.edit),
           route: Routes.menuProductUpdate,
           routePathParameters: {'id': widget.product.id},
         ),

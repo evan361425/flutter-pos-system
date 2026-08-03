@@ -131,7 +131,7 @@ void main() {
 
           await tester.longPress(find.byKey(const Key('catalog.c-1')));
           await tester.pumpAndSettle();
-          await tester.tap(find.byIcon(Icons.text_fields_outlined));
+          await tester.tap(find.byIcon(KIcons.edit));
           await tester.pumpAndSettle();
 
           // edit image

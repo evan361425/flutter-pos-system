@@ -26,6 +26,7 @@ import 'package:possystem/components/imageable_container.dart' as _i3;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeFBP_0 extends _i1.SmartFake implements _i2.FBP {
   _FakeFBP_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
@@ -126,16 +127,16 @@ class MockPrinter extends _i1.Mock implements _i2.Printer {
           as _i5.Stream<_i2.PrinterStatus>);
 
   @override
-  set device(_i2.BluetoothDevice? _device) =>
-      super.noSuchMethod(Invocation.setter(#device, _device), returnValueForMissingStub: null);
+  set device(_i2.BluetoothDevice? value) =>
+      super.noSuchMethod(Invocation.setter(#device, value), returnValueForMissingStub: null);
 
   @override
-  set writer(_i2.BluetoothCharacteristic? _writer) =>
-      super.noSuchMethod(Invocation.setter(#writer, _writer), returnValueForMissingStub: null);
+  set writer(_i2.BluetoothCharacteristic? value) =>
+      super.noSuchMethod(Invocation.setter(#writer, value), returnValueForMissingStub: null);
 
   @override
-  set reader(_i2.BluetoothCharacteristic? _reader) =>
-      super.noSuchMethod(Invocation.setter(#reader, _reader), returnValueForMissingStub: null);
+  set reader(_i2.BluetoothCharacteristic? value) =>
+      super.noSuchMethod(Invocation.setter(#reader, value), returnValueForMissingStub: null);
 
   @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);

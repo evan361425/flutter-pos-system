@@ -6,9 +6,10 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:possystem/services/database.dart' as _i4;
 import 'package:sqflite/sqflite.dart' as _i2;
+import 'package:sqflite_common/sqflite_logger.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -23,6 +24,7 @@ import 'package:sqflite/sqflite.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeDatabase_0 extends _i1.SmartFake implements _i2.Database {
   _FakeDatabase_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
@@ -54,7 +56,7 @@ class MockDatabase extends _i1.Mock implements _i4.Database {
           as _i2.Database);
 
   @override
-  set db(_i2.Database? _db) => super.noSuchMethod(Invocation.setter(#db, _db), returnValueForMissingStub: null);
+  set db(_i2.Database? value) => super.noSuchMethod(Invocation.setter(#db, value), returnValueForMissingStub: null);
 
   @override
   _i3.Future<List<Object?>> batchUpdate(
@@ -96,9 +98,19 @@ class MockDatabase extends _i1.Mock implements _i4.Database {
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> initialize({String? path, _i2.DatabaseFactory? factory, bool? logWhenQuery = false}) =>
+  _i3.Future<void> initialize({
+    String? path,
+    _i2.DatabaseFactory? factory,
+    bool? logWhenQuery = false,
+    _i5.SqfliteLoggerOptions? logOptions,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#initialize, [], {#path: path, #factory: factory, #logWhenQuery: logWhenQuery}),
+            Invocation.method(#initialize, [], {
+              #path: path,
+              #factory: factory,
+              #logWhenQuery: logWhenQuery,
+              #logOptions: logOptions,
+            }),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
@@ -114,8 +126,8 @@ class MockDatabase extends _i1.Mock implements _i4.Database {
       (super.noSuchMethod(
             Invocation.method(#transaction, [action]),
             returnValue:
-                _i5.ifNotNull(
-                  _i5.dummyValueOrNull<T>(this, Invocation.method(#transaction, [action])),
+                _i6.ifNotNull(
+                  _i6.dummyValueOrNull<T>(this, Invocation.method(#transaction, [action])),
                   (T v) => _i3.Future<T>.value(v),
                 ) ??
                 _FakeFuture_1<T>(this, Invocation.method(#transaction, [action])),

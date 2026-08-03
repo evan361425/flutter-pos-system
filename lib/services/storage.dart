@@ -144,7 +144,7 @@ class StorageSanitizedData {
   }
 }
 
-enum Stores { menu, stock, replenisher, quantities, cashier, orderAttributes, analysis, printers }
+enum Stores { menu, stock, replenisher, quantities, cashier, orderAttributes, analysis, printers, receiptTemplates }
 
 class StorageSanitizedValue {
   late final String id;

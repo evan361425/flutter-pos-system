@@ -102,7 +102,7 @@ class _OrderPageState extends State<OrderPage> {
             ),
           ],
         ),
-        body: body,
+        body: SafeArea(child: body),
       ),
     );
   }

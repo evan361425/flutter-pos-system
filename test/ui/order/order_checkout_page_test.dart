@@ -19,6 +19,7 @@ import 'package:possystem/models/repository/cashier.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/models/repository/stashed_orders.dart';
 import 'package:possystem/models/repository/stock.dart';
 import 'package:possystem/models/stock/ingredient.dart';
@@ -616,6 +617,7 @@ void main() {
       initializeDatabase();
       initializeStorage();
       initializeTranslator();
+      ReceiptTemplates.reset();
     });
   });
 }

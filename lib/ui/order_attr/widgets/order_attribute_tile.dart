@@ -87,7 +87,7 @@ class OrderAttributeTile extends StatelessWidget {
       actions: <MenuAction<int>>[
         MenuAction(
           title: Text(S.orderAttributeTitleUpdate),
-          leading: const Icon(KIcons.modal),
+          leading: const Icon(KIcons.edit),
           route: Routes.orderAttrUpdate,
           routePathParameters: {'id': attr.id},
         ),

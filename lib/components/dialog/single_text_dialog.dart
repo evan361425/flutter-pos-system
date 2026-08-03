@@ -13,8 +13,9 @@ class SingleTextDialog extends StatefulWidget {
     this.maxLength,
     this.selectAll = false,
     this.autofocus = true,
-    this.header,
+    this.headers,
     this.title,
+    this.footers,
   });
 
   final String? Function(String?)? validator;
@@ -29,7 +30,10 @@ class SingleTextDialog extends StatefulWidget {
   final bool autofocus;
 
   /// Widget above TextField
-  final Widget? header;
+  final Iterable<Widget>? headers;
+
+  /// Widgets below TextField
+  final Iterable<Widget>? footers;
 
   @override
   State<SingleTextDialog> createState() => _SingleTextDialogState();
@@ -61,8 +65,9 @@ class _SingleTextDialogState extends State<SingleTextDialog> {
       scrollable: true,
       content: Column(
         children: [
-          if (widget.header != null) widget.header!,
+          ...?widget.headers,
           Form(key: form, child: textField),
+          ...?widget.footers,
         ],
       ),
       actions: [

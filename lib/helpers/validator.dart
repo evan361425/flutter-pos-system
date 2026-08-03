@@ -30,6 +30,7 @@ class Validator {
     };
   }
 
+  /// Number must between [minimum] (inclusive, default 0) and [maximum] (inclusive), and can be validated by [validator].
   static String? Function(String?) positiveInt(
     String fieldName, {
     int? maximum,
@@ -80,6 +81,7 @@ class Validator {
     };
   }
 
+  /// Text length must between 1 and [limit] characters, and can be validated by [validator].
   static String? Function(String?) textLimit(
     String fieldName,
     int limit, {

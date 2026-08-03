@@ -2,9 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/models/analysis/analysis.dart';
 import 'package:possystem/models/printer.dart';
+import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/models/repository/replenisher.dart';
 import 'package:possystem/models/repository/seller.dart';
 import 'package:possystem/models/repository/stock.dart';
@@ -311,6 +313,47 @@ void main() {
       expect(printer.address, equals('address'));
       expect(printer.autoConnect, isTrue);
       expect(printer.provider.index, equals(0));
+    });
+
+    test('Receipt Templates', () async {
+      when(storage.get(.receiptTemplates)).thenAnswer(
+        (_) => Future.value({
+          'id': {
+            'name': 'name',
+            'components': [
+              {
+                'type': ReceiptComponentType.orderTable.index,
+                'columns': [
+                  {'type': OrderTableColumn.productNameWithCatalogName.index},
+                  {'type': OrderTableColumn.quantity.index},
+                  {'type': OrderTableColumn.singlePrice.index, 'title': 'evan', 'width': 66.0},
+                  {'type': OrderTableColumn.totalPrice.index},
+                ],
+              },
+              {'type': ReceiptComponentType.priceTable.index, 'columns': 666},
+              {'type': ReceiptComponentType.textField.index},
+              {
+                'type': ReceiptComponentType.textField.index,
+                'texts': [
+                  {
+                    '_part': {'type': 'styled', 'text': 'hello'},
+                  },
+                  {
+                    '_part': {'type': 'meta_placeholder', 'text': 'world', 'meta': 'meta'},
+                  },
+                ],
+              },
+            ],
+          },
+        }),
+      );
+      when(storage.get(.receiptTemplates, 'setting')).thenAnswer((_) => Future.value({}));
+
+      await ReceiptTemplates().initialize();
+
+      final template = ReceiptTemplates.instance.getItem('id')!;
+      expect(template.id, equals('id'));
+      expect(template.name, equals('name'));
     });
 
     setUp(() {

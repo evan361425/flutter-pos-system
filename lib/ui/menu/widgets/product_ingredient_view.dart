@@ -56,7 +56,7 @@ class ProductIngredientView extends StatelessWidget {
       actions: <MenuAction<int>>[
         MenuAction(
           title: Text(S.menuIngredientTitleUpdate),
-          leading: const Icon(KIcons.modal),
+          leading: const Icon(KIcons.edit),
           route: Routes.menuProductUpdateIngredient,
           routePathParameters: {'id': ingredient.product.id},
           routeQueryParameters: {'iid': ingredient.id},

@@ -47,12 +47,14 @@ class _CheckoutReceiptDialogState extends State<CheckoutReceiptDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      insetPadding: const .symmetric(horizontal: 16.0, vertical: 24.0),
       contentPadding: const .all(0),
+      scrollable: true,
       content: Stack(
         alignment: Alignment.center,
         children: [
           Padding(
-            padding: const .only(left: 24.0, top: 16, right: 24.0, bottom: 24.0),
+            padding: const .only(left: 12.0, top: 8.0, right: 12.0, bottom: 12.0),
             child: PrinterReceiptView(controller: controller, order: widget.order),
           ),
           Positioned.fill(

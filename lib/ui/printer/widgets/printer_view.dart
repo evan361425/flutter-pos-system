@@ -96,7 +96,7 @@ class _PrinterViewState extends State<PrinterView> {
                   builder: (context, controller, _) {
                     return FilledButton.icon(
                       onPressed: controller.toggle,
-                      label: Text(S.printerStatusConnecting),
+                      label: Text(S.printerStatusConnected),
                       icon: const Icon(Icons.arrow_drop_down),
                       iconAlignment: .end,
                     );
@@ -210,6 +210,7 @@ class _PrinterViewState extends State<PrinterView> {
       builder: (context) => AlertDialog(
         title: Text(S.printerBtnTestPrint),
         contentPadding: const .all(0),
+        insetPadding: const .symmetric(horizontal: 16.0, vertical: 24.0),
         actions: [
           PopButton(title: MaterialLocalizations.of(context).cancelButtonLabel),
           _PrintButton(progress: progress, controller: controller, printer: widget.printer),
@@ -218,37 +219,8 @@ class _PrinterViewState extends State<PrinterView> {
           alignment: Alignment.center,
           children: [
             Padding(
-              padding: const .only(left: 24.0, top: 16, right: 24.0, bottom: 24.0),
-              child: PrinterReceiptView(
-                controller: controller,
-                order: OrderObject(
-                  createdAt: .now(),
-                  price: 300,
-                  paid: 500,
-                  attributes: [
-                    OrderSelectedAttributeObject(
-                      optionName: S.orderAttributeExamplePlaceDineIn,
-                      mode: .changeDiscount,
-                      modeValue: 10,
-                    ),
-                  ],
-                  products: [
-                    OrderProductObject(
-                      productName: S.menuExampleProductCheeseBurger,
-                      count: 2,
-                      singlePrice: 60,
-                      originalPrice: 120,
-                      isDiscount: true,
-                    ),
-                    OrderProductObject(
-                      productName: S.menuExampleProductHamBurger,
-                      count: 1,
-                      singlePrice: 180,
-                      originalPrice: 180,
-                    ),
-                  ],
-                ),
-              ),
+              padding: const .fromLTRB(12.0, 8.0, 12.0, 12.0),
+              child: PrinterReceiptView(controller: controller, order: OrderObject.example()),
             ),
             ValueListenableBuilder(
               valueListenable: progress,

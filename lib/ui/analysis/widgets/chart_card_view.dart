@@ -207,7 +207,7 @@ class _MoreButton extends StatelessWidget {
       actions: <MenuAction<int>>[
         MenuAction(
           title: Text(S.analysisChartCardTitleUpdate),
-          leading: const Icon(KIcons.modal),
+          leading: const Icon(KIcons.edit),
           route: Routes.chartUpdate,
           routePathParameters: {'id': chart.id},
         ),

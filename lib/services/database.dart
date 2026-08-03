@@ -74,14 +74,19 @@ class Database {
     return db.delete(table, where: '$keyName = ?', whereArgs: [id]);
   }
 
-  Future<void> initialize({String? path, sqflite.DatabaseFactory? factory, bool logWhenQuery = false}) async {
+  Future<void> initialize({
+    String? path,
+    sqflite.DatabaseFactory? factory,
+    bool logWhenQuery = false,
+    SqfliteLoggerOptions? logOptions,
+  }) async {
     if (_initialized) return;
     _initialized = true;
 
     factory ??= sqflite.databaseFactory;
     if (logWhenQuery) {
       // ignore: experimental_member_use
-      factory = SqfliteDatabaseFactoryLogger(factory, options: SqfliteLoggerOptions(type: .all));
+      factory = SqfliteDatabaseFactoryLogger(factory, options: logOptions ?? SqfliteLoggerOptions(type: .all));
     }
 
     final databasePath = path ?? await getRootPath();

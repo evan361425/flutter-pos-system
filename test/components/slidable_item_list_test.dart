@@ -54,7 +54,7 @@ void main() {
                 actionBuilder: (item) => [
                   const MenuAction<int>(title: Text('Hi'), leading: Icon(Icons.ac_unit), returnValue: 1),
                 ],
-                handleAction: (item, action) {
+                handleAction: (item, action) async {
                   tappedAction = action;
                 },
               ),

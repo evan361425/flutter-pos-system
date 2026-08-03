@@ -53,6 +53,7 @@ btn:
   navTo: 查看
   signInWith:
     google: 使用 Google 登入
+  readonly: 唯讀
 semantics:
   percentileBar: 目前佔總數的 {percent}
 invalid:

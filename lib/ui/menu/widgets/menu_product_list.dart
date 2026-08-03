@@ -45,7 +45,7 @@ class MenuProductList extends StatelessWidget {
     return <MenuAction<int>>[
       MenuAction(
         title: Text(S.menuProductTitleUpdate),
-        leading: const Icon(KIcons.modal),
+        leading: const Icon(KIcons.edit),
         route: Routes.menuProductUpdate,
         routePathParameters: {'id': product.id},
       ),
