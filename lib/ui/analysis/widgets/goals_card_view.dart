@@ -65,7 +65,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
               crossAxisAlignment: .start,
               children: <Widget>[
                 _GoalItem(
-                  current: metric.count,
+                  current: metric.count.toString(),
                   goal: goal!.count,
                   style: style,
                   name: S.analysisGoalsCountTitle,
@@ -73,7 +73,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                   compact: compact,
                 ),
                 _GoalItem(
-                  current: metric.revenue,
+                  current: metric.revenue.toCurrencyLong(),
                   goal: goal!.revenue,
                   style: style,
                   name: S.analysisGoalsRevenueTitle,
@@ -81,7 +81,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                   compact: compact,
                 ),
                 _GoalItem(
-                  current: metric.profit,
+                  current: metric.profit.toCurrencyLong(),
                   goal: goal!.profit,
                   style: style,
                   name: S.analysisGoalsProfitTitle,
@@ -89,7 +89,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                   compact: compact,
                 ),
                 _GoalItem(
-                  current: metric.cost,
+                  current: metric.cost.toCurrencyLong(),
                   goal: 0,
                   style: style,
                   name: S.analysisGoalsCostTitle,
@@ -169,7 +169,7 @@ class _GoalItem extends StatelessWidget {
 
   final String? desc;
 
-  final num current;
+  final String current;
 
   final num goal;
 
@@ -196,7 +196,7 @@ class _GoalItem extends StatelessWidget {
     );
     final value = RichText(
       text: TextSpan(
-        text: current.toCurrency(),
+        text: current,
         style: style?.copyWith(fontSize: 24),
         children: goal != 0
             ? [
