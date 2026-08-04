@@ -29,41 +29,41 @@ class _AnalysisViewState extends State<AnalysisView> with AutomaticKeepAliveClie
   Widget build(BuildContext context) {
     super.build(context);
 
-    return SafeArea(
-      child: ListenableBuilder(
-        listenable: Analysis.instance,
-        builder: (context, child) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final Breakpoint bp = .find(box: constraints);
-              return CustomScrollView(
-                slivers: <Widget>[
-                  child!,
-                  SliverAppBar(
-                    primary: false,
-                    automaticallyImplyLeading: false, // avoid giving drawer's menu icon
-                    title: Text(S.analysisChartTitle),
-                    actions: const [_MoreButton()],
-                  ),
-                  _buildChartHeader(),
-                  _buildCharts(Analysis.instance.itemList, bp),
-                ],
-              );
-            },
-          );
-        },
-        child: SliverList.list(
-          children: [
-            GoalsCardView(
-              action: RouteIconButton(
-                key: const Key('anal.history'),
-                route: Routes.history,
-                icon: const Icon(Icons.calendar_month_outlined),
-                label: S.analysisHistoryBtn,
-              ),
+    return ListenableBuilder(
+      listenable: Analysis.instance,
+      builder: (context, child) {
+        final Breakpoint bp = .find(width: MediaQuery.sizeOf(context).width);
+        final systemPadding = MediaQuery.paddingOf(context);
+
+        return CustomScrollView(
+          slivers: <Widget>[
+            SliverPadding(
+              padding: .only(top: systemPadding.top, left: systemPadding.left, right: systemPadding.right),
+              sliver: child!,
             ),
+            SliverAppBar(
+              primary: false,
+              automaticallyImplyLeading: false, // avoid giving drawer's menu icon
+              title: Text(S.analysisChartTitle),
+              actions: const [_MoreButton()],
+            ),
+            _buildChartHeader(),
+            _buildCharts(Analysis.instance.itemList, bp),
+            SliverPadding(padding: .only(bottom: systemPadding.bottom)),
           ],
-        ),
+        );
+      },
+      child: SliverList.list(
+        children: [
+          GoalsCardView(
+            action: RouteIconButton(
+              key: const Key('anal.history'),
+              route: Routes.history,
+              icon: const Icon(Icons.calendar_month_outlined),
+              label: S.analysisHistoryBtn,
+            ),
+          ),
+        ],
       ),
     );
   }

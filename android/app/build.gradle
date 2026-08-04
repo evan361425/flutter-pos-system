@@ -85,6 +85,12 @@ android {
     disable 'InvalidPackage'
     checkReleaseBuilds false
   }
+
+  packaging {
+    jniLibs {
+      useLegacyPackaging = false
+    }
+  }
 }
 
 flutter {
