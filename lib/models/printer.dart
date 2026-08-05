@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -207,12 +206,12 @@ class Printer extends Model<PrinterObject> with ModelStorage<PrinterObject> impl
   /// Return the progress (in percentage) of the drawing
   Stream<double> draw(Uint8List image) {
     Log.out('start', 'printer_draw');
-    if (isLocalTest) {
-      developer.log(
-        image.slices(48).map((list) => list.map((byte) => byte.toRadixString(2).padLeft(8, '0')).join()).join('\n'),
-      );
-      return .empty();
-    }
+    // if (isLocalTest) {
+    //   developer.log(
+    //     image.slices(48).map((list) => list.map((byte) => byte.toRadixString(2).padLeft(8, '0')).join()).join('\n'),
+    //   );
+    //   return const .empty();
+    // }
 
     return p.draw(image, density: Printers.instance.density);
   }
