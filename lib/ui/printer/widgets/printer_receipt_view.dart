@@ -122,16 +122,7 @@ class PrinterReceiptView extends StatelessWidget {
       }),
     );
     final headers = config.columns.mapIndexed((i, e) {
-      return _CellWithActions(
-        actions: actions?.call(i),
-        child: Text(
-          e.title ?? e.type.title,
-          textAlign: switch (e.type) {
-            .quantity || .singlePrice || .totalPrice => .end,
-            _ => null,
-          },
-        ),
-      );
+      return _CellWithActions(actions: actions?.call(i), child: Text(e.title ?? e.type.title));
     });
     final cellBuilder = config.columns.map<Widget Function(OrderProductObject)>((e) {
       return switch (e.type) {
@@ -144,7 +135,7 @@ class PrinterReceiptView extends StatelessWidget {
 
     final color = Theme.of(context).colorScheme;
     return DefaultTextStyle(
-      style: DefaultTextStyle.of(context).style.merge(const TextStyle(height: 1.8)),
+      style: defaultTextStyle.merge(const TextStyle(height: 1.8)),
       child: Table(
         defaultVerticalAlignment: .middle,
         columnWidths: columnWidths,
@@ -302,24 +293,76 @@ class _CellWithActions extends StatelessWidget {
     }
 
     return TableCell(
-      child: MenuAnchor(
-        builder: (BuildContext context, MenuController controller, Widget? child) {
-          return InkWell(
-            onTap: () {
-              controller.isOpen ? controller.close() : controller.open();
-            },
-            child: Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                child!,
-                Positioned(top: 2, right: 2, child: Icon(Icons.arrow_drop_down, color: Colors.grey[600], size: 16)),
-              ],
-            ),
-          );
-        },
-        menuChildren: actions!,
-        child: child,
+      child: SizedBox(
+        height: 28,
+        child: MenuAnchor(
+          builder: (BuildContext context, MenuController controller, Widget? child) {
+            return InkWell(
+              onTap: () {
+                controller.isOpen ? controller.close() : controller.open();
+              },
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  child!,
+                  Positioned(
+                    top: 0,
+                    bottom: 0,
+                    right: 2,
+                    child: Icon(Icons.arrow_drop_down, color: Colors.grey[600], size: 16),
+                  ),
+                ],
+              ),
+            );
+          },
+          menuChildren: actions!,
+          child: child,
+        ),
       ),
     );
+  }
+}
+
+class ReceiptSawtoothClipper extends CustomClipper<Path> {
+  /// Each sawtooth's width
+  final double triangleWidth;
+
+  /// Every sawtooth's height
+  final double triangleHeight;
+
+  /// Offset below the sawtooth
+  final double bottomOffset;
+
+  ReceiptSawtoothClipper({this.triangleWidth = 10.0, this.triangleHeight = 10.0, this.bottomOffset = 0.0});
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final height = size.height - bottomOffset;
+
+    // 1. from left top corner to left bottom corner
+    path.lineTo(0, height - triangleHeight);
+
+    // 2. how many triangles can fit in the width of the container
+    final count = (size.width / triangleWidth).floor();
+    final actualWidth = size.width / count; // 動態平均分配寬度，確保左右對齊
+
+    // 3. loop
+    for (int i = 0; i < count; i++) {
+      final startX = i * actualWidth;
+
+      path.lineTo(startX + (actualWidth / 2), height);
+      path.lineTo(startX + actualWidth, height - triangleHeight);
+    }
+
+    path.lineTo(size.width, 0);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant ReceiptSawtoothClipper oldClipper) {
+    return oldClipper.triangleWidth != triangleWidth || oldClipper.triangleHeight != triangleHeight;
   }
 }

@@ -11,9 +11,9 @@ enum ReceiptComponentType { orderTable, discountTable, attributeTable, priceTabl
 enum OrderTableColumn {
   productName(0),
   productNameWithCatalogName(0),
-  quantity(40),
-  singlePrice(40),
-  totalPrice(50);
+  quantity(60),
+  singlePrice(60),
+  totalPrice(80);
 
   static Iterable<OrderTableColumn> get isNotSelectable => [.productName, .productNameWithCatalogName];
 
@@ -39,10 +39,10 @@ enum OrderTableColumn {
 enum DiscountTableColumn {
   productName(0),
   productNameWithCatalogName(0),
-  quantity(40),
-  originPrice(50),
-  singlePrice(40),
-  totalPrice(50);
+  quantity(60),
+  originPrice(80),
+  singlePrice(80),
+  totalPrice(80);
 
   static Iterable<DiscountTableColumn> get isNotSelectable => [.productName, .productNameWithCatalogName];
 
@@ -71,7 +71,7 @@ enum AttributeTableColumn {
   optionName(0),
   attrName(0),
   optionNameWithAttrName(0),
-  adjustment(50);
+  adjustment(80);
 
   static Iterable<AttributeTableColumn> get isNotSelectable => [.optionName, .attrName, .optionNameWithAttrName];
 
@@ -285,7 +285,7 @@ class TextFieldComponent extends ReceiptComponent {
   List<TextFieldObject> texts;
   TextAlign textAlign;
 
-  TextFieldComponent({super.padding, this.texts = const [], this.textAlign = TextAlign.center})
+  TextFieldComponent({super.padding, this.texts = const [], this.textAlign = .start})
     : super(type: .textField, leading: const Icon(Icons.text_fields));
 
   factory TextFieldComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
@@ -304,7 +304,7 @@ class TextFieldComponent extends ReceiptComponent {
     return TextFieldComponent(
       padding: padding,
       texts: texts ?? [],
-      textAlign: TextAlign.values.elementAtOrNull(textAlign) ?? .center,
+      textAlign: TextAlign.values.elementAtOrNull(textAlign) ?? .start,
     );
   }
 

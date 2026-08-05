@@ -126,19 +126,33 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
   }
 
   Widget _buildTemplateWidget() {
-    return Card(
-      child: MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaler: .noScaling),
-        child: SizedBox(
-          width: 396, // 320 + 48(Padding) + 24(Icon) + 4(SizedBox)
-          child: DefaultTextStyle(
-            style: PrinterReceiptView.defaultTextStyle,
-            child: MyReorderableList(
-              padding: const .fromLTRB(24.0, 16, 24.0, kFABSpacing),
-              items: _components,
-              onReorder: () => _rebuildComponents.value = !_rebuildComponents.value,
-              itemBuilder: _buildComponentTile,
-              itemWhenDraggingBuilder: _buildComponent,
+    return ClipPath(
+      clipper: ReceiptSawtoothClipper(bottomOffset: kFABSpacing),
+      child: Card(
+        color: Colors.white,
+        shape: const RoundedRectangleBorder(borderRadius: .vertical(top: .circular(16))),
+        child: MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: .noScaling),
+          child: SizedBox(
+            width: 396, // 320 + 48(Padding) + 24(Icon) + 4(SizedBox)
+            child: DefaultTextStyle(
+              style: PrinterReceiptView.defaultTextStyle,
+              child: MyReorderableList(
+                padding: const .fromLTRB(24.0, 16, 24.0, kFABSpacing + 32),
+                items: _components,
+                onReorder: () => _rebuildComponents.value = !_rebuildComponents.value,
+                toggler: Icon(Icons.reorder_outlined, color: PrinterReceiptView.defaultTextStyle.color),
+                itemBuilder: _buildComponentTile,
+                itemWhenDraggingBuilder: _buildComponent,
+                wrapperWhenDraggingBuilder: (context, child) {
+                  return Material(
+                    elevation: 6.0,
+                    color: Colors.white,
+                    textStyle: PrinterReceiptView.defaultTextStyle,
+                    child: child,
+                  );
+                },
+              ),
             ),
           ),
         ),

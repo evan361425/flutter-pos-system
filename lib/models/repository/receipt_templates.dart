@@ -132,4 +132,8 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
       await super.update(object, event: event);
     }
   }
+
+  Future<void> select() async {
+    await ReceiptTemplates.instance.changeSelected(id);
+  }
 }

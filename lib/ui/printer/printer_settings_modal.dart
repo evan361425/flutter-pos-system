@@ -56,7 +56,7 @@ class _PrinterSettingsModalState extends State<PrinterSettingsModal> {
         ],
         handleAction: (item, action) async {
           if (action == .select) {
-            await ReceiptTemplates.instance.changeSelected(item.id);
+            await item.select();
           }
         },
         tileBuilder: (item, index, actorBuilder) => _TemplateTile(template: item, actorBuilder: actorBuilder),
@@ -113,9 +113,12 @@ class _TemplateTile extends StatelessWidget {
     final actor = actorBuilder(context);
     return ListTile(
       key: Key('receipt_tpl.${template.id}'),
-      leading: Icon(
-        selected ? Icons.check_circle : Icons.radio_button_unchecked,
-        color: selected ? Theme.of(context).colorScheme.primary : null,
+      leading: IconButton(
+        icon: Icon(
+          selected ? Icons.check_circle : Icons.radio_button_unchecked,
+          color: selected ? Theme.of(context).colorScheme.primary : null,
+        ),
+        onPressed: template.select,
       ),
       selected: selected,
       title: Text(template.displayName),

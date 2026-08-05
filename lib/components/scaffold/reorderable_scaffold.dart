@@ -49,9 +49,13 @@ class MyReorderableList<T> extends StatefulWidget {
 
   final Widget Function(BuildContext context, T item, Widget toggler)? itemWhenDraggingBuilder;
 
+  final Widget Function(BuildContext context, Widget child)? wrapperWhenDraggingBuilder;
+
   final VoidCallback? onReorder;
 
   final EdgeInsetsGeometry? padding;
+
+  final Icon toggler;
 
   const MyReorderableList({
     super.key,
@@ -60,6 +64,8 @@ class MyReorderableList<T> extends StatefulWidget {
     this.itemWhenDraggingBuilder,
     this.onReorder,
     this.padding,
+    this.wrapperWhenDraggingBuilder,
+    this.toggler = const Icon(Icons.reorder_outlined),
   });
 
   @override
@@ -83,7 +89,7 @@ class _MyReorderableListState<T> extends State<MyReorderableList<T>> {
       itemCount: widget.items.length,
       itemBuilder: (BuildContext context, int index) {
         final item = widget.items[index];
-        final toggler = ReorderableDragStartListener(index: index, child: const Icon(Icons.reorder_outlined));
+        final toggler = ReorderableDragStartListener(index: index, child: widget.toggler);
 
         // delayed drag let it able to scroll
         return ReorderableDelayedDragStartListener(
@@ -105,12 +111,12 @@ class _MyReorderableListState<T> extends State<MyReorderableList<T>> {
         return AnimatedBuilder(
           animation: animation,
           builder: (BuildContext context, Widget? child) {
-            return Material(
-              elevation: 6.0,
-              child: widget.itemWhenDraggingBuilder != null
-                  ? widget.itemWhenDraggingBuilder!(context, item, const Icon(Icons.reorder_outlined))
-                  : ListTile(title: Text((item as dynamic).name), trailing: const Icon(Icons.reorder_outlined)),
-            );
+            final w = widget.itemWhenDraggingBuilder != null
+                ? widget.itemWhenDraggingBuilder!(context, item, widget.toggler)
+                : ListTile(title: Text((item as dynamic).name), trailing: widget.toggler);
+            return widget.wrapperWhenDraggingBuilder != null
+                ? widget.wrapperWhenDraggingBuilder!(context, w)
+                : Material(elevation: 6.0, child: w);
           },
           child: child,
         );

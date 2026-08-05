@@ -5,6 +5,7 @@ import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
 import 'package:possystem/components/style/image_holder.dart';
+import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/breakpoint.dart';
 import 'package:possystem/helpers/validator.dart';
@@ -80,7 +81,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
         },
       ),
       const Divider(),
-      ..._buildComponentListTiles(),
+      _buildComponentEditor(),
     ];
   }
 
@@ -135,7 +136,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
     );
   }
 
-  List<Widget> _buildComponentListTiles() {
+  Widget _buildComponentEditor() {
     return switch (component.type) {
       .orderTable => _buildOrderTableEditor(),
       .discountTable => _buildDiscountTableEditor(),
@@ -147,177 +148,169 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
     };
   }
 
-  List<Widget> _buildOrderTableEditor() {
+  Widget _buildOrderTableEditor() {
     final c = component as OrderTableComponent;
     final left = (OrderTableColumn.values.toSet()..removeAll(OrderTableColumn.isNotSelectable))
         .difference(c.columns.map((e) => e.type).toSet())
         .toList();
-    return [
-      _wrapReceiptView(
-        Builder(
-          builder: (context) {
-            return PrinterReceiptView.buildOrderTable(
-              c,
-              order,
-              context: context,
-              actions: (int index) {
-                final children = _buildActions<OrderTableColumn>(
-                  fixedIndex: 1,
-                  index: index,
-                  left: left,
-                  exist: c.columns,
-                  setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, OrderTableColumn.values),
-                  typeChanger: switch (index) {
-                    0 => switch (c.columns[0].type) {
-                      .productName => {.productNameWithCatalogName: S.printerReceiptComponentTableOrderTitleAddCatalog},
-                      _ => {.productName: S.printerReceiptComponentTableOrderTitleRemoveCatalog},
-                    },
-                    _ => null,
+    return _wrapReceiptView(
+      Builder(
+        builder: (context) {
+          return PrinterReceiptView.buildOrderTable(
+            c,
+            order,
+            context: context,
+            actions: (int index) {
+              final children = _buildActions<OrderTableColumn>(
+                fixedIndex: 1,
+                index: index,
+                left: left,
+                exist: c.columns,
+                setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, OrderTableColumn.values),
+                typeChanger: switch (index) {
+                  0 => switch (c.columns[0].type) {
+                    .productName => {.productNameWithCatalogName: S.printerReceiptComponentTableOrderTitleAddCatalog},
+                    _ => {.productName: S.printerReceiptComponentTableOrderTitleRemoveCatalog},
                   },
-                );
-                return children;
-              },
-            );
-          },
-        ),
+                  _ => null,
+                },
+              );
+              return children;
+            },
+          );
+        },
       ),
-    ];
+    );
   }
 
-  List<Widget> _buildDiscountTableEditor() {
+  Widget _buildDiscountTableEditor() {
     final c = component as DiscountTableComponent;
     final left = (DiscountTableColumn.values.toSet()..removeAll(DiscountTableColumn.isNotSelectable))
         .difference(c.columns.map((e) => e.type).toSet())
         .toList();
-    return [
-      _wrapReceiptView(
-        PrinterReceiptView.buildDiscountTable(
-          c,
-          order.discounted.toList(),
-          actions: (int index) {
-            final children = _buildActions<DiscountTableColumn>(
-              fixedIndex: 1,
-              index: index,
-              left: left,
-              exist: c.columns,
-              setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, DiscountTableColumn.values),
-              typeChanger: switch (index) {
-                0 => switch (c.columns[0].type) {
-                  .productName => {.productNameWithCatalogName: S.printerReceiptComponentTableDiscountTitleAddCatalog},
-                  _ => {.productName: S.printerReceiptComponentTableDiscountTitleRemoveCatalog},
-                },
-                _ => null,
+    return _wrapReceiptView(
+      PrinterReceiptView.buildDiscountTable(
+        c,
+        order.discounted.toList(),
+        actions: (int index) {
+          final children = _buildActions<DiscountTableColumn>(
+            fixedIndex: 1,
+            index: index,
+            left: left,
+            exist: c.columns,
+            setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, DiscountTableColumn.values),
+            typeChanger: switch (index) {
+              0 => switch (c.columns[0].type) {
+                .productName => {.productNameWithCatalogName: S.printerReceiptComponentTableDiscountTitleAddCatalog},
+                _ => {.productName: S.printerReceiptComponentTableDiscountTitleRemoveCatalog},
               },
-            );
-            return children;
-          },
-        ),
+              _ => null,
+            },
+          );
+          return children;
+        },
       ),
-    ];
+    );
   }
 
-  List<Widget> _buildAttributeTableEditor() {
+  Widget _buildAttributeTableEditor() {
     final c = component as AttributeTableComponent;
     final left = (AttributeTableColumn.values.toSet()..removeAll(AttributeTableColumn.isNotSelectable))
         .difference(c.columns.map((e) => e.type).toSet())
         .toList();
-    return [
-      _wrapReceiptView(
-        PrinterReceiptView.buildAttributesTable(
-          c,
-          order.effectiveAttributes.toList(),
-          actions: (int index) {
-            final children = _buildActions<AttributeTableColumn>(
-              fixedIndex: 1,
-              index: index,
-              left: left,
-              exist: c.columns,
-              setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, AttributeTableColumn.values),
-              typeChanger: switch (index) {
-                0 => switch (c.columns[0].type) {
-                  .optionName => {.optionNameWithAttrName: S.printerReceiptComponentTableAttrTitleAddAttr},
-                  .attrName => {.optionNameWithAttrName: S.printerReceiptComponentTableAttrTitleAddOption},
-                  _ => {
-                    .optionName: S.printerReceiptComponentTableAttrTitleRemoveAttr,
-                    .attrName: S.printerReceiptComponentTableAttrTitleRemoveOption,
-                  },
+    return _wrapReceiptView(
+      PrinterReceiptView.buildAttributesTable(
+        c,
+        order.effectiveAttributes.toList(),
+        actions: (int index) {
+          final children = _buildActions<AttributeTableColumn>(
+            fixedIndex: 1,
+            index: index,
+            left: left,
+            exist: c.columns,
+            setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, AttributeTableColumn.values),
+            typeChanger: switch (index) {
+              0 => switch (c.columns[0].type) {
+                .optionName => {.optionNameWithAttrName: S.printerReceiptComponentTableAttrTitleAddAttr},
+                .attrName => {.optionNameWithAttrName: S.printerReceiptComponentTableAttrTitleAddOption},
+                _ => {
+                  .optionName: S.printerReceiptComponentTableAttrTitleRemoveAttr,
+                  .attrName: S.printerReceiptComponentTableAttrTitleRemoveOption,
                 },
-                _ => null,
               },
-            );
-            return children;
-          },
-        ),
+              _ => null,
+            },
+          );
+          return children;
+        },
       ),
-    ];
+    );
   }
 
-  List<Widget> _buildPriceTableEditor() {
+  Widget _buildPriceTableEditor() {
     final c = component as PriceTableComponent;
     final left = PriceTableColumn.values.toSet().difference(c.columns.map((e) => e.type).toSet()).toList();
-    return [
-      _wrapReceiptView(
-        Builder(
-          builder: (context) {
-            return PrinterReceiptView.buildPriceTable(
-              c,
-              order,
-              context: context,
-              actions: (int index) {
-                return _buildActions(
-                  fixedIndex: 1,
-                  index: index,
-                  left: left,
-                  exist: c.columns,
-                  setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, PriceTableColumn.values),
-                  axis: .vertical,
-                );
-              },
-            );
-          },
-        ),
+    return _wrapReceiptView(
+      Builder(
+        builder: (context) {
+          return PrinterReceiptView.buildPriceTable(
+            c,
+            order,
+            context: context,
+            actions: (int index) {
+              return _buildActions(
+                fixedIndex: 1,
+                index: index,
+                left: left,
+                exist: c.columns,
+                setter: (data) => c.columns[index] = TableColumnConfig.fromJson(data, PriceTableColumn.values),
+                axis: .vertical,
+              );
+            },
+          );
+        },
       ),
-    ];
+    );
   }
 
-  List<Widget> _buildTextFieldEditor() {
-    return [
-      Expanded(
-        child: _TextEditorView(component: component as TextFieldComponent, hooker: (v) => onUpdate = v),
-      ),
-    ];
+  Widget _buildTextFieldEditor() {
+    return Expanded(
+      child: _TextEditorView(component: component as TextFieldComponent, hooker: (v) => onUpdate = v),
+    );
   }
 
-  List<Widget> _buildDividerEditor() {
+  Widget _buildDividerEditor() {
     final c = component as DividerComponent;
     if (_notifier == null) {
       _notifier = ValueNotifier<double>(c.height);
       _notifier!.addListener(() => c.height = _notifier!.value);
     }
 
-    return [_buildSliderWithTitle(title: S.printerReceiptComponentDividerHeight, min: 1, max: 4, divisions: 30)];
+    return _buildSliderWithTitle(title: S.printerReceiptComponentDividerHeight, min: 1, max: 4, divisions: 30);
   }
 
-  List<Widget> _buildImageEditor() {
+  Widget _buildImageEditor() {
     final c = component as ImageComponent;
     if (_notifier == null) {
       _notifier = ValueNotifier<double>(c.widthRatio);
       _notifier!.addListener(() => c.widthRatio = _notifier!.value);
     }
 
-    return [
-      _buildSliderWithTitle(
-        title: S.printerReceiptComponentImageWidthRatio,
-        helper: S.printerReceiptComponentImageWidthRatioHelper,
-        min: 0.1,
-        max: 1.0,
-        divisions: 9,
-      ),
-      EditImageHolder(
-        path: c.imagePath == '' ? null : c.imagePath,
-        onSelected: (image) => setState(() => c.imagePath = image),
-      ),
-    ];
+    return Column(
+      children: [
+        _buildSliderWithTitle(
+          title: S.printerReceiptComponentImageWidthRatio,
+          helper: S.printerReceiptComponentImageWidthRatioHelper,
+          min: 0.1,
+          max: 1.0,
+          divisions: 9,
+        ),
+        EditImageHolder(
+          path: c.imagePath == '' ? null : c.imagePath,
+          onSelected: (image) => setState(() => c.imagePath = image),
+        ),
+      ],
+    );
   }
 
   Widget _buildSliderWithTitle({
@@ -590,7 +583,13 @@ class _TextEditorViewState extends State<_TextEditorView> {
         children: [
           if (toolbarAbove) toolbar,
           Expanded(
-            child: Container(padding: const .all(16), width: .infinity, height: .infinity, child: _buildTextField()),
+            child: Container(
+              color: Colors.white,
+              padding: const .all(16),
+              width: .infinity,
+              height: .infinity,
+              child: _buildTextField(),
+            ),
           ),
           if (!toolbarAbove) toolbar,
         ],
@@ -658,20 +657,23 @@ class _TextEditorViewState extends State<_TextEditorView> {
   }
 
   Widget _buildTextField() {
-    return ValueListenableBuilder(
-      valueListenable: _textAlign,
-      builder: (context, value, child) {
-        return TextFormField(
-          key: const Key('editor_ant.editor'),
-          controller: _controller,
-          focusNode: _focusNode,
-          textAlign: value,
-          autofocus: true,
-          maxLines: null,
-          minLines: null,
-          decoration: .collapsed(hintText: S.printerReceiptComponentTextValue),
-        );
-      },
+    return Theme(
+      data: AppThemes.lightTheme,
+      child: ValueListenableBuilder(
+        valueListenable: _textAlign,
+        builder: (context, value, child) {
+          return TextFormField(
+            key: const Key('editor_ant.editor'),
+            controller: _controller,
+            focusNode: _focusNode,
+            textAlign: value,
+            autofocus: true,
+            maxLines: null,
+            minLines: null,
+            decoration: .collapsed(hintText: S.printerReceiptComponentTextValue),
+          );
+        },
+      ),
     );
   }
 
