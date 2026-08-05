@@ -354,6 +354,7 @@
   "printerReceiptComponentImage": "Image",
   "printerReceiptComponentImageWidthRatio": "Width Ratio",
   "printerReceiptComponentImageWidthRatioHelper": "Width ratio compared to receipt width, e.g., 0.5 = 50%",
+  "printerReceiptComponentImageHint": "Important: Only supports high contrast images (black & white)",
   "printerReceiptComponentDividerHeight": "Height",
   "printerReceiptComponentDividerMeta": "Height: {height}",
   "@printerReceiptComponentDividerMeta": {

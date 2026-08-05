@@ -222,6 +222,7 @@ receipt:
       $prefix: image
       widthRatio: 寬度比例
       widthRatioHelper: 寬度比例相對於單據寬度，例如 0.5 = 50%
+      hint: 'Important: Only supports high contrast images (black & white)'
     divider:
       height: 高度
       meta:

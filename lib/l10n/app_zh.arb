@@ -354,6 +354,7 @@
   "printerReceiptComponentImage": "圖片",
   "printerReceiptComponentImageWidthRatio": "寬度比例",
   "printerReceiptComponentImageWidthRatioHelper": "寬度比例相對於單據寬度，例如 0.5 = 50%",
+  "printerReceiptComponentImageHint": "Important: Only supports high contrast images (black & white)",
   "printerReceiptComponentDividerHeight": "高度",
   "printerReceiptComponentDividerMeta": "高度：{height}",
   "@printerReceiptComponentDividerMeta": {

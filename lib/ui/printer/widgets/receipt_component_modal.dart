@@ -305,6 +305,12 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
           max: 1.0,
           divisions: 9,
         ),
+        Padding(
+          padding: const .symmetric(vertical: 4.0),
+          child: Center(
+            child: Text(S.printerReceiptComponentImageHint, style: const TextStyle(fontWeight: .bold)),
+          ),
+        ),
         EditImageHolder(
           path: c.imagePath == '' ? null : c.imagePath,
           onSelected: (image) => setState(() => c.imagePath = image),

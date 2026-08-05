@@ -101,6 +101,7 @@ class ConvertibleImage {
   /// If [mirrored] is true, the bits will be mirrored, for example, 10000000 will be 00000001
   /// If [invert] is true, black will be 1, white will be 0
   ConvertibleImage toBitMap({bool mirrored = true, bool invert = true}) {
+    // TODO: use Floyd-Steinberg Dithering to handle image
     // 8 bits to 1 bit
     final result = Uint8List(bytes.length ~/ 8);
     for (var i = 0; i < bytes.length; i++) {
