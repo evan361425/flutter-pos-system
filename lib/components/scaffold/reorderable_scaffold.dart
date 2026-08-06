@@ -49,13 +49,15 @@ class MyReorderableList<T> extends StatefulWidget {
 
   final Widget Function(BuildContext context, T item, Widget toggler)? itemWhenDraggingBuilder;
 
-  final Widget Function(BuildContext context, Widget child)? wrapperWhenDraggingBuilder;
-
   final VoidCallback? onReorder;
 
   final EdgeInsetsGeometry? padding;
 
   final Icon toggler;
+
+  final Color? materialColor;
+
+  final TextStyle? materialTextStyle;
 
   const MyReorderableList({
     super.key,
@@ -64,7 +66,8 @@ class MyReorderableList<T> extends StatefulWidget {
     this.itemWhenDraggingBuilder,
     this.onReorder,
     this.padding,
-    this.wrapperWhenDraggingBuilder,
+    this.materialColor,
+    this.materialTextStyle,
     this.toggler = const Icon(Icons.reorder_outlined),
   });
 
@@ -101,6 +104,8 @@ class _MyReorderableListState<T> extends State<MyReorderableList<T>> {
                   padding: const .symmetric(vertical: 1.0),
                   child: Material(
                     elevation: 1.0,
+                    color: widget.materialColor,
+                    textStyle: widget.materialTextStyle,
                     child: ListTile(title: Text((item as dynamic).name), trailing: toggler),
                   ),
                 ),
@@ -111,12 +116,14 @@ class _MyReorderableListState<T> extends State<MyReorderableList<T>> {
         return AnimatedBuilder(
           animation: animation,
           builder: (BuildContext context, Widget? child) {
-            final w = widget.itemWhenDraggingBuilder != null
-                ? widget.itemWhenDraggingBuilder!(context, item, widget.toggler)
-                : ListTile(title: Text((item as dynamic).name), trailing: widget.toggler);
-            return widget.wrapperWhenDraggingBuilder != null
-                ? widget.wrapperWhenDraggingBuilder!(context, w)
-                : Material(elevation: 6.0, child: w);
+            return Material(
+              color: widget.materialColor,
+              textStyle: widget.materialTextStyle,
+              elevation: 6.0,
+              child: widget.itemWhenDraggingBuilder != null
+                  ? widget.itemWhenDraggingBuilder!(context, item, widget.toggler)
+                  : ListTile(title: Text((item as dynamic).name), trailing: widget.toggler),
+            );
           },
           child: child,
         );

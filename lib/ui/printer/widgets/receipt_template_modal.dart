@@ -139,19 +139,13 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
               style: PrinterReceiptView.defaultTextStyle,
               child: MyReorderableList(
                 padding: const .fromLTRB(24.0, 16, 24.0, kFABSpacing + 32),
+                materialColor: Colors.white,
+                materialTextStyle: PrinterReceiptView.defaultTextStyle,
                 items: _components,
                 onReorder: () => _rebuildComponents.value = !_rebuildComponents.value,
                 toggler: Icon(Icons.reorder_outlined, color: PrinterReceiptView.defaultTextStyle.color),
                 itemBuilder: _buildComponentTile,
                 itemWhenDraggingBuilder: _buildComponent,
-                wrapperWhenDraggingBuilder: (context, child) {
-                  return Material(
-                    elevation: 6.0,
-                    color: Colors.white,
-                    textStyle: PrinterReceiptView.defaultTextStyle,
-                    child: child,
-                  );
-                },
               ),
             ),
           ),
