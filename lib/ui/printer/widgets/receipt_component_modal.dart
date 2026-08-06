@@ -551,10 +551,9 @@ class _TextEditorViewState extends State<_TextEditorView> {
   late final FocusNode _focusNode;
 
   late final TextEditingController _fontSizeController;
-  late final MenuController _colorController;
   late final MenuController _placeholderController;
+  late final ValueNotifier<TextAlign> _textAlign;
 
-  final ValueNotifier<TextAlign> _textAlign = ValueNotifier(.left);
   final MenuController _textAlignController = MenuController();
 
   @override
@@ -627,16 +626,6 @@ class _TextEditorViewState extends State<_TextEditorView> {
       // Font Styles
       const VerticalDivider(width: 1, thickness: 1, indent: 6, endIndent: 6),
       FontSizeField(key: const Key('editor_ant.font_size_field'), controller: _fontSizeController, maximum: 40),
-      ColorSelector(
-        tooltip: S.printerReceiptComponentTextColor,
-        controller: _colorController,
-        menuStyle: menuStyle,
-        menuAlignmentOffset: menuAlignmentOffset,
-        colors: const [
-          [null, Colors.black, Color(0xFF212121), Color(0xFF616161)],
-          [Color(0xFF9E9E9E), Color(0xFFB0B0B0), Color(0xFFE0E0E0), Colors.white],
-        ],
-      ),
       // Style buttons
       const VerticalDivider(width: 1, thickness: 1, indent: 6, endIndent: 6),
       BoldButton(tooltip: S.printerReceiptComponentTextBold),
@@ -695,9 +684,9 @@ class _TextEditorViewState extends State<_TextEditorView> {
       onPlaceholderPressed: _onPlaceholderSelected,
     );
     _focusNode = FocusNode();
-    _colorController = MenuController();
     _fontSizeController = TextEditingController(text: defaultFontSize.toString());
     _placeholderController = MenuController();
+    _textAlign = ValueNotifier(widget.component.textAlign);
   }
 
   @override
@@ -706,12 +695,14 @@ class _TextEditorViewState extends State<_TextEditorView> {
     _controller.dispose();
     _focusNode.dispose();
     _fontSizeController.dispose();
+    _textAlign.dispose();
     super.dispose();
   }
 
   Future<void> _onUpdate() async {
     final parts = _controller.toParts();
     widget.component.updateFromParts(parts);
+    widget.component.textAlign = _textAlign.value;
   }
 
   Future<String?> _onPlaceholderSelected(MenuPlaceholder<String?> ph) {
