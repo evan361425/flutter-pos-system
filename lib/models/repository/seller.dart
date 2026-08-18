@@ -29,9 +29,11 @@ class Seller extends ChangeNotifier {
 
   DateTime? _resetIdNext;
 
-  int get idOffset => _idOffset ??= Cache.instance.get<int>('order.idOffset') ?? 0;
+  int get idOffset =>
+      _idOffset ??= Cache.instance.get<int>('order.idOffset') ?? 0;
 
-  DateTime? get resetIdNext => _resetIdNext ??= Period.fromCache().nextDateFromCache();
+  DateTime? get resetIdNext =>
+      _resetIdNext ??= Period.fromCache().nextDateFromCache();
   @visibleForTesting
   set resetIdNext(DateTime? value) => _resetIdNext = value;
 
@@ -46,7 +48,8 @@ class Seller extends ChangeNotifier {
       where: 'name = ?',
       whereArgs: [orderTable],
     );
-    final offset = _idOffset = (response.firstOrNull?['seq'] as num?)?.toInt() ?? 0;
+    final offset = _idOffset =
+        (response.firstOrNull?['seq'] as num?)?.toInt() ?? 0;
     await Cache.instance.set('order.idOffset', offset);
   }
 
@@ -64,12 +67,21 @@ class Seller extends ChangeNotifier {
   }
 
   /// Get the metrics(e.g. count, price) of orders from time range.
-  Future<OrderMetrics> getMetrics(DateTime start, DateTime end, {bool countingAll = false}) async {
+  Future<OrderMetrics> getMetrics(
+    DateTime start,
+    DateTime end, {
+    bool countingAll = false,
+  }) async {
     final begin = Util.toUTC(now: start);
     final finish = Util.toUTC(now: end);
     final orderMeta = (await Database.instance.query(
       orderTable,
-      columns: ['COUNT(*) count', 'SUM(price) revenue', 'SUM(cost) cost', 'SUM(revenue) profit'],
+      columns: [
+        'COUNT(*) count',
+        'SUM(price) revenue',
+        'SUM(cost) cost',
+        'SUM(revenue) profit',
+      ],
       where: 'createdAt BETWEEN ? AND ?',
       whereArgs: [begin, finish],
     ))[0];
@@ -136,7 +148,10 @@ class Seller extends ChangeNotifier {
       'FROM $orderTable '
       'WHERE createdAt BETWEEN $begin AND $cease'
       ') t',
-      columns: ['day', ...types.map((e) => '${e.method}(${e.column}) ${e.name}')],
+      columns: [
+        'day',
+        ...types.map((e) => '${e.method}(${e.column}) ${e.name}'),
+      ],
       groupBy: "day",
       orderBy: "day $orderDirection",
       limit: limit,
@@ -152,7 +167,14 @@ class Seller extends ChangeNotifier {
           ),
     ];
 
-    return ignoreEmpty ? result : _fulfillPeriodData(start, end, Duration(seconds: interval.seconds), result);
+    return ignoreEmpty
+        ? result
+        : _fulfillPeriodData(
+            start,
+            end,
+            Duration(seconds: interval.seconds),
+            result,
+          );
   }
 
   /// Get the metric of items grouped by the day.
@@ -174,7 +196,9 @@ class Seller extends ChangeNotifier {
     final begin = Util.toUTC(now: start);
     final cease = Util.toUTC(now: end);
 
-    final where = selection.isEmpty ? '' : ' AND ${target.filterColumn} IN ("${selection.join('","')}")';
+    final where = selection.isEmpty
+        ? ''
+        : ' AND ${target.filterColumn} IN ("${selection.join('","')}")';
     // if target has different column then we need to concat the column to
     // make the result more readable.
     // (different catalog may have same item name).
@@ -190,7 +214,11 @@ class Seller extends ChangeNotifier {
       'FROM ${target.table} '
       'WHERE createdAt BETWEEN $begin AND $cease $where '
       ') t',
-      columns: ['day', '$name name', '${type.method}(${type.targetColumn}) value'],
+      columns: [
+        'day',
+        '$name name',
+        '${type.method}(${type.targetColumn}) value',
+      ],
       groupBy: "day, ${target.groupColumn}",
       orderBy: "day asc",
       escapeTable: false,
@@ -202,13 +230,24 @@ class Seller extends ChangeNotifier {
         .values
         .map(
           (e) => OrderSummary(
-            at: Util.fromUTC(begin + (e.first['day'] as int) * interval.seconds),
-            values: {for (final row in e) row['name'] as String: row['value'] as num},
+            at: Util.fromUTC(
+              begin + (e.first['day'] as int) * interval.seconds,
+            ),
+            values: {
+              for (final row in e) row['name'] as String: row['value'] as num,
+            },
           ),
         )
         .toList();
 
-    return ignoreEmpty ? result : _fulfillPeriodData(start, end, Duration(seconds: interval.seconds), result);
+    return ignoreEmpty
+        ? result
+        : _fulfillPeriodData(
+            start,
+            end,
+            Duration(seconds: interval.seconds),
+            result,
+          );
   }
 
   /// Get the metrics of orders and group by the items.
@@ -225,11 +264,16 @@ class Seller extends ChangeNotifier {
     final begin = Util.toUTC(now: start);
     final cease = Util.toUTC(now: end);
 
-    final where = selection.isEmpty ? '' : ' AND `${target.filterColumn}` IN ("${selection.join('","')}")';
+    final where = selection.isEmpty
+        ? ''
+        : ' AND `${target.filterColumn}` IN ("${selection.join('","')}")';
 
     final rows = await Database.instance.query(
       target.table,
-      columns: ['${target.groupColumn} name', '${type.method}(${type.targetColumn}) value'],
+      columns: [
+        '${target.groupColumn} name',
+        '${type.method}(${type.targetColumn}) value',
+      ],
       where: 'createdAt BETWEEN ? AND ?$where',
       whereArgs: [begin, cease],
       groupBy: target.groupColumn,
@@ -238,7 +282,8 @@ class Seller extends ChangeNotifier {
 
     final total = rows.fold(0.0, (prev, e) => prev + (e['value'] as num));
     final result = <OrderMetricPerItem>[
-      for (final row in rows) OrderMetricPerItem(row['name'] as String, row['value'] as num, total),
+      for (final row in rows)
+        OrderMetricPerItem(row['name'] as String, row['value'] as num, total),
     ];
 
     if (ignoreEmpty) {
@@ -247,12 +292,21 @@ class Seller extends ChangeNotifier {
 
     return target
         .getItems(selection)
-        .map((item) => result.where((e) => e.name == item.name).firstOrNull ?? OrderMetricPerItem(item.name, 0, total))
+        .map(
+          (item) =>
+              result.where((e) => e.name == item.name).firstOrNull ??
+              OrderMetricPerItem(item.name, 0, total),
+        )
         .toList();
   }
 
   /// Get orders and its products info from time range.
-  Future<List<OrderObject>> getOrders(DateTime start, DateTime end, {int offset = 0, int limit = 10}) async {
+  Future<List<OrderObject>> getOrders(
+    DateTime start,
+    DateTime end, {
+    int offset = 0,
+    int limit = 10,
+  }) async {
     final rows = await Database.instance.query(
       orderTable,
       columns: [
@@ -268,7 +322,12 @@ class Seller extends ChangeNotifier {
       orderBy: '$orderTable.createdAt desc',
       limit: limit,
       offset: offset,
-      join: const JoinQuery(hostTable: orderTable, guestTable: productTable, hostKey: 'id', guestKey: 'orderId'),
+      join: const JoinQuery(
+        hostTable: orderTable,
+        guestTable: productTable,
+        hostKey: 'id',
+        guestKey: 'orderId',
+      ),
       groupBy: '$productTable.orderId',
     );
 
@@ -278,7 +337,10 @@ class Seller extends ChangeNotifier {
 
       return OrderObject.fromMap(
         row,
-        IterableZip([pn, pc]).map((e) => {'productName': e[0], 'count': int.tryParse(e[1])}),
+        IterableZip([
+          pn,
+          pc,
+        ]).map((e) => {'productName': e[0], 'count': num.tryParse(e[1])}),
       );
     }).toList();
   }
@@ -286,7 +348,10 @@ class Seller extends ChangeNotifier {
   /// Get orders in all detailed set.
   ///
   /// This is used to export orders.
-  Future<List<OrderObject>> getDetailedOrders(DateTime start, DateTime end) async {
+  Future<List<OrderObject>> getDetailedOrders(
+    DateTime start,
+    DateTime end,
+  ) async {
     final r = await Database.instance.transaction((txn) async {
       final batch = txn.batch();
       queryTable(String t) {
@@ -316,7 +381,12 @@ class Seller extends ChangeNotifier {
       final pi = _getSizeBelongsToOrder(rr[0], id);
       final ii = _getSizeBelongsToOrder(rr[1], id);
       final ai = _getSizeBelongsToOrder(rr[2], id);
-      final o = OrderObject.fromMap(order, rr[0].sublist(0, pi), rr[1].sublist(0, ii), rr[2].sublist(0, ai));
+      final o = OrderObject.fromMap(
+        order,
+        rr[0].sublist(0, pi),
+        rr[1].sublist(0, ii),
+        rr[2].sublist(0, ai),
+      );
       rr[0] = rr[0].sublist(pi);
       rr[1] = rr[1].sublist(ii);
       rr[2] = rr[2].sublist(ai);
@@ -351,7 +421,9 @@ class Seller extends ChangeNotifier {
       final orderMap = order.toMap();
 
       final id = await txn.insert(orderTable, orderMap);
-      await txn.update(orderTable, {'periodSeq': id - idOffset}, where: 'id = $id');
+      await txn.update(orderTable, {
+        'periodSeq': id - idOffset,
+      }, where: 'id = $id');
 
       for (final product in order.products) {
         final map = product.toMap();
@@ -422,7 +494,12 @@ class Seller extends ChangeNotifier {
     return items.length;
   }
 
-  List<OrderSummary> _fulfillPeriodData(DateTime start, DateTime end, Duration interval, List<OrderSummary> data) {
+  List<OrderSummary> _fulfillPeriodData(
+    DateTime start,
+    DateTime end,
+    Duration interval,
+    List<OrderSummary> data,
+  ) {
     var i = 0;
     return <OrderSummary>[
       for (var v = start; v.isBefore(end); v = v.add(interval))
@@ -469,7 +546,12 @@ class OrderMetrics {
   });
 
   /// Directly from DB data.
-  factory OrderMetrics.fromMap(Map<String, Object?> map, {int? productCount, int? ingredientCount, int? attrCount}) {
+  factory OrderMetrics.fromMap(
+    Map<String, Object?> map, {
+    int? productCount,
+    int? ingredientCount,
+    int? attrCount,
+  }) {
     return OrderMetrics._(
       count: map['count'] as int? ?? 0,
       revenue: map['revenue'] as num? ?? 0,
@@ -507,7 +589,8 @@ class OrderMetricPerItem {
   final num value;
   final double percent;
 
-  OrderMetricPerItem(this.name, this.value, num total) : percent = total == 0 ? 0 : value / total;
+  OrderMetricPerItem(this.name, this.value, num total)
+    : percent = total == 0 ? 0 : value / total;
 }
 
 class Period {
@@ -518,7 +601,11 @@ class Period {
 
   factory Period.fromCache() {
     final idx = Cache.instance.get<int>('order.resetIdPeriod.unit');
-    final values = Cache.instance.get<String>('order.resetIdPeriod.values')?.split(',').map(int.tryParse).toList();
+    final values = Cache.instance
+        .get<String>('order.resetIdPeriod.values')
+        ?.split(',')
+        .map(int.tryParse)
+        .toList();
     if (values?.every((e) => e != null) == true && idx != null) {
       return Period(unit: .values[idx], values: values!.cast<int>());
     }
@@ -532,7 +619,10 @@ class Period {
   }
 
   static Future<bool> cacheNext(DateTime next) {
-    return Cache.instance.set<int>('order.resetIdPeriod.next', next.millisecondsSinceEpoch);
+    return Cache.instance.set<int>(
+      'order.resetIdPeriod.next',
+      next.millisecondsSinceEpoch,
+    );
   }
 
   bool get isInvalid => values.isEmpty;
@@ -542,8 +632,14 @@ class Period {
     final next = nextDate(today, today);
 
     await Cache.instance.set<int>('order.resetIdPeriod.unit', unit.index);
-    await Cache.instance.set<String>('order.resetIdPeriod.values', values.join(','));
-    await Cache.instance.set<int>('order.resetIdPeriod.next', next.millisecondsSinceEpoch);
+    await Cache.instance.set<String>(
+      'order.resetIdPeriod.values',
+      values.join(','),
+    );
+    await Cache.instance.set<int>(
+      'order.resetIdPeriod.next',
+      next.millisecondsSinceEpoch,
+    );
 
     return next;
   }
@@ -558,7 +654,10 @@ class Period {
   }
 
   DateTime nextDate(DateTime last, DateTime today) {
-    assert(last.isBefore(today) || last == today, 'Last date must be before today');
+    assert(
+      last.isBefore(today) || last == today,
+      'Last date must be before today',
+    );
 
     switch (unit) {
       case .everyXDays:
@@ -654,7 +753,8 @@ enum OrderMetricTarget {
   bool get hasDifferentColumn => filterColumn != groupColumn;
 
   /// Whether append parenthesis to the name when grouped.
-  bool isGroupedName(List<String> selection) => hasDifferentColumn && selection.length != 1;
+  bool isGroupedName(List<String> selection) =>
+      hasDifferentColumn && selection.length != 1;
 
   /// Get the items from the target.
   ///
@@ -662,11 +762,17 @@ enum OrderMetricTarget {
   List<Model> getItems([List<String>? selection]) {
     if (this == .attribute && selection != null) {
       if (selection.isEmpty) {
-        return OrderAttributes.instance.itemList.expand((e) => e.itemList).toList();
+        return OrderAttributes.instance.itemList
+            .expand((e) => e.itemList)
+            .toList();
       }
 
       return selection
-          .expand<OrderAttributeOption>((id) => OrderAttributes.instance.getItemByName(id)?.itemList ?? const [])
+          .expand<OrderAttributeOption>(
+            (id) =>
+                OrderAttributes.instance.getItemByName(id)?.itemList ??
+                const [],
+          )
           .toList();
     }
 

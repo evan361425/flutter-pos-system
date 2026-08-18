@@ -16,7 +16,11 @@ class GoalsCardView extends StatefulWidget {
 
   final Widget? action;
 
-  const GoalsCardView({super.key, this.calculator = const EMACalculator(20), this.action});
+  const GoalsCardView({
+    super.key,
+    this.calculator = const EMACalculator(20),
+    this.action,
+  });
 
   @override
   State<GoalsCardView> createState() => _GoalsCardViewState();
@@ -52,12 +56,16 @@ class _GoalsCardViewState extends State<GoalsCardView> {
   }
 
   Widget _builder(BuildContext context, OrderSummary metric) {
-    final style = Theme.of(context).textTheme.bodyLarge?.copyWith(overflow: .ellipsis);
+    final style = Theme.of(
+      context,
+    ).textTheme.bodyLarge?.copyWith(overflow: .ellipsis);
 
     return LayoutBuilder(
       builder: (context, constraint) {
         final compact = constraint.maxWidth < Breakpoint.compact.max;
-        final MainAxisAlignment align = goal!.profit == 0 ? .start : .spaceAround;
+        final MainAxisAlignment align = goal!.profit == 0
+            ? .start
+            : .spaceAround;
         return Row(
           mainAxisAlignment: align,
           children: [
@@ -71,6 +79,7 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                   name: S.analysisGoalsCountTitle,
                   desc: S.analysisGoalsCountDescription,
                   compact: compact,
+                  formatAsCount: true,
                 ),
                 _GoalItem(
                   current: metric.revenue,
@@ -115,7 +124,9 @@ class _GoalsCardViewState extends State<GoalsCardView> {
                       Positioned.fill(
                         child: Center(
                           child: Text(
-                            S.analysisGoalsAchievedRate(formatter.format(metric.profit / goal!.profit)),
+                            S.analysisGoalsAchievedRate(
+                              formatter.format(metric.profit / goal!.profit),
+                            ),
                             style: Theme.of(context).textTheme.titleMedium,
                             textAlign: .center,
                           ),
@@ -135,16 +146,25 @@ class _GoalsCardViewState extends State<GoalsCardView> {
     final range = Util.getDateRange();
     final result = await Seller.instance.getMetricsInPeriod(
       // If there is no data, we need to calculate the EMA from the last 20 data points withing 40 days.
-      goal == null ? range.start.subtract(const Duration(days: 40)) : range.start,
+      goal == null
+          ? range.start.subtract(const Duration(days: 40))
+          : range.start,
       range.end,
-      types: [OrderMetricType.count, OrderMetricType.revenue, OrderMetricType.profit, OrderMetricType.cost],
-      ignoreEmpty: true, // this will ignore today, so later we need to add it back.
+      types: [
+        OrderMetricType.count,
+        OrderMetricType.revenue,
+        OrderMetricType.profit,
+        OrderMetricType.cost,
+      ],
+      ignoreEmpty:
+          true, // this will ignore today, so later we need to add it back.
       limit: goal == null ? widget.calculator.length + 1 : 1,
       orderDirection: "desc",
     );
 
     // Remove the first data, which is the latest data.
-    final todayData = result.firstOrNull?.at == range.end.subtract(const Duration(days: 1))
+    final todayData =
+        result.firstOrNull?.at == range.end.subtract(const Duration(days: 1))
         ? result.removeAt(0)
         : OrderSummary(at: range.start);
 
@@ -154,7 +174,9 @@ class _GoalsCardViewState extends State<GoalsCardView> {
         at: DateTime(0), // this is dummy data, we don't need the date.
         values: {
           'count': widget.calculator.calculate(reversed.map((e) => e.count)),
-          'revenue': widget.calculator.calculate(reversed.map((e) => e.revenue)),
+          'revenue': widget.calculator.calculate(
+            reversed.map((e) => e.revenue),
+          ),
           'profit': widget.calculator.calculate(reversed.map((e) => e.profit)),
         },
       );
@@ -176,6 +198,7 @@ class _GoalItem extends StatelessWidget {
   final TextStyle? style;
 
   final bool compact;
+  final bool formatAsCount;
 
   const _GoalItem({
     required this.name,
@@ -184,6 +207,7 @@ class _GoalItem extends StatelessWidget {
     required this.goal,
     this.style,
     required this.compact,
+    this.formatAsCount = false,
   });
 
   @override
@@ -196,12 +220,13 @@ class _GoalItem extends StatelessWidget {
     );
     final value = RichText(
       text: TextSpan(
-        text: current.toCurrency(),
+        text: formatAsCount ? current.toShortString() : current.toCurrency(),
         style: style?.copyWith(fontSize: 24),
         children: goal != 0
             ? [
                 TextSpan(
-                  text: '／${goal.toCurrency()}',
+                  text:
+                      '／${formatAsCount ? goal.toShortString() : goal.toCurrency()}',
                   style: const TextStyle(color: Colors.grey, fontSize: 24),
                 ),
               ]
@@ -210,7 +235,10 @@ class _GoalItem extends StatelessWidget {
     );
 
     if (compact) {
-      return Column(crossAxisAlignment: .start, children: [label, value, const SizedBox(height: 4)]);
+      return Column(
+        crossAxisAlignment: .start,
+        children: [label, value, const SizedBox(height: 4)],
+      );
     }
 
     return ConstrainedBox(

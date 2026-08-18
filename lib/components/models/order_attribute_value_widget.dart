@@ -24,8 +24,8 @@ class OrderAttributeValueWidget {
       return modeValue == 0
           ? ''
           : modeValue > 0
-          ? '+ \$$value'
-          : '- \$$value';
+          ? '+ €$value'
+          : '- €$value';
     }
   }
 }

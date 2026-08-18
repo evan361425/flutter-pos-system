@@ -41,6 +41,7 @@ void main() async {
     await Stock().initialize();
     await Quantities().initialize();
     await OrderAttributes().initialize();
+    await setupExampleOrderAttrs();
     await Replenisher().initialize();
     await Cashier().reset();
     await Analysis().initialize();

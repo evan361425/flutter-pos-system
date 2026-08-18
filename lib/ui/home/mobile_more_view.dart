@@ -18,7 +18,8 @@ class MobileMoreView extends StatefulWidget {
   State<MobileMoreView> createState() => _MobileMoreViewState();
 }
 
-class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAliveClientMixin {
+class _MobileMoreViewState extends State<MobileMoreView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -31,6 +32,13 @@ class _MobileMoreViewState extends State<MobileMoreView> with AutomaticKeepAlive
             padding: const .only(bottom: 76),
             children: [
               const _HeaderInfoList(),
+              _buildRouteTile(
+                id: 'analysis',
+                icon: Icons.analytics_outlined,
+                route: Routes.analysisMore,
+                title: S.title('analysis'),
+                subtitle: S.analysisGoalsTitle,
+              ),
               if (!isProd)
                 _buildRouteTile(
                   id: 'debug',

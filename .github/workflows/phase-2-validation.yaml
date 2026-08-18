@@ -1,0 +1,57 @@
+name: Phase 2 POS workflow validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/phase-2-pos-workflow
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.41.0
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Test POS workflow changes
+        run: >-
+          flutter test
+          test/models/model_test.dart
+          test/helpers/setup_example_test.dart
+          test/services/database_test.dart
+          test/services/database_migration_actions_test.dart
+          test/settings/currency_settting_test.dart
+          test/ui/order/order_actions_test.dart
+          test/ui/order/stashed_order_test.dart
+          test/ui/transit/order_widgets_test.dart
+          test/ui/transit/excel/export_order_test.dart
+
+      - name: Build Android 16 debug APK
+        run: flutter build apk --debug --flavor prod
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: elbe-jade-pos-phase2-debug-apk
+          path: build/app/outputs/flutter-apk/app-prod-debug.apk
+          if-no-files-found: error
+          retention-days: 14

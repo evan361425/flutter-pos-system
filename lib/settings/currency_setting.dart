@@ -8,7 +8,7 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   static const CurrencyTypes defaultValue = .eur;
 
   static const supports = <CurrencyTypes, List<num>>{
-    .eur: [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200],
+    .eur: [1, 2, 5, 10, 20, 50, 100, 200],
     .twd: [1, 5, 10, 50, 100, 500, 1000],
     .usd: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 5, 10, 20, 50, 100],
   };

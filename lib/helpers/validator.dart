@@ -5,11 +5,12 @@ class Validator {
   static String? Function(Object?) positiveNumber(
     String fieldName, {
     num? maximum,
+    num? minimum,
     bool allowNull = false,
     FocusNode? focusNode,
   }) {
     return (Object? value) {
-      final number = num.tryParse('$value');
+      final number = num.tryParse('$value'.replaceAll(',', '.'));
       String? error;
 
       if (number == null) {
@@ -20,6 +21,8 @@ class Validator {
         error = S.invalidNumberPositive(fieldName);
       } else if (maximum != null && maximum < number) {
         error = S.invalidNumberMaximum(fieldName, maximum);
+      } else if (minimum != null && minimum > number) {
+        error = S.invalidNumberMinimum(fieldName, minimum);
       }
 
       if (error != null) {
@@ -61,7 +64,11 @@ class Validator {
     };
   }
 
-  static String? Function(String?) isNumber(String fieldName, {bool allowNull = false, FocusNode? focusNode}) {
+  static String? Function(String?) isNumber(
+    String fieldName, {
+    bool allowNull = false,
+    FocusNode? focusNode,
+  }) {
     return (String? value) {
       final number = num.tryParse(value ?? '');
       String? error;

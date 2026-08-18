@@ -26,7 +26,9 @@ import 'widgets/order_product_list_view.dart';
 import 'widgets/orientated_view.dart';
 
 class OrderPage extends StatefulWidget {
-  const OrderPage({super.key});
+  final bool embedded;
+
+  const OrderPage({super.key, this.embedded = false});
 
   @override
   State<OrderPage> createState() => _OrderPageState();
@@ -60,18 +62,24 @@ class _OrderPageState extends State<OrderPage> {
         controller: _pageController,
         onPageChanged: (index) => _catalogIndexNotifier.value = index,
         itemCount: catalogs.length,
-        itemBuilder: (context, index) =>
-            OrderProductListView(products: catalogs[index].itemList, view: _productViewNotifier.value),
+        itemBuilder: (context, index) => OrderProductListView(
+          products: catalogs[index].itemList,
+          view: _productViewNotifier.value,
+        ),
       ),
     );
 
-    final body = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= .medium
+    final body =
+        Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= .medium
         ? DraggableSheetView(
             row1: orderCatalogListView,
             row2: orderProductListView,
             row3_1: const CartProductSelector(),
             row3_2Builder: (scroll, scrollable) => Expanded(
-              child: CartProductList(scrollController: scroll, scrollable: scrollable),
+              child: CartProductList(
+                scrollController: scroll,
+                scrollable: scrollable,
+              ),
             ),
             row3_3: const CartMetadataView(),
             row4: const CartProductStateSelector(),
@@ -86,22 +94,35 @@ class _OrderPageState extends State<OrderPage> {
             row4: const CartProductStateSelector(),
           );
 
+    final actions = <Widget>[
+      MoreButton(key: const Key('order.more'), onPressed: _showActions),
+      const PrinterButtonView(),
+      TextButton(
+        key: const Key('order.checkout'),
+        onPressed: () => _handleCheckout(),
+        child: Text(S.orderActionCheckout),
+      ),
+    ];
+
+    if (widget.embedded) {
+      return TutorialWrapper(
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Row(mainAxisSize: .min, children: actions),
+            ),
+            Expanded(child: body),
+          ],
+        ),
+      );
+    }
+
     return TutorialWrapper(
       child: Scaffold(
         // avoid resize when keyboard(bottom inset) shows
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: const PopButton(),
-          actions: [
-            MoreButton(key: const Key('order.more'), onPressed: _showActions),
-            const PrinterButtonView(),
-            TextButton(
-              key: const Key('order.checkout'),
-              onPressed: () => _handleCheckout(),
-              child: Text(S.orderActionCheckout),
-            ),
-          ],
-        ),
+        appBar: AppBar(leading: const PopButton(), actions: actions),
         body: body,
       ),
     );
@@ -130,7 +151,9 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _handleCheckout() async {
-    final status = await context.pushNamed<CheckoutStatus>(Routes.orderCheckout);
+    final status = await context.pushNamed<CheckoutStatus>(
+      Routes.orderCheckout,
+    );
     if (status != null && mounted) {
       handleCheckoutStatus(context, status);
       _resetNotifier.notify();
@@ -181,11 +204,20 @@ void handleCheckoutStatus(BuildContext context, CheckoutStatus status) {
   status = CheckoutWarningSetting.instance.shouldShow(status);
 
   return switch (status) {
-    CheckoutStatus.ok || CheckoutStatus.stash || .restore => showSnackBar(S.actSuccess, context: context),
-    .cashierNotEnough => showSnackBar(S.orderSnackbarCashierNotEnough, context: context),
+    CheckoutStatus.ok ||
+    CheckoutStatus.stash ||
+    .restore => showSnackBar(S.actSuccess, context: context),
+    .cashierNotEnough => showSnackBar(
+      S.orderSnackbarCashierNotEnough,
+      context: context,
+    ),
     .cashierUsingSmall => showMoreInfoSnackBar(
       S.orderSnackbarCashierUsingSmallMoney,
-      Linkify.fromString(S.orderSnackbarCashierUsingSmallMoneyHelper(Routes.getRoute('settings/checkoutWarning'))),
+      Linkify.fromString(
+        S.orderSnackbarCashierUsingSmallMoneyHelper(
+          Routes.getRoute('settings/checkoutWarning'),
+        ),
+      ),
       context: context,
     ),
     _ => null,

@@ -29,12 +29,21 @@ class CheckoutAttributeView extends StatelessWidget {
     );
 
     return SingleChildScrollView(
-      padding: const .fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kFABSpacing),
+      padding: const .fromLTRB(
+        kHorizontalSpacing,
+        kTopSpacing,
+        kHorizontalSpacing,
+        kFABSpacing,
+      ),
       child: Column(
         crossAxisAlignment: .start,
         children: [
-          for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
-          Text(S.orderCheckoutAttributeNoteTitle, style: Theme.of(context).textTheme.titleMedium),
+          for (final item in OrderAttributes.instance.notEmptyItems)
+            _CheckoutAttributeGroup(item, price),
+          Text(
+            S.orderCheckoutAttributeNoteTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: kInternalSpacing),
           noteField,
         ],
@@ -51,18 +60,20 @@ class _CheckoutAttributeGroup extends StatefulWidget {
   const _CheckoutAttributeGroup(this.attribute, this.price);
 
   @override
-  State<_CheckoutAttributeGroup> createState() => _CheckoutAttributeGroupState();
+  State<_CheckoutAttributeGroup> createState() =>
+      _CheckoutAttributeGroupState();
 }
 
 class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
   late String? selectedId;
+  late final TextEditingController customValueController;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        Text(widget.attribute.name, style: Theme.of(context).textTheme.titleMedium),
+        Text(_attributeName, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: kInternalSpacing),
         Padding(
           padding: const .symmetric(horizontal: kHorizontalSpacing),
@@ -77,11 +88,31 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
                     selectOption(option, selected);
                   },
                   selected: selectedId == option.id,
-                  label: Text(option.name),
+                  label: Text(_optionName(option)),
                 ),
             ],
           ),
         ),
+        if (widget.attribute.id == 'city' && selectedId == 'other')
+          Padding(
+            padding: const .symmetric(
+              horizontal: kHorizontalSpacing,
+              vertical: kInternalSpacing,
+            ),
+            child: TextField(
+              key: const Key('order.attr.city.other'),
+              controller: customValueController,
+              textCapitalization: .words,
+              decoration: InputDecoration(
+                labelText: S.orderCustomerCityOtherLabel,
+                border: OutlineInputBorder(borderRadius: .circular(8.0)),
+              ),
+              onChanged: (value) => Cart.instance.updateCustomAttributeValue(
+                widget.attribute.id,
+                value,
+              ),
+            ),
+          ),
         const SizedBox(height: kInternalLargeSpacing),
       ],
     );
@@ -90,12 +121,42 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
   @override
   void initState() {
     super.initState();
-    selectedId = Cart.instance.attributes[widget.attribute.id] ?? widget.attribute.defaultOption?.id;
+    selectedId =
+        Cart.instance.attributes[widget.attribute.id] ??
+        widget.attribute.defaultOption?.id;
+    customValueController = TextEditingController(
+      text: Cart.instance.customAttributeValues[widget.attribute.id],
+    );
+  }
+
+  @override
+  void dispose() {
+    customValueController.dispose();
+    super.dispose();
   }
 
   void selectOption(OrderAttributeOption option, bool isSelected) {
-    Cart.instance.chooseAttribute(widget.attribute.id, isSelected ? option.id : '');
+    Cart.instance.chooseAttribute(
+      widget.attribute.id,
+      isSelected ? option.id : '',
+    );
 
     widget.price.value = Cart.instance.price;
+  }
+
+  String get _attributeName => switch (widget.attribute.id) {
+    'city' => S.orderCustomerCity,
+    'sale-method' => S.orderCustomerSaleMethod,
+    _ => widget.attribute.name,
+  };
+
+  String _optionName(OrderAttributeOption option) {
+    if (widget.attribute.id == 'city' && option.id == 'other')
+      return S.orderCustomerCityOther;
+    if (widget.attribute.id == 'sale-method' && option.id == 'pickup')
+      return S.orderCustomerSaleMethodPickup;
+    if (widget.attribute.id == 'sale-method' && option.id == 'shipping')
+      return S.orderCustomerSaleMethodShipping;
+    return option.name;
   }
 }

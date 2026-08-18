@@ -38,6 +38,9 @@ class Cart extends ChangeNotifier {
   /// Current select attributes.
   final Map<String, String> attributes = {};
 
+  /// Free-text values for attribute options such as "Other city".
+  final Map<String, String> customAttributeValues = {};
+
   /// Current selected product if and only if all selected products are same.
   final ValueNotifier<CartProduct?> selectedProduct = ValueNotifier(null);
 
@@ -62,7 +65,7 @@ class Cart extends ChangeNotifier {
   }
 
   /// The count of all ordered products.
-  int get productCount {
+  num get productCount {
     return products.fold(0, (value, product) => value + product.count);
   }
 
@@ -78,7 +81,8 @@ class Cart extends ChangeNotifier {
   }
 
   /// The list of selected product.
-  Iterable<CartProduct> get selected => products.where((product) => product.isSelected);
+  Iterable<CartProduct> get selected =>
+      products.where((product) => product.isSelected);
 
   /// The attribute options that are selected or default value.
   Iterable<OrderAttributeOption> get selectedAttributeOptions sync* {
@@ -93,8 +97,8 @@ class Cart extends ChangeNotifier {
   }
 
   /// Add [product] to the cart.
-  void add(Product product) {
-    final p = CartProduct(product, isSelected: true);
+  void add(Product product, {num count = 1}) {
+    final p = CartProduct(product, count: count, isSelected: true);
     products.add(p);
 
     toggleAll(false, except: p);
@@ -108,6 +112,11 @@ class Cart extends ChangeNotifier {
   /// because remove it will choose default one after checkout.
   void chooseAttribute(String attrId, String optionId) {
     attributes[attrId] = optionId;
+    if (optionId != 'other') customAttributeValues.remove(attrId);
+  }
+
+  void updateCustomAttributeValue(String attrId, String value) {
+    customAttributeValues[attrId] = value.trim();
   }
 
   /// Update the note of the order.
@@ -120,15 +129,25 @@ class Cart extends ChangeNotifier {
   /// - [paid] is the money that customer paid. If it is less than the price,
   ///  will return [CheckoutStatus.paidNotEnough].
   /// - [context] is the context to show the receipt dialog.
-  Future<CheckoutStatus> checkout({required num paid, required BuildContext context}) async {
+  Future<CheckoutStatus> checkout({
+    required num paid,
+    required BuildContext context,
+  }) async {
     if (isEmpty) return CheckoutStatus.nothingHappened;
 
     if (paid < price) return CheckoutStatus.paidNotEnough;
 
-    Log.ger('begin_order_checkout', {'name': name, 'paid': paid, 'price': price});
+    Log.ger('begin_order_checkout', {
+      'name': name,
+      'paid': paid,
+      'price': price,
+    });
     final data = toObject(paid: paid);
 
-    final receipt = await Printers.instance.generateReceipts(context: context, order: data);
+    final receipt = await Printers.instance.generateReceipts(
+      context: context,
+      order: data,
+    );
     if (receipt != null) {
       Printers.instance.printReceipts(receipt);
     }
@@ -149,7 +168,9 @@ class Cart extends ChangeNotifier {
   void rebind() {
     // remove not exist product
     products.removeWhere((product) {
-      return Menu.instance.items.every((catalog) => !catalog.hasItem(product.id));
+      return Menu.instance.items.every(
+        (catalog) => !catalog.hasItem(product.id),
+      );
     });
     // remove non exist attribute
     attributes.entries.toList().forEach((entry) {
@@ -189,6 +210,9 @@ class Cart extends ChangeNotifier {
     attributes
       ..clear()
       ..addAll(order.selectedAttributes);
+    customAttributeValues
+      ..clear()
+      ..addAll(order.customAttributeValues);
     selectedProduct.value = null;
 
     notifyListeners();
@@ -228,11 +252,11 @@ class Cart extends ChangeNotifier {
   }
 
   /// Change the count of selected products.
-  void selectedUpdateCount(int? count) {
+  void selectedUpdateCount(num? count) {
     if (count == null) return;
 
     for (var e in selected) {
-      e.count = count;
+      e.count = e.product.isWeightBased ? count : count.round();
     }
     notifyListeners();
   }
@@ -279,6 +303,7 @@ class Cart extends ChangeNotifier {
   void clear() {
     products.clear();
     attributes.clear();
+    customAttributeValues.clear();
     selectedProduct.value = null;
     note = '';
 
@@ -293,7 +318,10 @@ class Cart extends ChangeNotifier {
   }
 
   @visibleForTesting
-  void replaceAll({List<CartProduct>? products, Map<String, String>? attributes}) {
+  void replaceAll({
+    List<CartProduct>? products,
+    Map<String, String>? attributes,
+  }) {
     if (products != null) {
       this.products
         ..clear()
@@ -316,7 +344,14 @@ class Cart extends ChangeNotifier {
       productsPrice: productsPrice,
       note: note,
       products: products.map<OrderProductObject>((e) => e.toObject()).toList(),
-      attributes: selectedAttributeOptions.map((e) => OrderSelectedAttributeObject.fromModel(e)).toList(),
+      attributes: selectedAttributeOptions
+          .map(
+            (e) => OrderSelectedAttributeObject.fromModel(
+              e,
+              optionName: customAttributeValues[e.attribute.id],
+            ),
+          )
+          .toList(),
       createdAt: timer(),
     );
   }

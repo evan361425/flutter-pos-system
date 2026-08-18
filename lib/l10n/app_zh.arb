@@ -350,7 +350,7 @@
   "@transitOrderItemMetaProductCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -474,7 +474,7 @@
   "transitFormatFieldOrderProductPrice": "產品總價",
   "transitFormatFieldOrderPaid": "付額",
   "transitFormatFieldOrderCost": "成本",
-  "transitFormatFieldOrderProfit": "收入",
+  "transitFormatFieldOrderProfit": "毛利",
   "transitFormatFieldOrderItemCount": "產品份數",
   "@transitFormatFieldOrderItemCount": {
     "description": "how many items in the order"
@@ -530,7 +530,7 @@
   "@transitFormatTextOrderProductCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       },
       "setCount": {
         "type": "int"
@@ -553,7 +553,7 @@
         "type": "String"
       },
       "count": {
-        "type": "int"
+        "type": "num"
       },
       "price": {
         "type": "String"
@@ -937,7 +937,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} printers{出單機} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, order{购物车} analysis{分析} stock{庫存} cashier{收銀} settings{設定} menu{菜單} printers{出單機} transit{資料轉移} orderAttributes{顧客設定} stockQuantities{份量} elf{建議} more{更多} debug{Debug} other{UNKNOWN}}",
   "@title": {
     "placeholders": {
       "name": {
@@ -1373,7 +1373,7 @@
   "menuQuantityAdditionalCostLabel": "額外成本",
   "menuQuantityAdditionalCostHelper": "預額外成本可以為負數，如「少量」會減少成分的使用，相對成本降低。",
   "cashierTab": "收銀",
-  "cashierUnitLabel": "幣值：{unit}",
+  "cashierUnitLabel": "币值：€{unit}",
   "@cashierUnitLabel": {
     "placeholders": {
       "unit": {
@@ -1395,7 +1395,7 @@
   "cashierChangerTutorialTitle": "收銀機換錢",
   "cashierChangerTutorialContent": "一百塊換成 10 個十塊之類。\n幫助快速調整收銀機狀態。",
   "cashierChangerErrorNoSelection": "請選擇要套用的組合",
-  "cashierChangerErrorNotEnough": "{unit} 元不夠換",
+  "cashierChangerErrorNotEnough": "€{unit} 不够兑换",
   "@cashierChangerErrorNotEnough": {
     "placeholders": {
       "unit": {
@@ -1403,7 +1403,7 @@
       }
     }
   },
-  "cashierChangerErrorInvalidHead": "{count} 個 {unit} 元沒辦法換",
+  "cashierChangerErrorInvalidHead": "{count} 张 €{unit} 无法兑换为",
   "@cashierChangerErrorInvalidHead": {
     "placeholders": {
       "count": {
@@ -1414,7 +1414,7 @@
       }
     }
   },
-  "cashierChangerErrorInvalidBody": "{count} 個 {unit} 元",
+  "cashierChangerErrorInvalidBody": "{count} 张 €{unit}",
   "@cashierChangerErrorInvalidBody": {
     "description": "Concatenated multiple lines after `invalidHead` to form a complete sentence.",
     "placeholders": {
@@ -1429,7 +1429,7 @@
   "cashierChangerFavoriteTab": "常用",
   "cashierChangerFavoriteHint": "選完後請點選「套用」來使用該組合",
   "cashierChangerFavoriteEmptyBody": "這裡可以幫助你快速轉換不同幣值",
-  "cashierChangerFavoriteItemFrom": "用 {count} 個 {unit} 元換",
+  "cashierChangerFavoriteItemFrom": "用 {count} 张 €{unit} 兑换",
   "@cashierChangerFavoriteItemFrom": {
     "placeholders": {
       "count": {
@@ -1440,7 +1440,7 @@
       }
     }
   },
-  "cashierChangerFavoriteItemTo": "{count} 個 {unit} 元",
+  "cashierChangerFavoriteItemTo": "{count} 张 €{unit}",
   "@cashierChangerFavoriteItemTo": {
     "placeholders": {
       "count": {
@@ -1465,7 +1465,7 @@
   "cashierSurplusErrorEmptyDefault": "尚未設定預設狀態",
   "cashierSurplusTableHint": "若你確認收銀機的金錢都沒問題之後就可以完成結餘囉！",
   "cashierSurplusColumnName": "{name, select, unit{單位} currentCount{現有} diffCount{差異} defaultCount{預設} other{UNKNOWN}}",
-  "cashierSurplusCounterLabel": "幣值{unit}的數量",
+  "cashierSurplusCounterLabel": "€{unit} 的数量",
   "@cashierSurplusCounterLabel": {
     "description": "Allow users to customize currency when surplus.",
     "placeholders": {
@@ -1482,8 +1482,8 @@
   "cashierSurplusCurrentTotalHelper": "現在收銀機應該要有的總額。\n若你發現現金和這值對不上，想一想今天有沒有用收銀機的錢買東西？",
   "cashierSurplusDiffTotalLabel": "差額",
   "cashierSurplusDiffTotalHelper": "和收銀機最一開始的總額的差額。\n這可以快速幫你了解今天收銀機多了多少錢唷。",
-  "orderTitle": "點餐",
-  "orderBtn": "點餐",
+  "orderTitle": "购物车",
+  "orderBtn": "购物车",
   "orderTutorialTitle": "開始點餐！",
   "orderTutorialContent": "一旦設定好菜單，就可以開始點餐囉\n讓我們趕緊進去看看有什麼吧！\n",
   "orderTutorialPrinterBtnTitle": "出單機異動",
@@ -1569,17 +1569,17 @@
   "orderCartActionDiscountHint": "例如：50，代表打五折（半價）",
   "orderCartActionDiscountHelper": "這裡的數字代表「折」，即，85 代表 85 折，總價乘 0.85。若需要準確的價錢請用「變價」。",
   "orderCartActionDiscountSuffix": "折",
-  "orderCartActionChangePrice": "變價",
+  "orderCartActionChangePrice": "价格",
   "orderCartActionChangePriceLabel": "價錢",
   "orderCartActionChangePriceHint": "每項產品的價錢",
-  "orderCartActionChangePricePrefix": "",
-  "orderCartActionChangePriceSuffix": "元",
-  "orderCartActionChangeCount": "變更數量",
+  "orderCartActionChangePricePrefix": "€",
+  "orderCartActionChangePriceSuffix": "",
+  "orderCartActionChangeCount": "数量",
   "orderCartActionChangeCountLabel": "數量",
   "orderCartActionChangeCountHint": "產品數量",
-  "orderCartActionChangeCountSuffix": "個",
-  "orderCartActionFree": "招待",
-  "orderCartActionDelete": "刪除",
+  "orderCartActionChangeCountSuffix": "",
+  "orderCartActionFree": "免费",
+  "orderCartActionDelete": "删除",
   "orderCartSnapshotEmpty": "尚未點餐",
   "orderCartMetaTotalPrice": "總價：{price}",
   "@orderCartMetaTotalPrice": {
@@ -1590,17 +1590,16 @@
       }
     }
   },
-  "orderCartMetaTotalCount": "總數：{count}",
+  "orderCartMetaTotalCount": "商品总数量：{count}",
   "@orderCartMetaTotalCount": {
     "description": "Total number of items in the cart",
     "placeholders": {
       "count": {
-        "type": "int",
-        "format": "compact"
+        "type": "String"
       }
     }
   },
-  "orderCartProductPrice": "{price, select, 0{免費} other{{price}元}}",
+  "orderCartProductPrice": "{price, select, 0{免费} other{{price}}}",
   "@orderCartProductPrice": {
     "description": "Price of the product",
     "placeholders": {
@@ -1609,7 +1608,26 @@
       }
     }
   },
-  "orderCartProductIncrease": "數量加一",
+  "orderCartProductIncrease": "增加数量",
+  "orderCartProductDecrease": "减少数量",
+  "orderQuickAddUnitPrice": "商品价格",
+  "orderQuickAddConfirm": "勾选后添加进购物车",
+  "orderQuickAddAction": "添加进购物车",
+  "orderCustomerCity": "城市",
+  "orderCustomerCityOther": "其他城市",
+  "orderCustomerCityOtherLabel": "填写其他城市",
+  "orderCustomerSaleMethod": "售卖方式",
+  "orderCustomerSaleMethodPickup": "自取",
+  "orderCustomerSaleMethodShipping": "邮寄",
+  "menuProductVatRateLabel": "增值税率",
+  "orderTotalQuantity": "商品总数量：{count}",
+  "@orderTotalQuantity": {"placeholders": {"count": {"type": "String"}}},
+  "orderTaxNet": "Netto（{rate}% 增值税）",
+  "@orderTaxNet": {"placeholders": {"rate": {"type": "int"}}},
+  "orderTaxVat": "增值税（{rate}%）",
+  "@orderTaxVat": {"placeholders": {"rate": {"type": "int"}}},
+  "orderTaxGross": "Brutto（{rate}% 增值税）",
+  "@orderTaxGross": {"placeholders": {"rate": {"type": "int"}}},
   "orderCartProductDefaultQuantity": "預設份量",
   "orderCartProductIngredient": "{name}（{quantity}）",
   "@orderCartProductIngredient": {
@@ -1700,7 +1718,7 @@
   "orderObjectViewPriceProducts": "產品總價",
   "orderObjectViewPriceAttributes": "顧客設定總價",
   "orderObjectViewCost": "成本",
-  "orderObjectViewProfit": "淨利",
+  "orderObjectViewProfit": "毛利",
   "orderObjectViewPaid": "付額",
   "orderObjectViewNote": "備註",
   "orderObjectViewDividerAttribute": "顧客設定",
@@ -1813,9 +1831,9 @@
       }
     }
   },
-  "analysisHistoryOrderListMetaProfit": "淨利：{profit}",
+  "analysisHistoryOrderListMetaProfit": "毛利：{profit}",
   "@analysisHistoryOrderListMetaProfit": {
-    "description": "Net profit for specific orders in the order list.",
+    "description": "订单毛利。",
     "placeholders": {
       "profit": {
         "type": "num",
@@ -1841,8 +1859,8 @@
   "analysisGoalsCountDescription": "訂單數反映了產品對顧客的吸引力。\n它代表了市場對你產品的需求程度，能幫助你了解何種產品或時段最受歡迎。\n高訂單數可能意味著你的定價策略或行銷活動取得成功，是商業模型有效性的指標之一。\n但要注意，單純追求高訂單數可能會忽略盈利能力。",
   "analysisGoalsRevenueTitle": "營收",
   "analysisGoalsRevenueDescription": "營收代表總銷售額，是業務規模的指標。\n高營收可能顯示了你的產品受歡迎且銷售良好，但營收無法反映出業務的可持續性和盈利能力。\n有時候，為了提高營收，公司可能會採取降價等策略，這可能會對公司的盈利能力造成影響。",
-  "analysisGoalsProfitTitle": "淨利",
-  "analysisGoalsProfitDescription": "淨利是營業收入減去營業成本後的餘額，是公司能否持續經營的關鍵。\n盈利直接反映了營運效率和成本管理能力。\n不同於營收，盈利考慮了生意的開支，包括原料成本、人力、租金等，\n這是一個更實際的指標，能幫助你評估經營是否有效且可持續。",
+  "analysisGoalsProfitTitle": "毛利",
+  "analysisGoalsProfitDescription": "毛利是销售收入减去系统中记录的商品成本，不包含房租、人工、能源、配送、折旧、税费及其他经营费用，因此不等同于净利润。",
   "analysisGoalsCostTitle": "成本",
   "analysisGoalsAchievedRate": "利潤達成\n{rate}",
   "@analysisGoalsAchievedRate": {
@@ -1860,7 +1878,7 @@
   "analysisChartTutorialContent": "透過圖表，你可以更直觀地看到數據變化。\n現在就開始設計圖表追蹤你的銷售狀況吧！。",
   "analysisChartCardEmptyData": "沒有資料",
   "analysisChartCardTitleUpdate": "編輯圖表",
-  "analysisChartMetricName": "{name, select, revenue{營收} cost{成本} profit{淨利} count{數量} other{UNKNOWN}}",
+  "analysisChartMetricName": "{name, select, revenue{營收} cost{成本} profit{毛利} count{數量} other{UNKNOWN}}",
   "@analysisChartMetricName": {
     "placeholders": {
       "name": {

@@ -92,75 +92,58 @@ Catalog _catalog({
 }
 
 Future<void> setupExampleOrderAttrs() async {
-  if (OrderAttributes.instance.isNotEmpty) return;
+  log('setting Elbe-Jade customer attributes', name: 'example order attrs');
 
-  log('setting order attributes', name: 'example order attrs');
+  // Replace the upstream restaurant "Place" attribute with the customer city.
+  await OrderAttributes.instance.getItem('place')?.remove();
+
   for (final e in [
     OrderAttribute(
-      id: 'age',
-      name: S.orderAttributeExampleAge,
+      id: 'city',
+      name: S.orderCustomerCity,
       index: 1,
       mode: .statOnly,
       options: {
-        'child': OrderAttributeOption(
-          id: 'child',
-          name: '${S.orderAttributeExampleAgeChild} (0-12)',
-          index: 1,
-        ),
-        'adult': OrderAttributeOption(
-          id: 'adult',
-          name: '${S.orderAttributeExampleAgeAdult} (13-60)',
-          index: 2,
-          isDefault: true,
-        ),
-        'senior': OrderAttributeOption(
-          id: 'senior',
-          name: '${S.orderAttributeExampleAgeSenior} (60+)',
-          index: 3,
+        for (final (index, city) in [
+          'Hamburg',
+          'Bremen',
+          'Berlin',
+          'Freiburg',
+        ].indexed)
+          city.toLowerCase(): OrderAttributeOption(
+            id: city.toLowerCase(),
+            name: city,
+            index: index + 1,
+            isDefault: city == 'Hamburg',
+          ),
+        'other': OrderAttributeOption(
+          id: 'other',
+          name: S.orderCustomerCityOther,
+          index: 5,
         ),
       },
     )..prepareItem(),
     OrderAttribute(
-      id: 'place',
-      name: S.orderAttributeExamplePlace,
+      id: 'sale-method',
+      name: S.orderCustomerSaleMethod,
       index: 2,
-      mode: .changeDiscount,
+      mode: .statOnly,
       options: {
-        'takeout': OrderAttributeOption(
-          id: 'takeout',
-          name: S.orderAttributeExamplePlaceTakeout,
+        'pickup': OrderAttributeOption(
+          id: 'pickup',
+          name: S.orderCustomerSaleMethodPickup,
           index: 1,
           isDefault: true,
         ),
-        'dine-in': OrderAttributeOption(
-          id: 'dine-in',
-          name: S.orderAttributeExamplePlaceDineIn,
+        'shipping': OrderAttributeOption(
+          id: 'shipping',
+          name: S.orderCustomerSaleMethodShipping,
           index: 2,
-          modeValue: 1.1,
-        ),
-      },
-    )..prepareItem(),
-    OrderAttribute(
-      id: 'eco-friendly',
-      name: S.orderAttributeExampleEcoFriendly,
-      index: 3,
-      mode: .changePrice,
-      options: {
-        'reuseable-bag': OrderAttributeOption(
-          id: 'reuseable-bag',
-          name: S.orderAttributeExampleEcoFriendlyReusableBag,
-          index: 1,
-          modeValue: -5,
-        ),
-        'reuseable-bottle': OrderAttributeOption(
-          id: 'reuseable-bottle',
-          name: S.orderAttributeExampleEcoFriendlyReusableBottle,
-          index: 1,
-          modeValue: -30,
         ),
       },
     )..prepareItem(),
   ]) {
+    if (OrderAttributes.instance.hasItem(e.id)) continue;
     await OrderAttributes.instance.addItem(e);
   }
 }

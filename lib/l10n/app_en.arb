@@ -350,7 +350,7 @@
   "@transitOrderItemMetaProductCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -474,7 +474,7 @@
   "transitFormatFieldOrderProductPrice": "Product Price",
   "transitFormatFieldOrderPaid": "Paid",
   "transitFormatFieldOrderCost": "Cost",
-  "transitFormatFieldOrderProfit": "Profit",
+  "transitFormatFieldOrderProfit": "Gross Profit",
   "transitFormatFieldOrderItemCount": "Item Count",
   "@transitFormatFieldOrderItemCount": {
     "description": "how many items in the order"
@@ -810,7 +810,7 @@
   "@transitFormatTextOrderProductCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "num"
       },
       "setCount": {
         "type": "int"
@@ -833,7 +833,7 @@
         "type": "String"
       },
       "count": {
-        "type": "int"
+        "type": "num"
       },
       "price": {
         "type": "String"
@@ -937,7 +937,7 @@
       }
     }
   },
-  "title": "{name, select, analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printers{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
+  "title": "{name, select, order{Cart} analysis{Stats} stock{Inventory} cashier{Cashier} settings{Settings} menu{Menu} printers{Printer} transit{Data Transfer} orderAttributes{Customer Settings} stockQuantities{Quantities} elf{Suggestions} more{More} debug{Debug} other{UNKNOWN}}",
   "@title": {
     "placeholders": {
       "name": {
@@ -1373,7 +1373,7 @@
   "menuQuantityAdditionalCostLabel": "Additional Cost",
   "menuQuantityAdditionalCostHelper": "Additional cost can be negative, e.g., \"Less\" reduces ingredient usage, reducing cost accordingly.",
   "cashierTab": "Cashier",
-  "cashierUnitLabel": "${unit}",
+  "cashierUnitLabel": "€{unit}",
   "@cashierUnitLabel": {
     "placeholders": {
       "unit": {
@@ -1395,7 +1395,7 @@
   "cashierChangerTutorialTitle": "Cash Register Money Changer",
   "cashierChangerTutorialContent": "Exchange one hundred for 10 tens, for example.\nHelps to quickly adjust the cash register status.",
   "cashierChangerErrorNoSelection": "Please select a combination to apply",
-  "cashierChangerErrorNotEnough": "Not enough ${unit}",
+  "cashierChangerErrorNotEnough": "Not enough €{unit}",
   "@cashierChangerErrorNotEnough": {
     "placeholders": {
       "unit": {
@@ -1403,7 +1403,7 @@
       }
     }
   },
-  "cashierChangerErrorInvalidHead": "Cannot exchange {count} of ${unit} to",
+  "cashierChangerErrorInvalidHead": "Cannot exchange {count} of €{unit} to",
   "@cashierChangerErrorInvalidHead": {
     "placeholders": {
       "count": {
@@ -1414,7 +1414,7 @@
       }
     }
   },
-  "cashierChangerErrorInvalidBody": "{count} of ${unit}",
+  "cashierChangerErrorInvalidBody": "{count} of €{unit}",
   "@cashierChangerErrorInvalidBody": {
     "description": "Concatenated multiple lines after `invalidHead` to form a complete sentence.",
     "placeholders": {
@@ -1429,7 +1429,7 @@
   "cashierChangerFavoriteTab": "Favorites",
   "cashierChangerFavoriteHint": "After selecting, please click \"Apply\" to use the combination.",
   "cashierChangerFavoriteEmptyBody": "Here can help you quickly convert different currencies.",
-  "cashierChangerFavoriteItemFrom": "Exchange {count} of ${unit} to",
+  "cashierChangerFavoriteItemFrom": "Exchange {count} of €{unit} to",
   "@cashierChangerFavoriteItemFrom": {
     "placeholders": {
       "count": {
@@ -1440,7 +1440,7 @@
       }
     }
   },
-  "cashierChangerFavoriteItemTo": "{count} of ${unit}",
+  "cashierChangerFavoriteItemTo": "{count} of €{unit}",
   "@cashierChangerFavoriteItemTo": {
     "placeholders": {
       "count": {
@@ -1465,7 +1465,7 @@
   "cashierSurplusErrorEmptyDefault": "Default status not set yet",
   "cashierSurplusTableHint": "Once you confirm that there are no issues with the cash register money, you can complete the surplus!",
   "cashierSurplusColumnName": "{name, select, unit{Unit} currentCount{Current} diffCount{Difference} defaultCount{Default} other{UNKNOWN}}",
-  "cashierSurplusCounterLabel": "Quantity of ${unit}",
+  "cashierSurplusCounterLabel": "Quantity of €{unit}",
   "@cashierSurplusCounterLabel": {
     "description": "Allow users to customize currency when surplus.",
     "placeholders": {
@@ -1482,8 +1482,8 @@
   "cashierSurplusCurrentTotalHelper": "The total amount the cash register should have now.\nIf you find that the cash and this value don't match, think about whether you used the cash register to buy something today?",
   "cashierSurplusDiffTotalLabel": "Difference",
   "cashierSurplusDiffTotalHelper": "The difference from the total amount of the cash register at the very beginning.\nThis can quickly help you understand how much money the cash register has gained today.",
-  "orderTitle": "Ordering",
-  "orderBtn": "Order",
+  "orderTitle": "Cart",
+  "orderBtn": "Cart",
   "orderTutorialTitle": "Ordering!",
   "orderTutorialContent": "Once you have set up your menu, you can start ordering!\nLet's tap and go see what's available!\n",
   "orderTutorialPrinterBtnTitle": "Printer Status Change",
@@ -1572,7 +1572,7 @@
   "orderCartActionChangePrice": "Change Price",
   "orderCartActionChangePriceLabel": "Price",
   "orderCartActionChangePriceHint": "Price per item",
-  "orderCartActionChangePricePrefix": "$",
+  "orderCartActionChangePricePrefix": "€",
   "orderCartActionChangePriceSuffix": "",
   "orderCartActionChangeCount": "Change Quantity",
   "orderCartActionChangeCountLabel": "Quantity",
@@ -1590,17 +1590,16 @@
       }
     }
   },
-  "orderCartMetaTotalCount": "Count: {count}",
+  "orderCartMetaTotalCount": "Total quantity: {count}",
   "@orderCartMetaTotalCount": {
     "description": "Total number of items in the cart",
     "placeholders": {
       "count": {
-        "type": "int",
-        "format": "compact"
+        "type": "String"
       }
     }
   },
-  "orderCartProductPrice": "{price, select, 0{Free} other{${price}}}",
+  "orderCartProductPrice": "{price, select, 0{Free} other{{price}}}",
   "@orderCartProductPrice": {
     "description": "Price of the product",
     "placeholders": {
@@ -1610,6 +1609,25 @@
     }
   },
   "orderCartProductIncrease": "Increase Quantity",
+  "orderCartProductDecrease": "Decrease Quantity",
+  "orderQuickAddUnitPrice": "Unit price",
+  "orderQuickAddConfirm": "Select to add this product to the cart",
+  "orderQuickAddAction": "Add to cart",
+  "orderCustomerCity": "City",
+  "orderCustomerCityOther": "Other city",
+  "orderCustomerCityOtherLabel": "Enter another city",
+  "orderCustomerSaleMethod": "Sales method",
+  "orderCustomerSaleMethodPickup": "Pickup",
+  "orderCustomerSaleMethodShipping": "Shipping",
+  "menuProductVatRateLabel": "VAT rate",
+  "orderTotalQuantity": "Total quantity: {count}",
+  "@orderTotalQuantity": {"placeholders": {"count": {"type": "String"}}},
+  "orderTaxNet": "Net (VAT {rate}%)",
+  "@orderTaxNet": {"placeholders": {"rate": {"type": "int"}}},
+  "orderTaxVat": "VAT ({rate}%)",
+  "@orderTaxVat": {"placeholders": {"rate": {"type": "int"}}},
+  "orderTaxGross": "Gross (VAT {rate}%)",
+  "@orderTaxGross": {"placeholders": {"rate": {"type": "int"}}},
   "orderCartProductDefaultQuantity": "Default Quantity",
   "orderCartProductIngredient": "{name} ({quantity})",
   "@orderCartProductIngredient": {
@@ -1698,7 +1716,7 @@
   "orderObjectViewPriceProducts": "Product Price",
   "orderObjectViewPriceAttributes": "Customer Settings Price",
   "orderObjectViewCost": "Cost",
-  "orderObjectViewProfit": "Profit",
+  "orderObjectViewProfit": "Gross profit",
   "orderObjectViewPaid": "Paid",
   "orderObjectViewNote": "Note",
   "orderObjectViewDividerAttribute": "Customer Settings",
@@ -1811,9 +1829,9 @@
       }
     }
   },
-  "analysisHistoryOrderListMetaProfit": "Profit: {profit}",
+  "analysisHistoryOrderListMetaProfit": "Gross profit: {profit}",
   "@analysisHistoryOrderListMetaProfit": {
-    "description": "Net profit for specific orders in the order list.",
+    "description": "Gross profit for specific orders in the order list.",
     "placeholders": {
       "profit": {
         "type": "num",
@@ -1839,10 +1857,10 @@
   "analysisGoalsCountDescription": "The order count reflects the attractiveness of products to customers.\nIt represents the demand for your products in the market and helps you understand which products or time periods are most popular.\nA high order count may indicate the success of your pricing strategy or marketing activities and is one of the indicators of business model effectiveness.\nHowever, it's essential to note that simply pursuing a high order count may overlook profitability.",
   "analysisGoalsRevenueTitle": "Revenue",
   "analysisGoalsRevenueDescription": "Revenue represents the total sales amount and is an indicator of business scale.\nHigh revenue may indicate that your products are popular and selling well, but revenue alone cannot reflect the sustainability and profitability of the business.\nSometimes, to increase revenue, companies may adopt strategies such as price reductions, which may affect profitability.",
-  "analysisGoalsProfitTitle": "Profit",
-  "analysisGoalsProfitDescription": "Profit is the balance after deducting operating costs from operating income and is crucial for the company's ongoing operations.\nProfit directly reflects operational efficiency and cost management capabilities.\nUnlike revenue, profit considers the business expenses, including raw material costs, labor, rent, etc.\nIt's a more practical indicator that helps you evaluate the effectiveness and sustainability of operations.",
+  "analysisGoalsProfitTitle": "Gross profit",
+  "analysisGoalsProfitDescription": "Gross profit is sales revenue minus the recorded product cost. It does not deduct rent, payroll, energy, delivery, depreciation, tax or other operating expenses, so it is not net profit.",
   "analysisGoalsCostTitle": "Cost",
-  "analysisGoalsAchievedRate": "Profit Goal\n{rate}",
+  "analysisGoalsAchievedRate": "Gross Profit Goal\n{rate}",
   "@analysisGoalsAchievedRate": {
     "placeholders": {
       "rate": {
@@ -1858,7 +1876,7 @@
   "analysisChartTutorialContent": "With charts, you can visualize data changes more intuitively.\nStart designing charts to track your sales performance now!",
   "analysisChartCardEmptyData": "No Data",
   "analysisChartCardTitleUpdate": "Edit Chart",
-  "analysisChartMetricName": "{name, select, revenue{Revenue} cost{Cost} profit{Profit} count{Quantity} other{UNKNOWN}}",
+  "analysisChartMetricName": "{name, select, revenue{Revenue} cost{Cost} profit{Gross Profit} count{Quantity} other{UNKNOWN}}",
   "@analysisChartMetricName": {
     "placeholders": {
       "name": {

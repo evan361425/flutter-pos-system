@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:possystem/components/meta_block.dart';
 import 'package:possystem/components/models/order_loader.dart';
+import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/routes.dart';
 import 'package:possystem/translator.dart';
@@ -22,7 +23,6 @@ class HistoryOrderList extends StatelessWidget {
       S.analysisHistoryOrderListMetaNo(order.periodSeq.toString()),
       S.analysisHistoryOrderListMetaPaid(order.paid),
       S.analysisHistoryOrderListMetaPrice(order.price),
-      S.analysisHistoryOrderListMetaProfit(order.profit),
     ]);
 
     return ListTile(
@@ -34,11 +34,16 @@ class HistoryOrderList extends StatelessWidget {
       title: MetaBlock.withString(
         context,
         order.products.map(
-          (product) => product.count == 1 ? product.productName : '${product.productName} * ${product.count}',
+          (product) => product.count == 1
+              ? product.productName
+              : '${product.productName} × ${product.count.toShortString()}',
         ),
       ),
       subtitle: subtitle,
-      onTap: () => context.pushNamed(Routes.historyOrder, pathParameters: {'id': order.id?.toString() ?? ''}),
+      onTap: () => context.pushNamed(
+        Routes.historyOrder,
+        pathParameters: {'id': order.id?.toString() ?? ''},
+      ),
     );
   }
 }

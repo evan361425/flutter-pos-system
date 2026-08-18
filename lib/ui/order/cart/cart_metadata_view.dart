@@ -21,7 +21,7 @@ class CartMetadataView extends StatelessWidget {
         Expanded(
           key: const Key('cart.metadata'),
           child: MetaBlock.withString(context, <String>[
-            S.orderCartMetaTotalCount(cart.productCount),
+            S.orderCartMetaTotalCount(cart.productCount.toShortString()),
             S.orderCartMetaTotalPrice(cart.productsPrice.toCurrency()),
           ])!,
         ),

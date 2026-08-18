@@ -28,7 +28,8 @@ class CatalogObject extends ModelObject<Catalog> {
   }) : products = products ?? const [];
 
   factory CatalogObject.build(Map<String, Object?> data) {
-    final products = (data['products'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final products =
+        (data['products'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return CatalogObject(
       id: data['id'] as String,
@@ -37,7 +38,12 @@ class CatalogObject extends ModelObject<Catalog> {
       imagePath: data['imagePath'] as String?,
       createdAt: Util.fromUTC(data['createdAt'] as int),
       products: products.entries
-          .map<ProductObject>((e) => ProductObject.build({'id': e.key, ...e.value as Map<String, Object?>}))
+          .map<ProductObject>(
+            (e) => ProductObject.build({
+              'id': e.key,
+              ...e.value as Map<String, Object?>,
+            }),
+          )
           .toList(),
     );
   }
@@ -98,7 +104,8 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
     final id = version == 1 ? Util.uuidV4() : data['id'];
     final ingredientId = version == 1 ? data['id'] : data['ingredientId'];
 
-    final quantities = (data['quantities'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final quantities =
+        (data['quantities'] ?? <String, Object?>{}) as Map<String, Object?>;
 
     return ProductIngredientObject(
       id: id as String,
@@ -107,7 +114,12 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
       amount: data['amount'] as num,
       version: version,
       quantities: quantities.entries
-          .map((e) => ProductQuantityObject.build({'id': e.key, ...e.value as Map<String, Object?>}))
+          .map(
+            (e) => ProductQuantityObject.build({
+              'id': e.key,
+              ...e.value as Map<String, Object?>,
+            }),
+          )
           .toList(),
     );
   }
@@ -137,7 +149,9 @@ class ProductIngredientObject extends ModelObject<ProductIngredient> {
       'index': index ?? 0,
       'ingredientId': ingredientId!,
       'amount': amount!,
-      'quantities': {for (var quantity in quantities) quantity.id: quantity.toMap()},
+      'quantities': {
+        for (var quantity in quantities) quantity.id: quantity.toMap(),
+      },
     };
   }
 }
@@ -148,6 +162,7 @@ class ProductObject extends ModelObject<Product> {
   final int? index;
   final num? price;
   final num? cost;
+  final num? vatRate;
   final String? imagePath;
   final DateTime? createdAt;
   final DateTime? searchedAt;
@@ -159,6 +174,7 @@ class ProductObject extends ModelObject<Product> {
     this.index,
     this.price,
     this.cost,
+    this.vatRate,
     this.imagePath,
     this.createdAt,
     this.searchedAt,
@@ -166,7 +182,8 @@ class ProductObject extends ModelObject<Product> {
   }) : ingredients = ingredients ?? const [];
 
   factory ProductObject.build(Map<String, Object?> data) {
-    final ingredients = (data['ingredients'] ?? <String, Object?>{}) as Map<String, Object?>;
+    final ingredients =
+        (data['ingredients'] ?? <String, Object?>{}) as Map<String, Object?>;
     final searchedAt = data['searchedAt'] as int?;
 
     return ProductObject(
@@ -175,12 +192,16 @@ class ProductObject extends ModelObject<Product> {
       index: data['index'] as int,
       price: data['price'] as num,
       cost: data['cost'] as num,
+      vatRate: data['vatRate'] as num? ?? 7,
       imagePath: data['imagePath'] as String?,
       createdAt: Util.fromUTC(data['createdAt'] as int),
       searchedAt: searchedAt == null ? null : Util.fromUTC(searchedAt),
       ingredients: ingredients.entries
           .map<ProductIngredientObject>(
-            (e) => ProductIngredientObject.build({'id': e.key, ...e.value as Map<String, Object?>}),
+            (e) => ProductIngredientObject.build({
+              'id': e.key,
+              ...e.value as Map<String, Object?>,
+            }),
           )
           .toList(),
     );
@@ -197,6 +218,10 @@ class ProductObject extends ModelObject<Product> {
     if (cost != null && cost != model.cost) {
       model.cost = cost!;
       result['$prefix.cost'] = cost!;
+    }
+    if (vatRate != null && vatRate != model.vatRate) {
+      model.vatRate = vatRate!;
+      result['$prefix.vatRate'] = vatRate!;
     }
     if (name != null && name != model.name) {
       model.name = name!;
@@ -218,12 +243,15 @@ class ProductObject extends ModelObject<Product> {
     return {
       'price': price!,
       'cost': cost!,
+      'vatRate': vatRate ?? 7,
       'index': index!,
       'name': name!,
       'imagePath': imagePath,
       'createdAt': Util.toUTC(now: createdAt),
       if (searchedAt != null) 'searchedAt': Util.toUTC(now: searchedAt),
-      'ingredients': {for (var ingredient in ingredients) ingredient.id: ingredient.toMap()},
+      'ingredients': {
+        for (var ingredient in ingredients) ingredient.id: ingredient.toMap(),
+      },
     };
   }
 }

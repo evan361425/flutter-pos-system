@@ -13,7 +13,9 @@ class CartActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton(
       key: const Key('cart.action'),
-      style: FilledButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: .circular(8))),
+      style: FilledButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: .circular(8)),
+      ),
       onPressed: () => showActions(context),
       child: Text(S.orderCartActionBulk),
     );
@@ -24,7 +26,10 @@ class CartActions extends StatelessWidget {
     switch (type) {
       case .discount:
         item = _DialogItem(
-          validator: Validator.positiveInt(S.orderCartActionDiscountLabel, maximum: 1000),
+          validator: Validator.positiveInt(
+            S.orderCartActionDiscountLabel,
+            maximum: 1000,
+          ),
           decoration: InputDecoration(
             hintText: S.orderCartActionDiscountHint,
             helperText: S.orderCartActionDiscountHelper,
@@ -38,7 +43,9 @@ class CartActions extends StatelessWidget {
         break;
       case .price:
         item = _DialogItem(
-          validator: Validator.positiveNumber(S.orderCartActionChangePriceLabel),
+          validator: Validator.positiveNumber(
+            S.orderCartActionChangePriceLabel,
+          ),
           decoration: InputDecoration(
             hintText: S.orderCartActionChangePriceHint,
             prefix: Text(S.orderCartActionChangePricePrefix),
@@ -50,15 +57,30 @@ class CartActions extends StatelessWidget {
         );
         break;
       case .count:
+        final decimalAllowed =
+            Cart.instance.selected.isNotEmpty &&
+            Cart.instance.selected.every((e) => e.product.isWeightBased);
         item = _DialogItem(
-          validator: Validator.positiveInt(S.orderCartActionChangeCountLabel, maximum: 10000, minimum: 1),
+          validator: decimalAllowed
+              ? Validator.positiveNumber(
+                  S.orderCartActionChangeCountLabel,
+                  maximum: 10000,
+                  minimum: 0.01,
+                )
+              : Validator.positiveInt(
+                  S.orderCartActionChangeCountLabel,
+                  maximum: 10000,
+                  minimum: 1,
+                ),
           decoration: InputDecoration(
             hintText: S.orderCartActionChangeCountHint,
             helperMaxLines: 4,
             suffix: Text(S.orderCartActionChangeCountSuffix),
           ),
           action: (result) {
-            Cart.instance.selectedUpdateCount(int.tryParse(result));
+            Cart.instance.selectedUpdateCount(
+              num.tryParse(result.replaceAll(',', '.')),
+            );
           },
         );
         break;
@@ -70,8 +92,11 @@ class CartActions extends StatelessWidget {
 
     final result = await showDialog<String>(
       context: context,
-      builder: (BuildContext context) =>
-          SingleTextDialog(validator: item.validator, decoration: item.decoration, keyboardType: .number),
+      builder: (BuildContext context) => SingleTextDialog(
+        validator: item.validator,
+        decoration: item.decoration,
+        keyboardType: .number,
+      ),
     );
 
     item.action(result ?? '');
@@ -82,22 +107,22 @@ class CartActions extends StatelessWidget {
       context,
       actions: <MenuAction<CartActionTypes>>[
         MenuAction(
-          key: const Key('cart.action.discount'),
-          leading: const Icon(Icons.loyalty_outlined),
-          title: Text(S.orderCartActionDiscount),
-          returnValue: CartActionTypes.discount,
-        ),
-        MenuAction(
-          key: const Key('cart.action.price'),
-          leading: const Icon(Icons.attach_money_outlined),
-          title: Text(S.orderCartActionChangePrice),
-          returnValue: CartActionTypes.price,
-        ),
-        MenuAction(
           key: const Key('cart.action.count'),
           leading: const Icon(Icons.exposure_outlined),
           title: Text(S.orderCartActionChangeCount),
           returnValue: CartActionTypes.count,
+        ),
+        MenuAction(
+          key: const Key('cart.action.price'),
+          leading: const Icon(Icons.euro_outlined),
+          title: Text(S.orderCartActionChangePrice),
+          returnValue: CartActionTypes.price,
+        ),
+        MenuAction(
+          key: const Key('cart.action.discount'),
+          leading: const Icon(Icons.loyalty_outlined),
+          title: Text(S.orderCartActionDiscount),
+          returnValue: CartActionTypes.discount,
         ),
         MenuAction(
           key: const Key('cart.action.free'),
@@ -129,5 +154,9 @@ class _DialogItem {
   final InputDecoration decoration;
   final void Function(String) action;
 
-  _DialogItem({required this.validator, required this.decoration, required this.action});
+  _DialogItem({
+    required this.validator,
+    required this.decoration,
+    required this.action,
+  });
 }

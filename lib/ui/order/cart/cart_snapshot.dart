@@ -42,7 +42,9 @@ class CartSnapshot extends StatelessWidget {
                     product.name,
                     key: Key('cart_snapshot.$index'),
                     margin: const .only(right: 8),
-                    badge: product.count > 9 ? '9+' : product.count.toString(),
+                    badge: product.count > 9
+                        ? '9+'
+                        : product.count.toShortString(),
                   ),
                 );
               },

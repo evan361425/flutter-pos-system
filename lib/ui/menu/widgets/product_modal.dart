@@ -14,29 +14,51 @@ class ProductModal extends StatefulWidget {
   final Catalog catalog;
   final bool isNew;
 
-  const ProductModal({super.key, this.product, required this.catalog}) : isNew = product == null;
+  const ProductModal({super.key, this.product, required this.catalog})
+    : isNew = product == null;
 
   @override
   State<ProductModal> createState() => _ProductModalState();
 }
 
-class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal> {
+class _ProductModalState extends State<ProductModal>
+    with ItemModal<ProductModal> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _costController;
   late FocusNode _nameFocusNode;
   late FocusNode _priceFocusNode;
   late FocusNode _costFocusNode;
+  late num _vatRate;
 
   String? _image;
 
   @override
-  String get title => widget.isNew ? S.menuProductTitleCreate : S.menuProductTitleUpdate;
+  String get title =>
+      widget.isNew ? S.menuProductTitleCreate : S.menuProductTitleUpdate;
 
   @override
   List<Widget> buildFormFields() {
     return [
-      EditImageHolder(path: _image, onSelected: (image) => setState(() => _image = image)),
+      EditImageHolder(
+        path: _image,
+        onSelected: (image) => setState(() => _image = image),
+      ),
+      p(
+        DropdownButtonFormField<num>(
+          key: const Key('product.vat_rate'),
+          initialValue: _vatRate,
+          decoration: InputDecoration(
+            labelText: S.menuProductVatRateLabel,
+            filled: false,
+          ),
+          items: const [
+            DropdownMenuItem(value: 7, child: Text('7%')),
+            DropdownMenuItem(value: 19, child: Text('19%')),
+          ],
+          onChanged: (value) => setState(() => _vatRate = value ?? 7),
+        ),
+      ),
       p(
         TextFormField(
           key: const Key('product.name'),
@@ -55,7 +77,8 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
             30,
             focusNode: _nameFocusNode,
             validator: (name) {
-              return widget.product?.name != name && Menu.instance.hasProductByName(name)
+              return widget.product?.name != name &&
+                      Menu.instance.hasProductByName(name)
                   ? S.menuProductNameErrorRepeat
                   : null;
             },
@@ -74,7 +97,10 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
             helperText: S.menuProductPriceHelper,
             filled: false,
           ),
-          validator: Validator.isNumber(S.menuProductPriceLabel, focusNode: _priceFocusNode),
+          validator: Validator.isNumber(
+            S.menuProductPriceLabel,
+            focusNode: _priceFocusNode,
+          ),
         ),
       ),
       p(
@@ -90,7 +116,10 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
             filled: false,
           ),
           onFieldSubmitted: handleFieldSubmit,
-          validator: Validator.positiveNumber(S.menuProductCostLabel, focusNode: _costFocusNode),
+          validator: Validator.positiveNumber(
+            S.menuProductCostLabel,
+            focusNode: _costFocusNode,
+          ),
         ),
       ),
     ];
@@ -105,6 +134,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
           name: object.name!,
           price: object.price!,
           cost: object.cost!,
+          vatRate: object.vatRate!,
           imagePath: _image,
         );
 
@@ -128,6 +158,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
     _nameFocusNode = FocusNode();
     _priceFocusNode = FocusNode();
     _costFocusNode = FocusNode();
+    _vatRate = p?.vatRate ?? 7;
     _image = widget.product?.imagePath;
   }
 
@@ -157,6 +188,7 @@ class _ProductModalState extends State<ProductModal> with ItemModal<ProductModal
       imagePath: _image,
       price: num.tryParse(_priceController.text),
       cost: num.tryParse(_costController.text),
+      vatRate: _vatRate,
     );
   }
 }
