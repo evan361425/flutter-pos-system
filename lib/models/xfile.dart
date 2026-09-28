@@ -30,6 +30,15 @@ class XFile {
     return fs is LocalFileSystem ? (await getApplicationDocumentsDirectory()).path : '';
   }
 
+  static Future<Directory> getDir(String path) async {
+    final dir = await XFile.getRootPath();
+    final Directory baseDir = XFile(XFile.fs.path.join(dir, path)).dir;
+
+    await baseDir.create();
+
+    return baseDir;
+  }
+
   static Future<List<int>?> pick() async {
     final result = await FilePicker.platform.pickFiles(withReadStream: true, type: .any);
     final file = result?.files.firstOrNull;
@@ -49,5 +58,12 @@ class XFile {
     }
 
     return true;
+  }
+
+  /// 2023-01-01T01:23:45.123
+  /// 20230101T012345123
+  static String timestampFilename({required String folder, String prefix = '', String suffix = ''}) {
+    final name = DateTime.now().toIso8601String().replaceAll('-', '').replaceAll(':', '').replaceFirst('.', '');
+    return XFile.fs.path.join(folder, '$prefix$name$suffix');
   }
 }

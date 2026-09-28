@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
+import 'package:possystem/models/image.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/translator.dart';
 import 'package:possystem/ui/printer/widgets/printer_receipt_view.dart';
@@ -16,7 +17,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
   /// Show the dialog and return the image list.
   ///
   /// - [widths] is the width in pixels of the image.
-  static Future<List<ConvertibleImage>?> show(BuildContext context, OrderObject order, List<int> widths) async {
+  static Future<List<RGBImage>?> show(BuildContext context, OrderObject order, List<int> widths) async {
     final data = await showDialog(
       context: context,
       barrierDismissible: false,
@@ -24,7 +25,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
       builder: (context) => CheckoutReceiptDialog._(order: order, widths: widths),
     );
 
-    if (data is! List<ConvertibleImage>) {
+    if (data is! List<RGBImage>) {
       if (data != null) {
         // We need Log.err in this function, no matter context is mounted or not
         // ignore: use_build_context_synchronously

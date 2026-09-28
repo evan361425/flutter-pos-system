@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:packages/bluetooth.dart' as bt;
 import 'package:possystem/app.dart';
-import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/style/snackbar.dart';
 import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/launcher.dart';
 import 'package:possystem/helpers/logger.dart';
+import 'package:possystem/models/image.dart';
 import 'package:possystem/models/model.dart';
 import 'package:possystem/models/model_object.dart';
 import 'package:possystem/models/objects/order_object.dart';
@@ -84,7 +84,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   ///
   /// Separate the print action to another function, so we can first pop the
   /// dialog and then print the receipt in the background.
-  Future<List<ConvertibleImage>?> generateReceipts({required BuildContext context, required OrderObject order}) {
+  Future<List<RGBImage>?> generateReceipts({required BuildContext context, required OrderObject order}) {
     if (!Printers.instance.hasConnected) {
       return Future.value(null);
     }
@@ -93,7 +93,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   }
 
   /// Allow background print.
-  void printReceipts(List<ConvertibleImage> images) async {
+  void printReceipts(List<RGBImage> images) async {
     final errors = <Object>[];
     final stackTraces = <StackTrace>[];
 

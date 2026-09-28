@@ -133,6 +133,10 @@ class ReceiptTemplate extends Model<ReceiptTemplateObject> with ModelStorage<Rec
     }
   }
 
+  Future<void> updateComponents() async {
+    await update(ReceiptTemplateObject(components: components));
+  }
+
   Future<void> select() async {
     await ReceiptTemplates.instance.changeSelected(id);
   }

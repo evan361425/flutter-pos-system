@@ -1,9 +1,16 @@
+import 'dart:async';
+import 'dart:io' show Directory;
+import 'dart:ui' as ui;
+
 import 'package:collection/collection.dart';
 import 'package:editor_ant/editor_ant.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:intl/intl.dart';
 import 'package:possystem/helpers/util.dart';
+import 'package:possystem/models/image.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/xfile.dart';
 import 'package:possystem/translator.dart';
 
 enum ReceiptComponentType { orderTable, discountTable, attributeTable, priceTable, textField, image, divider }
@@ -120,6 +127,25 @@ enum PriceTableColumn {
     .productsQuantity => order.productsCount.toString(),
     .productsPrice => '\$${order.productsPrice.toCurrency()}',
   };
+}
+
+enum ImageBinaryAlgorithm {
+  /// Floyd‑Steinberg dithering
+  image(icon: Icons.image_outlined),
+
+  /// Adaptive (local) thresholding.
+  doc(icon: Icons.document_scanner_outlined);
+
+  final IconData icon;
+
+  const ImageBinaryAlgorithm({required this.icon});
+
+  GrayImage convert(RGBImage image) {
+    return switch (this) {
+      .image => image.toImageBinary(),
+      .doc => image.toDocBinary(),
+    };
+  }
 }
 
 /// Base class for all receipt components
@@ -350,23 +376,106 @@ class DividerComponent extends ReceiptComponent {
 }
 
 class ImageComponent extends ReceiptComponent {
+  /// Original image path.
   String imagePath;
+
+  /// Path of the binary image.
+  String binaryPath;
+
+  /// Width ratio of the image.
   double widthRatio;
 
-  ImageComponent({super.padding, this.imagePath = '', this.widthRatio = 1.0})
-    : super(type: .image, leading: const Icon(Icons.image));
+  /// Algorithm to convert the image to binary.
+  ImageBinaryAlgorithm binaryAlgorithm;
+
+  ui.Image? _uiImage;
+
+  ImageComponent({
+    super.padding,
+    this.imagePath = '',
+    this.binaryPath = '',
+    this.widthRatio = 1.0,
+    this.binaryAlgorithm = .image,
+  }) : super(type: .image, leading: const Icon(Icons.image));
 
   factory ImageComponent.fromJson(Map<String, Object?> json, {required EdgeInsets padding}) {
     return ImageComponent(
       padding: padding,
       imagePath: json['imagePath'] as String? ?? '',
+      binaryPath: json['binaryPath'] as String? ?? '',
       widthRatio: json['widthRatio'] as double? ?? 1.0,
+      binaryAlgorithm: ImageBinaryAlgorithm.values.elementAtOrNull(json['binaryAlgorithm'] as int? ?? 0) ?? .image,
     );
   }
 
+  static Future<GrayImage?> convert(String path, ImageBinaryAlgorithm algorithm) async {
+    final bytes = await XFile(path).file.readAsBytes();
+    final image = img.decodeImage(bytes);
+    GrayImage? result;
+    if (image != null) {
+      result = algorithm.convert(RGBImage(image.getBytes(), width: image.width));
+    }
+
+    return result;
+  }
+
+  static Future<Directory> _getBaseDir() async {
+    _baseDir ??= await XFile.getDir('receipt_image');
+    return _baseDir!;
+  }
+
+  static Directory? _baseDir;
+
   @override
   Map<String, Object?> toJson() {
-    return {...super.toJson(), 'imagePath': imagePath, 'widthRatio': widthRatio};
+    return {
+      ...super.toJson(),
+      'imagePath': imagePath,
+      'binaryPath': binaryPath,
+      'widthRatio': widthRatio,
+      'binaryAlgorithm': binaryAlgorithm.index,
+    };
+  }
+
+  /// Load the image as a [ui.Image] for rendering.
+  ///
+  /// onFlush should be triggered as saving template object to storage
+  Future<ui.Image?> loadUIImage({required Future<void> Function() onFlush}) async {
+    if (_uiImage != null) {
+      return _uiImage;
+    }
+
+    GrayImage? image;
+    if (binaryPath.isEmpty) {
+      image = await flushBinary();
+      if (image != null) {
+        await onFlush?.call();
+      }
+    } else {
+      final bytes = await XFile(binaryPath).file.readAsBytes();
+      final decoded = img.PngDecoder().decode(bytes);
+      if (decoded != null) {
+        image = GrayImage(decoded.getBytes(), width: decoded.width);
+        _uiImage = await image.toUIImage();
+      }
+    }
+
+    return _uiImage;
+  }
+
+  Future<GrayImage?> flushBinary() async {
+    final image = await convert(imagePath, binaryAlgorithm);
+    if (image != null) {
+      final bytes = img.PngEncoder().encode(image.toImage());
+      final dir = await ImageComponent._getBaseDir();
+      final dst = XFile.timestampFilename(folder: dir.path, suffix: '.png');
+      await XFile(dst).file.writeAsBytes(bytes.toList());
+
+      _uiImage = await image.toUIImage();
+      binaryPath = dst;
+    }
+
+    return image;
   }
 }
 
