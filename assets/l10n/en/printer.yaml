@@ -232,7 +232,13 @@ receipt:
       $prefix: image
       widthRatio: Width Ratio
       widthRatioHelper: 'Width ratio compared to receipt width, e.g., 0.5 = 50%'
-      hint: 'Important: Only supports high contrast images (black & white)'
+      preview: Thermal receipt print simulation
+      binaryAlgo:
+        label: Processing Mode
+        helper: Use "Text" for barcode & text, "Image" for photos & logos.
+        names:
+        - image: Image
+          text: Text
     divider:
       height: Height
       meta:

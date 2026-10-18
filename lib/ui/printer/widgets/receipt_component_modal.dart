@@ -300,6 +300,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
     }
 
     return Column(
+      spacing: 4,
       children: [
         _buildSliderWithTitle(
           title: S.printerReceiptComponentImageWidthRatio,
@@ -307,12 +308,6 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
           min: 0.1,
           max: 1.0,
           divisions: 9,
-        ),
-        Padding(
-          padding: const .symmetric(vertical: 4.0),
-          child: Center(
-            child: Text(S.printerReceiptComponentImageHint, style: const TextStyle(fontWeight: .bold)),
-          ),
         ),
         _ImageEditorView(image: c, hooker: (v) => onUpdate = v),
       ],
@@ -757,26 +752,27 @@ class _ImageEditorViewState extends State<_ImageEditorView> {
       spacing: 4,
       children: [
         EditImageHolder(
-          path: widget.image.imagePath == '' ? null : widget.image.imagePath,
+          path: imagePath,
           onSelected: (value) => _onSelected(path: value),
         ),
+        const Divider(),
         if (imagePath != null) ...[
           DropdownMenu<ImageBinaryAlgorithm>(
-            label: const Text('Primary Language'),
-            helperText: 'Select the core language for your microservice',
+            label: Text(S.printerReceiptComponentImageBinaryAlgoLabel),
+            helperText: S.printerReceiptComponentImageBinaryAlgoHelper,
             initialSelection: binaryAlgo,
             onSelected: (value) => _onSelected(algorithm: value),
             leadingIcon: Icon(binaryAlgo.icon),
             dropdownMenuEntries: ImageBinaryAlgorithm.values.map((algo) {
               return DropdownMenuEntry<ImageBinaryAlgorithm>(
                 value: algo,
-                label: algo.name,
+                label: S.printerReceiptComponentImageBinaryAlgoNames(algo.name),
                 leadingIcon: Icon(algo.icon),
               );
             }).toList(),
             expandedInsets: EdgeInsets.zero,
           ),
-          HintText('Image Printer Preview'),
+          HintText(S.printerReceiptComponentImagePreview),
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 256, maxWidth: 256),
             child: binaryImage == null
@@ -794,6 +790,7 @@ class _ImageEditorViewState extends State<_ImageEditorView> {
   @override
   void initState() {
     imagePath = widget.image.imagePath == '' ? null : widget.image.imagePath;
+    widget.image.loadUIImage().then(_setBinaryImage);
     binaryAlgo = widget.image.binaryAlgorithm;
     widget.hooker(_onUpdate);
     super.initState();
@@ -801,11 +798,11 @@ class _ImageEditorViewState extends State<_ImageEditorView> {
 
   void _onSelected({String? path, ImageBinaryAlgorithm? algorithm}) async {
     bool changed = false;
-    if (path != imagePath) {
+    if (path != imagePath && path != null) {
       imagePath = path;
       changed = true;
-    } else if (algorithm != binaryAlgo) {
-      binaryAlgo = algorithm!;
+    } else if (algorithm != binaryAlgo && algorithm != null) {
+      binaryAlgo = algorithm;
       changed = true;
     }
 
@@ -822,11 +819,7 @@ class _ImageEditorViewState extends State<_ImageEditorView> {
         result = await image.toUIImage();
       }
 
-      if (mounted && result != null) {
-        setState(() {
-          binaryImage = result;
-        });
-      }
+      _setBinaryImage(result);
     }
   }
 
@@ -837,6 +830,14 @@ class _ImageEditorViewState extends State<_ImageEditorView> {
       if (widget.image.binaryAlgorithm != binaryAlgo || widget.image.imagePath != imagePath) {
         await widget.image.flushBinary();
       }
+    }
+  }
+
+  void _setBinaryImage(ui.Image? image) {
+    if (mounted && image != null) {
+      setState(() {
+        binaryImage = image;
+      });
     }
   }
 }

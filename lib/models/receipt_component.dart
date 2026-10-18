@@ -134,7 +134,7 @@ enum ImageBinaryAlgorithm {
   image(icon: Icons.image_outlined),
 
   /// Adaptive (local) thresholding.
-  doc(icon: Icons.document_scanner_outlined);
+  text(icon: Icons.document_scanner_outlined);
 
   final IconData icon;
 
@@ -143,7 +143,7 @@ enum ImageBinaryAlgorithm {
   GrayImage convert(RGBImage image) {
     return switch (this) {
       .image => image.toImageBinary(),
-      .doc => image.toDocBinary(),
+      .text => image.toDocBinary(),
     };
   }
 }
@@ -413,7 +413,7 @@ class ImageComponent extends ReceiptComponent {
     final image = img.decodeImage(bytes);
     GrayImage? result;
     if (image != null) {
-      result = algorithm.convert(RGBImage(image.getBytes(), width: image.width));
+      result = algorithm.convert(RGBImage(image.convert(numChannels: 4).getBytes(), width: image.width));
     }
 
     return result;
@@ -440,7 +440,7 @@ class ImageComponent extends ReceiptComponent {
   /// Load the image as a [ui.Image] for rendering.
   ///
   /// onFlush should be triggered as saving template object to storage
-  Future<ui.Image?> loadUIImage({required Future<void> Function() onFlush}) async {
+  Future<ui.Image?> loadUIImage({Future<void> Function()? onFlush}) async {
     if (_uiImage != null) {
       return _uiImage;
     }
@@ -464,6 +464,10 @@ class ImageComponent extends ReceiptComponent {
   }
 
   Future<GrayImage?> flushBinary() async {
+    if (imagePath.isEmpty) {
+      return null;
+    }
+
     final image = await convert(imagePath, binaryAlgorithm);
     if (image != null) {
       final bytes = img.PngEncoder().encode(image.toImage());

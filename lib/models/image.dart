@@ -75,37 +75,39 @@ class RGBImage extends ImageBytes {
 
   /// Floyd-Steinberg dithering to produce a 1-bit binary from RGBA.
   GrayImage toImageBinary() {
-    final height = bytes.length ~/ width ~/ 4;
-    final int totalPixels = width * height;
+    final int totalPixels = bytes.length ~/ 4;
+    final height = totalPixels ~/ width;
     final List<double> buffer = .filled(totalPixels, 0.0);
+    final Uint8List result = Uint8List(totalPixels);
+    const double threshold = 128.0;
 
     for (int i = 0; i < totalPixels; i++) {
       buffer[i] = _pixelToLuminance(i * 4).toDouble();
     }
 
-    const double threshold = 128.0;
-    final Uint8List result = Uint8List(totalPixels);
-
     for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
+      final bool ltr = y % 2 == 0;
+      for (int i = 0; i < width; i++) {
+        final int x = ltr ? i : width - 1 - i;
+        final int dir = ltr ? 1 : -1;
         final int idx = y * width + x;
         final double oldVal = buffer[idx];
         final double newVal = oldVal >= threshold ? 255.0 : 0.0;
-        final double error = oldVal - newVal;
-
         result[idx] = newVal == 255.0 ? 255 : 0;
 
+        final double error = oldVal - newVal;
         // Distribute error to neighboring pixels in buffer
-        if (x + 1 < width) {
-          buffer[idx + 1] += error * 7 / 16;
+        if (x + dir >= 0 && x + dir < width) {
+          buffer[idx + dir] += error * 7 / 16;
         }
         if (y + 1 < height) {
-          if (x > 0) {
-            buffer[(y + 1) * width + (x - 1)] += error * 3 / 16;
+          final int below = idx + width;
+          if (x - dir >= 0 && x - dir < width) {
+            buffer[below - dir] += error * 3 / 16;
           }
-          buffer[(y + 1) * width + x] += error * 5 / 16;
-          if (x + 1 < width) {
-            buffer[(y + 1) * width + (x + 1)] += error * 1 / 16;
+          buffer[below] += error * 5 / 16;
+          if (x + dir >= 0 && x + dir < width) {
+            buffer[below + dir] += error * 1 / 16;
           }
         }
       }
