@@ -129,9 +129,9 @@ class RGBImage extends ImageBytes {
     int effG = g;
     int effB = b;
     if (a < 255) {
-      effR = (r * a + 255 * (255 - a)) ~/ 255;
-      effG = (g * a + 255 * (255 - a)) ~/ 255;
-      effB = (b * a + 255 * (255 - a)) ~/ 255;
+      effR = (r * a) ~/ 255 + (255 - a);
+      effG = (g * a) ~/ 255 + (255 - a);
+      effB = (b * a) ~/ 255 + (255 - a);
     }
 
     // ITU-R BT.601: (R*77 + G*150 + B*29) >> 8
