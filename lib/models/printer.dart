@@ -84,7 +84,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   ///
   /// Separate the print action to another function, so we can first pop the
   /// dialog and then print the receipt in the background.
-  Future<List<RGBImage>?> generateReceipts({required BuildContext context, required OrderObject order}) {
+  Future<List<ConstantImage>?> generateReceipts({required BuildContext context, required OrderObject order}) {
     if (!Printers.instance.hasConnected) {
       return Future.value(null);
     }
@@ -93,7 +93,7 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
   }
 
   /// Allow background print.
-  void printReceipts(List<RGBImage> images) async {
+  void printReceipts(List<ConstantImage> images) async {
     final errors = <Object>[];
     final stackTraces = <StackTrace>[];
 

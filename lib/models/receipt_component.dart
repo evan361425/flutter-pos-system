@@ -410,7 +410,7 @@ class ImageComponent extends ReceiptComponent {
 
   static Future<GrayImage?> convert(String path, ImageBinaryAlgorithm algorithm) async {
     final bytes = await XFile(path).file.readAsBytes();
-    final image = img.decodeImage(bytes);
+    final image = bytes.isEmpty ? null : img.decodeImage(bytes);
     GrayImage? result;
     if (image != null) {
       result = algorithm.convert(RGBImage(image.convert(numChannels: 4).getBytes(), width: image.width));

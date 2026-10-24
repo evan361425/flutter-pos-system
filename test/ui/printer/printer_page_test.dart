@@ -216,7 +216,7 @@ void main() {
       expect(find.text(S.printerMetaHelper), findsOneWidget);
     });
 
-    testWidgets("Test print", (tester) async {
+    testWidgets("Actually print a receipt", (tester) async {
       final printer = Printer(id: 'id', name: 'name', address: 'address');
       final controller = StreamController<double>();
       final p = MockPrinter();

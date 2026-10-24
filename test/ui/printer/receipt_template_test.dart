@@ -1,3 +1,5 @@
+import 'dart:io' show File;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -357,19 +359,7 @@ void main() {
     });
 
     testWidgets('Edit template component specific configurations', (tester) async {
-      await tester.pumpWidget(
-        buildApp(
-          GoRoute(
-            name: Routes.imageGallery,
-            path: 'imageGallery',
-            pageBuilder: (context, __) {
-              return MaterialPage(
-                child: TextButton(onPressed: () => context.pop('test-image'), child: const Text('choose-image')),
-              );
-            },
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
       // open settings -> add template
@@ -478,18 +468,6 @@ void main() {
         ],
       };
 
-      const XFile('test-image').file.writeAsBytesSync([]);
-      await addComponent(.image);
-      await tester.tap(find.byKey(const Key('image_holder.edit')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('choose-image'));
-      await tester.pumpAndSettle();
-      await tester.drag(find.byKey(const Key('receipt_component.slider')), const Offset(20, 0));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('modal.save')).last);
-      await tester.pumpAndSettle();
-      final expected5 = {'type': ReceiptComponentType.image.index, 'imagePath': 'test-image', 'widthRatio': 0.6};
-
       // save template
       await tester.tap(find.byKey(const Key('modal.save')));
       await tester.pumpAndSettle();
@@ -499,7 +477,102 @@ void main() {
       expect(template.components.elementAt(1).toJson(), equals(expected2));
       expect(template.components.elementAt(2).toJson(), equals(expected3));
       expect(template.components.elementAt(3).toJson(), equals(expected4));
-      expect(template.components.elementAt(4).toJson(), equals(expected5));
+    });
+
+    testWidgets('Image all operation, including change algo', (tester) async {
+      final file = File('test/ui/printer/Lenna.jpg');
+      expect(file.existsSync(), isTrue, reason: 'test image not found');
+
+      final imageBytes = await tester.runAsync(() => file.readAsBytes());
+      expect(imageBytes, isNotNull, reason: 'test image bytes is null');
+      const fileName = 'test-image';
+      await const XFile(fileName).file.writeAsBytes(imageBytes!);
+
+      await tester.pumpWidget(
+        buildApp(
+          GoRoute(
+            name: Routes.imageGallery,
+            path: 'imageGallery',
+            pageBuilder: (context, __) {
+              return MaterialPage(
+                child: TextButton(onPressed: () => context.pop(fileName), child: const Text('choose-image')),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // open settings -> add template
+      await tester.tap(find.byKey(const Key('printer.settings')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('printer.settings.template_create')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('receipt_tpl.name')), 'Custom');
+
+      Future<void> addImage() async {
+        await tester.tap(find.byKey(const Key('receipt_tpl.add_component')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(S.printerReceiptComponentType('image')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('image_holder.edit')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('choose-image'));
+        await tester.pumpAndSettle();
+        // wait for image to decode in C
+        await tester.runAsync(() => Future.delayed(const Duration(milliseconds: 20)));
+        await tester.pumpAndSettle();
+      }
+
+      Future<void> saveImage() async {
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('modal.save')).last);
+        await tester.pumpAndSettle();
+        // wait for image to decode in C
+        await tester.runAsync(() => Future.delayed(const Duration(milliseconds: 20)));
+        await tester.runAsync(() => Future.delayed(const Duration(milliseconds: 20)));
+        await tester.pumpAndSettle();
+      }
+
+      await addImage();
+      await tester.drag(find.byKey(const Key('receipt_component.slider')), const Offset(20, 0));
+      await saveImage();
+
+      await addImage();
+      // scroll to the bottom of the modal to find the binary algorithm dropdown
+      await tester.dragFrom(const Offset(0, 300), const Offset(0, -300));
+      await tester.tap(find.byType(DropdownMenu<ImageBinaryAlgorithm>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.printerReceiptComponentImageBinaryAlgoNames('text')));
+      await tester.pumpAndSettle();
+      await tester.runAsync(() => Future.delayed(const Duration(milliseconds: 20)));
+      await tester.runAsync(() => Future.delayed(const Duration(milliseconds: 20)));
+      await saveImage();
+
+      // save template
+      await tester.tap(find.byKey(const Key('modal.save')));
+      await tester.pumpAndSettle();
+
+      final expected1 = {
+        'type': ReceiptComponentType.image.index,
+        'imagePath': 'test-image',
+        'widthRatio': 0.6,
+        'binaryAlgorithm': 0,
+      };
+      final expected2 = {
+        'type': ReceiptComponentType.image.index,
+        'imagePath': 'test-image',
+        'widthRatio': 1.0,
+        'binaryAlgorithm': 1,
+      };
+      final template = ReceiptTemplates.instance.getItemByName('Custom')!;
+      final actual1 = template.components.elementAt(0).toJson();
+      final actual2 = template.components.elementAt(1).toJson();
+
+      expect(actual1.remove('binaryPath'), startsWith('receipt_image/'));
+      expect(actual2.remove('binaryPath'), startsWith('receipt_image/'));
+      expect(actual1, equals(expected1));
+      expect(actual2, equals(expected2));
     });
 
     setUpAll(() {

@@ -145,7 +145,7 @@ class GrayImage extends ImageBytes {
   /// Simple binary bitmap using a fixed global threshold (0 by default).
   /// Retained for backward compatibility.
   ConstantImage toBitMap({bool mirrored = true, bool invert = true}) {
-    final result = Uint8List(bytes.length ~/ 8);
+    final result = Uint8List((bytes.length / 8).ceil());
     for (var i = 0; i < bytes.length; i++) {
       final write = invert ? bytes[i] > 0 : bytes[i] == 0;
       if (write) {

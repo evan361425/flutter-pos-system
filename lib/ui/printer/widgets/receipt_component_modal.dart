@@ -776,7 +776,7 @@ class _ImageEditorViewState extends State<_ImageEditorView> {
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 256, maxWidth: 256),
             child: binaryImage == null
-                ? const Center(child: CircularProgressIndicator())
+                ? const SizedBox.shrink()
                 : AspectRatio(
                     aspectRatio: 1,
                     child: RawImage(image: binaryImage, fit: .cover, alignment: .center),
@@ -825,9 +825,9 @@ class _ImageEditorViewState extends State<_ImageEditorView> {
 
   Future<void> _onUpdate() async {
     if (binaryImage != null && imagePath != null) {
-      widget.image.imagePath = imagePath!;
-      widget.image.binaryAlgorithm = binaryAlgo;
       if (widget.image.binaryAlgorithm != binaryAlgo || widget.image.imagePath != imagePath) {
+        widget.image.imagePath = imagePath!;
+        widget.image.binaryAlgorithm = binaryAlgo;
         await widget.image.flushBinary();
       }
     }

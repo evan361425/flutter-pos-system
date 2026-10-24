@@ -17,7 +17,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
   /// Show the dialog and return the image list.
   ///
   /// - [widths] is the width in pixels of the image.
-  static Future<List<RGBImage>?> show(BuildContext context, OrderObject order, List<int> widths) async {
+  static Future<List<ConstantImage>?> show(BuildContext context, OrderObject order, List<int> widths) async {
     final data = await showDialog(
       context: context,
       barrierDismissible: false,
@@ -25,7 +25,7 @@ class CheckoutReceiptDialog extends StatefulWidget {
       builder: (context) => CheckoutReceiptDialog._(order: order, widths: widths),
     );
 
-    if (data is! List<RGBImage>) {
+    if (data is! List<ConstantImage>) {
       if (data != null) {
         // We need Log.err in this function, no matter context is mounted or not
         // ignore: use_build_context_synchronously
