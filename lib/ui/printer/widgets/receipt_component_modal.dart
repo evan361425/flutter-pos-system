@@ -1,9 +1,12 @@
+import 'dart:ui' as ui;
+
 import 'package:editor_ant/editor_ant.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:possystem/components/dialog/single_text_dialog.dart';
 import 'package:possystem/components/linkify.dart';
 import 'package:possystem/components/scaffold/item_modal.dart';
+import 'package:possystem/components/style/hint_text.dart';
 import 'package:possystem/components/style/image_holder.dart';
 import 'package:possystem/constants/app_themes.dart';
 import 'package:possystem/constants/constant.dart';
@@ -297,6 +300,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
     }
 
     return Column(
+      spacing: 4,
       children: [
         _buildSliderWithTitle(
           title: S.printerReceiptComponentImageWidthRatio,
@@ -305,16 +309,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
           max: 1.0,
           divisions: 9,
         ),
-        Padding(
-          padding: const .symmetric(vertical: 4.0),
-          child: Center(
-            child: Text(S.printerReceiptComponentImageHint, style: const TextStyle(fontWeight: .bold)),
-          ),
-        ),
-        EditImageHolder(
-          path: c.imagePath == '' ? null : c.imagePath,
-          onSelected: (image) => setState(() => c.imagePath = image),
-        ),
+        _ImageEditorView(image: c, hooker: (v) => onUpdate = v),
       ],
     );
   }
@@ -732,5 +727,117 @@ class _TextEditorViewState extends State<_TextEditorView> {
         );
       },
     );
+  }
+}
+
+class _ImageEditorView extends StatefulWidget {
+  final ImageComponent image;
+
+  final void Function(Future<void> Function()) hooker;
+
+  const _ImageEditorView({required this.image, required this.hooker});
+
+  @override
+  State<_ImageEditorView> createState() => _ImageEditorViewState();
+}
+
+class _ImageEditorViewState extends State<_ImageEditorView> {
+  String? imagePath;
+  late ImageBinaryAlgorithm binaryAlgo;
+  ui.Image? binaryImage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 4,
+      children: [
+        EditImageHolder(
+          path: imagePath,
+          onSelected: (value) => _onSelected(path: value),
+        ),
+        const Divider(),
+        if (imagePath != null) ...[
+          DropdownMenu<ImageBinaryAlgorithm>(
+            label: Text(S.printerReceiptComponentImageBinaryAlgoLabel),
+            helperText: S.printerReceiptComponentImageBinaryAlgoHelper,
+            initialSelection: binaryAlgo,
+            onSelected: (value) => _onSelected(algorithm: value),
+            leadingIcon: Icon(binaryAlgo.icon),
+            dropdownMenuEntries: ImageBinaryAlgorithm.values.map((algo) {
+              return DropdownMenuEntry<ImageBinaryAlgorithm>(
+                value: algo,
+                label: S.printerReceiptComponentImageBinaryAlgoNames(algo.name),
+                leadingIcon: Icon(algo.icon),
+              );
+            }).toList(),
+            expandedInsets: EdgeInsets.zero,
+          ),
+          HintText(S.printerReceiptComponentImagePreview),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 256, maxWidth: 256),
+            child: binaryImage == null
+                ? const SizedBox.shrink()
+                : AspectRatio(
+                    aspectRatio: 1,
+                    child: RawImage(image: binaryImage, fit: .cover, alignment: .center),
+                  ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  @override
+  void initState() {
+    imagePath = widget.image.imagePath == '' ? null : widget.image.imagePath;
+    widget.image.loadUIImage().then(_setBinaryImage);
+    binaryAlgo = widget.image.binaryAlgorithm;
+    widget.hooker(_onUpdate);
+    super.initState();
+  }
+
+  void _onSelected({String? path, ImageBinaryAlgorithm? algorithm}) async {
+    bool changed = false;
+    if (path != imagePath && path != null) {
+      imagePath = path;
+      changed = true;
+    } else if (algorithm != binaryAlgo && algorithm != null) {
+      binaryAlgo = algorithm;
+      changed = true;
+    }
+
+    if (changed && imagePath != null) {
+      if (mounted) {
+        setState(() {
+          binaryImage = null;
+        });
+      }
+
+      final image = await ImageComponent.convert(imagePath!, binaryAlgo);
+      ui.Image? result;
+      if (image != null) {
+        result = await image.toUIImage();
+      }
+
+      _setBinaryImage(result);
+    }
+  }
+
+  Future<void> _onUpdate() async {
+    if (binaryImage != null && imagePath != null) {
+      if (widget.image.binaryAlgorithm != binaryAlgo || widget.image.imagePath != imagePath) {
+        widget.image.imagePath = imagePath!;
+        widget.image.binaryAlgorithm = binaryAlgo;
+        await widget.image.flushBinary();
+      }
+    }
+  }
+
+  void _setBinaryImage(ui.Image? image) {
+    if (mounted && image != null) {
+      setState(() {
+        binaryImage = image;
+      });
+    }
   }
 }

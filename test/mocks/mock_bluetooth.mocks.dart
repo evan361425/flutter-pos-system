@@ -12,6 +12,7 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:packages/bluetooth.dart' as _i2;
 import 'package:possystem/components/imageable_container.dart' as _i3;
+import 'package:possystem/models/image.dart' as _i9;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -320,10 +321,10 @@ class MockImageableController extends _i1.Mock implements _i3.ImageableControlle
           as _i4.GlobalKey<_i4.State<_i4.StatefulWidget>>);
 
   @override
-  _i5.Future<List<_i3.ConvertibleImage>?> toImage({required List<int>? widths}) =>
+  _i5.Future<List<_i9.RGBImage>?> toImage({required List<int>? widths}) =>
       (super.noSuchMethod(
             Invocation.method(#toImage, [], {#widths: widths}),
-            returnValue: _i5.Future<List<_i3.ConvertibleImage>?>.value(),
+            returnValue: _i5.Future<List<_i9.RGBImage>?>.value(),
           )
-          as _i5.Future<List<_i3.ConvertibleImage>?>);
+          as _i5.Future<List<_i9.RGBImage>?>);
 }

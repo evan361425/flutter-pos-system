@@ -1,11 +1,11 @@
+import 'dart:ui' as ui;
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:possystem/components/imageable_container.dart';
-import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
-import 'package:possystem/models/xfile.dart';
 
 class PrinterReceiptView extends StatelessWidget {
   static const defaultTextStyle = TextStyle(
@@ -22,16 +22,12 @@ class PrinterReceiptView extends StatelessWidget {
 
   final OrderObject order;
   final ImageableController controller;
-  final List<ReceiptComponent>? customComponents;
 
-  const PrinterReceiptView({super.key, required this.order, required this.controller, this.customComponents});
+  const PrinterReceiptView({super.key, required this.order, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    // Use custom components if provided, otherwise use default from repository
-    final components = customComponents ?? ReceiptTemplates.instance.selected.components;
-
-    final children = components
+    final children = ReceiptTemplates.instance.selected.components
         .map(
           (component) =>
               Padding(padding: component.padding, child: PrinterReceiptView.buildComponent(context, component, order)),
@@ -54,7 +50,12 @@ class PrinterReceiptView extends StatelessWidget {
     );
   }
 
-  static Widget? buildComponent(BuildContext context, ReceiptComponent component, OrderObject order) {
+  static Widget? buildComponent(
+    BuildContext context,
+    ReceiptComponent component,
+    OrderObject order, {
+    ReceiptTemplate? template,
+  }) {
     final attributes = order.effectiveAttributes.toList();
 
     switch (component.type) {
@@ -71,18 +72,7 @@ class PrinterReceiptView extends StatelessWidget {
         final c = component as ImageComponent;
         return AspectRatio(
           aspectRatio: c.widthRatio,
-          child: Image(
-            fit: .cover,
-            errorBuilder: (context, error, stackTrace) {
-              Log.out('reading image failed', 'image_error', error: error, stackTrace: stackTrace);
-              return Container(
-                color: Colors.grey[200],
-                alignment: Alignment.center,
-                child: Icon(Icons.broken_image_outlined, color: Colors.grey[500], size: 40),
-              );
-            },
-            image: FileImage(XFile(c.imagePath).file),
-          ),
+          child: _ImageViewer(image: c, template: template),
         );
       case .orderTable:
         final c = component as OrderTableComponent;
@@ -364,5 +354,42 @@ class ReceiptSawtoothClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant ReceiptSawtoothClipper oldClipper) {
     return oldClipper.triangleWidth != triangleWidth || oldClipper.triangleHeight != triangleHeight;
+  }
+}
+
+class _ImageViewer extends StatefulWidget {
+  final ImageComponent image;
+
+  final ReceiptTemplate? template;
+
+  const _ImageViewer({required this.image, this.template});
+
+  @override
+  State<_ImageViewer> createState() => _ImageViewerState();
+}
+
+class _ImageViewerState extends State<_ImageViewer> {
+  ui.Image? _image;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
+  }
+
+  Future<void> _loadImage() async {
+    final image = await widget.image.loadUIImage(
+      onFlush: (widget.template ?? ReceiptTemplates.instance.selected).updateComponents,
+    );
+    if (mounted) {
+      setState(() {
+        _image = image;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _image == null ? const SizedBox.shrink() : RawImage(image: _image, fit: .cover, alignment: .center);
   }
 }

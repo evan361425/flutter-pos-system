@@ -177,7 +177,7 @@ class _PrinterButtonViewState extends State<PrinterButtonView> {
 
   StreamSubscription<BluetoothSignal> _listenSignal(Printer printer) {
     return showSnackbarWhenStreamError(
-      printer.p.device!.createSignalStream(),
+      printer.p.device?.createSignalStream() ?? Stream.value(BluetoothSignal.normal),
       'order_printer_signal',
       context: context,
     ).listen((value) {

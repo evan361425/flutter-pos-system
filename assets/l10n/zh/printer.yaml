@@ -222,7 +222,13 @@ receipt:
       $prefix: image
       widthRatio: 寬度比例
       widthRatioHelper: 寬度比例相對於單據寬度，例如 0.5 = 50%
-      hint: 'Important: Only supports high contrast images (black & white)'
+      preview: 此預覽為單據模擬效果
+      binaryAlgo:
+        label: 圖像處理模式
+        helper: 文字與條碼請選「文字」，相片與標誌請選「圖片」
+        names:
+        - image: 圖片
+          text: 文字
     divider:
       height: 高度
       meta:

@@ -281,10 +281,9 @@ class _PrintButton extends StatelessWidget {
       // disable the button
       progress.value = 0;
 
-      final future = controller.toImage(widths: [printer.provider.manufactory.widthBits]);
-      final data = await future;
-      if (data != null && context.mounted) {
-        final image = data.first.toGrayScale().toBitMap().bytes;
+      final data = await controller.toImage(widths: [printer.provider.manufactory.widthBits]);
+      if (data?.isNotEmpty == true && context.mounted) {
+        final image = data!.first.toGrayScale().toBitMap().bytes;
         showSnackbarWhenStreamError(
           printer.draw(image),
           'printer_test',

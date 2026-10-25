@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:possystem/app.dart';
-import 'package:possystem/components/imageable_container.dart';
+import 'package:possystem/models/image.dart';
 import 'package:possystem/models/objects/order_object.dart';
 import 'package:possystem/models/printer.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
@@ -180,10 +180,7 @@ void main() {
 
     testWidgets('one success, one failed', (tester) async {
       prepareImageable(
-        Future.value([
-          ConvertibleImage(.fromList(.filled(32, 1)), width: 8),
-          ConvertibleImage(Uint8List(64), width: 16),
-        ]),
+        Future.value([RGBImage(.fromList(.filled(32, 1)), width: 8), RGBImage(Uint8List(64), width: 16)]),
       );
 
       final p1 = MockPrinter();
@@ -210,7 +207,8 @@ void main() {
 
       expect(find.text('2: test error'), findsOneWidget);
       verify(p1.draw(.fromList([255]))).called(1);
-      verify(p2.draw(.fromList([0, 0]))).called(1);
+      // transparent pixel will be converted to white
+      verify(p2.draw(.fromList([255, 255]))).called(1);
     });
 
     tearDown(resetImageable);

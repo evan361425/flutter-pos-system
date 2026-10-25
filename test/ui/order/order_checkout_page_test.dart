@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
-import 'package:possystem/components/imageable_container.dart';
+import 'package:possystem/models/image.dart';
 import 'package:possystem/models/menu/catalog.dart';
 import 'package:possystem/models/menu/product.dart';
 import 'package:possystem/models/menu/product_ingredient.dart';
@@ -194,7 +194,7 @@ void main() {
           final manufactory = MockPrinterManufactory();
           final btDevice = MockBluetoothDevice();
           deviceAs(device, tester);
-          prepareImageable(Future.value([ConvertibleImage(Uint8List(32), width: 8)]));
+          prepareImageable(Future.value([RGBImage(Uint8List(32), width: 8)]));
           CurrencySetting.instance.isInt = false;
           Printers.instance.replaceItems({'1': Printer(id: '1', name: '1')..p = printer});
           when(printer.connected).thenReturn(true);
