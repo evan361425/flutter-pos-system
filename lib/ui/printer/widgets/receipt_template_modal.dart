@@ -186,7 +186,10 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
           child: GestureDetector(
             behavior: .opaque,
             onTap: onTap,
-            child: Padding(padding: item.padding, child: PrinterReceiptView.buildComponent(context, item, _order)),
+            child: Padding(
+              padding: item.padding,
+              child: PrinterReceiptView.buildComponent(context, item, _order, template: widget.template),
+            ),
           ),
         ),
       ],

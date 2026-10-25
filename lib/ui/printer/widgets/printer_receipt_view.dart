@@ -50,7 +50,12 @@ class PrinterReceiptView extends StatelessWidget {
     );
   }
 
-  static Widget? buildComponent(BuildContext context, ReceiptComponent component, OrderObject order) {
+  static Widget? buildComponent(
+    BuildContext context,
+    ReceiptComponent component,
+    OrderObject order, {
+    ReceiptTemplate? template,
+  }) {
     final attributes = order.effectiveAttributes.toList();
 
     switch (component.type) {
@@ -67,7 +72,7 @@ class PrinterReceiptView extends StatelessWidget {
         final c = component as ImageComponent;
         return AspectRatio(
           aspectRatio: c.widthRatio,
-          child: _ImageViewer(image: c),
+          child: _ImageViewer(image: c, template: template),
         );
       case .orderTable:
         final c = component as OrderTableComponent;
@@ -355,7 +360,9 @@ class ReceiptSawtoothClipper extends CustomClipper<Path> {
 class _ImageViewer extends StatefulWidget {
   final ImageComponent image;
 
-  const _ImageViewer({required this.image});
+  final ReceiptTemplate? template;
+
+  const _ImageViewer({required this.image, this.template});
 
   @override
   State<_ImageViewer> createState() => _ImageViewerState();
@@ -371,7 +378,9 @@ class _ImageViewerState extends State<_ImageViewer> {
   }
 
   Future<void> _loadImage() async {
-    final image = await widget.image.loadUIImage(onFlush: ReceiptTemplates.instance.selected.updateComponents);
+    final image = await widget.image.loadUIImage(
+      onFlush: (widget.template ?? ReceiptTemplates.instance.selected).updateComponents,
+    );
     if (mounted) {
       setState(() {
         _image = image;

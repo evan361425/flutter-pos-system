@@ -63,7 +63,7 @@ jobs:
         run: |
           sudo apt-get install -y lcov
           flutter test --coverage
-          lcov --remove coverage/lcov.info "lib/l10n/gen/*" 
+          lcov --remove coverage/lcov.info "lib/l10n/gen/*"  --ignore-errors empty
 
       - name: Coverage to codecov
         if: github.event_name != 'pull_request'
