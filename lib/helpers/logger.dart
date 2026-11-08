@@ -39,7 +39,7 @@ class Log {
     out(error.toString(), code, error: error, stackTrace: stackTrace);
 
     if (forceSend || allowSendEvents) {
-      FirebaseCrashlytics.instance.recordError(error, stackTrace, reason: code);
+      FirebaseCrashlytics.instance.recordError(error, stackTrace, reason: code, printDetails: !forceSend);
     }
   }
 

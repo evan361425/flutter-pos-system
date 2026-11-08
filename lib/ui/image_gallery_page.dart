@@ -258,7 +258,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
     }
   }
 
-  void cancelSelecting({reloadImages = false}) {
+  void cancelSelecting({bool reloadImages = false}) {
     setState(() {
       if (reloadImages) images = null;
       selecting = false;

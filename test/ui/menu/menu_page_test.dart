@@ -39,7 +39,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (context, __) {
+              builder: (context, _) {
                 final singleView = Breakpoint.find(width: MediaQuery.sizeOf(context).width) <= .medium;
                 return singleView ? const MenuPage() : const Scaffold(body: MenuPage());
               },
@@ -47,7 +47,7 @@ void main() {
                 GoRoute(
                   name: Routes.imageGallery,
                   path: 'image_gallery',
-                  builder: (context, __) =>
+                  builder: (context, _) =>
                       TextButton(onPressed: () => context.pop(popImage), child: const Text('tap me')),
                 ),
               ],
@@ -366,7 +366,7 @@ void main() {
               routes: [
                 GoRoute(
                   path: '/',
-                  builder: (context, __) => TextButton(
+                  builder: (context, _) => TextButton(
                     onPressed: () => context.goNamed(Routes.menu, queryParameters: {'id': 'c-1'}),
                     child: const Text('go'),
                   ),

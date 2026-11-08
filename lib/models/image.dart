@@ -147,9 +147,11 @@ class GrayImage extends ImageBytes {
   ConstantImage toBitMap({bool mirrored = true, bool invert = true}) {
     final result = Uint8List((bytes.length / 8).ceil());
     for (var i = 0; i < bytes.length; i++) {
+      // > 0 for white, 0 for black
       final write = invert ? bytes[i] > 0 : bytes[i] == 0;
       if (write) {
         if (mirrored) {
+          // 1 for black pixel, 0 for white pixel
           result[i ~/ 8] |= 1 << (i % 8);
         } else {
           result[i ~/ 8] |= 1 << (7 - i % 8);

@@ -27,7 +27,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const Scaffold(body: PrinterPage()),
+              builder: (_, _) => const Scaffold(body: PrinterPage()),
             ),
             ...Routes.getDesiredRoute(0).routes,
           ],

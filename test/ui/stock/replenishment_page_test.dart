@@ -22,11 +22,11 @@ void main() {
           ChangeNotifierProvider<Stock>.value(value: stock),
           ChangeNotifierProvider<Replenisher>.value(value: replenisher),
         ],
-        builder: (_, __) => MaterialApp.router(
+        builder: (_, _) => MaterialApp.router(
           routerConfig: GoRouter(
             navigatorKey: Routes.rootNavigatorKey,
             routes: [
-              GoRoute(path: '/', builder: (_, __) => const ReplenishmentPage()),
+              GoRoute(path: '/', builder: (_, _) => const ReplenishmentPage()),
               ...Routes.getDesiredRoute(0).routes,
             ],
           ),

@@ -110,12 +110,12 @@ void main() {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (_, __) => const OrderPage(),
+                builder: (_, _) => const OrderPage(),
                 routes: [
                   GoRoute(
                     name: Routes.orderCheckout,
                     path: 'test',
-                    builder: (context, __) {
+                    builder: (context, _) {
                       return Scaffold(
                         body: TextButton(
                           onPressed: () => context.pop(popResult?.call()),

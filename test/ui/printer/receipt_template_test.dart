@@ -28,9 +28,9 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const Scaffold(body: PrinterPage()),
+              builder: (_, _) => const Scaffold(body: PrinterPage()),
               routes: [
-                if (subroute != null) subroute,
+                ?subroute,
                 ...Routes.getDesiredRoute(0).routes.map((r) {
                   if (r is GoRoute && subroute != null) {
                     r.routes.removeWhere((rr) => rr is GoRoute && rr.name == subroute.name);
@@ -486,7 +486,7 @@ void main() {
           GoRoute(
             name: Routes.imageGallery,
             path: 'imageGallery',
-            pageBuilder: (context, __) {
+            pageBuilder: (context, _) {
               return MaterialPage(
                 child: TextButton(onPressed: () => context.pop(fileName), child: const Text('choose-image')),
               );

@@ -41,14 +41,14 @@ void main() {
 
       return MultiProvider(
         providers: [ChangeNotifierProvider.value(value: Cashier.instance)],
-        builder: (_, __) => withRoutes
+        builder: (_, _) => withRoutes
             ? MaterialApp.router(
                 routerConfig: GoRouter(
                   navigatorKey: Routes.rootNavigatorKey,
                   routes: [
                     GoRoute(
                       path: '/',
-                      builder: (context, __) {
+                      builder: (context, _) {
                         return Scaffold(
                           body: TextButton(
                             onPressed: () => context.pushNamed(Routes.cashierChanger),

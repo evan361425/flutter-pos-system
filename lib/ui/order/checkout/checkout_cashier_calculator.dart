@@ -261,7 +261,7 @@ class _CheckoutCashierCalculatorState extends State<CheckoutCashierCalculator> {
     }
   }
 
-  _onNotify() {
+  void _onNotify() {
     text = _calc(widget.paid.value.toCurrencyLong()).toCurrencyLong();
   }
 }

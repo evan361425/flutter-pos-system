@@ -28,13 +28,13 @@ jobs:
       tag_version: ${{ steps.pubspec_version.outputs.version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # v1.2.3-rc1 => 1.2.3
       - name: Extract tag version name
         if: ${{ github.event_name != 'workflow_dispatch' }}
         id: tag_version
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           result-encoding: string
           script: |
@@ -46,7 +46,7 @@ jobs:
       # v1.2.3-rc1 => v1.2.3-rc1
       - name: Extract tag name
         id: tag
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           INPUT_TAG: ${{ github.event.inputs.tag }}
         with:
@@ -77,7 +77,7 @@ jobs:
     needs: check-version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build Changelog
         id: build_changelog
@@ -90,7 +90,7 @@ jobs:
 
       - name: Draft release with changelog
         if: ${{ endsWith(needs.check-version.outputs.tag, '-rc1') }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: v${{ needs.check-version.outputs.tag_version }}
           tag_name: ${{ needs.check-version.outputs.tag }}

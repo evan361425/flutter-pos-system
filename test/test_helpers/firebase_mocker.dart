@@ -3,15 +3,13 @@ import 'package:firebase_analytics_platform_interface/firebase_analytics_platfor
 // ignore: depend_on_referenced_packages
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 // ignore: depend_on_referenced_packages
-import 'package:firebase_core_platform_interface/src/pigeon/messages.pigeon.dart';
+import 'package:firebase_core_platform_interface/test.dart';
 // ignore: depend_on_referenced_packages
-import 'package:firebase_core_platform_interface/src/pigeon/mocks.dart';
-// ignore: depend_on_referenced_packages
-import 'package:firebase_core_platform_interface/src/pigeon/test_api.dart';
-// ignore: depend_on_referenced_packages
-import 'package:firebase_crashlytics_platform_interface/firebase_crashlytics_platform_interface.dart';
+import 'package:firebase_crashlytics_platform_interface/test.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+final FakeFirebaseCrashlyticsHostApi hostApi = FakeFirebaseCrashlyticsHostApi();
 
 // https://github.com/FirebaseExtended/flutterfire/blob/master/packages/firebase_auth/firebase_auth/test/mock.dart
 void setupFirebaseAuthMocks() {
@@ -21,34 +19,21 @@ void setupFirebaseAuthMocks() {
 }
 
 // https://github.com/firebase/flutterfire/blob/master/packages/firebase_crashlytics/firebase_crashlytics/test/mock.dart
-MockCrashlytics setupFirebaseCrashlyticsMocks() {
+void setupFirebaseCrashlyticsMocks() {
   TestWidgetsFlutterBinding.ensureInitialized();
-
-  final crashlytics = MockCrashlytics();
-  TestFirebaseCoreHostApi.setUp(crashlytics);
-
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    MethodChannelFirebaseCrashlytics.channel,
-    (c) async {
-      crashlytics.methodCalls.add(c.method);
-      return null;
-    },
-  );
-
-  return crashlytics;
+  TestFirebaseCoreHostApi.setUp(MockFirebaseAppWithCollectionEnabled());
+  TestFirebaseCrashlyticsHostApi.setUp(hostApi);
 }
 
 // https://github.com/firebase/flutterfire/blob/master/packages/firebase_analytics/firebase_analytics/test/mock.dart
-Map<String, List<String>> setupFirebaseAnalyticsMocks() {
+void setupFirebaseAnalyticsMocks() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setupFirebaseCoreMocks();
 
-  final record = <String, List<String>>{'methods': []};
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
     MethodChannelFirebaseAnalytics.channel,
     (MethodCall methodCall) async {
-      record['methods']!.add(methodCall.method);
       switch (methodCall.method) {
         case 'Analytics#getAppInstanceId':
           return 'ABCD1234';
@@ -58,20 +43,16 @@ Map<String, List<String>> setupFirebaseAnalyticsMocks() {
       }
     },
   );
-
-  return record;
 }
 
-class MockCrashlytics implements TestFirebaseCoreHostApi {
-  List<String> methodCalls = [];
-
+class MockFirebaseAppWithCollectionEnabled implements TestFirebaseCoreHostApi {
   @override
   Future<CoreInitializeResponse> initializeApp(String appName, CoreFirebaseOptions initializeAppRequest) async {
     return CoreInitializeResponse(
       name: appName,
       options: CoreFirebaseOptions(apiKey: '123', projectId: '123', appId: '123', messagingSenderId: '123'),
       pluginConstants: {
-        'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false},
+        'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': true},
       },
     );
   }
@@ -83,7 +64,7 @@ class MockCrashlytics implements TestFirebaseCoreHostApi {
         name: defaultFirebaseAppName,
         options: CoreFirebaseOptions(apiKey: '123', projectId: '123', appId: '123', messagingSenderId: '123'),
         pluginConstants: {
-          'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': false},
+          'plugins.flutter.io/firebase_crashlytics': {'isCrashlyticsCollectionEnabled': true},
         },
       ),
     ];
@@ -92,5 +73,84 @@ class MockCrashlytics implements TestFirebaseCoreHostApi {
   @override
   Future<CoreFirebaseOptions> optionsFromResource() async {
     return CoreFirebaseOptions(apiKey: '123', projectId: '123', appId: '123', messagingSenderId: '123');
+  }
+}
+
+class FakeFirebaseCrashlyticsHostApi implements TestFirebaseCrashlyticsHostApi {
+  final List<String> calls = <String>[];
+  RecordErrorRequest? lastRecordError;
+  String? lastLogMessage;
+  bool? lastCollectionEnabled;
+  String? lastUserIdentifier;
+  String? lastCustomKey;
+  String? lastCustomValue;
+
+  void reset() {
+    calls.clear();
+    lastRecordError = null;
+    lastLogMessage = null;
+    lastCollectionEnabled = null;
+    lastUserIdentifier = null;
+    lastCustomKey = null;
+    lastCustomValue = null;
+  }
+
+  @override
+  Future<bool> checkForUnsentReports() async {
+    calls.add('checkForUnsentReports');
+    return true;
+  }
+
+  @override
+  Future<void> crash() async {
+    calls.add('crash');
+  }
+
+  @override
+  Future<void> deleteUnsentReports() async {
+    calls.add('deleteUnsentReports');
+  }
+
+  @override
+  Future<bool> didCrashOnPreviousExecution() async {
+    calls.add('didCrashOnPreviousExecution');
+    return true;
+  }
+
+  @override
+  Future<void> recordError(RecordErrorRequest request) async {
+    calls.add('recordError');
+    lastRecordError = request;
+  }
+
+  @override
+  Future<void> log(String message) async {
+    calls.add('log');
+    lastLogMessage = message;
+  }
+
+  @override
+  Future<void> sendUnsentReports() async {
+    calls.add('sendUnsentReports');
+  }
+
+  @override
+  Future<bool> setCrashlyticsCollectionEnabled(bool enabled) async {
+    calls.add('setCrashlyticsCollectionEnabled');
+    lastCollectionEnabled = enabled;
+    return enabled;
+  }
+
+  @override
+  Future<void> setUserIdentifier(String identifier) async {
+    calls.add('setUserIdentifier');
+    lastUserIdentifier = identifier;
+  }
+
+  @override
+  Future<void> setCustomKey(String key, String value) async {
+    calls.add('setCustomKey');
+    lastCustomKey = key;
+    lastCustomValue = value;
   }
 }

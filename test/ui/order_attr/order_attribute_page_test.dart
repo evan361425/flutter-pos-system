@@ -30,7 +30,7 @@ void main() {
               routes: [
                 GoRoute(
                   path: '/',
-                  builder: (_, __) => const Scaffold(body: OrderAttributePage()),
+                  builder: (_, _) => const Scaffold(body: OrderAttributePage()),
                 ),
                 ...Routes.getDesiredRoute(0).routes,
               ],
@@ -105,7 +105,7 @@ void main() {
               routes: [
                 GoRoute(
                   path: '/',
-                  builder: (_, __) => const Scaffold(body: OrderAttributePage()),
+                  builder: (_, _) => const Scaffold(body: OrderAttributePage()),
                 ),
                 ...Routes.getDesiredRoute(0).routes,
               ],

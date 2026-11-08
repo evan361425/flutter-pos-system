@@ -27,7 +27,7 @@ void main() {
           ChangeNotifierProvider.value(value: Seller.instance),
           ChangeNotifierProvider.value(value: Printers()),
         ],
-        builder: (_, __) => MaterialApp.router(
+        builder: (_, _) => MaterialApp.router(
           themeMode: themeMode,
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
@@ -36,7 +36,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (_, __) {
+                builder: (_, _) {
                   return const HistoryPage();
                 },
               ),

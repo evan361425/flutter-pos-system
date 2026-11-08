@@ -23,8 +23,7 @@ void main() {
     }
 
     testWidgets('preview and export', (tester) async {
-      final picker = mockFilePicker();
-      final path = mockFileSave(picker);
+      final verifier = mockFileSave();
       when(cache.get('exporter_order_meta.withPrefix')).thenReturn(false);
 
       final order = OrderSetter.sample();
@@ -39,15 +38,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitExportOrderSuccessExcel), findsOneWidget);
-      verify(
-        picker.saveFile(
-          dialogTitle: anyNamed('dialogTitle'),
-          fileName: '${S.transitExportOrderFileName}.xlsx',
-          bytes: anyNamed('bytes'),
-        ),
-      );
+      verifier(fileName: '${S.transitExportOrderFileName}.xlsx', bytes: anyNamed('bytes'));
 
-      final excel = Excel.decodeBytes(XFile('$path/${S.transitExportOrderFileName}.xlsx').file.readAsBytesSync());
+      final excel = Excel.decodeBytes(
+        XFile('${XFile.fs.systemTempDirectory.path}/${S.transitExportOrderFileName}.xlsx').file.readAsBytesSync(),
+      );
       expect(excel.sheets.keys.toList(), equals(FormattableOrder.values.map((e) => e.l10nName).toList()));
     });
 

@@ -163,7 +163,7 @@ void main() {
           routerConfig: GoRouter(
             navigatorKey: Routes.rootNavigatorKey,
             routes: [
-              GoRoute(path: '/', builder: (_, __) => const OrderPage()),
+              GoRoute(path: '/', builder: (_, _) => const OrderPage()),
               ...Routes.getDesiredRoute(0).routes,
             ],
           ),

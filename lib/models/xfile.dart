@@ -39,17 +39,15 @@ class XFile {
     return baseDir;
   }
 
-  static Future<List<int>?> pick() async {
-    final result = await FilePicker.platform.pickFiles(withReadStream: true, type: .any);
-    final file = result?.files.firstOrNull;
+  static Future<Uint8List?> pick() async {
+    final file = await FilePicker.pickFile(type: .any);
     Log.out('picked file: ${file?.path}', 'file');
 
-    final data = await file?.readStream?.toList();
-    return data?.reduce((a, b) => a + b);
+    return await file?.readAsBytes();
   }
 
   static Future<bool> save({required String dialogTitle, required String fileName, required Uint8List bytes}) async {
-    final path = await FilePicker.platform.saveFile(dialogTitle: dialogTitle, fileName: fileName, bytes: bytes);
+    final path = await FilePicker.saveFile(dialogTitle: dialogTitle, fileName: fileName, bytes: bytes);
     Log.out('saved $fileName to $path', 'file');
 
     // web will always return null

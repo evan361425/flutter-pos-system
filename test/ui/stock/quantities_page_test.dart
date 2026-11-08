@@ -26,7 +26,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const Scaffold(body: QuantitiesPage()),
+              builder: (_, _) => const Scaffold(body: QuantitiesPage()),
             ),
             ...Routes.getDesiredRoute(0).routes,
           ],
@@ -40,7 +40,7 @@ void main() {
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
       await tester.pumpWidget(
-        ChangeNotifierProvider<Quantities>.value(value: quantities, builder: (_, __) => buildApp()),
+        ChangeNotifierProvider<Quantities>.value(value: quantities, builder: (_, _) => buildApp()),
       );
 
       await tester.tap(find.byKey(const Key('quantities.q-1')));
@@ -69,7 +69,7 @@ void main() {
       when(storage.set(any, any)).thenAnswer((_) => Future.value());
 
       await tester.pumpWidget(
-        ChangeNotifierProvider<Quantities>.value(value: quantities, builder: (_, __) => buildApp()),
+        ChangeNotifierProvider<Quantities>.value(value: quantities, builder: (_, _) => buildApp()),
       );
 
       await tester.tap(find.byKey(const Key('empty_body')));
@@ -122,7 +122,7 @@ void main() {
             ChangeNotifierProvider<Menu>.value(value: menu),
             ChangeNotifierProvider<Quantities>.value(value: quantities),
           ],
-          builder: (_, __) => buildApp(),
+          builder: (_, _) => buildApp(),
         ),
       );
 

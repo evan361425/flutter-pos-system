@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Get latest tag
         id: tag
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           result-encoding: string
           script: |
@@ -71,7 +71,7 @@ jobs:
 
       - name: Extract lane
         id: lane
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           INPUT_LANE: ${{ github.event.inputs.lane }}
           TAG_NAME: ${{ steps.tag.outputs.result }}
@@ -88,7 +88,7 @@ jobs:
 
       - name: Extract Flavor
         id: flavor
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           LANE: ${{ steps.lane.outputs.result }}
         with:
@@ -97,7 +97,7 @@ jobs:
             return process.env.LANE === 'internal' ? 'dev' : 'prod';
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: "refs/tags/${{ steps.tag.outputs.result }}"
 
@@ -109,7 +109,7 @@ jobs:
 
       - name: Extract build number
         id: dev_build_number
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           BUILD_CODE: ${{ steps.build_code.outputs.value }}
           TAG_NAME: ${{ steps.tag.outputs.result }}
@@ -133,7 +133,7 @@ jobs:
           channel: "stable"
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ needs.var.outputs.ref }}
 
@@ -158,10 +158,19 @@ jobs:
           flutter pub get
 
       # Setup Java environment in order to build the Android app.
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: "zulu"
           java-version: "17"
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Configure Google Services
         run: echo "$GOOGLE_SERVICES_JSON" > google-services.json

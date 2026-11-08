@@ -72,11 +72,11 @@ class ChoiceChipWithHelpState<T> extends State<ChoiceChipWithHelp<T>> {
     _updateSelected(widget.selected);
   }
 
-  updateSelected(T value) {
+  void updateSelected(T value) {
     setState(() => _updateSelected(value));
   }
 
-  _updateSelected(T value) {
+  void _updateSelected(T value) {
     selected = value;
     selectedIndex = widget.values.indexOf(value);
   }

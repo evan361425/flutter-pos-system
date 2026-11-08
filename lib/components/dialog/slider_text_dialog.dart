@@ -70,7 +70,7 @@ class _SliderTextDialogState extends State<SliderTextDialog> {
   Widget buildTextWithSlider() {
     return ListenableBuilder(
       listenable: sliderValue,
-      builder: (_, __) => Column(
+      builder: (_, _) => Column(
         children: [
           TextFormField(
             key: const Key('slider_dialog.text'),

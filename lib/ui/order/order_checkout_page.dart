@@ -241,7 +241,7 @@ class _Desktop extends StatelessWidget {
                 ),
               ),
               const VerticalDivider(width: 1),
-              if (calculator != null) calculator,
+              ?calculator,
             ],
           );
         },

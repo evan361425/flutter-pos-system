@@ -32,7 +32,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (_, __) => const Scaffold(body: TransitPage()),
+                builder: (_, _) => const Scaffold(body: TransitPage()),
               ),
               ...Routes.getDesiredRoute(0).routes,
             ],

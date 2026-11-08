@@ -28,13 +28,13 @@ void main() {
       when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
       return ChangeNotifierProvider.value(
         value: Seller.instance,
-        builder: (_, __) => MaterialApp.router(
+        builder: (_, _) => MaterialApp.router(
           routerConfig: GoRouter(
             navigatorKey: Routes.rootNavigatorKey,
             routes: [
               GoRoute(
                 path: '/',
-                builder: (_, __) {
+                builder: (_, _) {
                   return const Scaffold(body: AnalysisView());
                 },
               ),

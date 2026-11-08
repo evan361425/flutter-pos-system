@@ -24,8 +24,7 @@ void main() {
     }
 
     testWidgets('preview and export', (tester) async {
-      final picker = mockFilePicker();
-      mockFileSave(picker);
+      final verifier = mockFileSave();
 
       final order = OrderSetter.sample();
       OrderSetter.setMetrics([order], countingAll: true);
@@ -39,27 +38,24 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitExportOrderSuccessCsv), findsOneWidget);
-      verify(
-        picker.saveFile(
-          dialogTitle: anyNamed('dialogTitle'),
-          fileName: '${S.transitExportOrderFileName}.csv',
-          bytes: argThat(
-            predicate((e) {
-              if (e is Uint8List) {
-                final parts = utf8.decode(e).split('\n\n').toList();
-                final expected = FormattableOrder.values.map((e) => e.formatHeader().join(','));
+      verifier(
+        fileName: '${S.transitExportOrderFileName}.csv',
+        bytes: argThat(
+          predicate((e) {
+            if (e is Uint8List) {
+              final parts = utf8.decode(e).split('\n\n').toList();
+              final expected = FormattableOrder.values.map((e) => e.formatHeader().join(','));
 
-                return expected
-                    .mapIndexed((i, e) {
-                      return parts[i].split('\n').first == e;
-                    })
-                    .every((e) => e);
-              }
+              return expected
+                  .mapIndexed((i, e) {
+                    return parts[i].split('\n').first == e;
+                  })
+                  .every((e) => e);
+            }
 
-              return false;
-            }),
-            named: 'bytes',
-          ),
+            return false;
+          }),
+          named: 'bytes',
         ),
       );
     });

@@ -77,14 +77,14 @@ class Routes {
   static final ValueNotifier<HomeMode> homeMode = ValueNotifier(.bottomNavigationBar);
 
   /// Get the full path of the route
-  static getRoute(String path) => 'https://evan361425.github.io$base/$path';
+  static String getRoute(String path) => 'https://evan361425.github.io$base/$path';
 
   static final rootNavigatorKey = GlobalKey<NavigatorState>();
 
   /// Get the initial location of the app.
   ///
   /// if the user is new, redirect to menu page
-  static get initLocation => Cache.instance.get<bool>('tutorial.home.order') != true
+  static String get initLocation => Cache.instance.get<bool>('tutorial.home.order') != true
       ? homeMode.value.isMobile()
             ? '$base/_'
             : '$base/_/menu' // if going to anal, the tutorial will conflicts with analysis page's tutorial

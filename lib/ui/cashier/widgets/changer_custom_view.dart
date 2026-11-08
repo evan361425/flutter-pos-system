@@ -268,7 +268,7 @@ class ChangerCustomViewState extends State<ChangerCustomView> {
       children: [
         Flexible(flex: 1, child: a),
         Flexible(flex: 1, child: b),
-        if (c != null) c,
+        ?c,
       ],
     );
   }

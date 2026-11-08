@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -37,8 +36,7 @@ void main() {
     }
 
     testWidgets('successfully', (tester) async {
-      final picker = mockFilePicker();
-      mockFileSave(picker);
+      final verifier = mockFileSave();
 
       Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});
       Stock.instance.replaceItems({'i1': Ingredient(id: 'i1', name: 'i1', totalAmount: 100)});
@@ -51,12 +49,9 @@ void main() {
 
       final header1 = findFieldFormatter(.stock).getHeader().map((e) => e.toString()).join(',');
       final header2 = findFieldFormatter(.quantities).getHeader().map((e) => e.toString()).join(',');
-      verify(
-        picker.saveFile(
-          dialogTitle: anyNamed('dialogTitle'),
-          fileName: '${S.transitExportBasicFileName}.csv',
-          bytes: utf8.encode('$header1\ni1,0.0,100,,1.0\n\n$header2\nq1,1'),
-        ),
+      verifier(
+        fileName: '${S.transitExportBasicFileName}.csv',
+        bytes: utf8.encode('$header1\ni1,0.0,100,,1.0\n\n$header2\nq1,1'),
       );
     });
 
@@ -78,8 +73,7 @@ void main() {
 
       expect(find.text(S.transitExportBasicSuccessCsv), findsNothing);
 
-      final picker = mockFilePicker();
-      mockFileSave(picker, canceled: true);
+      mockFileSave(canceled: true);
 
       // change by tab
       await tester.tap(find.text(FormattableModel.quantities.l10nName));

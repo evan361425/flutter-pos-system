@@ -1,3 +1,5 @@
+// ignore: depend_on_referenced_packages
+import 'package:cross_file/cross_file.dart' as cross_file;
 import 'package:file/memory.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
@@ -10,50 +12,32 @@ import 'package:possystem/models/xfile.dart';
 import '../mocks/mock_helpers.dart';
 import 'file_mocker.mocks.dart';
 
-@GenerateMocks([FilePicker])
 void initializeFileSystem() {
   XFile.fs = MemoryFileSystem();
 }
 
-MockFilePicker mockFilePicker() {
-  final picker = MyFilePicker();
-  FilePicker.platform = picker;
-  return picker.picker;
-}
-
-String mockFilePick(MockFilePicker picker, {List<int>? bytes}) {
-  reset(picker);
-  when(
-    picker.pickFiles(
-      type: anyNamed('type'),
-      withReadStream: anyNamed('withReadStream'),
-      compressionQuality: anyNamed('compressionQuality'),
-      allowCompression: anyNamed('allowCompression'),
-      allowMultiple: anyNamed('allowMultiple'),
-      withData: anyNamed('withData'),
-    ),
-  ).thenAnswer((_) async {
+@GenerateMocks([FilePickerPlatform])
+String mockFilePick({List<int>? bytes}) {
+  final picker = MockFilePickerPlatform();
+  FilePickerPlatform.instance = picker;
+  when(picker.pickFile(type: anyNamed('type'), compressionQuality: anyNamed('compressionQuality'))).thenAnswer((
+    _,
+  ) async {
     if (bytes == null) {
       return null;
     }
 
-    return FilePickerResult([
-      PlatformFile(
-        name: 'picked-file',
-        path: '${XFile.fs.systemTempDirectory.path}/picked-file',
-        size: 10,
-        readStream: Stream.fromIterable([bytes]),
-      ),
-    ]);
+    return MockPlatformFile(name: 'picked-file', bytes: Uint8List.fromList(bytes));
   });
 
   return '${XFile.fs.systemTempDirectory.path}/picked-file';
 }
 
-String mockFileSave(MockFilePicker picker, {bool canceled = false}) {
-  reset(picker);
+void Function({String? fileName, Uint8List? bytes}) mockFileSave({bool canceled = false}) {
+  final picker = MockFilePickerPlatform();
+  FilePickerPlatform.instance = picker;
   when(
-    picker.saveFile(dialogTitle: anyNamed('dialogTitle'), fileName: anyNamed('fileName'), bytes: anyNamed('bytes')),
+    picker.saveFile(fileName: anyNamed('fileName'), bytes: anyNamed('bytes'), mimeType: anyNamed('mimeType')),
   ).thenAnswer((v) async {
     if (canceled) return null;
 
@@ -61,10 +45,11 @@ String mockFileSave(MockFilePicker picker, {bool canceled = false}) {
     final fileName = v.namedArguments[#fileName] as String;
     final bytes = v.namedArguments[#bytes] as Uint8List;
     XFile('$path/$fileName').file.writeAsBytesSync(bytes);
-    return path;
+    return Uri.file(path);
   });
 
-  return XFile.fs.systemTempDirectory.path;
+  return ({String? fileName, Uint8List? bytes}) =>
+      verify(picker.saveFile(fileName: fileName, bytes: bytes, mimeType: anyNamed('mimeType'))).called(1);
 }
 
 void mockImagePick(WidgetTester tester, {bool canceled = false}) {
@@ -213,54 +198,32 @@ const _examplePng = <int>[
   130,
 ];
 
-class MyFilePicker extends FilePicker {
-  final picker = MockFilePicker();
+final class MockPlatformFile extends PlatformFile {
+  @override
+  final String name;
+  final Uint8List bytes;
+
+  MockPlatformFile({required this.name, required this.bytes});
 
   @override
-  Future<FilePickerResult?> pickFiles({
-    String? dialogTitle,
-    String? initialDirectory,
-    FileType type = .any,
-    List<String>? allowedExtensions,
-    Function(FilePickerStatus)? onFileLoading,
-    bool allowCompression = true,
-    int compressionQuality = 30,
-    bool allowMultiple = false,
-    bool withData = false,
-    bool withReadStream = false,
-    bool lockParentWindow = false,
-    bool readSequential = false,
-  }) async => picker.pickFiles(
-    dialogTitle: dialogTitle,
-    initialDirectory: initialDirectory,
-    type: type,
-    allowedExtensions: allowedExtensions,
-    onFileLoading: onFileLoading,
-    allowCompression: allowCompression,
-    compressionQuality: compressionQuality,
-    allowMultiple: allowMultiple,
-    withData: withData,
-    withReadStream: withReadStream,
-    lockParentWindow: lockParentWindow,
-    readSequential: readSequential,
-  );
+  String? get path => '${XFile.fs.systemTempDirectory.path}/$name';
 
   @override
-  Future<String?> saveFile({
-    String? dialogTitle,
-    String? fileName,
-    String? initialDirectory,
-    FileType type = .any,
-    List<String>? allowedExtensions,
-    Uint8List? bytes,
-    bool lockParentWindow = false,
-  }) async => picker.saveFile(
-    dialogTitle: dialogTitle,
-    fileName: fileName,
-    initialDirectory: initialDirectory,
-    type: type,
-    allowedExtensions: allowedExtensions,
-    bytes: bytes,
-    lockParentWindow: lockParentWindow,
-  );
+  Future<int?> length() async => bytes.length;
+
+  @override
+  int? lengthSync() => bytes.length;
+
+  @override
+  Stream<Uint8List> readAsByteStream() => Stream.value(bytes);
+
+  @override
+  Future<Uint8List> readAsBytes() => Future.value(bytes);
+
+  @override
+  Uri get uri => throw UnimplementedError();
+
+  @override
+  // TODO: implement xFile
+  cross_file.XFile get xFile => throw UnimplementedError();
 }

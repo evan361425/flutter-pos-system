@@ -102,7 +102,7 @@ class Tutorial extends StatelessWidget {
               if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
               const SizedBox(height: 16),
               Linkify.fromString(message),
-              if (below != null) below!,
+              ?below,
             ],
           ),
         ),

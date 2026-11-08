@@ -27,8 +27,7 @@ void main() {
     }
 
     testWidgets('import quantity only', (tester) async {
-      final picker = mockFilePicker();
-      mockFilePick(picker, bytes: utf8.encode('some-headers\nq1,1\n'));
+      mockFilePick(bytes: utf8.encode('some-headers\nq1,1\n'));
 
       // Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});
 
@@ -63,8 +62,7 @@ void main() {
           })
           .join('\n\n');
 
-      final picker = mockFilePicker();
-      mockFilePick(picker, bytes: utf8.encode(data));
+      mockFilePick(bytes: utf8.encode(data));
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
@@ -86,8 +84,7 @@ void main() {
     });
 
     testWidgets('abort picking', (tester) async {
-      final picker = mockFilePicker();
-      mockFilePick(picker);
+      mockFilePick();
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();

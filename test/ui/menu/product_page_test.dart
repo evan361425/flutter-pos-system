@@ -39,12 +39,12 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (context, __) => home?.call(context) ?? ProductPage(product: product),
+              builder: (context, _) => home?.call(context) ?? ProductPage(product: product),
               routes: [
                 GoRoute(
                   name: Routes.imageGallery,
                   path: 'image_gallery',
-                  builder: (context, __) =>
+                  builder: (context, _) =>
                       TextButton(onPressed: () => context.pop(popImage), child: const Text('tap me')),
                 ),
               ],

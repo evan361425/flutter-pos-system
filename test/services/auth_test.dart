@@ -10,7 +10,16 @@ import '../test_helpers/firebase_mocker.dart';
 import 'auth_test.mocks.dart';
 
 // Custom Mock! avoid clean up after rebuild
-@GenerateMocks([GoogleSignIn, FirebaseAuth, GoogleSignInAccount, GoogleSignInAuthentication, User, UserCredential])
+@GenerateMocks([
+  GoogleSignIn,
+  FirebaseAuth,
+  GoogleSignInAccount,
+  GoogleSignInAuthentication,
+  User,
+  UserCredential,
+  GoogleSignInAuthorizationClient,
+  GoogleSignInClientAuthorization,
+])
 void main() {
   group('Auth', () {
     late Auth auth;
@@ -37,38 +46,29 @@ void main() {
       test('success', () async {
         final user = MockGoogleSignInAccount();
         final cred = MockGoogleSignInAuthentication();
-        when(googleSignIn.signIn()).thenAnswer((_) => Future.value(user));
-        when(user.authentication).thenAnswer((_) => Future.value(cred));
-        when(cred.accessToken).thenReturn('hi');
-        when(cred.idToken).thenReturn('there');
+        when(googleSignIn.supportsAuthenticate()).thenReturn(true);
+        when(googleSignIn.authenticate()).thenAnswer((_) => Future.value(user));
+        when(user.authentication).thenReturn(cred);
+        when(cred.idToken).thenReturn('hi');
         when(firebaseAuth.signInWithCredential(any)).thenAnswer((_) => Future.value(MockUserCredential()));
 
         final success = await auth.signIn();
 
         expect(success, isTrue);
       });
-
-      test('empty google user', () async {
-        when(googleSignIn.signIn()).thenAnswer((_) => Future.value());
-
-        final success = await auth.signIn();
-
-        expect(success, isFalse);
-      });
     });
 
     test('#getAuthenticatedClient', () async {
-      final scopes = ['a'];
-      final cred = MockGoogleSignInAuthentication();
-      when(cred.accessToken).thenReturn(null);
-      when(googleSignIn.signInSilently()).thenAnswer((_) => Future.value());
-      when(googleSignIn.scopes).thenReturn(scopes);
-      when(googleSignIn.requestScopes(['b', 'c'])).thenAnswer((_) => Future.value(true));
+      final client = MockGoogleSignInAuthorizationClient();
+      final authz = MockGoogleSignInClientAuthorization();
+      when(authz.accessToken).thenReturn('hello');
+      when(googleSignIn.authorizationClient).thenReturn(client);
+      when(client.authorizationForScopes(['a', 'b'])).thenAnswer((_) => Future.value(null));
+      when(client.authorizeScopes(['a', 'b'])).thenAnswer((_) => Future.value(authz));
 
-      final result = await auth.getAuthenticatedClient(scopes: ['a', 'b', 'c'], debugAuthentication: cred);
+      final result = await auth.getAuthenticatedClient(scopes: ['a', 'b']);
 
-      expect(result, isNull);
-      expect(scopes, equals(['a', 'b', 'c']));
+      expect(result, isNotNull);
     });
 
     test('#signOut', () async {

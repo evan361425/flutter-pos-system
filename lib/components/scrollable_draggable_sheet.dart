@@ -153,7 +153,7 @@ class ScrollableDraggableController extends DraggableScrollableController implem
   late List<double> snapSizes;
   ValueNotifier<int> snapIndex = ValueNotifier(0);
 
-  transferSnapSizes(double pixels, double offset) {
+  void transferSnapSizes(double pixels, double offset) {
     final last = pixelsSnapSizes[pixelsSnapSizes.length - 1];
     availablePixels = last > 1 ? last : last * pixels;
     snapSizes = pixelsSnapSizes

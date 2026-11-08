@@ -26,13 +26,11 @@ void main() {
     }
 
     testWidgets('successfully', (tester) async {
-      final picker = mockFilePicker();
-
       final excel = Excel.createExcel();
       final sheet = excel[FormattableModel.quantities.l10nName];
       sheet.appendRow([TextCellValue('name'), TextCellValue('defaultProportion')]);
       sheet.appendRow([TextCellValue('q1'), const IntCellValue(1)]);
-      mockFilePick(picker, bytes: excel.encode());
+      mockFilePick(bytes: excel.encode());
 
       Quantities.instance.replaceItems({'q1': Quantity(id: 'q1', name: 'q1')});
 
@@ -56,8 +54,7 @@ void main() {
     });
 
     testWidgets('abort picking', (tester) async {
-      final picker = mockFilePicker();
-      mockFilePick(picker);
+      mockFilePick();
 
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();

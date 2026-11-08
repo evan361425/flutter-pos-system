@@ -21,22 +21,31 @@ class SignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<firebase.User?>(
-      stream: Auth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        // final user = User(displayName: 'Test User');
-        final user = User(user: snapshot.data);
+    return FutureBuilder(
+      future: Auth.instance.init(),
+      builder: (context, init) {
+        return StreamBuilder<firebase.User?>(
+          stream: Auth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (init.connectionState != ConnectionState.done) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-        // User is not signed in
-        if (user.notSignedIn) {
-          return Padding(
-            padding: padding,
-            child: const _GoogleSignInButton(key: Key('google_sign_in')),
-          );
-        }
+            // final user = User(displayName: 'Test User');
+            final user = User(user: snapshot.data);
 
-        // Render widget if authenticated
-        return signedInWidget ?? signedInWidgetBuilder!(user);
+            // User is not signed in
+            if (user.notSignedIn) {
+              return Padding(
+                padding: padding,
+                child: const _GoogleSignInButton(key: Key('google_sign_in')),
+              );
+            }
+
+            // Render widget if authenticated
+            return signedInWidget ?? signedInWidgetBuilder!(user);
+          },
+        );
       },
     );
   }

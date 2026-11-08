@@ -32,7 +32,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) {
+              builder: (_, _) {
                 return Material(child: HistoryOrderList(notifier: notifier));
               },
             ),

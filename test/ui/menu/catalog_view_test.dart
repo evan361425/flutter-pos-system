@@ -32,12 +32,12 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const MenuPage(),
+              builder: (_, _) => const MenuPage(),
               routes: [
                 GoRoute(
                   name: Routes.imageGallery,
                   path: 'image_gallery',
-                  builder: (context, __) =>
+                  builder: (context, _) =>
                       TextButton(onPressed: () => context.pop(popImage), child: const Text('tap me')),
                 ),
               ],

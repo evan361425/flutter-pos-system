@@ -28,7 +28,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const Scaffold(body: SettingsPage()),
+              builder: (_, _) => const Scaffold(body: SettingsPage()),
             ),
             ...Routes.getDesiredRoute(0).routes,
           ],
@@ -44,6 +44,7 @@ void main() {
       when(auth.signOut()).thenAnswer((_) => Future.value());
 
       await tester.pumpWidget(buildApp());
+      await tester.pump(const Duration(milliseconds: 10));
 
       // signin failed
       when(auth.signIn()).thenAnswer((_) => Future.error('QQ'));

@@ -80,7 +80,7 @@ class _MyReorderableListState<T> extends State<MyReorderableList<T>> {
   Widget build(BuildContext context) {
     Widget child = ReorderableList(
       padding: widget.padding,
-      onReorder: _handleReorder,
+      onReorderItem: _handleReorder,
       onReorderStart: (int index) => HapticFeedback.lightImpact(),
       onReorderEnd: (int index) => HapticFeedback.lightImpact(),
       prototypeItem: widget.itemBuilder != null
@@ -138,9 +138,6 @@ class _MyReorderableListState<T> extends State<MyReorderableList<T>> {
 
   bool _handleReorder(int oldIndex, int newIndex) {
     setState(() {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
       final draggedItem = widget.items.removeAt(oldIndex);
       widget.items.insert(newIndex, draggedItem);
     });

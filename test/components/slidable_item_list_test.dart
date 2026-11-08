@@ -16,8 +16,8 @@ void main() {
               delegate: SlidableItemDelegate(
                 items: const ['1', '2'],
                 deleteValue: 0,
-                tileBuilder: (item, int index, __) => Text(item),
-                warningContentBuilder: (_, __) => 'hi',
+                tileBuilder: (item, int index, _) => Text(item),
+                warningContentBuilder: (_, _) => 'hi',
                 handleDelete: (_) async => deletionFired = true,
               ),
             ),

@@ -60,7 +60,7 @@ class _CheckoutCashierSnapshotState extends State<CheckoutCashierSnapshot> {
     );
   }
 
-  List<num> get paidOptionWithCustom => [if (customValue != null) customValue!, ...paidOptions];
+  List<num> get paidOptionWithCustom => [?customValue, ...paidOptions];
 
   @override
   void initState() {

@@ -32,7 +32,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const Scaffold(body: StockView()),
+              builder: (_, _) => const Scaffold(body: StockView()),
             ),
             ...Routes.getDesiredRoute(0).routes,
           ],

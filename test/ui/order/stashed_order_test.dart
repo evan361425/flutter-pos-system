@@ -31,7 +31,7 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => const Text('Home Page'),
+              builder: (_, _) => const Text('Home Page'),
               routes: [
                 GoRoute(
                   path: 'test',
