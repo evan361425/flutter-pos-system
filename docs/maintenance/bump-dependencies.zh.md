@@ -37,8 +37,35 @@ dev_package    *1.0.0    *1.0.0      *1.1.0      1.1.0
 
 這樣的方式可以同時升級 Transitive 的套件。
 
-## 更新之後
+### 更新之後
 
 請記得重新跑一次 Mock，因為新版本的套件可能會有新的 API：
 
     make mock
+
+## Platforms
+
+各平台的升級指南。
+
+### Android
+
+Flutter 會有最低 Gradle 版本需求，專案的 Gradle 版本需在該最低版本之上。
+
+```bash
+# android/gradle/wrapper/gradle-wrapper.properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.6-bin.zip
+# android/gradle.properties
+androidGradlePluginVersion=8.11.2
+# android/settings.gradle
+# update these package
+com.google.gms.google-services
+com.google.firebase.crashlytics"
+com.google.firebase.firebase-perf
+org.jetbrains.kotlin.android
+# Bash
+cd android
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+java -version
+./gradlew clean
+./gradlew wrapper --gradle-version 8.14.6
+```

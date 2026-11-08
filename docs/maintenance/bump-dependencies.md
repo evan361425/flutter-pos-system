@@ -37,8 +37,35 @@ After identifying the version to upgrade to:
 
 This method also upgrades transitive dependencies.
 
-## After Updating
+### After Updating
 
 Remember to rerun the mock process, as new versions of packages may introduce new APIs:
 
     make mock
+
+## Platforms
+
+Instructions for each platform.
+
+### Android
+
+Gradle version mush above Flutter's minimum supported version:
+
+```bash
+# android/gradle/wrapper/gradle-wrapper.properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.6-bin.zip
+# android/gradle.properties
+androidGradlePluginVersion=8.11.2
+# android/settings.gradle
+# update these package
+com.google.gms.google-services
+com.google.firebase.crashlytics"
+com.google.firebase.firebase-perf
+org.jetbrains.kotlin.android
+# Bash
+cd android
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+java -version
+./gradlew clean
+./gradlew wrapper --gradle-version 8.14.6
+```
