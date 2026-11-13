@@ -19,8 +19,15 @@
         <link rel="next" href="../bump-dependencies/">
       
       
+        
+          <link rel="alternate" href="../../../maintenance/development/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="zh">
+        
+      
+      
       <link rel="icon" href="../../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -28,10 +35,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -64,7 +71,6 @@
     <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
   
 
-    
     
     
   </head>
@@ -409,9 +415,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     POS 系統
+  
+
     
   </span>
+  
   
 
       </a>
@@ -431,9 +442,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     幫助
+  
+
     
   </span>
+  
   
 
       </a>
@@ -453,9 +469,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     架構
+  
+
     
   </span>
+  
   
 
       </a>
@@ -494,9 +515,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     維護
+  
+
     
   </span>
+  
   
 
             <span class="md-nav__icon md-icon"></span>
@@ -505,7 +531,11 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            維護
+            
+  
+    維護
+  
+
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -521,9 +551,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     部署流程
+  
+
     
   </span>
+  
   
 
       </a>
@@ -553,9 +588,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     本地端開發
+  
+
     
   </span>
+  
   
 
           <span class="md-nav__icon md-icon"></span>
@@ -566,9 +606,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     本地端開發
+  
+
     
   </span>
+  
   
 
       </a>
@@ -591,7 +636,9 @@
         <li class="md-nav__item">
   <a href="#測試" class="md-nav__link">
     <span class="md-ellipsis">
-      測試
+      
+        測試
+      
     </span>
   </a>
   
@@ -618,9 +665,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     升版相依套件
+  
+
     
   </span>
+  
   
 
       </a>
@@ -662,9 +714,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     文件
+  
+
     
   </span>
+  
   
 
             <span class="md-nav__icon md-icon"></span>
@@ -673,7 +730,11 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
-            文件
+            
+  
+    文件
+  
+
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -689,9 +750,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     開發公約
+  
+
     
   </span>
+  
   
 
       </a>
@@ -712,9 +778,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     使用許可
+  
+
     
   </span>
+  
   
 
       </a>
@@ -735,9 +806,14 @@
   
   
   <span class="md-ellipsis">
+    
+  
     隱私權規範
+  
+
     
   </span>
+  
   
 
       </a>
@@ -782,7 +858,9 @@
         <li class="md-nav__item">
   <a href="#測試" class="md-nav__link">
     <span class="md-ellipsis">
-      測試
+      
+        測試
+      
     </span>
   </a>
   
@@ -798,6 +876,7 @@
           
           
             <div class="md-content" data-md-component="content">
+              
               <article class="md-content__inner md-typeset">
                 
                   
@@ -810,7 +889,7 @@
 <h1 id="本地端開發">本地端開發<a class="headerlink" href="#本地端開發" title="Permanent link">&para;</a></h1>
 <p>因為一些隱私權問題，我們建置了私有工具 <code>flutter-pos-packages</code>，
 在開始開發前，必須先替換成模擬工具：</p>
-<div class="highlight"><pre><span></span><code>sed -i.bk &#39;s/flutter-pos-packages$/flutter-pos-packages-mock/&#39; pubspec.yaml
+<div class="highlight"><pre><span></span><code>sed -i.bk 's/flutter-pos-packages$/flutter-pos-packages-mock/' pubspec.yaml
 rm -f pubspec.yaml.bk
 </code></pre></div>
 <p>接著</p>
@@ -827,7 +906,7 @@ keytool<span class="w"> </span>-genkey<span class="w"> </span>-v<span class="w">
 <span class="w">  </span>-keysize<span class="w"> </span><span class="m">2048</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-validity<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-storepass<span class="w"> </span>possystem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-dname<span class="w"> </span><span class="s1">&#39;CN=possystem, OU=possystem, O=possystem, L=Unknown, ST=Unknown, C=Unknown&#39;</span>
+<span class="w">  </span>-dname<span class="w"> </span><span class="s1">'CN=possystem, OU=possystem, O=possystem, L=Unknown, ST=Unknown, C=Unknown'</span>
 </code></pre></div>
 <ul>
 <li><code>/android/key.properties</code>，用來告訴建置應用程式時，你的鑰匙放哪裡，他裡面需要這些東西（依照上述產生範例）：<ul>
@@ -838,11 +917,11 @@ keytool<span class="w"> </span>-genkey<span class="w"> </span>-v<span class="w">
 </ul>
 </li>
 </ul>
-<div class="highlight"><span class="filename">設定好你的 key.properties</span><pre><span></span><code><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s1">&#39;possystem&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s1">&#39;possystem&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s1">&#39;my-jks.jks&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s1">&#39;possystem&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>android/key.properties
+<div class="highlight"><span class="filename">設定好你的 key.properties</span><pre><span></span><code><span class="nb">printf</span><span class="w"> </span><span class="s2">"keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'possystem'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'possystem'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'my-jks.jks'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'possystem'</span><span class="w"> </span>&gt;<span class="w"> </span>android/key.properties
 </code></pre></div>
 <ul>
 <li><code>/android/app/google-services.json</code>，
@@ -954,10 +1033,11 @@ Certificate<span class="w"> </span>fingerprint<span class="w"> </span><span clas
     
     
       
-      <script id="__config" type="application/json">{"base": "../../..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.tabs.sticky", "content.code.annotate", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.tabs.sticky", "content.code.annotate", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
