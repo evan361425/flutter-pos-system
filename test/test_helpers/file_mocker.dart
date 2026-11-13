@@ -33,11 +33,16 @@ String mockFilePick({List<int>? bytes}) {
   return '${XFile.fs.systemTempDirectory.path}/picked-file';
 }
 
-void Function({String? fileName, Uint8List? bytes}) mockFileSave({bool canceled = false}) {
+Future<Uri?> Function({String? fileName, Uint8List? bytes}) mockFileSave({bool canceled = false}) {
   final picker = MockFilePickerPlatform();
   FilePickerPlatform.instance = picker;
   when(
-    picker.saveFile(fileName: anyNamed('fileName'), bytes: anyNamed('bytes'), mimeType: anyNamed('mimeType')),
+    picker.saveFile(
+      fileName: anyNamed('fileName'),
+      bytes: anyNamed('bytes'),
+      mimeType: anyNamed('mimeType'),
+      dialogTitle: anyNamed('dialogTitle'),
+    ),
   ).thenAnswer((v) async {
     if (canceled) return null;
 
@@ -48,8 +53,12 @@ void Function({String? fileName, Uint8List? bytes}) mockFileSave({bool canceled 
     return Uri.file(path);
   });
 
-  return ({String? fileName, Uint8List? bytes}) =>
-      verify(picker.saveFile(fileName: fileName, bytes: bytes, mimeType: anyNamed('mimeType'))).called(1);
+  return ({String? fileName, Uint8List? bytes}) => picker.saveFile(
+    fileName: fileName,
+    bytes: bytes,
+    mimeType: anyNamed('mimeType'),
+    dialogTitle: anyNamed('dialogTitle'),
+  );
 }
 
 void mockImagePick(WidgetTester tester, {bool canceled = false}) {

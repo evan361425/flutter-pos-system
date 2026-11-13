@@ -11,6 +11,8 @@ class Log {
   static Future<void>? current;
 
   static void out(String msg, String code, {Object? error, StackTrace? stackTrace}) {
+    // help finding error message in widget tests.
+    // print('[$code] $msg ${error ?? ''} ${stackTrace ?? ''}');
     developer.log(msg, name: code, error: error, stackTrace: stackTrace);
   }
 

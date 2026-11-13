@@ -38,24 +38,26 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitExportOrderSuccessCsv), findsOneWidget);
-      verifier(
-        fileName: '${S.transitExportOrderFileName}.csv',
-        bytes: argThat(
-          predicate((e) {
-            if (e is Uint8List) {
-              final parts = utf8.decode(e).split('\n\n').toList();
-              final expected = FormattableOrder.values.map((e) => e.formatHeader().join(','));
+      verify(
+        verifier(
+          fileName: '${S.transitExportOrderFileName}.csv',
+          bytes: argThat(
+            predicate((e) {
+              if (e is Uint8List) {
+                final parts = utf8.decode(e).split('\n\n').toList();
+                final expected = FormattableOrder.values.map((e) => e.formatHeader().join(','));
 
-              return expected
-                  .mapIndexed((i, e) {
-                    return parts[i].split('\n').first == e;
-                  })
-                  .every((e) => e);
-            }
+                return expected
+                    .mapIndexed((i, e) {
+                      return parts[i].split('\n').first == e;
+                    })
+                    .every((e) => e);
+              }
 
-            return false;
-          }),
-          named: 'bytes',
+              return false;
+            }),
+            named: 'bytes',
+          ),
         ),
       );
     });

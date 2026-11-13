@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mockito/mockito.dart';
 import 'package:possystem/models/repository/menu.dart';
 import 'package:possystem/models/repository/order_attributes.dart';
 import 'package:possystem/models/repository/quantities.dart';
@@ -49,9 +50,11 @@ void main() {
 
       final header1 = findFieldFormatter(.stock).getHeader().map((e) => e.toString()).join(',');
       final header2 = findFieldFormatter(.quantities).getHeader().map((e) => e.toString()).join(',');
-      verifier(
-        fileName: '${S.transitExportBasicFileName}.csv',
-        bytes: utf8.encode('$header1\ni1,0.0,100,,1.0\n\n$header2\nq1,1'),
+      verify(
+        verifier(
+          fileName: '${S.transitExportBasicFileName}.csv',
+          bytes: utf8.encode('$header1\ni1,0.0,100,,1.0\n\n$header2\nq1,1'),
+        ),
       );
     });
 

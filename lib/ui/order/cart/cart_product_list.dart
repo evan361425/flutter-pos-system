@@ -141,24 +141,22 @@ class _CartProductListTile extends StatelessWidget {
     return MergeSemantics(
       child: ListTileTheme.merge(
         selectedColor: DefaultTextStyle.of(context).style.color,
-        child: ColoredBox(
-          color: color,
-          child: ListTile(
-            key: Key('cart.product.$index'),
-            leading: leading,
-            title: Text(product.name, overflow: .ellipsis),
-            subtitle:
-                MetaBlock.withString(context, subtitle, textOverflow: .visible) ??
-                HintText(S.orderCartProductDefaultQuantity),
-            trailing: trailing,
-            onTap: () => Cart.instance.toggleAll(false, except: product),
-            onLongPress: () {
-              Cart.instance.toggleAll(false, except: product);
-              CartActions.showActions(context);
-            },
-            selected: product.isSelected,
-            selectedTileColor: Colors.transparent,
-          ),
+        child: ListTile(
+          key: Key('cart.product.$index'),
+          leading: leading,
+          title: Text(product.name, overflow: .ellipsis),
+          subtitle:
+              MetaBlock.withString(context, subtitle, textOverflow: .visible) ??
+              HintText(S.orderCartProductDefaultQuantity),
+          trailing: trailing,
+          tileColor: color,
+          onTap: () => Cart.instance.toggleAll(false, except: product),
+          onLongPress: () {
+            Cart.instance.toggleAll(false, except: product);
+            CartActions.showActions(context);
+          },
+          selected: product.isSelected,
+          selectedTileColor: Colors.transparent,
         ),
       ),
     );

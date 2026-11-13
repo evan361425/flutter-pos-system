@@ -38,7 +38,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(S.transitExportOrderSuccessExcel), findsOneWidget);
-      verifier(fileName: '${S.transitExportOrderFileName}.xlsx', bytes: anyNamed('bytes'));
+      verify(verifier(fileName: '${S.transitExportOrderFileName}.xlsx', bytes: anyNamed('bytes')));
 
       final excel = Excel.decodeBytes(
         XFile('${XFile.fs.systemTempDirectory.path}/${S.transitExportOrderFileName}.xlsx').file.readAsBytesSync(),
