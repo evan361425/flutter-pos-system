@@ -34,6 +34,12 @@ void main() {
       Auth();
     });
 
+    test('init', () async {
+      when(googleSignIn.initialize()).thenAnswer((_) => Future.value(null));
+      when(googleSignIn.attemptLightweightAuthentication()).thenAnswer((_) => Future.value(null));
+      await auth.init();
+    });
+
     test('#authStateChanges', () async {
       when(firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(null));
 
