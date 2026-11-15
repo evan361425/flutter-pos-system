@@ -8,6 +8,7 @@ import 'package:possystem/models/receipt_component.dart';
 import 'package:possystem/models/repository/receipt_templates.dart';
 
 class PrinterReceiptView extends StatelessWidget {
+  static const viewWidth = 320;
   static const defaultTextStyle = TextStyle(
     fontSize: 14,
     fontWeight: .w400,
@@ -43,7 +44,7 @@ class PrinterReceiptView extends StatelessWidget {
           // wider width can result low density of receipt, since the paper
           // is fixed width (58mm or 80mm).
           // fixed width can provide same density of receipt
-          width: 348, // 320 + 28 (padding)
+          width: viewWidth + ImageableContainer.paddingWidth,
           child: ImageableContainer(controller: controller, style: defaultTextStyle, children: children),
         ),
       ),
@@ -124,8 +125,8 @@ class PrinterReceiptView extends StatelessWidget {
     });
 
     final color = Theme.of(context).colorScheme;
-    return DefaultTextStyle(
-      style: defaultTextStyle.merge(const TextStyle(height: 1.8)),
+    return DefaultTextStyle.merge(
+      style: const TextStyle(height: 1.8),
       child: Table(
         defaultVerticalAlignment: .middle,
         columnWidths: columnWidths,

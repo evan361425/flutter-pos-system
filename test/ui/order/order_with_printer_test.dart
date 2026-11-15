@@ -206,9 +206,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('2: test error'), findsOneWidget);
-      verify(p1.draw(.fromList([255]))).called(1);
-      // transparent pixel will be converted to white
-      verify(p2.draw(.fromList([255, 255]))).called(1);
+      verify(p1.draw(.fromList([0]))).called(1);
+      // transparent pixel will be converted to black
+      verify(p2.draw(.fromList([0, 0]))).called(1);
     });
 
     tearDown(resetImageable);

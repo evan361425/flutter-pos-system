@@ -76,6 +76,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # widget test
+  golden_test: ^2.2.0
+
   # code style
   flutter_lints: ^6.0.0
 

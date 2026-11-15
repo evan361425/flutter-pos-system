@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:possystem/constants/constant.dart';
 import 'package:possystem/helpers/logger.dart';
 import 'package:possystem/models/image.dart';
 
 class ImageableContainer extends StatelessWidget {
+  static const paddingWidth = 28.0; // 10 * 2 + 4 * 2 (padding + margin)
+
   final ImageableController controller;
 
   final TextStyle style;
@@ -20,10 +21,10 @@ class ImageableContainer extends StatelessWidget {
     return Card(
       color: Colors.white,
       child: Padding(
-        padding: const .symmetric(horizontal: kHorizontalSpacing, vertical: kTopSpacing),
+        padding: const .symmetric(horizontal: 10.0, vertical: 12.0),
         child: SingleChildScrollView(
           // DefaultTextStyle only work here, not work outside settings
-          child: DefaultTextStyle(
+          child: DefaultTextStyle.merge(
             style: style,
             child: RepaintBoundary(
               key: controller.key,
@@ -64,7 +65,16 @@ class ImageableController {
 
     final result = <RGBImage>[];
     for (final w in widths) {
-      final image = await boundary.toImage(pixelRatio: w / boundary.paintBounds.width);
+      final ratio = w / boundary.size.width;
+      assert(
+        (boundary.size.width * ratio).ceil() == w,
+        'Float error: ${boundary.size.width} * $ratio = ${boundary.size.width * ratio}, '
+        'ceil would give ${(boundary.size.width * ratio).ceil()} instead of $w.',
+      );
+
+      // Scaling by a float pixelRatio can introduce ceiling error (e.g. 384.001 -> ceil -> 385).
+      // It is fine for the fixed 320 -> 384 sizes used here; recheck if they change.
+      final image = await boundary.toImage(pixelRatio: ratio);
       final byteData = await image.toByteData(format: .rawRgba);
       result.add(RGBImage(byteData!.buffer.asUint8List(), width: w));
       Log.out('generate image with width: $w', 'imageable_container');

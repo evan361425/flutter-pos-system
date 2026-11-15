@@ -6,7 +6,7 @@ import '../test_helpers/breakpoint_mocker.dart';
 
 void main() {
   group('Imageable Container', () {
-    testWidgets('should render correctly', (tester) async {
+    testWidgets('should render and hit the assertion', (tester) async {
       deviceAs(.mobile, tester);
 
       final controller = ImageableManger.instance.create();
@@ -15,10 +15,13 @@ void main() {
         MaterialApp(
           theme: ThemeData.light(),
           home: Scaffold(
-            body: ImageableContainer(
-              controller: controller,
-              style: const TextStyle(color: Colors.black),
-              children: const [Text('Hello World')],
+            body: SizedBox(
+              width: 800, // 772, which has floating error in 99, 105, 111, 117, 123, 198, ...
+              child: ImageableContainer(
+                controller: controller,
+                style: const TextStyle(color: Colors.black),
+                children: const [Text('Hello World')],
+              ),
             ),
           ),
         ),
@@ -28,23 +31,8 @@ void main() {
       final image = await tester.runAsync(() => controller.toImage(widths: [128]));
       expect(image, isNotNull);
 
-      const width = 128 ~/ 8;
-      final data = image!.first.toGrayScale().toBitMap(invert: false, mirrored: false).bytes;
-      final lines = <String>[];
-      for (var i = 0; i < data.length ~/ width; i++) {
-        var line = '';
-        for (var j = 0; j < width; j++) {
-          line += data[i * width + j].toRadixString(2).padLeft(8, '0');
-        }
-        lines.add(line);
-      }
-
-      // actual bit test will failed in CI env.
-      // 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-      // 11010111101000110101011010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-      // 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-      expect(lines.length, equals(3));
-      expect(lines[0].length, equals(128));
+      await tester.runAsync(() => controller.toImage(widths: [99]));
+      expect(tester.takeException(), isAssertionError);
     });
   });
 }

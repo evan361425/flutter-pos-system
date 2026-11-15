@@ -351,7 +351,7 @@ class _ReceiptComponentModalState extends State<ReceiptComponentModal> with Item
           data: MediaQuery.of(context).copyWith(textScaler: .noScaling),
           child: SizedBox(
             width: 320, // fixed width can provide same density of receipt
-            child: DefaultTextStyle(
+            child: DefaultTextStyle.merge(
               style: PrinterReceiptView.defaultTextStyle,
               child: Padding(padding: _parsePadding(), child: child),
             ),

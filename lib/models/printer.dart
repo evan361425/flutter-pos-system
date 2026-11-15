@@ -117,7 +117,11 @@ class Printers extends ChangeNotifier with Repository<Printer>, RepositoryStorag
     await Future.wait(futures);
 
     if (errors.isNotEmpty) {
-      showSnackbarWhenFutureError(Future.error(errors.join('\n')), 'printer_draw', key: App.scaffoldMessengerKey);
+      showSnackbarWhenFutureError(
+        Future.error(errors.join('\n'), stackTraces.first),
+        'printer_draw',
+        key: App.scaffoldMessengerKey,
+      );
     }
   }
 

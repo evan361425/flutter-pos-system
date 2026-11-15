@@ -135,7 +135,7 @@ class _ReceiptTemplateModalState extends State<ReceiptTemplateModal> with ItemMo
           data: MediaQuery.of(context).copyWith(textScaler: .noScaling),
           child: SizedBox(
             width: 396, // 320 + 48(Padding) + 24(Icon) + 4(SizedBox)
-            child: DefaultTextStyle(
+            child: DefaultTextStyle.merge(
               style: PrinterReceiptView.defaultTextStyle,
               child: MyReorderableList(
                 padding: const .fromLTRB(24.0, 16, 24.0, kFABSpacing + 32),

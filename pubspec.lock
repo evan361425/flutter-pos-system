@@ -678,6 +678,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "18.1.2"
+  golden_test:
+    dependency: "direct dev"
+    description:
+      name: golden_test
+      sha256: "3c056c980900c4633d7a92840ebb7f199aef2992d823da881b43cb2f220b8314"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   google_cloud:
     dependency: transitive
     description:

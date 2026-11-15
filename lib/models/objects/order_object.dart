@@ -188,10 +188,13 @@ class OrderObject extends _Object {
     );
   }
 
-  factory OrderObject.example() {
+  factory OrderObject.example({DateTime? createdAt}) {
     return OrderObject(
-      createdAt: .now(),
+      id: 1,
+      periodSeq: 1,
+      createdAt: createdAt ?? .now(),
       price: 330,
+      cost: 100,
       paid: 500,
       productsCount: 3,
       productsPrice: 300,

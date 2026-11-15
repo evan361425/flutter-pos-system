@@ -124,17 +124,17 @@ class RGBImage extends ImageBytes {
     final int b = bytes[offset + 2];
     final int a = bytes[offset + 3];
 
-    // If fully transparent or semi-transparent, blend with white background (255, 255, 255)
+    // If fully transparent or semi-transparent, blend with black background (0, 0, 0)
     int effR = r;
     int effG = g;
     int effB = b;
     if (a < 255) {
-      effR = (r * a) ~/ 255 + (255 - a);
-      effG = (g * a) ~/ 255 + (255 - a);
-      effB = (b * a) ~/ 255 + (255 - a);
+      effR = (r * a) ~/ 255;
+      effG = (g * a) ~/ 255;
+      effB = (b * a) ~/ 255;
     }
 
-    // ITU-R BT.601: (R*77 + G*150 + B*29) >> 8
+    // ITU-R BT.601: (R*0.299 + G*0.587 + B*0.114)
     return (effR * 77 + effG * 150 + effB * 29) >> 8;
   }
 }
