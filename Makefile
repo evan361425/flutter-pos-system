@@ -21,6 +21,10 @@ outdated: ## Find outdated dependencies
 test: ## Run tests
 	flutter test
 
+.PHONY: test-golden
+test-golden: ## Run tests
+	flutter test --tags golden --update-goldens
+
 .PHONY: test-coverage
 test-coverage: ## Run tests with coverage
 	flutter test --coverage

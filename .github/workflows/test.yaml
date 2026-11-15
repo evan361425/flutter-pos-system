@@ -56,7 +56,7 @@ jobs:
       # Run widget tests for our flutter project.
       - name: Testing
         if: github.event_name == 'pull_request'
-        run: flutter test
+        run: flutter test --exclude-tags golden
 
       - name: Testing with Coverage
         if: github.event_name != 'pull_request'
